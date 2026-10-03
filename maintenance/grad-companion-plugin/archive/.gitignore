@@ -1,0 +1,7 @@
+dist/
+.grad/
+.verify/
+__pycache__/
+# 内部开发文档本地保留，不入仓库
+docs/
+tests/

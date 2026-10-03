@@ -1,0 +1,14 @@
+{
+  "name": "grad-companion-marketplace",
+  "plugins": [
+    {
+      "name": "grad-companion",
+      "version": "@VERSION@",
+      "description": "面向计算机专业研究生的科研执行工具箱。",
+      "author": { "name": "grad-companion" },
+      "category": "research",
+      "keywords": ["research", "arxiv", "reproducibility", "thesis", "career"],
+      "source": "."
+    }
+  ]
+}

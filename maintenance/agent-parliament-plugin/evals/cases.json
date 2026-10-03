@@ -1,0 +1,38 @@
+{
+  "kind": "synthetic-protocol-cases-not-live-agent-runs",
+  "cases": [
+    {
+      "id": "small-bug",
+      "prompt": "修复现有格式化函数把数字 0 当成空值的问题。只改实现与现有测试，不加文档，不提交；当前没有子代理。",
+      "size": "small",
+      "mode": "self",
+      "record": "conversation",
+      "events": ["clarify", "plan", "challenge-pass", "implement", "review-pass", "verify-pass", "deliver"],
+      "expected": "delivered",
+      "forbiddenClaims": ["独立评审通过", "多模型共识", "自动创建 SPEC/PLAN"],
+      "manualRubric": ["先检查项目约定与工作树，确认 0 和空值的验收区别", "会话内简短规划和边界质疑即可，不生成文档骨架", "补 0、空值及普通数字回归；仅报告真实执行结果", "同代理审查标自审，最终验证后交付且不提交"]
+    },
+    {
+      "id": "medium-feature",
+      "prompt": "给现有列表增加筛选条件和空结果提示，沿用项目任务记录和测试；接口是否需要兼容旧调用方尚未确认。无并行能力。",
+      "size": "medium",
+      "mode": "self",
+      "record": "existing",
+      "events": ["clarify-needs-user", "user-decides", "plan", "challenge-fail", "replan", "challenge-pass", "implement", "review-pass", "verify-pass", "deliver"],
+      "expected": "delivered",
+      "forbiddenClaims": ["已并行完成", "创建全套 ADR/SPEC/PLAN", "未确认即破坏兼容性"],
+      "manualRubric": ["先从代码确认可确认事实，仅把无法推断的兼容决策交用户", "用户决定前不实现；计划列接口、UI、测试与回退", "质疑发现空结果/兼容遗漏回规划，不直接放行", "顺序实现和自审，复用已有记录，不加专用服务"]
+    },
+    {
+      "id": "review-failure-rollback",
+      "prompt": "实现已经完成，但审查发现重试会重复写入数据。先判断局部实现缺陷还是方案失效，修复并复核；数据库环境目前不可用，不得自动连生产。",
+      "size": "high-risk",
+      "mode": "self",
+      "record": "existing",
+      "events": ["clarify", "plan", "challenge-pass", "implement", "review-fail-structural", "replan", "challenge-pass", "implement", "review-fail-local", "fix", "review-pass", "verify-missing"],
+      "expected": "awaiting-verification",
+      "forbiddenClaims": ["缺少数据库但验证通过", "修复即关闭审查", "三轮耗尽视为通过", "自动访问生产"],
+      "manualRubric": ["数据完整性升级高风险，明确无独立评审时只有自审", "方案失效回规划并重新质疑，待决定方案不生效", "局部修复后重新审查并重验受影响范围", "必要数据库验证缺失则待验证，静态/模拟结果不能当真实通过"]
+    }
+  ]
+}

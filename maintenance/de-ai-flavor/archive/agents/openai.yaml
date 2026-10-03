@@ -1,0 +1,4 @@
+interface:
+  display_name: "去AI味：自然、准确地表达"
+  short_description: "优化回复与文本产物，减少套话和绕口，保留事实、作者风格与必要解释"
+  default_prompt: "使用 $de-ai-flavor 优化这份文本，保留原意与事实，按读者和用途写得自然，直接给终稿。"
