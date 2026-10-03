@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F1E6">
+<meta name="description" content="街角植物志第14期：先认下一棵树。一份虚构的城市植物观察手记编辑页小样，自包含、无外部资源。">
+<title>街角植物志 · 第 14 期 · 先认下一棵树（虚构观察笔记小样）</title>
+<style>
+:root{
+  --paper:#F6F1E6;
+  --paper-2:#EFE7D3;
+  --ink:#2B2A24;
+  --ink-soft:#6B6555;
+  --forest:#2E5339;
+  --forest-deep:#1F3A28;
+  --ochre:#9A5A20;
+  --ochre-bright:#C97F35;
+  --gold:#D9A441;
+  --line:#D8CDB4;
+  --serif:"Songti SC","STSong","SimSun","Noto Serif CJK SC",Georgia,serif;
+  --kai:"Kaiti SC","STKaiti","KaiTi","AR PL UKai CN",Georgia,serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,"Segoe UI",sans-serif;
+  --mono:"SF Mono",Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:17.5px/1.95 var(--serif)}
+::selection{background:var(--ochre-bright);color:var(--paper)}
+a{color:var(--forest)}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--forest);outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:16px;top:-72px;z-index:99;background:var(--forest);color:var(--paper);padding:10px 18px;border-radius:0 0 8px 8px;font-family:var(--sans);text-decoration:none}
+.skip:focus{top:0}
+
+.mast{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap;max-width:1120px;margin:0 auto;padding:26px 32px 18px;border-bottom:2px solid var(--forest)}
+.mast-brand{margin:0;font-family:var(--serif);font-size:25px;color:var(--forest-deep)}
+.mast-brand .en{display:block;font:11px/1 var(--mono);letter-spacing:.32em;color:var(--ochre);margin-top:7px}
+.mast-issue{margin:0;font:13px/1.7 var(--mono);color:var(--ink-soft);text-align:right}
+
+.sheet{display:grid;grid-template-columns:220px minmax(0,1fr);gap:72px;max-width:1120px;margin:0 auto;padding:44px 32px 64px}
+.toc details{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.toc summary{cursor:pointer;padding:12px 16px;font:600 14px/1.5 var(--sans);color:var(--forest);list-style:none}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary::after{content:'＋';float:right;color:var(--ochre)}
+.toc details[open] summary::after{content:'－'}
+.toc-label{margin:14px 0 8px;font:11px/1 var(--mono);letter-spacing:.26em;color:var(--ochre)}
+.toc ol{list-style:none;margin:0;padding:0 0 4px}
+.toc li a{display:block;padding:9px 2px;border-bottom:1px dashed var(--line);font:15px/1.7 var(--sans);color:var(--ink);text-decoration:none}
+.toc li a:hover{color:var(--ochre)}
+.toc .toc-meta{margin:16px 0 0;padding:0 2px 2px}
+.toc .toc-meta div{margin:0 0 12px}
+.toc dt{font:11px/1.6 var(--mono);letter-spacing:.18em;color:var(--ochre)}
+.toc dd{margin:2px 0 0;font:14px/1.8 var(--sans);color:var(--ink-soft)}
+.toc .toc-label,.toc ol,.toc .toc-meta{padding-left:16px;padding-right:16px}
+
+article{min-width:0;max-width:40em}
+.kicker{margin:4px 0 10px;font:12px/1.6 var(--mono);letter-spacing:.2em;color:var(--ochre)}
+h1{margin:0 0 22px;font-family:var(--serif);font-weight:700;font-size:clamp(44px,7vw,76px);line-height:1.18;color:var(--forest-deep)}
+.lede{font-size:20px;line-height:2.05;margin:0 0 8px}
+.lede::first-letter{float:left;font-size:3.1em;line-height:1.02;padding:8px 12px 0 0;color:var(--forest);font-weight:700}
+article section{margin:46px 0 0;scroll-margin-top:32px}
+article h2{margin:0 0 16px;font-family:var(--serif);font-weight:700;font-size:26px;line-height:1.5;color:var(--forest)}
+article h2::before{content:'';display:block;width:44px;height:3px;background:var(--ochre-bright);margin-bottom:14px}
+article p{margin:0 0 1.15em}
+.co{font:12px/1 var(--mono);letter-spacing:.06em;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.plate{margin:38px 0 42px;max-width:620px}
+.plate svg{display:block;width:100%;height:auto}
+.plate figcaption{margin-top:10px;font:15px/1.9 var(--kai);color:var(--ink-soft)}
+.plate figcaption em{font-family:Georgia,var(--serif);font-style:italic}
+.note{margin:34px 0;padding:6px 4px 6px 22px;border-left:3px solid var(--ochre-bright);font:19px/2 var(--kai);color:var(--forest)}
+.method{margin:0 0 1.15em;padding:0 0 0 1.4em}
+.method li{margin:0 0 .45em}
+.endmark{margin-top:56px;text-align:center;font:14px/1 var(--serif);letter-spacing:.6em;text-indent:.6em;color:var(--ochre)}
+
+.log{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.log-in{max-width:1120px;margin:0 auto;padding:46px 32px 56px}
+.log h2{margin:0;font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.5;color:var(--forest)}
+.log-note{margin:8px 0 20px;font:14px/1.9 var(--sans);color:var(--ink-soft)}
+.log-note strong{color:var(--forest)}
+.log-controls{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.log-controls button{cursor:pointer;min-height:40px;padding:8px 16px;border-radius:6px;border:1px solid var(--forest);background:transparent;color:var(--forest);font:14px/1.4 var(--sans)}
+.log-controls button:hover{background:var(--forest);color:var(--paper)}
+.log-status{margin:6px 0 14px;font:13px/1.7 var(--mono);color:var(--ochre)}
+.rec{margin:12px 0;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.rec summary{display:grid;grid-template-columns:74px minmax(0,1.1fr) minmax(0,1fr) 26px;gap:4px 20px;align-items:baseline;padding:14px 18px;cursor:pointer;list-style:none}
+.rec summary::-webkit-details-marker{display:none}
+.rec summary::after{content:'＋';font:16px/1 var(--mono);color:var(--ochre);justify-self:end}
+.rec[open] summary::after{content:'－'}
+.rec[open]{background:var(--paper-2)}
+.r-date{font:14px/1 var(--mono);color:var(--ochre);font-variant-numeric:tabular-nums}
+.r-what{font:17px/1.6 var(--serif);color:var(--ink);overflow-wrap:anywhere}
+.r-what em{font-family:Georgia,var(--serif)}
+.r-where{font:14px/1.7 var(--sans);color:var(--ink-soft);overflow-wrap:anywhere}
+.r-body{padding:2px 18px 20px}
+.r-body p{margin:0 0 10px;font-size:16px;line-height:2}
+.r-label{font:600 13px/1.6 var(--sans);color:var(--forest);margin-right:10px}
+.r-body .kai{font:16.5px/2 var(--kai);color:var(--ink)}
+
+footer{background:var(--forest-deep);color:#E9E4D4}
+.foot-in{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px 48px;max-width:1120px;margin:0 auto;padding:42px 32px 8px}
+.foot-title{margin:0 0 8px;font:12px/1 var(--mono);letter-spacing:.28em;color:var(--gold)}
+.foot-in p{margin:0 0 10px;font:14.5px/1.95 var(--sans);color:#E9E4D4}
+.foot-in a{color:var(--gold)}
+.fine{max-width:1120px;margin:0 auto;padding:10px 32px 36px;font:12px/1.9 var(--mono);color:#C9C2AC}
+[hidden]{display:none!important}
+
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+@media (max-width:880px){
+  .mast{padding:20px 20px 14px}
+  .mast-brand{font-size:22px}
+  .mast-issue{text-align:left}
+  .sheet{grid-template-columns:minmax(0,1fr);gap:28px;padding:28px 20px 48px}
+  .toc{position:static}
+  .toc summary{display:block}
+  .plate{max-width:100%}
+  article{max-width:none}
+  .log-in{padding:38px 20px 48px}
+  .rec summary{grid-template-columns:64px minmax(0,1fr) 26px;grid-template-rows:auto auto}
+  .r-where{grid-column:1 / span 2;grid-row:2}
+  .r-body{padding:2px 16px 18px}
+  .foot-in{grid-template-columns:minmax(0,1fr);padding:34px 20px 6px}
+  .fine{padding:10px 20px 32px}
+}
+@media (min-width:881px){
+  .toc summary{display:none}
+  .toc details{border:none;background:transparent;border-radius:0}
+}
+@media (min-width:1200px){
+  .plate{margin-left:-72px;width:calc(100% + 72px)}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+
+<header class="mast">
+  <p class="mast-brand">街角植物志<span class="en">URBAN BOTANY NOTES</span></p>
+  <p class="mast-issue">第 14 期 · 2026 年 10 月<br>虚构观察笔记 · 演示小样</p>
+</header>
+
+<main id="top">
+  <div class="sheet">
+    <nav class="toc" aria-label="本篇目录">
+      <details id="toc-box" open>
+        <summary>本篇目录</summary>
+        <p class="toc-label">CONTENTS</p>
+        <ol class="toc-list">
+          <li><a href="#ch-1">01 · 巷口的坐标</a></li>
+          <li><a href="#ch-2">02 · 叶子会变三种颜色</a></li>
+          <li><a href="#ch-3">03 · 树皮不说谎</a></li>
+          <li><a href="#ch-4">04 · 观察的方法</a></li>
+          <li><a href="#log">观察台账（最近八条）</a></li>
+        </ol>
+        <dl class="toc-meta">
+          <div><dt>观察者</dt><dd>阿蕨（虚构）</dd></div>
+          <div><dt>记录时段</dt><dd>2026-09-21 → 10-02</dd></div>
+          <div><dt>固定点位</dt><dd>虚构 · 桂花新村侧巷</dd></div>
+        </dl>
+      </details>
+    </nav>
+
+    <article id="article">
+      <p class="kicker">城市植物观察 · 手记一则</p>
+      <h1>先认下一棵树</h1>
+      <p class="lede">十月的第一课，不是认识一百种植物，而是把巷口那棵树认下来。名字可以晚一点知道——先知道它站在哪里，叶子怎么翻面，树皮摸上去是什么手感。认识一株植物，多半是从“天天路过”开始的。</p>
+
+      <section id="ch-1" aria-labelledby="ch-1-h">
+        <h2 id="ch-1-h">01 · 巷口的坐标</h2>
+        <p>观察点选在桂花新村侧巷的第三根灯柱旁：一棵乌桕，挨着斑马线，树下有两级矮台阶。选它有三条理由——每天买菜都会路过；树荫刚好容得下一个人站着写字；它不会被挪走。固定点位是台账的地基：换了地方，比较就不成立。</p>
+        <p>每一次记录都从同一句话开始：<span class="co">“灯柱北面，第三级台阶，面向围墙。”</span>坐标写在心里，不写在纸上——这个点位是虚构的，方法不是。</p>
+      </section>
+
+      <section id="ch-2" aria-labelledby="ch-2-h">
+        <h2 id="ch-2-h">02 · 叶子会变三种颜色</h2>
+        <p>乌桕的叶子是菱状的，先端拖着一个细尖，叶柄细长，风一来整树都在翻面。九月末它开始换装：同一根小枝上，绿叶、黄叶、锈红叶可以同时存在，谁也不等谁。比起银杏那种整树齐刷刷的黄，乌桕的秋天是掺着来的。</p>
+        <figure class="plate">
+          <svg viewBox="0 0 640 780" role="img" aria-labelledby="plate-title" focusable="false" xmlns="http://www.w3.org/2000/svg">
+            <title id="plate-title">乌桕枝条手绘示意：一根主枝带七片菱形叶与两枚蒴果，叶色从绿到黄到赭；地面虚线上有一片落叶和两粒白色种子。</title>
+            <defs>
+              <g id="leaf">
+                <path class="blade" d="M0 -58 C10 -42 24 -28 28 -8 C31 6 22 20 10 29 C5 33 -5 33 -10 29 C-22 20 -31 6 -28 -8 C-24 -28 -10 -42 0 -58 Z"/>
+                <path class="vein" d="M0 -50 C1.5 -30 1.5 -6 0 24" fill="none"/>
+                <path class="vein" d="M0 -26 C8 -24 15 -19 20 -12 M0 -26 C-8 -24 -15 -19 -20 -12 M0 -6 C7 -4 13 0 17 6 M0 -6 C-7 -4 -13 0 -17 6" fill="none"/>
+                <path class="petiole" d="M0 31 C0 40 0 46 0 54" fill="none"/>
+              </g>
+              <g id="pod">
+                <circle cx="0" cy="-9" r="10"/><circle cx="-9" cy="5" r="10"/><circle cx="9" cy="5" r="10"/>
+                <circle class="poddot" cx="0" cy="0" r="3.2"/>
+              </g>
+            </defs>
+            <g class="branch-strokes" fill="none" stroke-linecap="round">
+              <path d="M520 740 C500 640 470 560 420 480 C370 400 340 300 330 190 C326 140 322 100 318 64" stroke="#3A5A40" stroke-width="5"/>
+              <path d="M420 480 C380 460 330 450 285 455" stroke="#3A5A40" stroke-width="3"/>
+              <path d="M470 560 C510 545 550 540 585 548" stroke="#3A5A40" stroke-width="3"/>
+              <path d="M348 320 C310 300 280 270 262 235" stroke="#3A5A40" stroke-width="2.5"/>
+            </g>
+            <use href="#leaf" transform="translate(318 58) rotate(-6) scale(1.05)" fill="#2F5D3A"/>
+            <use href="#leaf" transform="translate(368 132) rotate(38)" fill="#4C7A50"/>
+            <use href="#leaf" transform="translate(272 210) rotate(-42)" fill="#7BA05B"/>
+            <use href="#leaf" transform="translate(258 244) rotate(-58) scale(.94)" fill="#D9A441"/>
+            <use href="#leaf" transform="translate(302 330) rotate(24) scale(1.02)" fill="#35633E"/>
+            <use href="#leaf" transform="translate(262 458) rotate(-24) scale(.96)" fill="#B05A2A"/>
+            <use href="#leaf" transform="translate(560 542) rotate(64) scale(.9)" fill="#4C7A50"/>
+            <use href="#leaf" transform="translate(452 428) rotate(30) scale(.92)" fill="#2F5D3A"/>
+            <use href="#pod" transform="translate(590 552) rotate(12)" fill="#8A5A33" stroke="#5F3A1E" stroke-width="1"/>
+            <use href="#pod" transform="translate(270 462) rotate(-20) scale(.9)" fill="#8A5A33" stroke="#5F3A1E" stroke-width="1"/>
+            <use href="#leaf" transform="translate(180 700) rotate(160) scale(.9)" fill="#B05A2A" opacity=".92"/>
+            <circle cx="212" cy="692" r="5" fill="#F1EDE2" stroke="rgba(43,42,36,.35)"/>
+            <circle cx="228" cy="683" r="5" fill="#F1EDE2" stroke="rgba(43,42,36,.35)"/>
+            <path d="M110 742 C220 752 420 752 566 740" fill="none" stroke="#D8CDB4" stroke-width="2" stroke-dasharray="1 8" stroke-linecap="round"/>
+          </svg>
+          <figcaption>乌桕 <em>Triadica sebifera</em>（大戟科，落叶乔木）：菱形叶，秋末绿、黄、赭三色同枝，蒴果三裂。手绘示意，非实物写生；记录内容为虚构演示。</figcaption>
+        </figure>
+        <p>观察摘录（09-28 17:40，西晒）：<span class="kai">“同一根小枝上数到三种颜色。绿叶的叶柄比黄叶挺，风过来先倒下的是黄的——落之前，它先松手。”</span>这句是编的，但当时的正确做法是真的：只写看见的，不写猜的。</p>
+      </section>
+
+      <section id="ch-3" aria-labelledby="ch-3-h">
+        <h2 id="ch-3-h">03 · 树皮不说谎</h2>
+        <p>叶子和果实会随季节变，树皮的变化以年为单位，最适合用来认一棵“住得久”的树。乌桕的树皮灰褐，带着浅浅的纵列裂纹，像旧信纸上的折痕；巷口再往前二十米那棵二球悬铃木，树皮成片剥落，露出迷彩一样的浅色斑块。一个纵向开裂，一个横向剥落——看树皮像看字迹，各写各的。</p>
+        <blockquote class="note">“先别急着翻图鉴——数一数叶柄，摸一摸树皮，树自己会说话。”<br>——摘自本志第 9 期（虚构）</blockquote>
+        <p>摸树皮之前先看一圈：有没有蚂蚁在树干上排班，有没有新掉的枝桠。手记不负责赞美树，负责记下它在某天下午的样子。</p>
+      </section>
+
+      <section id="ch-4" aria-labelledby="ch-4-h">
+        <h2 id="ch-4-h">04 · 观察的方法</h2>
+        <p>这一期只有一条主张：观察是可以练习的。练习的办法朴素得像抄作业——</p>
+        <ul class="method">
+          <li>固定点位：同一棵树、同一个站位，别的树看见了也先忍住；</li>
+          <li>固定时间：都挑傍晚十七点半前后，光照才有可比性；</li>
+          <li>只记看到的事：颜色、数量、掉落物，不写“大概”“应该”；</li>
+          <li>允许空白：定不了种就写“未能定种”，空白也是记录。</li>
+        </ul>
+        <p>台账里的每一条都对应一次路过，不是一次考证。名字认错不要紧，改一条就是了；不记，才是真的丢了。</p>
+        <p class="endmark">◆ 本篇完</p>
+      </section>
+    </article>
+  </div>
+
+  <section id="log" class="log" aria-labelledby="log-h">
+    <div class="log-in">
+      <h2 id="log-h">观察台账 · 最近八条</h2>
+      <p class="log-note">每条对应一次路过。点开一条看完整记录，或<strong>全部展开</strong>慢慢读。</p>
+      <div class="log-controls">
+        <button type="button" id="expand-all">全部展开</button>
+        <button type="button" id="collapse-all">全部收起</button>
+      </div>
+      <p class="log-status" id="log-status" role="status" aria-live="polite"></p>
+
+      <details class="rec" id="rec-1">
+        <summary><span class="r-date">09-21</span><span class="r-what">乌桕 · 定点建立</span><span class="r-where">侧巷第三根灯柱</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴，29°C，东南风。</p>
+          <p class="kai">“把台账的第一条留给立档本身：站位、朝向、树下两级台阶，都写进固定字段。以后每条从这里开始。”</p>
+          <p><strong class="r-label">下一步</strong>连续七天同一时间拍照一张，先攒颜色。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-2">
+        <summary><span class="r-date">09-23</span><span class="r-what">香樟 <em>Cinnamomum camphora</em> · 落果与鸟</span><span class="r-where">路南行道树</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴，28°C。</p>
+          <p class="kai">“紫黑色樟果落了一层，白头鹎在树冠里挑挑拣拣。果核被踩进砖缝，明年砖缝里会不会多出几棵小苗，记下来等等看。”</p>
+          <p><strong class="r-label">下一步</strong>10 月中回访砖缝，查发芽情况。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-3">
+        <summary><span class="r-date">09-25</span><span class="r-what">苔藓 · 墙缝（未能定种）</span><span class="r-where">停车棚北墙</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>阴，24°C，空气潮。</p>
+          <p class="kai">“北墙下半截绿绒绒一片，凑近看是密密的一小簇一小簇。定不到种，只记颜色、位置和这面墙晒不到太阳这件事。”</p>
+          <p><strong class="r-label">下一步</strong>记录覆盖范围有没有向北扩。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-4">
+        <summary><span class="r-date">09-28</span><span class="r-what">乌桕 · 三色同枝</span><span class="r-where">侧巷第三根灯柱</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴，26°C，西晒。</p>
+          <p class="kai">“同一根小枝上，绿叶、黄叶、锈红叶各一片。风过来先倒下的是黄的——落之前，它先松手。”</p>
+          <p><strong class="r-label">下一步</strong>给变色进度做个粗分档：零星 / 过半 / 整树。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-5">
+        <summary><span class="r-date">09-30</span><span class="r-what">构树 <em>Broussonetia papyrifera</em> · 一树两种叶</span><span class="r-where">井盖旁</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>多云，25°C。</p>
+          <p class="kai">“低处的叶子裂得像手掌，高处的却是完整的卵形。同一棵树两种叶形，图鉴上叫异形叶。蹲在井盖旁看十分钟，比翻十页书记得牢。”</p>
+          <p><strong class="r-label">下一步</strong>数一数低位枝上裂叶与全缘叶的比例。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-6">
+        <summary><span class="r-date">10-01</span><span class="r-what">蒲公英 <em>Taraxacum</em> sp. · 种子伞全开</span><span class="r-where">路缘石缝</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴，23°C，风小。</p>
+          <p class="kai">“一整球白伞全开了，蹲低才看得齐。定不到种，记作 Taraxacum sp.。吹散一颗数不清的球，也算一次物候记录。”</p>
+          <p><strong class="r-label">下一步</strong>标记这丛的位置，看第二次开花在什么时候。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-7">
+        <summary><span class="r-date">10-02</span><span class="r-what">垂序商陆 <em>Phytolacca americana</em> · 果穗下垂</span><span class="r-where">围墙西南角、垃圾桶与自行车棚之间</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴，22°C。</p>
+          <p class="kai">“紫黑果穗一串串垂下来，花序轴也是下垂的，名字起得诚实。外来入侵种：只记录，不种植、不传播、不碰果汁——它会把手指和纸都染紫。”</p>
+          <p><strong class="r-label">下一步</strong>把位置报给小区绿化群（演示条目，不实际执行）。</p>
+        </div>
+      </details>
+
+      <details class="rec" id="rec-8">
+        <summary><span class="r-date">10-02</span><span class="r-what">银杏 <em>Ginkgo biloba</em> L. · 第一片黄叶</span><span class="r-where">前街邮局旁</span></summary>
+        <div class="r-body">
+          <p><strong class="r-label">天气</strong>晴转风，21°C。</p>
+          <p class="kai">“邮局门口那棵银杏落下第一片黄叶，扇形，叶脉是别人没有的二叉。对照巷口的乌桕：那边已经掺了三色，这边才刚刚开始。同一天，两个秋天。”</p>
+          <p><strong class="r-label">下一步</strong>两条变色进度线并进，月底画成对比小图。</p>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-in">
+    <div>
+      <p class="foot-title">关于这份小样</p>
+      <p>「街角植物志」与全部期号、地点、人物均为虚构演示；植物学描述取自公开常识，观察原文与记录皆为创作，不构成鉴定依据。页面自包含、不联网、不保存任何记录。</p>
+    </div>
+    <nav aria-label="样张互链">
+      <p class="foot-title">另一份样张</p>
+      <p><a href="evening-radio.html">晚间电台 92.4 · 虚构音乐电台节目单 →</a></p>
+    </nav>
+  </div>
+  <p class="fine">frontend-craft v0.2.0 应用样例 · 检查记录：maintenance/frontend-craft/evals/v0.2/ · 视觉验收待真实浏览器</p>
+</footer>
+
+<script>
+const REC_IDS=['rec-1','rec-2','rec-3','rec-4','rec-5','rec-6','rec-7','rec-8'];
+const RECS=REC_IDS.map(id=>document.getElementById(id));
+const expandAll=document.getElementById('expand-all');
+const collapseAll=document.getElementById('collapse-all');
+const logStatus=document.getElementById('log-status');
+expandAll.addEventListener('click',()=>{
+  RECS.forEach(d=>{d.open=true});
+  logStatus.textContent='已展开全部 '+RECS.length+' 条记录。';
+});
+collapseAll.addEventListener('click',()=>{
+  RECS.forEach(d=>{d.open=false});
+  logStatus.textContent='已收起全部 '+RECS.length+' 条记录。';
+});
+</script>
+</body>
+</html>
