@@ -12,6 +12,7 @@
 | [grad-companion-plugin](grad-companion-plugin/) | 上游远端核验报告、分析总结方向优化策略（待确认）、hosts 宿主适配层与原 README 存档 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
+| [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 dev 分支仓库根目录，由 frontend-craft v0.2.0 生成。
 
@@ -21,6 +22,7 @@
 - **grad-companion-plugin**：论文与综述分析总结方向的优化方案待确认后实施，见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
+- **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。
 
 ## 约定
 
