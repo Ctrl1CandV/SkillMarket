@@ -14,7 +14,7 @@
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
 
-页面样例 `evening-radio.html`、`field-notes.html` 位于 dev 分支仓库根目录，由 frontend-craft v0.2.0 生成。
+页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。
 
 ## 当前待办
 
