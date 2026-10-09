@@ -13,6 +13,7 @@
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
+| [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办 |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。
 
@@ -23,6 +24,7 @@
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
 - **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。
+- **presentation-craft**：原生动画的实际放映验证、真实任务风格观察及按需 Slidev 导出验证，见 [TODO](presentation-craft/TODO.md)。
 
 ## 约定
 
