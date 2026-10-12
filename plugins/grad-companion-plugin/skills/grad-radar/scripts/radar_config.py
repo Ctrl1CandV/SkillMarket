@@ -13,8 +13,10 @@ import tempfile
 from pathlib import Path
 
 TEMPLATE = {
-    "keywords": [["llm", "agent"], ["tool", "use"], ["multi-agent"]],
-    "categories": ["cs.AI", "cs.CL"],
+    # 本次查询由用户输入与会话决定，不预填或自动保存研究偏好。
+    # 旧字段保留兼容；空数组表示没有指定检索范围，不是全领域查询。
+    "keywords": [],
+    "categories": [],
     # 低负担起点（实施方案 §1.1）：重点关注 1、速览 2；数量可配置、不要求填满。
     # 旧配置的 5/15 等自定义值继续有效，不静默覆盖。
     "daily_caps": {"must_read": 1, "skim": 2},
@@ -64,8 +66,8 @@ def validate_config(data: object) -> list[str]:
         return ["配置根节点必须是 JSON 对象"]
 
     keywords = data.get("keywords")
-    if not isinstance(keywords, list) or not keywords:
-        errors.append("keywords 必须是非空嵌套数组")
+    if not isinstance(keywords, list):
+        errors.append("keywords 必须是嵌套数组（可为空，表示未指定范围）")
     else:
         for index, group in enumerate(keywords):
             if not isinstance(group, list) or not group:
@@ -76,8 +78,8 @@ def validate_config(data: object) -> list[str]:
                     errors.append(f"keywords[{index}][{word_index}] 必须是非空字符串")
 
     categories = data.get("categories")
-    if not isinstance(categories, list) or not categories:
-        errors.append("categories 必须是非空字符串数组")
+    if not isinstance(categories, list):
+        errors.append("categories 必须是字符串数组（可为空，表示未指定范围）")
     else:
         for index, category in enumerate(categories):
             if not isinstance(category, str) or not category.strip():

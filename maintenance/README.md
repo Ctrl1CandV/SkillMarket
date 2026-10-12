@@ -9,7 +9,7 @@
 | [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录） |
 | [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
 | [frontend-craft](frontend-craft/) | 布局优先方案与两轮审查报告、v0.1/v0.2 检查脚本与小样、0.1.1 完整存档、浏览器检查记录 |
-| [grad-companion-plugin](grad-companion-plugin/) | 上游远端核验报告、分析总结方向优化策略（待确认）、hosts 宿主适配层与原 README 存档 |
+| [grad-companion-plugin](grad-companion-plugin/) | 上游核验、阅读/选文/综述与场景适配审查、35 项回归与真实清单复核、其余待办及历史存档 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
@@ -21,7 +21,7 @@
 ## 当前待办
 
 - **frontend-craft**：布局优先对照实验待执行，方案见 [reports/frontend-layout-strategy.md](frontend-craft/reports/frontend-layout-strategy.md)；样例视觉验收待补。
-- **grad-companion-plugin**：论文与综述分析总结方向的优化方案待确认后实施，见 [TODO](grad-companion-plugin/TODO.md)。
+- **grad-companion-plugin**：三项阅读优化已实施，真实使用与其余旧方案待办见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
 - **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。

@@ -1,0 +1,27 @@
+{
+  "source_url": "https://arxiv.org/html/2404.13501v1",
+  "scope": "Existing human-declared outline/assets and real guide headings; not a fresh full factual or image audit",
+  "metadata_migration": "Only add source_id inferred from the existing fixed source URL in an in-memory copy",
+  "before": {
+    "coverage_ready": false,
+    "gaps": [
+      "制作清单缺少 source_id"
+    ],
+    "sections_in_outline": 53,
+    "sections_taught_checked": 51,
+    "assets_declared": 17,
+    "source_id": "arxiv:2404.13501",
+    "guide_headings_checked": true,
+    "verification_scope": "仅核目录与登记自洽；不证明清单完整、事实正确、讲解充分或本人已读"
+  },
+  "after": {
+    "coverage_ready": true,
+    "gaps": [],
+    "sections_in_outline": 53,
+    "sections_taught_checked": 51,
+    "assets_declared": 17,
+    "source_id": "arxiv:2404.13501",
+    "guide_headings_checked": true,
+    "verification_scope": "仅核目录与登记自洽；不证明清单完整、事实正确、讲解充分或本人已读"
+  }
+}
