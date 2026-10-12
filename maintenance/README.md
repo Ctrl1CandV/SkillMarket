@@ -14,6 +14,7 @@
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
 | [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办 |
+| [git-governance](git-governance/) | Git 官方来源核验、隔离仓库中的 9 项操作语义检查与场景复核记录 |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。
 
