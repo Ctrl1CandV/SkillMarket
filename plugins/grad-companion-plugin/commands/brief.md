@@ -1,7 +1,7 @@
 ---
-description: 汇总本周 git 提交、实验 run 与论文阅读记录，生成含上期承诺对账的周报（收集/AI 整理/实际读完分开）。
-argument-hint: "[周数或日期窗口，可省略]"
+description: Summarize this week's Git commits, experiment runs, and paper-reading records in a weekly report that reconciles last week's commitments and distinguishes collection, AI-organized notes, and papers actually read.
+argument-hint: "[number of weeks or date window, optional]"
 skill: weekly-brief
 ---
 
-存在上一份 brief 时先跑 brief_reconcile.py 做承诺对账：**本期时间窗明确计算传入**（默认今天及之前 6 天，不用上期标题推导），上期计划逐条按「证据覆盖承诺=完成 / 部分覆盖=部分完成 / 无证据=未找到完成证据 / 源不可读=无法核对」判定，拍板问题只有实际决定记录才算解决；再收集窗口内的 git 提交、`.grad/runs/` 新增与本期补录（updated_runs）、`.grad/radar/` 简报与 `.grad/claims.jsonl` 变化，按「上期对账 / 本周做了什么 / 结论是什么 / 下周计划 / 需要导师拍板的问题」产出周报。文献部分把「发现收集」「AI 整理笔记」「用户明确读完」分开统计，生成笔记不等于读完，每条进展对应到真实 commit、run 或阅读记录，不编造。
+If a previous brief exists, first run `brief_reconcile.py` to reconcile commitments. **Calculate and pass this reporting window explicitly** (default: today and the previous six days; do not infer it from the previous report's heading). Classify each previous plan item as completed when evidence covers the commitment, partially completed when evidence covers only part, lacking completion evidence when no evidence is found, or unverifiable when the source cannot be read. Mark a decision as resolved only when an actual decision record exists. Then collect Git commits in the window, new and updated runs in `.grad/runs/`, briefs in `.grad/radar/`, and changes to `.grad/claims.jsonl`. Write the report with sections for last week's reconciliation, this week's work, conclusions, next week's plan, and questions requiring the advisor's decision. For papers, count discovery, AI-organized notes, and papers the user explicitly says they finished reading separately. A generated note does not mean the paper was read. Tie each progress item to a real commit, run, or reading record; do not invent anything.

@@ -1,25 +1,23 @@
-# benchmark 数字可信度标注（run-provenance，活文档）
+# Benchmark Score Caveats (run-provenance, living document)
 
-> 引用 benchmark 分数时自动附带的已知缺陷提示。**机械提醒，不是质量判定**：命中只说明
-> 「这个 benchmark 有已核实的缺陷/混淆案例」，用不用、怎么表述由人决定。
+> A known-issue reminder automatically attached when benchmark scores are cited. **Mechanical reminder, not a quality judgment**: a match only means that a verified defect or confounding case exists for this benchmark. A person decides whether and how to use or describe it.
 >
-> 活文档纪律：新条目必须带一手来源（arXiv id 或官方 issue），禁止凭记忆添加；
-> 过时条目标 `superseded: true` 保留不删（上游修复了也要留痕）。
+> Living-document rule: every new entry must have a primary source (an arXiv ID or official issue); do not add entries from memory. Keep outdated entries and mark them `superseded: true` so upstream fixes remain documented.
 
-## 条目表（claim_check.py 按此做名称匹配）
+## Entries (claim_check.py matches benchmark names against this table)
 
-| benchmark 关键词 | 一手来源 | 缺陷摘要 | 引用时建议 |
+| Benchmark keyword | Primary source | Defect summary | Recommendation when citing |
 |---|---|---|---|
-| SWE-bench | arXiv:2410.06992 | solution leakage：32.67% 的成功 patch 存在问题泄露；过滤后 SWE-Agent+GPT-4 从 12.47% 掉到 3.97% | 报分数时注明用的是哪个子集/版本；主结论若依赖 SWE-bench 分数，至少在 Limitations 提泄露问题与已发布修复 |
-| TAU-bench / τ-bench | arXiv:2608.05699（同名撞车） | arXiv 检索首条是同名视频异常理解论文，与 agent 的 τ^2-bench 无关；引用检索易错 | 引用走官方 repo 或确切 arXiv id，不要裸搜标题；参考文献里核对 id 指向 |
+| SWE-bench | arXiv:2410.06992 | Solution leakage: 32.67% of successful patches contain issue leakage; after filtering, SWE-Agent+GPT-4 drops from 12.47% to 3.97% | State which subset/version the score uses. If the main conclusion depends on SWE-bench, discuss leakage and the published fix in Limitations at minimum. |
+| TAU-bench / τ-bench | arXiv:2608.05699 (title collision) | The first arXiv search result is a video anomaly-understanding paper with the same title and is unrelated to the agent τ^2-bench; citations are easy to get wrong. | Cite the official repository or exact arXiv ID rather than searching by title alone; verify that the ID points to the intended paper in the references. |
 
-## 使用方式
+## How to use it
 
-1. **claim_check.py 自动提示**：台账自检时，claim 绑定 run 的 benchmark 名与本表关键词匹配（大小写不敏感的包含匹配）→ 输出附 `benchmark_caveats` 警告。这是唯一被脚本消费的方式
-2. **写作/radar 引用时人工核对**：digest 或论文要引用某 benchmark 的公开数字时，查本表是否有该条目
+1. **Automatic reminder from claim_check.py:** During ledger validation, if a claim's run-bound benchmark name matches a keyword in this table (case-insensitive substring match), the output includes a `benchmark_caveats` warning. This is the only way the script consumes this file.
+2. **Manual check when writing or citing from radar:** When a digest or paper cites a public score for a benchmark, check whether it appears in this table.
 
-## 不收录的内容（纪律）
+## What must not be added
 
-- 未经核实的二手吐槽（推文、评论区说法）
-- 泛化的「benchmark 都有污染问题」——没有具体数字与来源的一般性怀疑不进表
-- 已 superseded 但有历史价值的条目（保留并标注，防止旧稿里的引用失据）
+- Unverified second-hand complaints from posts or comment sections.
+- General claims that “all benchmarks have contamination problems.” A vague suspicion without specific figures and sources does not belong here.
+- Historical entries that have been superseded: retain and mark them so old manuscripts do not cite unsupported claims.

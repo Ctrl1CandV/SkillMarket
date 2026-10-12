@@ -2,25 +2,25 @@
 # requires-python = ">=3.12"
 # dependencies = ["httpx"]
 # ///
-"""从 ccfddl 拉会议截稿日期（submission-gate 的倒排期数据源）。
+"""Fetch conference deadlines from ccfddl (the deadline source for submission-gate).
 
-YAML 解析仅用标准库（不引 pyyaml：行式状态机解析，缩进结构已实测稳定）；HTTP 使用 httpx。
+Parse YAML with the standard library only (no pyyaml: the line-based state machine has been verified against the source indentation); use httpx for HTTP.
 
-数据源：https://ccfddl.com/conference/allconf.yml（约 365KB，实测 200）
-缓存：.grad/cache/ccfddl/allconf.yml，TTL 7 天——每周最多拉一次，可用 --refresh 强制。
+Source: https://ccfddl.com/conference/allconf.yml (about 365 KB; verified HTTP 200).
+Cache: .grad/cache/ccfddl/allconf.yml, TTL 7 days—fetch at most once a week unless --refresh is used.
 
-网络通道：环境变量代理（httpx 自认）> Windows 系统代理（httpx 不读注册表，显式补读）> 直连；
-连接层失败换通道重试。直连 ccfddl 目前可通，但与 arXiv 同属脚本唯一的出口，统一走此逻辑。
+Network routes: environment proxy (handled by httpx) > Windows system proxy (read explicitly because httpx ignores the registry) > direct connection;
+retry another route only after a connection-layer failure. Direct access to ccfddl currently works, and ccfddl is one of this script two external endpoints, so use the same routing logic.
 
-解析只认缩进结构（实测样例）：
-  - title: ICLR            ← 顶级会议条目（列 0）
-    confs:                 ← 年份列表
-    - year: 2027           ← 年份条目（缩进 2）
+Parse only the indentation structure (verified against examples):
+  - title: ICLR            ← Top-level conference entry (column 0)
+    confs:                 ← Year list
+    - year: 2027           ← Year entry (indentation 2)
       timeline:
-      - abstract_deadline: '2026-09-18 23:59:59'   ← timeline 项（缩进 4，带破折号）
-        deadline: '2026-09-25 23:59:59'            ← timeline 字段（缩进 6）
+      - abstract_deadline: '2026-09-18 23:59:59'   ← Timeline item (indentation 4, with a dash)
+        deadline: '2026-09-25 23:59:59'            ← Timeline field (indentation 6)
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -79,7 +79,7 @@ def parse_allconf(text: str) -> list[dict]:
             cur_tl = None
             continue
         if cur_entry is None:
-            continue  # 会议级字段（sub/rank/dblp）不需要
+            continue  # Conference-level fields (sub/rank/dblp) are not needed.
         m = re.match(r"- (\w+):\s*(.*)$", line)
         if m and indent >= 4:
             cur_tl = {m.group(1): strip_q(m.group(2))}
@@ -91,14 +91,14 @@ def parse_allconf(text: str) -> list[dict]:
             if cur_tl is not None and indent >= 6:
                 cur_tl[key] = val
             else:
-                if key != "timeline":  # `timeline:` 是容器标记，不覆盖已初始化的列表
+                if key != "timeline":  # The timeline: key marks a container; do not overwrite the initialized list.
                     cur_entry[key] = val
                 cur_tl = None
     return confs
 
 
 def windows_system_proxy() -> str | None:
-    """读 Windows 注册表的系统代理（手动代理那档）；非 Windows 或未启用返回 None。"""
+    """Read the manually configured system proxy from the Windows registry; return None when unavailable or disabled."""
     try:
         import winreg
     except ImportError:
@@ -115,7 +115,7 @@ def windows_system_proxy() -> str | None:
     if not enabled:
         return None
     server = str(server or "").strip()
-    if "=" in server:  # 形如 http=127.0.0.1:7890;https=127.0.0.1:7890，按协议取
+    if "=" in server:  # For example, http=127.0.0.1:7890;https=127.0.0.1:7890; choose by scheme.
         per_protocol = {}
         for part in server.split(";"):
             name, _, value = part.partition("=")
@@ -129,10 +129,10 @@ def windows_system_proxy() -> str | None:
 
 
 def proxy_candidates() -> list[str | None]:
-    """联网通道候选，按优先级排列；None 表示直连。
+    """Return candidate network routes in priority order; None means direct connection.
 
-    环境变量代理 httpx 自己会认（trust_env），设了就不重复指定；
-    没设时补上它不读的 Windows 系统代理。直连永远垫底作回退。
+    httpx handles environment proxy variables itself (trust_env), so do not specify them again;
+    add the Windows system proxy only when no environment proxy is set. Direct connection is always the final fallback.
     """
     candidates: list[str | None] = []
     env_proxied = any(os.environ.get(v) for v in (
@@ -169,10 +169,10 @@ def fetch_yaml(cache_file: Path, refresh: bool) -> tuple[str, dict]:
                 cache_file.parent.mkdir(parents=True, exist_ok=True)
                 cache_file.write_text(resp.text, encoding="utf-8")
                 return resp.text, {"status": "miss", "age_days": 0.0, "network_error": None}
-            network_error = f"HTTP_{resp.status_code}: ccfddl 返回 {resp.status_code}"
+            network_error = f"HTTP_{resp.status_code}: ccfddl returned {resp.status_code}"
         except Exception as exc:
             network_error = f"NETWORK: {exc}"
-            if attempt < len(routes) - 1:  # 连接层失败：还有别的通道就换一条
+            if attempt < len(routes) - 1:  # On connection-layer failure, try another route if available.
                 route_index = (route_index + 1) % len(routes)
         if attempt == 0:
             time.sleep(3)
@@ -181,12 +181,12 @@ def fetch_yaml(cache_file: Path, refresh: bool) -> tuple[str, dict]:
         try:
             text = cache_file.read_text(encoding="utf-8")
         except OSError as exc:
-            die("CACHE_READ_FAILED", f"网络失败且过期缓存无法读取：{exc}", network_error=network_error)
+            die("CACHE_READ_FAILED", f"Network request failed and the expired cache could not be read: {exc}", network_error=network_error)
         return text, {
             "status": "stale", "age_days": round(cache_age_days or 0.0, 3),
             "network_error": network_error,
         }
-    die("NETWORK", f"无法连接 ccfddl，且没有可用缓存：{network_error}")
+    die("NETWORK", f"Could not connect to ccfddl, and no usable cache is available: {network_error}")
     raise AssertionError("unreachable")
 
 
@@ -227,7 +227,7 @@ def days_until(date_str: str, timezone_name: str | None = None, now: datetime | 
 
 
 def normalize_timelines(items: list[dict], timezone_name: str | None = None) -> list[dict]:
-    """保留 ccfddl 的每个 timeline；comment 是原始说明，不臆造阶段类型。"""
+    """Preserve every ccfddl timeline; comment is the source wording, so do not invent stage types."""
     normalized = []
     for index, item in enumerate(items, 1):
         abstract = item.get("abstract_deadline") or None
@@ -272,7 +272,7 @@ def normalize_entry(entry: dict) -> dict:
         "entry_deadline": entry_deadline,
         "days_until_entry_abstract": days_until(entry_abstract or "", timezone_name),
         "days_until_entry_deadline": days_until(entry_deadline or "", timezone_name),
-        # 兼容 0.1.1 调用方；完整结果以 timelines 为准。
+        # Backward compatibility for callers on 0.1.1; the complete result is in timelines.
         "abstract_deadline": first["abstract_deadline"],
         "deadline": first["deadline"],
         "days_until_deadline": first["days_until_deadline"],
@@ -289,12 +289,12 @@ def venue_matches(title: str, wanted: list[str], exact: bool) -> bool:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="ccfddl 会议截稿日期")
-    ap.add_argument("--venues", default="ICLR", help="逗号分隔的会议名（大小写不敏感，子串匹配。如 ACL 会同时命中 EACL/NAACL；要精确匹配加 --exact）")
+    ap = argparse.ArgumentParser(description="Conference deadlines from ccfddl")
+    ap.add_argument("--venues", default="ICLR", help="Comma-separated conference names (case-insensitive substring match; ACL may also match EACL/NAACL; use --exact for exact names)")
     ap.add_argument("--cache-dir", default=".grad/cache/ccfddl")
-    ap.add_argument("--refresh", action="store_true", help="忽略 TTL 强制重拉")
-    ap.add_argument("--exact", action="store_true", help="只匹配完全同名的会议")
-    ap.add_argument("--all-years", action="store_true", help="不过滤，返回全部年份条目")
+    ap.add_argument("--refresh", action="store_true", help="Ignore the TTL and fetch again")
+    ap.add_argument("--exact", action="store_true", help="Match conference names exactly")
+    ap.add_argument("--all-years", action="store_true", help="Do not filter; return entries for all years")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
@@ -302,7 +302,7 @@ def main() -> None:
     confs = parse_allconf(text)
     wanted = [v.strip().lower() for v in args.venues.split(",") if v.strip()]
     if not wanted:
-        die("BAD_ARGS", "--venues 不能为空")
+        die("BAD_ARGS", "--venues must not be empty")
 
     now_year = datetime.now().year
     out = []
@@ -319,7 +319,7 @@ def main() -> None:
             out.append({"title": conf["title"], "entries": sorted(entries, key=lambda x: -x["year"])})
 
     if not out:
-        die("NOT_FOUND", f"ccfddl 中未找到这些会议：{args.venues}。可换用子串匹配的写法或 --venues 给全名")
+        die("NOT_FOUND", f"No conferences found in ccfddl for: {args.venues}. Try substring matching or pass each full name with --venues.")
 
     data = {"fetched_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "cache": cache_info["status"], "cache_age_days": cache_info["age_days"],
@@ -332,12 +332,12 @@ def main() -> None:
         for e in v["entries"]:
             print(f"  {e['year']} | {e['timezone'] or ''} | {e['conf_date'] or ''}")
             if not e["timelines"]:
-                print("    - timeline-1：abstract — | deadline — | 倒计时未知")
+                print("    - timeline-1: abstract — | deadline — | countdown unknown")
             for tl in e["timelines"]:
                 abstract_days = tl["days_until_abstract"]
                 deadline_days = tl["days_until_deadline"]
-                abstract_s = f"{abstract_days:+d} 天" if abstract_days is not None else "未知"
-                deadline_s = f"{deadline_days:+d} 天" if deadline_days is not None else "未知"
+                abstract_s = f"{abstract_days:+d} days" if abstract_days is not None else "unknown"
+                deadline_s = f"{deadline_days:+d} days" if deadline_days is not None else "unknown"
                 print(f"    - {tl['name']}：abstract {tl['abstract_deadline'] or '—'} ({abstract_s}) | "
                       f"deadline {tl['deadline'] or '—'} ({deadline_s})")
 

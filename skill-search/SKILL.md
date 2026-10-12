@@ -1,96 +1,96 @@
 ---
 name: skill-search
-description: 为明确的技能搜索请求，或复杂项目中可由专项方法明显改善的环节寻找 agent 技能。用于“找技能”“搜索 skill”“有没有能做 X 的技能”“推荐合适的技能”等请求；先检查已有能力，再围绕任务缺口检索、核验与推荐。不因普通任务或泛泛的“搜索”就启动技能检索。
+description: Find agent skills for explicit skill-search requests or for a capability gap in a complex project where a specialized method could help. Use when the user asks to find, search for, or recommend a skill, or asks whether a skill exists for a task. First inspect existing capabilities, then search, verify, and recommend candidates that address the gap. Do not launch a skill search for ordinary tasks or vague requests to “search.”
 metadata:
   version: "0.2.0"
 ---
 
-# 技能搜索：任务判断与检索纪律
+# Skill Search: Deciding When and How to Search
 
-找到能改善当前任务的技能，并说明为什么适合。检索只是手段；已有合适能力就直接用，没有合适结果就如实说，不为交付一张推荐表硬凑候选。
+Find skills that can improve the task and explain why they fit. Search is a means, not the goal. If an existing capability is suitable, use it; if no suitable candidate is found, say so instead of padding a recommendation list.
 
-## 先判断值不值得搜
+## First decide whether a search is useful
 
-- 用户明确要求搜索、推荐或比较技能：按其范围处理。“搜索论文”“搜索开源项目”本身不是技能搜索请求；结合上下文判断用户要找的对象。
-- 偏复杂的项目：先指出哪个环节可能因专项方法而改善，例如跨工具实施、需要领域规范或多阶段核验。只有能说明预期增量时才搜；项目大、提示词长或步骤多本身不是检索理由。
-- 普通任务，宿主与已有技能已能完成：直接做，不先找技能。一次性的复杂任务也可以值得搜，是否重复不是唯一判据。
-- 已知要哪个技能：确认来源与准确标识，校验 CLI 后直接给安装命令，不再跑一轮发现检索。
+- If the user explicitly asks to search for, recommend, or compare skills, follow the requested scope. “Search for papers” or “search for open-source projects” is not itself a skill-search request; use context to determine what they want to find.
+- For a complex project, first identify a stage that a specialized method could improve, such as cross-tool implementation, a need for domain conventions, or multi-stage verification. Search only when you can describe the expected improvement. Project size, a long prompt, or many steps alone are not reasons to search.
+- If the host and existing skills can handle an ordinary task, do it directly. A one-off complex task may still benefit from a skill; repetition is not the only criterion.
+- If the user already named a skill, confirm its source and exact identifier, check the CLI, and provide the installation command without running discovery again.
 
-主动检索应服务已授权的项目，找到合适方法后回到实施；只求推荐时交付推荐，不擅自执行原任务。搜索与推荐本身不等于授权安装。
+Proactive searches should support an already authorized project. After finding a useful method, return to implementation. If the user only asks for recommendations, deliver recommendations and do not execute the underlying task. A search or recommendation is not authorization to install.
 
-检索对象是 agent 技能。技能目录用于发现候选，GitHub 等原始来源用于定位和核验其 `SKILL.md`、脚本与模板。用户同时要求寻找软件项目时，项目检索由宿主相应能力处理，技能部分仍按本方法筛选；软件仓库不能仅因名称相关就被当成技能推荐。
+Search for agent skills. Use skill directories to discover candidates and primary sources such as GitHub to locate and verify their ``SKILL.md``, scripts, and templates. If the user also asks for software projects, use the host's relevant capability for that search and evaluate the skills separately; a software repository is not a skill recommendation merely because its name is related.
 
-## 围绕能力缺口确定目标
+## Define the search target from the capability gap
 
-先写清要改善的环节、预期产出和当前缺口，再看宿主已提供哪些相关技能。已有技能覆盖时可以直接复用；只有部分覆盖时就搜缺失的部分。按实际能力判断，不把用户身份、领域标签或某个插件名称当成固定入口。
+State what stage should improve, the expected output, and the current gap. Then check which relevant skills the host already provides. Reuse existing skills when they cover the task; search only for missing capabilities when they cover part of it. Judge by actual capabilities rather than using the user's identity, a domain label, or a plugin name as a fixed entry point.
 
-用户明确要求外部搜索、替代方案或候选比较时，已有技能作为比较基线，继续完成所要求的检索。没有合适本地技能时，也不要求用户再说一次“找外部替代”才能搜索。
+When the user explicitly asks for external searches, alternatives, or a comparison, use existing skills as a baseline and complete the requested search. If no suitable local skill exists, do not make the user ask again for an external alternative.
 
-复杂项目先抓最需要专项方法的环节，避免为每个子任务都找一个技能，也不把整段需求拼成一个长查询。以下是确定目标的例子，适用领域不限于这些：
+For complex projects, focus on the stage most in need of a specialized method. Do not search for a separate skill for every subtask or combine the entire request into one long query. These examples illustrate how to set a target but are not exhaustive:
 
-| 任务 | 具体检索目标 | 判断候选是否有增量 |
+| Task | Search target | What would make a candidate useful |
 | --- | --- | --- |
-| 前端页面缺少清楚的视觉层次 | 构图、排版或视觉设计方法 | 能指导具体设计决策，而非仅列出框架命令 |
-| 跨工具工作流需要稳定实施 | 实际工具与薄弱环节，如端到端测试、持续集成 | 能补足实施步骤、失败处理或验证方法 |
-| 研究项目需要论文阅读或写作支持 | 精读、文献检索、论证写作、格式核对中的具体一项 | 阅读不等于系统性文献检索，格式核对不等于通用写作 |
+| A front-end page lacks a clear visual hierarchy | Composition, typography, or visual design methods | It guides concrete design decisions instead of listing framework commands. |
+| A cross-tool workflow needs reliable implementation | The actual tools and weak stages, such as end-to-end testing or continuous integration | It fills gaps in implementation steps, failure handling, or verification. |
+| A research project needs paper-reading or writing support | One specific need: close reading, literature search, argument writing, or format checks | Reading is not systematic literature search; format checks are not general-purpose writing. |
 
-## 检索前先校验命令
+## Check the CLI before using it
 
-实际调用 CLI 前，先运行：
+Before invoking the CLI, run:
 
 ```sh
 npx skills --help
 ```
 
-核对 `find`、`add` 及准备使用的选项。以当前帮助为准，不照抄旧版技能里的子命令；例如旧副本可能仍列出已经移除的 `check`。未展示的选项再查对应子命令帮助。给出安装命令前也要核对语法；不能运行 CLI 时明确标记“未在当前环境验证”，不声称已验证或已安装。
+Check the current syntax for ``find``, ``add``, and any options you plan to use. Follow the installed version's help instead of copying subcommands from an old skill; an older copy may still mention a removed ``check`` command. Consult subcommand help for options not shown. Verify installation syntax before providing a command. If the CLI cannot be run, say “not verified in this environment”; do not claim it was verified or installed.
 
-## 少量查询，尽早看正文
+## Use a few queries, then read candidate contents
 
-1. 把需求压成“任务 + 对象/工具”的短查询。前端设计可用 `frontend design`；工作流实施写出实际环节，如 `playwright testing`、`github actions`，不要只搜 `workflow automation`。
-2. 执行带查询词的 `npx skills find`，不进入空查询交互。例如：
+1. Condense the need into a short “task + object/tool” query. For front-end design, use ``frontend design``; for workflow implementation, name the actual stage, such as ``playwright testing`` or ``github actions``, instead of searching only for ``workflow automation``.
+2. Run ``npx skills find`` with a query rather than entering an empty-query interaction. For example:
 
    ```sh
    npx skills find "frontend design"
    ```
 
-3. 优先查看相关的官方候选。需要缩小来源且帮助确认支持时，用 `--owner`，例如 `npx skills find "frontend design" --owner anthropics`；只限定已确认的来源，不用它掩盖任务不匹配。
-4. 先做一轮查询；词面不合时换一个更准确的任务词再搜一轮。读少量最相关候选的正文后决定，找到足够支持任务或比较的候选就停。通常两轮足以判断是否值得继续；只有出现具体新线索，或用户要求更广覆盖时才追加，不反复换同义词。结果持续被无关条目占据时，报告本次没有找到，回到任务本身。
+3. Prioritize relevant official candidates. If narrowing the source helps verify support, use ``--owner``, for example ``npx skills find "frontend design" --owner anthropics``. Limit by owner only when the source is confirmed; do not use it to hide a mismatch.
+4. Start with one search. If the wording does not fit, try one more precise task term. Read a small number of the most relevant candidate files and stop once there is enough evidence to support the task or comparison. Two rounds are usually enough to decide whether more search is useful. Continue only when a specific new lead appears or the user requests broader coverage; do not keep trying synonyms. If irrelevant entries keep dominating results, report that this search found no suitable candidate and return to the task.
 
-目录排名只能提供线索。既往实测中，有头部供给的前端设计较容易命中；论文阅读、文献综述等垂类容易被词面相近的高安装量条目挤占。不要把排序当成语义匹配，也不能把“本次没找到”说成“生态里不存在”。
+Directory ranking is only a clue. Past checks found that front-end design with high supply can be easier to match, while niche topics such as paper reading and literature reviews can be crowded out by popular skills with similar wording. Do not treat ranking as semantic relevance or say that a candidate does not exist in the ecosystem just because this search did not find one.
 
-CLI 不可用或失败时，区分“检索失败”和“结果不合适”。如确需查看 skills.sh 页面，可用 `curl -A "Mozilla/5.0"` 读取具体候选页，Windows PowerShell 下用 `curl.exe`；抓取工具超时不代表目录无结果。没有成功读取就保留未核验状态，不继续堆接口或凭空补候选。
+If the CLI is unavailable or fails, distinguish a failed search from unsuitable results. If you need to inspect a skills.sh page, use ``curl -A "Mozilla/5.0"`` to read the specific candidate; in Windows PowerShell, use ``curl.exe``. A fetch timeout does not mean the directory has no results. If the candidate contents were not retrieved, keep its status unverified instead of stacking more APIs or inventing details.
 
-## 推荐前核验
+## Verify candidates before recommending them
 
-先看相关性，再看来源，最后才看热度。安装量不能替代正文判断。
+Check relevance first, then source, then popularity. Install counts do not replace reading the candidate.
 
-- **任务匹配**：读源 `SKILL.md`，确认它怎样改善当前任务、产出什么、有什么边界。只是出现 `research`、`workflow` 等词，不构成相关。
-- **来源门槛**：优先 `anthropics`、`vercel-labs` 等已确认的官方组织；确认 owner 与原始文件，目录标签和转载者名称不算官方证明。社区来源要给出正文中的具体依据，不能只靠排名。
-- **可用性**：正文引用脚本、模板或其他技能时，核对必要资源是否存在、宿主是否具备依赖。只有介绍页、读不到正文或关键资源缺失时，标为待核验，不作为已确认可用的推荐。
-- **指标口径**：拿到 installs 或 stars，先分辨是单技能、仓库总量，还是口径不明。仓库 star 只能说明仓库关注度；同仓库的路径副本不是独立人气证据。仓库级安装数不得写成该技能安装数，口径不明就不拿数字作推荐理由。
-- **低热度信号**：仅在单技能口径已确认时，把少于 100 次安装视为需要更仔细核验的信号，不据此断言质量差；高安装量也不能跳过上述检查。不要用未经确认的 1K 安装或 100 star 门槛替代判断。
+- **Task fit:** Read the source ``SKILL.md`` and confirm how it improves the task, what it produces, and its boundaries. Merely containing words such as ``research`` or ``workflow`` does not make a candidate relevant.
+- **Source threshold:** Prefer confirmed official organizations such as ``anthropics`` and ``vercel-labs``. Confirm the owner and original files; directory tags and republisher names are not proof of official status. For community sources, cite concrete support from the contents rather than relying on rank.
+- **Usability:** When the contents reference scripts, templates, or other skills, check that the required resources exist and that the host has their dependencies. Mark a candidate as unverified rather than usable when only a listing is available, contents cannot be read, or key resources are missing.
+- **Metric definitions:** If installs or stars are reported, first determine whether they refer to one skill, the whole repository, or an unknown scope. Repository stars indicate interest in the repository; path copies within one repository are not independent popularity evidence. Do not report repository-level installs as installs for an individual skill, and do not use numbers with unclear scope as a reason to recommend.
+- **Low-popularity signal:** Only when the metric is confirmed to cover one skill, treat fewer than 100 installs as a reason for closer verification, not as proof of poor quality. High install counts do not remove the need for the checks above. Do not substitute unverified thresholds such as 1K installs or 100 stars.
 
-既往核验发现，skills.sh 的 find-skills 安装量存在仓库总量摊到单技能的现象，SkillsMP 的 stars 也会在同仓库多个路径副本上重复出现。因此数字必须按本次证据说明口径，不能把过去看到的数字当成当前数据。
+Past checks found that ``skills.sh`` sometimes apportioned find-skills repository-wide installs to individual skills, and SkillsMP stars were repeated across multiple skill paths in the same repository. Therefore, explain the scope of any number using evidence from the current search date; do not present a previously observed number as current.
 
-## 真实反例：高安装量的飞书技能污染论文查询
+## Real counterexample: a popular Feishu skill pollutes a paper search
 
-曾用 `paper reading research`、`literature review` 检索，结果被 `open.feishu.cn` 来源的 `lark-doc`、`mail` 等条目占据，页面显示的安装量超过 740K。它们与文档、邮件等词面相近，却不能据此满足论文精读或文献综述需求。
+Searches for ``paper reading research`` and ``literature review`` once returned entries such as ``lark-doc`` and ``mail`` from ``open.feishu.cn``, with displayed install counts above 740K. They matched wording around documents and mail but did not meet the need for close paper reading or literature reviews.
 
-错误做法：直接推荐排名第一的条目，声称“大量用户验证了论文阅读能力”。正确做法：读正文确认不匹配，排除这些候选；已有合适的论文阅读技能时按能力复用，需要补充或比较时改用准确任务词检索。系统性文献检索不能被单篇阅读能力冒充覆盖；仍无合适结果就说明缺口，不硬推无关技能。
+Wrong: recommend the first-ranked entry and claim that “many users have verified its paper-reading ability.” Right: read the contents, confirm the mismatch, and exclude it. Reuse an existing suitable paper-reading skill when available; use a more precise query when additional skills or comparisons are needed. A single-paper reading skill does not cover systematic literature search. If no suitable candidate remains, describe the gap instead of recommending an unrelated skill.
 
-## 交付与停止
+## Deliver recommendations and stop
 
-只列足够支持选择的少量候选，每项给出：技能名和原始来源链接、适合当前任务的一句具体理由、关键限制，以及准确的安装命令。确需引用数字时附其口径与本次读取日期；没有数字也可以根据正文推荐。
+List only enough candidates to support a choice. For each, include the skill name and original source link, one concrete reason it fits the task, a key limitation, and the exact installation command. If a metric matters, state its scope and the date it was checked; numbers are not required to make a recommendation based on the contents.
 
-安装命令使用实际核验出的 owner、repo 与 skill 标识，例如 `npx skills add <owner/repo> --skill <skill-name>`，交付时替换占位符。已可用的本地技能给入口即可，不要求重复安装。只求推荐时不执行安装；用户已明确授权安装则按其范围执行，不默认添加全局或跳过确认选项。
+Build installation commands from the verified owner, repository, and skill identifier, for example ``npx skills add <owner/repo> --skill <skill-name>``, replacing placeholders in the final command. For an available local skill, give its entry point instead of asking the user to install it again. Do not install when the user only asks for recommendations. If installation is explicitly authorized, stay within the requested scope and do not default to a global installation or a confirmation-skipping option.
 
-没找到时说明尝试的查询与缺口；若原任务已获授权，就继续完成，不停在“要我帮你做吗”。只请求搜技能时，说明可以直接怎么做，不擅自扩展成实施任务。
+If no candidate fits, say which query was tried and what capability is still missing. If the underlying task was already authorized, continue with it instead of stopping to ask “Would you like me to help?” If the user only asked for a skill search, explain how the task can be done without expanding into implementation.
 
-## 发出前自查
+## Final checklist
 
-- 这是明确的技能搜索请求，还是复杂任务中能说明预期增量的检索？普通任务是否可以直接完成？
-- 是否按实际能力检查已有技能、只搜缺口，并完成用户明确要求的外部搜索或比较？
-- 命令是否按当前帮助核对，来源、技能标识和必要资源是否有依据？
-- 推荐理由是否来自正文与任务匹配，指标是否区分单技能、仓库级与未知口径？
-- 是否排除了高热度但无关的候选，并在没有合适结果时如实停止？
-- 是否只完成用户授权的推荐、任务或安装，没有为了搜索而增加无关工作？
+- Is this an explicit skill-search request, or a complex task with a describable expected benefit from a specialized method? Can an ordinary task be completed directly?
+- Did you check existing capabilities, search only for gaps, and complete any external search or comparison the user explicitly requested?
+- Was the command checked against current help? Are the source, skill identifier, and required resources supported by evidence?
+- Do recommendations match the task based on their contents? Are individual-skill metrics, repository-level metrics, and unknown scopes kept distinct?
+- Were popular but irrelevant candidates excluded? If no suitable result was found, did you stop and say so?
+- Did you do only the authorized recommendation, task, or installation, without adding unrelated work just to search?

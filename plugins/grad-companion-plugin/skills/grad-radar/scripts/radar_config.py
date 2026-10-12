@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""初始化并校验 grad-radar 配置。只管理 radar 字段，不覆盖其他 skill 的配置。"""
+"""Initialize and validate grad-radar configuration. Manage only radar fields; preserve settings for other skills."""
 
 from __future__ import annotations
 
@@ -13,12 +13,12 @@ import tempfile
 from pathlib import Path
 
 TEMPLATE = {
-    # 本次查询由用户输入与会话决定，不预填或自动保存研究偏好。
-    # 旧字段保留兼容；空数组表示没有指定检索范围，不是全领域查询。
+# The query is determined by user input and the current session; do not prefill or save research preferences.
+# Keep legacy fields for compatibility. An empty array means no search scope was specified, not a search across all fields.
     "keywords": [],
     "categories": [],
-    # 低负担起点（实施方案 §1.1）：重点关注 1、速览 2；数量可配置、不要求填满。
-    # 旧配置的 5/15 等自定义值继续有效，不静默覆盖。
+# Low-effort starting point (implementation plan §1.1): prioritize 1 (focus) and 2 (overview);
+# counts are configurable and need not be filled. Preserve custom values such as 5/15 from older configs.
     "daily_caps": {"must_read": 1, "skim": 2},
     "days": 3,
     "reading_profile": {
@@ -40,71 +40,71 @@ def result(ok: bool, **payload) -> dict:
 
 
 def validate_reading_profile(profile: object) -> list[str]:
-    """reading_profile 宽容校验（R14：新增字段按缺省处理，旧配置缺它不报错）。"""
+    """Validate reading_profile permissively (R14: treat new fields as optional for older configs)."""
     errors: list[str] = []
     if profile is None:
         return errors
     if not isinstance(profile, dict):
-        return ["reading_profile 必须是对象"]
+        return ["reading_profile must be an object"]
     for field in ("direction", "learning_goal"):
         value = profile.get(field)
         if value is not None and (not isinstance(value, str) or not value.strip()):
-            errors.append(f"reading_profile.{field} 必须是非空字符串或 null")
+            errors.append(f"reading_profile.{field} must be a non-empty string or null")
     known = profile.get("known_background")
     if known is not None:
         if not isinstance(known, list) or any(not isinstance(x, str) or not x.strip() for x in known):
-            errors.append("reading_profile.known_background 必须是非空字符串数组")
+            errors.append("reading_profile.known_background must be an array of non-empty strings")
     minutes = profile.get("available_minutes")
     if minutes is not None and (isinstance(minutes, bool) or not isinstance(minutes, int) or minutes < 1):
-        errors.append("reading_profile.available_minutes 必须是 >=1 的整数或 null（未设置不填假值）")
+        errors.append("reading_profile.available_minutes must be an integer >= 1 or null (leave unset; do not invent a value)")
     return errors
 
 
 def validate_config(data: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(data, dict):
-        return ["配置根节点必须是 JSON 对象"]
+        return ["The configuration root must be a JSON object"]
 
     keywords = data.get("keywords")
     if not isinstance(keywords, list):
-        errors.append("keywords 必须是嵌套数组（可为空，表示未指定范围）")
+        errors.append("keywords must be a nested array (it may be empty to indicate no specified scope)")
     else:
         for index, group in enumerate(keywords):
             if not isinstance(group, list) or not group:
-                errors.append(f"keywords[{index}] 必须是非空数组")
+                errors.append(f"keywords[{index}] must be a non-empty array")
                 continue
             for word_index, word in enumerate(group):
                 if not isinstance(word, str) or not word.strip():
-                    errors.append(f"keywords[{index}][{word_index}] 必须是非空字符串")
+                    errors.append(f"keywords[{index}][{word_index}] must be a non-empty string")
 
     categories = data.get("categories")
     if not isinstance(categories, list):
-        errors.append("categories 必须是字符串数组（可为空，表示未指定范围）")
+        errors.append("categories must be an array of strings (it may be empty to indicate no specified scope)")
     else:
         for index, category in enumerate(categories):
             if not isinstance(category, str) or not category.strip():
-                errors.append(f"categories[{index}] 必须是非空字符串")
+                errors.append(f"categories[{index}] must be a non-empty string")
 
     caps = data.get("daily_caps")
     if not isinstance(caps, dict):
-        errors.append("daily_caps 必须是对象")
+        errors.append("daily_caps must be an object")
     else:
         for name in ("must_read", "skim"):
             value = caps.get(name)
-            # 0 = 本次不安排该类（允许零输出）；拒绝 bool、负数和非整数。旧自定义值继续有效。
+            # 0 means this category is not scheduled (zero output is allowed); reject bools, negatives, and non-integers.
             if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 1000:
-                errors.append(f"daily_caps.{name} 必须是 0..1000 的整数（0 表示该类不安排）")
+                errors.append(f"daily_caps.{name} must be an integer from 0 to 1000 (0 means this category is not scheduled)")
 
     days = data.get("days")
     if days is not None and (isinstance(days, bool) or not isinstance(days, int) or days < 1):
-        errors.append("days 必须是 >=1 的整数（arXiv 索引滞后，窗口不宜小于 1）")
+        errors.append("days must be an integer >= 1 (arXiv indexing can lag; use a window of at least 1 day)")
 
     errors.extend(validate_reading_profile(data.get("reading_profile")))
     return errors
 
 
 def _atomic_write_json(path: Path, data: dict) -> None:
-    """同目录临时文件 + 原子替换；与 init 相同的落盘纪律。"""
+    """Write via a same-directory temporary file and atomic replacement, following the same rule as init."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
     temp_path = Path(raw_temp)
@@ -124,7 +124,7 @@ def init_config(path: Path) -> dict:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
     except OSError as exc:
-        return result(False, error="WRITE_FAILED", detail=f"配置目录创建失败：{exc}")
+        return result(False, error="WRITE_FAILED", detail=f"Could not create configuration directory: {exc}")
     try:
         fd, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
         temp_path = Path(raw_temp)
@@ -136,9 +136,9 @@ def init_config(path: Path) -> dict:
         try:
             os.link(temp_path, path)
         except FileExistsError:
-            return result(False, error="CONFLICT", detail=f"配置已存在，不会覆盖：{path}")
+            return result(False, error="CONFLICT", detail=f"Configuration already exists and will not be overwritten: {path}")
     except OSError as exc:
-        return result(False, error="WRITE_FAILED", detail=f"配置创建失败：{exc}")
+        return result(False, error="WRITE_FAILED", detail=f"Could not create configuration: {exc}")
     finally:
         if temp_path is not None:
             temp_path.unlink(missing_ok=True)
@@ -147,21 +147,21 @@ def init_config(path: Path) -> dict:
 
 def load_and_validate(path: Path) -> dict:
     if not path.is_file():
-        return result(False, error="NOT_FOUND", detail=f"配置不存在：{path}；先运行 init")
+        return result(False, error="NOT_FOUND", detail=f"Configuration not found: {path}; run init first")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        return result(False, error="BAD_CONFIG", detail=f"配置无法解析：{exc}")
+        return result(False, error="BAD_CONFIG", detail=f"Could not parse configuration: {exc}")
     errors = validate_config(data)
     if errors:
-        return result(False, error="INVALID_CONFIG", detail="radar 配置校验失败", errors=errors)
+        return result(False, error="INVALID_CONFIG", detail="Radar configuration validation failed", errors=errors)
     profile = data.get("reading_profile")
     return result(True, data={"config": str(path), "valid": True, "radar": {
         "keywords": data["keywords"],
         "categories": data["categories"],
         "daily_caps": data["daily_caps"],
         "days": data.get("days"),
-        # 旧配置缺 reading_profile 时按全空默认返回（未设置≠猜值）
+        # For legacy configs without reading_profile, use an empty default (unset does not mean guess).
         "reading_profile": {key: (profile or {}).get(key,
                               [] if key == "known_background" else None)
                             for key in PROFILE_KEYS},
@@ -169,55 +169,55 @@ def load_and_validate(path: Path) -> dict:
 
 
 def update_profile(path: Path, fields: dict) -> dict:
-    """按字段更新 reading_profile（用户明确要求记住背景配置时才持久化）。
+    """Update reading_profile fields only when the user explicitly asks to save profile settings.
 
-    只动 reading_profile 内被点名的键；未知字段与 venues_watch/thesis_rules 等其他
-    skill 的配置原样保留（R14）。known_background 支持 append/remove 语义由调用方
-    传入最终列表——本函数只整体替换被点的键。
+    Modify only named keys within reading_profile. Preserve unknown fields and settings such as
+    venues_watch/thesis_rules for other skills unchanged (R14). The caller supplies the final list
+    for known_background append/remove operations; this function replaces only the selected keys.
     """
     if not path.is_file():
-        return result(False, error="NOT_FOUND", detail=f"配置不存在：{path}；先运行 init")
+        return result(False, error="NOT_FOUND", detail=f"Configuration not found: {path}; run init first")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        return result(False, error="BAD_CONFIG", detail=f"配置无法解析：{exc}")
+        return result(False, error="BAD_CONFIG", detail=f"Could not parse configuration: {exc}")
     if not isinstance(data, dict):
-        return result(False, error="BAD_CONFIG", detail="配置根节点必须是 JSON 对象")
+        return result(False, error="BAD_CONFIG", detail="The configuration root must be a JSON object")
     profile = data.get("reading_profile")
     if profile is not None and not isinstance(profile, dict):
-        return result(False, error="BAD_CONFIG", detail="reading_profile 已是非对象字段，拒绝覆盖")
+        return result(False, error="BAD_CONFIG", detail="reading_profile is not an object; refusing to overwrite it")
     profile = dict(profile or {})
     for key, value in fields.items():
         if key not in PROFILE_KEYS:
             return result(False, error="BAD_ARGS",
-                          detail=f"未知 profile 字段 {key!r}；可更新：{'、'.join(PROFILE_KEYS)}")
+                          detail=f"Unknown profile field {key!r}; update a supported field instead")
         profile[key] = value
     data["reading_profile"] = profile
     errors = validate_config(data)
     if errors:
-        return result(False, error="INVALID_CONFIG", detail="更新后校验失败，未写入", errors=errors)
+        return result(False, error="INVALID_CONFIG", detail="Validation failed after update; nothing was written", errors=errors)
     try:
         _atomic_write_json(path, data)
     except OSError as exc:
-        return result(False, error="WRITE_FAILED", detail=f"配置写入失败：{exc}")
+        return result(False, error="WRITE_FAILED", detail=f"Could not write configuration: {exc}")
     return result(True, data={"config": str(path), "reading_profile": profile,
                               "preserved_fields": [k for k in data if k != "reading_profile"]})
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="初始化、校验或更新 grad-radar 配置")
+    parser = argparse.ArgumentParser(description="Initialize, validate, or update grad-radar configuration")
     sub = parser.add_subparsers(dest="action", required=True)
     for action in ("init", "validate"):
         command = sub.add_parser(action)
         command.add_argument("--config", default=".grad/config.json")
         command.add_argument("--json", action="store_true")
-    ap_profile = sub.add_parser("profile", help="按字段更新 reading_profile（用户明确要求记住时才持久化）")
+    ap_profile = sub.add_parser("profile", help="Update reading_profile fields (persist only when explicitly requested)")
     ap_profile.add_argument("--config", default=".grad/config.json")
-    ap_profile.add_argument("--direction", default=None, help="研究方向；传空串置 null")
-    ap_profile.add_argument("--learning-goal", default=None, help="近期学习目标")
+    ap_profile.add_argument("--direction", default=None, help="Research direction; an empty string sets null")
+    ap_profile.add_argument("--learning-goal", default=None, help="Current learning goal")
     ap_profile.add_argument("--known-background", default=None,
-                            help="已掌握基础，逗号分隔；整体替换现有列表")
-    ap_profile.add_argument("--available-minutes", default=None, help="可支配阅读时间（分钟/次）")
+                            help="Known background, comma-separated; replaces the existing list")
+    ap_profile.add_argument("--available-minutes", default=None, help="Available reading time in minutes per session")
     ap_profile.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
@@ -238,19 +238,19 @@ def main() -> None:
             try:
                 fields["available_minutes"] = int(text) if text else None
             except ValueError:
-                fields["available_minutes"] = text  # 非法值交给 validate 如实报错
+                fields["available_minutes"] = text  # Let validate report invalid values accurately.
         if fields:
             output = update_profile(Path(args.config), fields)
         else:
             output = result(False, error="BAD_ARGS",
-                            detail="profile 至少要给出一个字段（--direction/--learning-goal/--known-background/--available-minutes）")
+                            detail="profile requires at least one field (--direction/--learning-goal/--known-background/--available-minutes)")
     if args.json:
         print(json.dumps(output, ensure_ascii=False))
     elif output["ok"]:
         if args.action == "profile":
-            print(f"reading_profile 已更新：{output['data']['reading_profile']}")
+            print(f"reading_profile updated: {output['data']['reading_profile']}")
         else:
-            print(f"配置{'已创建' if args.action == 'init' else '有效'}：{args.config}")
+            print(f"Configuration {'created' if args.action == 'init' else 'valid'}: {args.config}")
     else:
         print(f"{output['error']}: {output['detail']}", file=sys.stderr)
         for error in output.get("errors", []):

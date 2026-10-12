@@ -1,93 +1,93 @@
-# 常见问题与跨场景例子
+# Common Problems and Cross-Context Examples
 
-以下是为说明改法构造的例子，不是实际产品能力或研究结果。先看语境与已知信息，不把例句当替换词典。
+The examples below are invented to illustrate revision methods; they do not describe actual product capabilities or research results. First consider context and known information. Do not treat examples as a dictionary of substitutions.
 
-## 空泛评价：改为具体内容
+## Vague praise: replace it with specifics
 
-**产品页**
+**Product page**
 
-已知：工具可以给图片加标签，按标签查找。
+Known: The tool can tag images and find them by tag.
 
-- 原句：“以智能化能力赋能高效管理，打造全新图片管理体验。”
-- 改写：“给图片加上标签，查找时按标签筛选。”
-- 改法：写已有功能和用户动作，而不是换一组宣传形容词。没有速度数据就不加“快十倍”。
+- Original: “Empower efficient management with intelligent capabilities and create a whole new image-management experience.”
+- Revision: “Add tags to images, then filter by tag to find them.”
+- Method: State an existing function and user action instead of swapping in promotional adjectives. Do not add “10× faster” without speed data.
 
-**保留的情况**：“闭环控制”是专业概念时保留；“打造”出现在用户指定的品牌口号里，不因命中词表就删除。
+**Keep when appropriate:** Keep “closed-loop control” when it is a technical term. Keep “build” when it appears in a brand slogan the user specified; do not delete a word just because it appears on a list.
 
-## 绕口：让动作直接出现
+## Awkward phrasing: state the action directly
 
-**工作邮件**
+**Work email**
 
-- 原句：“为实现后续工作的有序推进，请完成对附件内容的确认反馈。”
-- 改写：“请确认附件内容，并回复确认结果。”
-- 改法：把名词化的“确认反馈”“有序推进”换成动作。不擅自加截止日期或默认对方已同意。
+- Original: “To ensure the orderly advancement of subsequent work, please complete confirmation feedback on the attachment.”
+- Revision: “Please review the attachment and reply with your confirmation.”
+- Method: Replace nominalizations such as “confirmation feedback” and “orderly advancement” with actions. Do not add a deadline or assume the recipient has agreed.
 
-**保留的情况**：正式通知可以用“请于……前提交”，不必改成聊天语气。
+**Keep when appropriate:** A formal notice may say “Please submit by…”; it does not need to sound like chat.
 
-## 结构整齐却没有新信息：合并复述
+## Neat structure with no new information: merge repetition
 
-**更新说明**
+**Release note**
 
-已知：本次只新增批量导出。
+Known: This release adds bulk export only.
 
-- 原句：“效率提升：支持批量导出。体验优化：批量操作更加便利。总而言之，本次更新实现了效率与体验的双提升。”
-- 改写：“现在可以一次导出多个文件。”
-- 改法：这里三处只说一项变化，保留一处即可。如果还有格式限制或操作步骤，应继续说明，不能一起删掉。
+- Original: “Efficiency: bulk export is supported. Improved experience: batch operations are more convenient. In short, this release improves both efficiency and experience.”
+- Revision: “You can now export multiple files at once.”
+- Method: All three statements describe one change; keep one. If there are format limits or steps, explain them rather than deleting them too.
 
-**保留的情况**：三项独立功能适合列成三项；长报告的小结能帮助决策时也值得保留。
+**Keep when appropriate:** Three independent features belong in three bullets. A long report summary may also help a decision and should remain.
 
-## 关系断裂：补解释，不只减字
+## Broken relationships: explain instead of only shortening
 
-**技术说明**
+**Technical note**
 
-已知：缓存保存近期结果；同一请求再次到来时可复用结果，但有过期风险。
+Known: The cache stores recent results, allowing reuse on the same request, but results may expire.
 
-- 原句：“缓存加速｜结果复用｜过期风险。”
-- 改写：“缓存会保存近期的结果。同一请求再次到来时，可以复用结果，减少重复计算；不过，缓存里的结果可能已经过期。”
-- 改法：交代条件、作用和限制。原来的短标签可以做图中标注，但不足以替代解释正文。
+- Original: “Cache acceleration | result reuse | expiration risk.”
+- Revision: “The cache stores recent results. When the same request arrives again, the result can be reused to avoid duplicate computation, but it may already be stale.”
+- Method: Explain conditions, effect, and limitation. The short labels may work on a diagram, but they do not replace an explanatory paragraph.
 
-**保留的情况**：术语本来就准确时不另起外号。比喻能帮助理解且对应清楚时可以用，不必一律删除。
+**Keep when appropriate:** Do not invent a nickname for a precise term. A metaphor may help when its mapping is clear; metaphors need not always be removed.
 
-## 生造对比：说实际差别
+## Invented contrast: describe the real difference
 
-**文章**
+**Article**
 
-- 原句：“这不仅是一本记录，更是一场跨越时间的对话。”
-- 若材料只表明按月份整理维修记录，可写：“这本记录按月份整理了维修情况，方便回查。”
-- 改法：回到实际内容，不用没有依据的意义升华代替说明。
+- Original: “This is not merely a record; it is a conversation across time.”
+- If the material only says repair records are organized by month, write: “The records are organized by month, making repairs easier to look up.”
+- Method: Return to actual content. Do not use unsupported claims about significance in place of an explanation.
 
-**保留的情况**：“这不是备份，而是同步；删除可能同步到另一台设备。”有真实纠错作用，应保留。文学表达也不必按说明文标准改平。
+**Keep when appropriate:** “This is not a backup but a sync; deletion may propagate to another device” corrects a real misconception and should remain. Literary language need not be flattened to the standard of an instruction manual.
 
-## 语气与使用时刻不合：说状态和下一步
+## Tone mismatched to the moment: state status and next step
 
-**界面提示**
+**Interface message**
 
-已知：文件超过20 MB；用户可以压缩后重新上传。
+Known: The file exceeds 20 MB; the user can compress it and upload again.
 
-- 原句：“很遗憾，您的探索之旅遭遇了小小挑战，让我们共同突破上传边界！”
-- 改写：“文件超过20 MB。请压缩后重新上传。”
-- 改法：错误提示帮助用户继续操作，不需要制造情绪，也不承诺系统会自动恢复。
+- Original: “We regret that your journey of exploration has hit a small challenge. Let us break through the upload boundary together!”
+- Revision: “The file exceeds 20 MB. Compress it and try uploading again.”
+- Method: An error message helps the user proceed. It does not need to manufacture emotion or promise automatic recovery.
 
-**保留的情况**：邀请函可以热情，慰问信可以温柔；自然不等于全部冷淡中性。
+**Keep when appropriate:** Invitations can be warm and condolences gentle. Natural writing does not mean uniformly cold neutrality.
 
-## 限定词：保留不同的含义
+## Qualifiers: preserve changes in meaning
 
-**研究简报**
+**Research brief**
 
-- 原句：“初测可能降低内存占用，尚未覆盖大文件。”
-- 可以保留；如需调顺，可写：“初测显示内存占用可能降低，大文件还没测。”
-- 不可改成：“显著降低内存占用。”
-- 改法：概率、范围与证据不是赘词。只有同一层面的反复限定才合并；不能靠删条件让判断更干脆。
+- Original: “Early tests may reduce memory use; large files have not been covered.”
+- This is acceptable. If smoothing is needed: “Early tests suggest memory use may be lower; large files have not been tested.”
+- Do not change it to: “Significantly reduces memory use.”
+- Method: Probability, scope, and evidence are not filler. Merge only repeated qualifiers at the same level; do not remove conditions just to make a judgment sound decisive.
 
-## 制作话语：移出成品正文
+## Production notes: remove them from finished copy
 
-**活动页面**
+**Event page**
 
-- 原句：“这里采用卡片布局，新增报名模块，文案已经优化。”
-- 改法：这段没有提供活动信息。页面应写已有的活动时间、报名条件和入口；制作说明留在交付说明里。材料没给出的内容不能现编。
+- Original: “This uses a card layout, adds a registration module, and has optimized copy.”
+- Method: This does not tell visitors about the event. The page should state the known event time, registration requirements, and entry point; leave production details for the delivery note. Do not invent missing event details.
 
-**保留的情况**：更新日志、迁移指南和审校说明本来就需要说明改动。
+**Keep when appropriate:** Release notes, migration guides, and editorial notes need to describe changes.
 
-## 这些线索不等于禁令
+## These cues are not prohibitions
 
-“首先、其次”可能说明真实顺序，“不是……而是……”可能纠正误解，“可能、仅在”可能是结论成立的条件。英文中的 `seamless` 等词也要看实际含义，不能见词就删。标点、加粗、列表、短句与长句按阅读需要使用；问题是它们在这里有没有用，不是是否像某类文本。
+“First, next” may express a real sequence; “not X but Y” may correct a misunderstanding; “may” and “only when” may define conditions. English words such as seamless also depend on context; do not delete a word just because it appears on a list. Use punctuation, bold, lists, short sentences, and long sentences according to the reading task. The question is whether a device helps here, not whether it resembles a category of text.

@@ -1,18 +1,18 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""judge 一致性验证（run-provenance）。纯算术：输入两组评分，输出一致率、Cohen's κ、混淆矩阵。
+"""Check agreement between judges (run-provenance). Pure arithmetic: accept two sets of scores and report agreement rate, Cohen kappa, and a confusion matrix.
 
-回答的是 ARR 方法缺陷首条「未经验证的 LLM-as-judge」：把 judge 与人工（或 judge 与 judge）
-的评分一致性变成可报告的证据。**κ 多高算「够好」不在代码里判定**——阈值是方法论判断，
-协议与学界锚点见 references/judge-protocol.md，结论由人下。
+This addresses the first ARR method weakness, "unvalidated LLM-as-judge": turn agreement between a judge and a human (or two judges)
+into reportable evidence. The code does not decide what kappa value is good enough; that threshold is a methodological judgment.
+See references/judge-protocol.md for the protocol and research anchors; a person interprets the result.
 
-匹配规则：按 id-key 取两边都出现的样本求交集配对；被排除的样本只计数不插值（不猜）。
-一致性判定为等值精确匹配，不做数值容差（要容差请在 protocol 文档里声明并由人复核）。
+Matching rule: pair the intersection of samples present on both sides by id-key. Count excluded samples without imputing or guessing.
+Agreement requires exact equality; no numeric tolerance is applied (if tolerance is needed, declare it in the protocol and review it).
 
-退出码语义：κ 不可计算不是失败——ok: true 且 kappa=null + degenerate_reason（发现即数据）。
+Exit-code semantics: an undefined kappa is not a failure; return ok: true with kappa=null and degenerate_reason, since the degeneracy is itself data.
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -33,22 +33,22 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 def load_scores(path_text: str) -> dict:
-    """接受 JSON 数组 [{...}] 或单键包装 {label: [...]}; 返回 (id -> value) 映射与读取信息。"""
+    """Accept a JSON array [{...}] or a single-key wrapper {label: [...]}; return an (id -> value) mapping and input diagnostics."""
     path = Path(path_text)
     if not path.is_file():
-        die("NO_FILE", f"评分文件不存在：{path}")
+        die("NO_FILE", f"Score file not found: {path}")
     try:
         loaded = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        die("BAD_SCORES", f"{path} 解析失败：{exc}")
+        die("BAD_SCORES", f"Could not parse {path}: {exc}")
     if isinstance(loaded, dict):
         arrays = [v for v in loaded.values() if isinstance(v, list)]
         if len(arrays) == 1:
             loaded = arrays[0]
         else:
-            die("BAD_SCORES", f"{path} 是 JSON 对象但不含唯一的数组字段；请直接给数组")
+            die("BAD_SCORES", f"{path} is an object without exactly one array field; pass the array directly")
     if not isinstance(loaded, list):
-        die("BAD_SCORES", f"{path} 必须是评分对象数组")
+        die("BAD_SCORES", f"{path} must be an array of score objects")
     return {"items": loaded}
 
 
@@ -58,45 +58,45 @@ def extract_pairs(items: list, side: str, id_key: str, value_key: str,
     problems: list[str] = []
     for no, item in enumerate(items, 1):
         if not isinstance(item, dict):
-            problems.append(f"{source.name}[{no}]: 不是对象")
+            problems.append(f"{source.name}[{no}]: must be an object")
             continue
         if id_key not in item or value_key not in item:
-            problems.append(f"{source.name}[{no}]: 缺 {id_key!r} 或 {value_key!r}")
+            problems.append(f"{source.name}[{no}]: missing {id_key!r} or {value_key!r}")
             continue
         rid, value = item[id_key], item[value_key]
         key = str(rid)
         if key in scores:
-            problems.append(f"{source.name}[{no}]: id {key!r} 重复，保留首个、丢弃后续")
+            problems.append(f"{source.name}[{no}]: duplicate id {key!r}; keeping the first and dropping later rows")
             continue
         scores[key] = value
     return scores, problems
 
 
 def cohens_kappa(pairs: list[tuple]) -> tuple[float | None, str | None]:
-    """Cohen's κ = (po - pe) / (1 - pe)。退化时返回 (None, 原因)。"""
+    """Cohen kappa = (po - pe) / (1 - pe). Return (None, reason) when the metric is degenerate."""
     n = len(pairs)
     if n == 0:
-        return None, "无配对样本"
+        return None, "no paired samples"
     labels = sorted({a for a, _ in pairs} | {b for _, b in pairs})
     obs_a = Counter(a for a, _ in pairs)
     obs_b = Counter(b for _, b in pairs)
     if any(obs_a[label] == n or obs_b[label] == n for label in labels):
-        # 单边或双边边际完全退化时 pe=1、分母为 0
-        return None, "边际分布完全退化（全部同分），κ 无定义"
+        # When either or both marginal distributions are constant, pe=1 and the denominator is zero.
+        return None, "both marginal distributions are degenerate (all ratings are identical); kappa is undefined"
     po = sum(a == b for a, b in pairs) / n
     pe = sum((obs_a[label] / n) * (obs_b[label] / n) for label in labels)
     denom = 1.0 - pe
     if abs(denom) < 1e-12:
-        return None, "期望一致率 pe≈1，κ 分母为零"
+        return None, "expected agreement pe≈1, so the kappa denominator is zero"
     return (po - pe) / denom, None
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="judge 一致性验证（只算数，不下「够不够好」的结论）")
-    ap.add_argument("--a", required=True, help="评分组 A 的 JSON 数组文件（如人工标注）")
-    ap.add_argument("--b", required=True, help="评分组 B 的 JSON 数组文件（如 LLM-as-judge）")
-    ap.add_argument("--id-key", default="id", help="样本标识字段名（默认 id）")
-    ap.add_argument("--value-key", default="value", help="分值字段名（默认 value）")
+    ap = argparse.ArgumentParser(description="Check judge agreement (compute metrics only; do not decide whether they are good enough)")
+    ap.add_argument("--a", required=True, help="JSON array file for rating set A (for example, human annotations)")
+    ap.add_argument("--b", required=True, help="JSON array file for rating set B (for example, LLM-as-judge)")
+    ap.add_argument("--id-key", default="id", help="Sample identifier field (default: id)")
+    ap.add_argument("--value-key", default="value", help="Rating field (default: value)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
@@ -137,26 +137,26 @@ def main() -> None:
         "confusion_matrix": confusion,
         "marginals": {"a": dict(marginals_a), "b": dict(marginals_b)},
         "parse_problems": {"a": a_problems, "b": b_problems},
-        "note": "κ 多高算「够好」由人下结论，锚点见 references/judge-protocol.md",
+        "note": "A person decides what kappa value is good enough; see references/judge-protocol.md",
     }
     if args.json:
         print(json.dumps({"ok": True, "data": data}, ensure_ascii=False))
         return
     s = data
-    head = (f"配对 {s['n_paired']}（A 独有 {s['n_excluded_a']}，B 独有 {s['n_excluded_b']}，"
-            f"类型不符排除 {s['n_type_mismatch_excluded']}）")
+    head = "Paired {} (A only {}, B only {}, mismatched types excluded {})".format(s["n_paired"], s["n_excluded_a"], s["n_excluded_b"], s["n_type_mismatch_excluded"])
+
     if s["cohens_kappa"] is not None:
-        print(f"# κ={s['cohens_kappa']} | 一致率 {s['agreement_rate']:.2%} | {head}")
+        print("# kappa={} | agreement rate {:.2%} | {}".format(s["cohens_kappa"], s["agreement_rate"], head))
     else:
-        print(f"# κ 未定义（{s['degenerate_reason']}）| 一致率 "
-              f"{f'{s["agreement_rate"]:.2%}' if s['agreement_rate'] is not None else 'N/A'} | {head}")
+        print("# kappa undefined ({}) | agreement rate {:.2%} | {}".format(s["degenerate_reason"], s["agreement_rate"], head))
+
     for row, cols in confusion.items():
         for col, count in cols.items():
             print(f"  {row} → {col}: {count}")
 
 
 def _compatible(a, b) -> bool:
-    """同一可比类型才参与统计：字符串×字符串 或 数值×数值（bool 不算数值）。"""
+    """Only compare values of the same kind: string × string or number × number (bool is not numeric)."""
     def is_num(v):
         return isinstance(v, (int, float)) and not isinstance(v, bool)
     return (isinstance(a, str) and isinstance(b, str)) or (is_num(a) and is_num(b))

@@ -1,39 +1,39 @@
 ---
 name: git-governance
-description: 为不同项目制定或执行 Git 管理规范，处理分支选择、文件入库与本地保留、忽略规则、提交、同步、PR、发布和安全清理。用于初始化仓库、整理版本管理、准备提交或推送，以及解决 Git 协作问题；按项目现状选择工作流，不把 Gitflow 或 Conventional Commits 强加给所有项目。
+description: Establish or follow Git practices for different projects, including branch choices, tracked and local-only files, ignore rules, commits, synchronization, pull requests, releases, and safe cleanup. Use when initializing a repository, organizing version control, preparing a commit or push, or resolving Git collaboration issues. Choose a workflow that fits the project; do not impose Gitflow or Conventional Commits on every project.
 metadata:
   version: "1.0.1"
 ---
 
-# Git 项目管理
+# Git Project Governance
 
-让项目的版本记录可解释、可复现、可协作，同时保留用户已有工作。本技能适用于能读文件或调用 Git 的 AI，不依赖特定模型、托管平台、MCP 或插件。没有执行工具时给出准确的操作方案，并说明未执行的部分。
+Make the project's history understandable, reproducible, and collaborative while preserving the user's existing work. This skill is for AI systems that can read files or use Git. It does not depend on a particular model, hosting platform, MCP, or plugin. If execution tools are unavailable, provide precise steps and state what was not done.
 
-## 先分清机制与约定
+## Distinguish Git mechanics from conventions
 
-- Git 的提交是本地快照，push 更新远端引用并传输所需对象；不能把 push 理解成只上传本次挑选的文件。某文件即使已从最新提交删除，也可能在将被推送的历史中。
-- 分支是提交的引用，用于隔离工作和维护版本。分支名称不决定文件权限；本地分支也不等于隐私隔离。
-- 提交格式、分支名称、合并方式和发布门槛属于项目约定。用户当前指令优先，随后遵循仓库的贡献指南、自动检查和既有实践；建议与 Git 的技术限制要分开说。
-- 已有流程能解决问题就沿用。选择新增规则时说明它解决什么问题，不因项目大、AI 多或目录多就自动增加长期分支。
+- A Git commit is a local snapshot. Push updates remote references and transfers the objects they need; it does not mean “upload only the files selected this time.” A file deleted from the latest commit may still appear in history that will be pushed.
+- A branch is a reference to a commit, used to isolate work or maintain versions. Branch names do not define file permissions, and a local branch is not a privacy boundary.
+- Commit formats, branch names, merge strategies, and release gates are project conventions. Follow the user's current instruction first, then repository contribution guides, automated checks, and established practice. State recommendations separately from Git's technical constraints.
+- Reuse an existing process when it solves the problem. When adding a rule, explain what problem it addresses. Do not add permanent branches automatically just because the project is large, uses many AI agents, or has many directories.
 
-机制依据：[Git push](https://git-scm.com/docs/git-push)、[Gitflow 原文及作者反思](https://nvie.com/posts/a-successful-git-branching-model/)。各参考页在 2026-10-12 核验；遇到版本或平台差异再查当前官方文档。
+Mechanics references: [Git push](https://git-scm.com/docs/git-push) and [the original Gitflow article and the author's later reflection](https://nvie.com/posts/a-successful-git-branching-model/). These references were checked on 2026-10-12; consult current official documentation when versions or platforms differ.
 
-## 按任务读取
+## Read according to the task
 
-| 当前任务 | 读取内容 |
+| Current task | Read |
 |---|---|
-| 新仓库、分支过多、发布流程、不同分支保留不同目录 | [项目与分支决策](references/project-policy.md) |
-| 决定哪些文件入库、只留本地、大文件、忽略规则、跨平台差异 | [文件管理](references/files.md) |
-| 提交、同步、push、PR、多人或多 AI 协作、合并和发版 | [提交与协作](references/commits-and-collaboration.md) |
-| 丢弃修改、清理、回滚、强推、历史污染、凭据泄露 | [清理与恢复](references/recovery-and-cleanup.md) |
+| New repository, too many branches, release process, different directories retained by different branches | [Project and Branch Decisions](references/project-policy.md) |
+| Choosing tracked files, local-only files, large files, ignore rules, platform differences | [File Management](references/files.md) |
+| Commits, synchronization, push, pull requests, collaboration with people or multiple AI agents, merges, releases | [Commits and Collaboration](references/commits-and-collaboration.md) |
+| Discarding changes, cleanup, rollback, force push, history pollution, credential exposure | [Cleanup and Recovery](references/recovery-and-cleanup.md) |
 
-只读取当前任务需要的参考内容。为项目建立规范时可用 [规范模板](assets/git-policy-template.md)，填入实际决策后再保存到项目合适位置。
+Read only the references needed for the current task. To create project conventions, use the [policy template](assets/git-policy-template.md), fill in actual decisions, and save it in an appropriate project location.
 
-## 工作流程
+## Workflow
 
-### 1. 建立仓库事实
+### 1. Establish repository facts
 
-先读适用的 `AGENTS.md`、`CONTRIBUTING`、README、已有 Git 规范、CI 与包管理配置；查看 `.gitignore`、`.gitattributes` 和提交约定。根据任务范围执行：
+Read applicable AGENTS.md and CONTRIBUTING files, README, existing Git policy, CI and package-manager configuration. Inspect .gitignore, .gitattributes, and commit conventions. Run commands appropriate to the task:
 
 ```sh
 git --version
@@ -47,32 +47,32 @@ git remote
 git log -8 --format="%h %s"
 ```
 
-这些命令分别揭示仓库位置、用户修改、暂存内容、分支、其他工作区、远端名称和近期风格。初始仓库无提交、无远端、无 upstream 都是正常状态；分开处理，不为消除报错而自动 init、添加远端或首次推送。detached HEAD 先确定任务是否需要新分支。
+These commands reveal the repository location, user changes, staged content, branches, other worktrees, remote names, and recent message style. A repository with no commits, remote, or upstream can be in a normal initial state. Handle each separately; do not run init, add a remote, or push for the first time just to remove an error. For a detached HEAD, first decide whether the task needs a new branch.
 
-观察输出时只展示必要信息；远端 URL、diff、文件名和提交信息也可能含私人内容。检查凭据时报告路径和问题类别，不复述密钥。需要机器解析文件列表时使用 Git 的 `-z` 输出，不能按空格拆路径。
+Display only necessary output. Remote URLs, diffs, filenames, and commit messages can contain private information. When checking credentials, report the path and type of issue; do not repeat secrets. When machine-parsing file lists, use Git's -z output; never split paths on spaces.
 
-记录当前分支、目标基线、已有修改和任务范围。先确认本次任务是否包含 commit、push、PR 或发布；这些是不同动作。沿用会话里已有的授权，不反复询问。普通本地编辑和检查直接完成；只在缺少影响后续操作的关键事实或授权时询问，并继续不依赖答案的工作。
+Record the current branch, target base, existing changes, and task scope. Determine whether the task includes a commit, push, pull request, or release; these are separate actions. Reuse authorization already given in the conversation instead of asking again. Complete ordinary local edits and checks directly. Ask only when a critical fact or authorization is missing for a dependent operation, while continuing independent work.
 
-### 2. 决定分支与文件策略
+### 2. Choose branches and file handling
 
-日常任务遵循已有分支方案；新项目根据发布节奏、并行工作、支持的版本和审核需求选最少够用的分支。主分支的真实名称要查证，不能假定为 `main`；开发基线也可能是 `dev`、`develop` 或维护分支。
+For routine tasks, follow the existing branch plan. For a new project, choose the smallest adequate branching strategy based on release cadence, parallel work, supported versions, and review needs. Verify the actual default branch name instead of assuming it is main; the development base may be dev, develop, or a maintenance branch.
 
-按任务把文件分为：需要入库、只留本地、外部存储、经核实可删除、尚不确定。生成文件不必一律忽略，文档、数据和配置也不必一律上传。关键是用途、可复现性、敏感性和维护成本。
+Classify files by purpose: track in Git, keep local, store externally, delete only after verification, or leave undecided. Generated files do not all need to be ignored, and documentation, data, and configuration do not all need to be uploaded. Consider purpose, reproducibility, sensitivity, and maintenance cost.
 
-提交前确定本次的精确路径清单，并为目标分支核对允许内容、排除内容和必要依赖；新增目录逐文件核查。遇到 `testt/`、`private/`、临时测试、Agent 草稿、审查记录或项目文档，按[文件管理中的提交清单](references/files.md)判断用途与去向。未分类文件先不暂存，不能用目录名猜测保留或删除。
+Before committing, establish the exact path list for this change. Check what belongs on the target branch, what must be excluded, and what dependencies are necessary; inspect each new directory file by file. For testt/, private/, temporary tests, agent drafts, review notes, or project documents, use the [commit checklist in File Management](references/files.md) to determine purpose and destination. Do not stage an unclassified file or guess whether to retain or delete it from its directory name.
 
-分支文件树、远端仓库可见性和发布包清单是三个不同问题。默认共享完整可构建的源树，用打包规则决定交付内容；项目已有分支目录差异时遵守规则，并评估合并是否会带入这些目录。不要擅自重组已有仓库。
+The branch file tree, remote repository visibility, and release-package contents are three separate questions. By default, share a complete source tree that can be built; determine deliverables with packaging rules. If the project already varies directories by branch, follow its rules and consider whether a merge would bring in those directories. Do not reorganize an existing repository without authorization.
 
-### 3. 在不干扰已有工作的前提下操作
+### 3. Work without disturbing existing changes
 
-- 脏工作区可以做局部修改，不以“先干净”为由清除、提交或 stash 用户全部修改。操作前后的差异要能归属到本次任务。
-- 需要切换上下文或多人同时操作时，优先合适的独立 worktree；先查看已有工作区，确认所需未提交修改是否应带入。worktree 不自动复制它们。
-- 不同 AI 不共享同一 index 做并行 add/commit/切分支；各自分支和工作目录仍可能共享引用与 Git 配置，需要协调整合。
-- 不设置全局 identity、自动换行、hooks 或默认 pull 行为来满足单一项目。缺失身份时获取真实身份，或使用用户已指定的仓库级身份，不虚构作者。
+- A dirty worktree can support local edits. Do not clear, commit, or stash all user changes just to make it clean. Before and after changes, be able to attribute the diff to this task.
+- When context must switch or multiple people work concurrently, prefer a suitable independent worktree. Inspect existing worktrees first and decide whether uncommitted changes should be included; a worktree does not copy them automatically.
+- Different AI agents must not use one index to run add, commit, or branch switching in parallel. Separate branches and directories may still share references and Git configuration, so coordinate integration.
+- Do not change global identity, line endings, hooks, or default pull behavior for one project. If identity is missing, obtain the real identity or use a repository-level identity specified by the user; never invent an author.
 
-### 4. 提交前审查实际快照
+### 4. Review the actual snapshot before committing
 
-只有任务包含提交时才执行 commit。先检查 staged 清单，保留他人已有暂存内容；按明确路径或 hunk 暂存本次修改，避免未经核验的 `git add .`、`git add -A` 或 `git commit -a`。
+Commit only when the task includes a commit. Inspect the staged file list first and preserve staged work that belongs to others. Stage this task's changes by explicit paths or hunks; do not run unverified git add ., git add -A, or git commit -a.
 
 ```sh
 git diff --cached --name-status
@@ -81,27 +81,27 @@ git diff --cached --check
 git diff --cached
 ```
 
-审查时核对：完整变更是否落在正确分支；源码、相关测试、依赖声明与必要 lockfile 是否同步；是否夹带用户修改、凭据、日志、数据或构建输出；标题是否准确概括 staged diff。敏感内容在本地检查，避免直接输出到会话。
+Check that the complete change is on the correct branch; source, relevant tests, dependency declarations, and required lockfiles are in sync; no user changes, credentials, logs, data, or build outputs were included; and the commit subject accurately summarizes the staged diff. Inspect sensitive material locally without displaying it in the conversation.
 
-把 staged 的新增、修改、删除和改名逐项与本次清单对账，任何范围外路径都先解决归属。提交消息从这个最终快照生成，标题要说清“哪个对象发生什么变化”；复杂修改的正文解释原因与影响。[提交与协作](references/commits-and-collaboration.md)中的验收规则未满足时先修正，再 commit。操作完成后用 `git show --name-status --format=fuller HEAD` 核对实际提交，不能只相信执行前的计划。
+Compare every staged addition, modification, deletion, and rename with the task's file list. Resolve any out-of-scope path before proceeding. Derive the commit message from the final snapshot; its subject should say what changed on which object. Explain reasons and impact in the body for complex changes. Meet the acceptance rules in [Commits and Collaboration](references/commits-and-collaboration.md) before committing. After the operation, verify the actual commit with git show --name-status --format=fuller HEAD instead of relying on the pre-commit plan.
 
-测试采用项目要求和本次变更对应的检查。工作区有额外修改时，工作区测试通过不代表暂存快照可用；必要时在隔离环境验证候选快照及其未跟踪依赖。检查失败就修复或说明阻碍，不通过 `--no-verify` 绕过规则，不把未运行的测试写成通过。
+Use project-required checks that match the change. When the worktree contains extra modifications, passing tests on the worktree does not prove the staged snapshot is valid. If needed, verify the candidate snapshot and its untracked dependencies in an isolated environment. Fix failures or explain blockers; do not bypass rules with --no-verify or report tests as passing when they were not run.
 
-### 5. 同步、交付并报告状态
+### 5. Synchronize, deliver, and report status
 
-需要最新远端事实时先 fetch，再检查目标引用与分叉情况；远端跟踪引用可能过期。决定 merge、rebase 或 fast-forward 后再执行，不用不明确的 pull 配置猜测结果。
+When current remote facts are needed, fetch first and inspect target references and divergence; remote-tracking references may be stale. Choose merge, rebase, or fast-forward before executing. Do not guess based on ambiguous pull configuration.
 
-push 前检查真实远端、目标分支、待推送的全部提交及文件历史；若推送会触发 CI、部署或发布，应计入已有授权范围。使用明确目标，避免 `--all`、`--mirror` 或批量推送 tag。合并和发版按项目门槛执行。
+Before pushing, inspect the actual remote, target branch, all pending commits, and file history to be pushed. If a push triggers CI, deployment, or release, include that consequence in the authorization scope. Use an explicit target and avoid --all, --mirror, or bulk tag pushes. Follow the project's gates for merging and release.
 
-最终说明：所选或沿用的规范、改动与检查结果、当前分支、是否 commit/push/建立 PR/发布，以及仍需用户处理的事项。不要把“本地完成”“远端已更新”“已经发布”混为一谈。
+At the end, report the conventions chosen or reused, changes and checks, current branch, whether a commit, push, pull request, or release was made, and any remaining user action. Do not conflate “done locally,” “updated remotely,” and “released.”
 
-## 不能靠经验猜测的边界
+## Boundaries that should not be guessed
 
-- 不为提交本次工作而覆盖用户修改，或把暂存区里他人的内容捎带提交。
-- “清理仓库”不自动授权删除所有 ignored/untracked 文件、全部 stash、远端分支或历史。先识别对象与可恢复性；具体规则见清理参考。
-- 普通同步不需要重写共享历史。若任务确实要求，先明确将替换的引用、影响范围和恢复方案；有明确授权才执行，不能靠“lease 更安全”推定许可。
-- 私有仓库、dev 分支、LFS、`.gitignore` 和发布排除规则都不是凭据保管方案。
+- Do not overwrite user changes or include someone else's staged content just to commit this task.
+- “Clean up the repository” does not automatically authorize deleting all ignored or untracked files, all stashes, remote branches, or history. Identify the objects and their recoverability first; see the cleanup reference for details.
+- Routine synchronization does not require rewriting shared history. If a task truly requires it, identify the references to be replaced, impact, and recovery plan first. Execute only with explicit authorization; do not infer permission from the fact that lease is safer.
+- Private repositories, dev branches, LFS, .gitignore, and release exclusion rules are not credential-storage solutions.
 
-## 行为自检
+## Self-check
 
-完成前检查五个问题：本次动作是否符合用户任务；分支策略是否有实际依据；文件分类是否解释了本地保留与删除的区别；提交和推送是否包含范围外内容；高风险操作是否具备事实、授权和恢复手段。发现不确定性时缩小操作范围，先完成可验证部分。
+Before finishing, ask five questions: Does each action fit the user's task? Is the branch strategy based on actual needs? Does file classification explain the difference between local retention and deletion? Do commits and pushes contain out-of-scope content? Do high-risk operations have evidence, authorization, and recovery measures? When uncertain, narrow the action and complete the verifiable parts first.

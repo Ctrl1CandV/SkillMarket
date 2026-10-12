@@ -1,7 +1,7 @@
 ---
-description: 中文学位论文合规核对：摘要一致性、GB/T 7714、章节图表、写作质量。
-argument-hint: "<草稿文件或目录>"
+description: Check a Chinese-language thesis for compliance, including abstract consistency, GB/T 7714 references, sections and figures, and writing quality.
+argument-hint: "<draft file or directory>"
 skill: thesis-cn
 ---
 
-读 `.grad/config.json` 的校级规则（缺则引导填写，不硬编码），核对中英摘要一致性、参考文献 GB/T 7714 格式、章节编号与图表清单，输出带证据的核对报告。只做合规的写作质量提示，不做 AIGC 检测规避。
+Read institution-specific rules from `.grad/config.json`; if they are missing, guide the user through providing them instead of hardcoding them. Check consistency between the Chinese and English abstracts, GB/T 7714 reference formatting, section numbering, and the list of figures and tables. Produce a report with supporting evidence. Give writing-quality suggestions only for compliance; do not help evade AI-generated-content detection.

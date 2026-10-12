@@ -1,30 +1,30 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""run 可比性分组与复现信息的共享规则（run-provenance 内部模块）。
+"""Shared rules for run comparability groups and reproducibility metadata (internal to run-provenance).
 
-table_gen / claim_check / claim_register / run_update 复用同一套判定，避免两处规则漂移：
-- 保留 method 与 benchmark 两个硬边界，实验组不能绕过；
-- 只有用户明确声明的 experiment_group 一致，或 config 快照 sha256 明确一致，才视为同一比较设置；
-- 缺配置 / sha 缺失 / unknown 永远各自成组（保守分列），不并成「共同配置组」。
+table_gen / claim_check / claim_register / run_update reuse the same rules to prevent drift:
+- method and benchmark remain hard boundaries; an experiment group cannot override them;
+- runs are comparable only when the user explicitly declares the same experiment_group or config snapshot SHA-256 values match;
+- missing config / missing SHA / unknown values always form separate groups; never combine them into a "shared config" group.
 """
 
 from __future__ import annotations
 
 STATUS_VALUES = ("running", "success", "failed")
-# running 是占位状态：结果未出，任何统计/核对默认排除（与 failed 一样不参与均值）
+# running is a placeholder status: results are not ready, so exclude it from statistics and checks by default (like failed runs).
 UNRESOLVED_STATUSES = ("running",)
 
 
 def group_key(run: dict) -> tuple:
-    """一个 run 所属的比较设置组（同设置=可合并求均值）。
+    """Return the comparison-settings group for a run (runs with the same settings can be averaged).
 
-    返回 (kind, method, benchmark, tag)——method/benchmark 是硬边界的一部分，
-    显式实验组不能绕过（REV-03：同组名不同方法也不可比）：
-    - kind="explicit"：用户声明的 experiment_group 一致 → 同组（tag=组名）；
-    - kind="config"：config 快照 sha256 明确一致 → 同组（tag=sha）；
-    - kind="unresolved"：缺配置/sha 缺失 → 每个 run 各自成组（tag=run_id），
-      unknown 永远不并成「共同配置组」。
+    Return (kind, method, benchmark, tag). method/benchmark are hard boundaries,
+    so an explicit experiment group cannot override them (REV-03: same group name with different methods is still incomparable):
+    - kind="explicit": same user-declared experiment_group means same group (tag=group name);
+    - kind="config": matching config snapshot SHA-256 means same group (tag=SHA);
+    - kind="unresolved": missing config/SHA means each run forms its own group (tag=run_id);
+      unknown values are never combined into a "shared config" group.
     """
     method = str(run.get("method") or f"missing-method:{run.get('run_id')}")
     benchmark = str(run.get("benchmark") or f"missing-benchmark:{run.get('run_id')}")
@@ -39,7 +39,7 @@ def group_key(run: dict) -> tuple:
 
 
 def same_setting_runs(runs: list[dict]) -> dict[tuple, list[dict]]:
-    """按比较设置切分同一 (method, benchmark) 下的 run。"""
+    """Split runs with the same (method, benchmark) by comparison settings."""
     buckets: dict[tuple, list[dict]] = {}
     for run in runs:
         buckets.setdefault(group_key(run), []).append(run)
@@ -47,29 +47,29 @@ def same_setting_runs(runs: list[dict]) -> dict[tuple, list[dict]]:
 
 
 def group_label(key: tuple, members: list[dict]) -> str:
-    """给一个比较设置组生成可读标签（表内行/注释与告警共用）。"""
+    """Create a readable label for a comparison-settings group, shared by table rows, notes, and warnings."""
     kind, _method, _benchmark, tag = key
     if kind == "explicit":
-        shas = sorted({str((m.get("config") or {}).get("sha256") or "无快照")[:8] for m in members})
-        diff = f"（配置差异：{'/'.join(shas)}）" if len(shas) > 1 else ""
-        return f"实验组 {tag}{diff}"
+        shas = sorted({str((m.get("config") or {}).get("sha256") or "no-snapshot")[:8] for m in members})
+        diff = f"(config differences: {'/'.join(shas)})" if len(shas) > 1 else ""
+        return f"Experiment group {tag}{diff}"
     if kind == "config":
-        return f"配置 {tag[:8]}"
+        return f"Config {tag[:8]}"
     run_id = tag
-    return f"缺配置快照（run {run_id}，不与其他 run 合并）"
+    return f"No config snapshot (run {run_id}; not grouped with any other run)"
 
 
 
 def mergeable(groups: list[tuple]) -> bool:
-    """若干 run 是否同属一个可比设置（至少 1 个组）。"""
+    """Check whether a set of runs belongs to at least one comparable settings group."""
     return len(set(groups)) <= 1
 
 
 def reproducibility_info(meta: dict) -> dict:
-    """F06：可复现信息只登记、不证明。
+    """F06: record reproducibility information; do not claim that reproducibility has been proven.
 
-    新记录一律 reproducibility_status="not_verified"——seed/commit 齐全也只说明
-    登记信息完整，未执行过重跑验证。legacy 的 `reproducible` 布尔只作旧字段兼容读取。
+    New records always use reproducibility_status="not_verified". Complete seed/commit metadata only means
+    the information was recorded; no rerun verification was performed. Read the legacy reproducible boolean only for backward compatibility.
     """
     git = meta.get("git") if isinstance(meta.get("git"), dict) else {}
     seed_ok = meta.get("seed") is not None
@@ -81,15 +81,15 @@ def reproducibility_info(meta: dict) -> dict:
     if not commit_ok:
         missing.append("commit")
     elif not clean:
-        missing.append("clean-commit（登记时工作区为脏）")
+        missing.append("clean-commit (working tree was dirty at registration)")
     config = meta.get("config") if isinstance(meta.get("config"), dict) else {}
     config_ok = bool(config.get("sha256") or config.get("snapshot"))
     if not config_ok:
-        missing.append("config 快照")
+        missing.append("config snapshot")
     return {
         "reproducibility_status": "not_verified",
         "repro_registered": {"seed": seed_ok, "commit": commit_ok,
                              "commit_clean": clean, "config": config_ok},
         "repro_missing": missing,
-        "note": "复现信息仅为登记状态；未执行复现验证，不能据此宣称实验可复现",
+        "note": "Reproducibility metadata is recorded only; no rerun verification was performed, so this does not establish that the experiment is reproducible",
     }

@@ -1,19 +1,19 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""聚合 .grad/runs/ 生成 LaTeX booktabs 表（run-provenance）。
+"""Aggregate .grad/runs/ into LaTeX booktabs tables (run-provenance).
 
-规则（对应 ARR 有效弱点 R1/R5 的防线）：
-- 按 (方法 × benchmark × 比较设置) 分组，同组多 seed 算 mean ± std（样本标准差，ddof=1）
-- **不同配置不能静默合并**：config 快照 sha 不一致、缺配置时保守分列；只有用户明确声明的
-  同一 experiment_group 才自动合并（显式同组仍展示配置差异与分组依据）。规则在 run_grouping.py
-- **n=1 时输出 `数值 (n=1)`，绝不输出 ±**——单次 run 报标准差是编造
-- 表格末尾生成 % provenance 注释行，把每个数字指回 run id + commit
-- 同组内出现重复 seed → 警告（cherry-picked best-of-N 的风险信号），只警告不剔除
-- running 占位 run 不参与统计（结果未出）；failed 默认排除，--include-failed 显式纳入
-- 只做算术与排版，不评判哪个方法好（无加粗、无最优标记）
+Rules (defenses against effective ARR weaknesses R1/R5):
+- Group by (method × benchmark × comparison settings); compute mean ± std (sample standard deviation, ddof=1) across seeds in a group.
+- **Never silently combine different configs**: keep runs in separate columns/groups when config snapshot SHAs differ or are missing. Merge only when the user explicitly declares
+  the same experiment_group (even then, show config differences and grouping basis). Rules live in run_grouping.py.
+- **For n=1, output value (n=1), never ±**—a standard deviation from one run would be fabricated.
+- Add % provenance comments after each table to trace every number to its run ID and commit.
+- Warn about duplicate seeds in the same group (a best-of-N cherry-picking risk); warn without excluding rows.
+- Exclude running placeholders (results are not ready); exclude failed by default and include them only with --include-failed.
+- Do arithmetic and formatting only; do not judge which method is better (no bolding or best-result marker).
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -42,17 +42,17 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 def reject_json_constant(value: str) -> None:
-    raise ValueError(f"不允许非有限 JSON 常量：{value}")
+    raise ValueError(f"Non-finite JSON constant is not allowed: {value}")
 
 
 def validate_metrics(metrics: object, source: Path) -> dict[str, int | float]:
     if not isinstance(metrics, dict):
-        die("BAD_RUN_DATA", f"{source} 必须是 JSON 对象")
+        die("BAD_RUN_DATA", f"{source} must be a JSON object")
     for key, value in metrics.items():
         if not isinstance(key, str) or not key.strip():
-            die("BAD_RUN_DATA", f"{source} 的指标键必须是非空字符串")
+            die("BAD_RUN_DATA", f"{source} metric keys must be non-empty strings")
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-            die("BAD_RUN_DATA", f"{source} 的指标 {key!r} 必须是有限数值")
+            die("BAD_RUN_DATA", f"Metric {key!r} in {source} must be a finite number")
     return metrics
 
 
@@ -67,9 +67,9 @@ def load_runs(runs_dir: Path) -> list[dict]:
             metrics_raw = (json.loads(metrics_f.read_text(encoding="utf-8"), parse_constant=reject_json_constant)
                            if metrics_f.is_file() else {})
         except (OSError, json.JSONDecodeError, ValueError) as exc:
-            die("BAD_RUN_DATA", f"{d} 下的 run 数据解析失败：{exc}")
+            die("BAD_RUN_DATA", f"Could not parse run data under {d}: {exc}")
         if not isinstance(meta, dict):
-            die("BAD_RUN_DATA", f"{meta_f} 必须是 JSON 对象")
+            die("BAD_RUN_DATA", f"{meta_f} must be a JSON object")
         metrics = validate_metrics(metrics_raw, metrics_f)
         config = meta.get("config") if isinstance(meta.get("config"), dict) else None
         runs.append({
@@ -101,12 +101,12 @@ def cell_stats(values: list[float]) -> tuple[str, float | None, float | None]:
     if len(values) == 1:
         return f"{values[0]:.4g} (n=1)", values[0], None
     mean = statistics.fmean(values)
-    std = statistics.stdev(values)  # 样本标准差 ddof=1
+    std = statistics.stdev(values)  # Sample standard deviation, ddof=1.
     return f"{mean:.4g} $\\pm$ {std:.3g} (n={len(values)})", mean, std
 
 
 def normalize_metric_key(key: str) -> str:
-    """仅用于发现疑似拼写漂移；原始 key 永远不自动合并。"""
+    """Detect suspected spelling drift only; never merge original keys automatically."""
     return re.sub(r"[\s\.,;:!?，。；：]+$", "", key.strip().casefold())
 
 
@@ -133,8 +133,8 @@ def metric_drift_warnings(groups: dict[tuple[str, str], list[dict]]) -> list[str
                            SequenceMatcher(None, normalized_left, normalized_right).ratio() >= 0.94)
                 if same_normalized or similar:
                     warnings.append(
-                        f"{method}×{benchmark}: 指标键疑似漂移 {left!r}（run {sources[left]}）与 "
-                        f"{right!r}（run {sources[right]}）；仅告警，不自动合并"
+                        f"{method}×{benchmark}: possible metric-key drift between {left!r} (run {sources[left]}) and "
+                        f"{right!r} (run {sources[right]}); warning only, no automatic merge"
                     )
     return warnings
 
@@ -155,29 +155,29 @@ def build_tables(runs: list[dict]) -> tuple[list[dict], list[str]]:
         duplicates = sorted({seed for seed in seeds if seeds.count(seed) > 1})
         if duplicates:
             warnings.append(
-                f"{method}×{benchmark}: 同组重复 seed {duplicates}——多次试验只挑最好即 best-of-N 风险（ARR R1），"
-                "表内包含全部 run，是否剔除由人决定"
+                f"{method}×{benchmark}: duplicate seed in the same group {duplicates}—a best-of-N risk (ARR R1); "
+                "the table still includes all runs; a person decides whether to exclude any"
             )
         no_seed = [run["run_id"] for run in members if run["seed"] is None]
         if no_seed:
-            warnings.append(f"{method}×{benchmark}: run {no_seed} 未登记 seed")
+            warnings.append(f"{method}×{benchmark}: run {no_seed} has no recorded seed")
         no_commit = [run["run_id"] for run in members if not run["commit"]]
         if no_commit:
-            warnings.append(f"{method}×{benchmark}: run {no_commit} 无 commit 记录（unknown）")
+            warnings.append(f"{method}×{benchmark}: run {no_commit} has no commit record (unknown)")
         buckets = same_setting_runs(members)
         setting_groups[(method, benchmark)] = buckets
         if len(buckets) > 1:
             warnings.append(
-                f"{method}×{benchmark}: 配置不一致或缺配置，已按比较设置分为 {len(buckets)} 组分别呈现"
-                f"（不静默合并均值）：{'；'.join(group_label(k, v) for k, v in sorted(buckets.items(), key=lambda i: str(i[0])))}"
+                warnings.append("{}×{}: Configs differ or are missing; presenting {} separate groups by comparison settings rather than silently averaging: {}".format(method, benchmark, len(buckets), "; ".join(group_label(k, v) for k, v in sorted(buckets.items(), key=lambda i: str(i[0])))))
+
             )
         for key, members_of_setting in buckets.items():
             if key[0] == "explicit" and len(members_of_setting) > 1:
-                shas = {str((m.get("config") or {}).get("sha256") or "无快照") for m in members_of_setting}
+                shas = {str((m.get("config") or {}).get("sha256") or "no-snapshot") for m in members_of_setting}
                 if len(shas) > 1:
                     warnings.append(
-                        f"{method}×{benchmark}: 显式实验组 {key[3]} 内配置快照不一致"
-                        f"（{'/'.join(sorted(s[:8] for s in shas))}），已按用户声明合并，分组依据见行标签"
+                    warnings.append("{}×{}: Explicit experiment group {} has differing config snapshots ({}); merged per the user declaration. See row labels for the grouping basis.".format(method, benchmark, key[3], "/".join(sorted(s[:8] for s in shas))))
+
                     )
     warnings.extend(metric_drift_warnings(groups))
 
@@ -198,10 +198,10 @@ def build_tables(runs: list[dict]) -> tuple[list[dict], list[str]]:
                     source = ", ".join(
                         f"{run['run_id']}@{(run['commit'] or 'unknown')[:8]}" for run in members
                     )
-                    provenance.append(f"% provenance {key} | {method} | {benchmark}: {source or '（无 run）'}")
+                    provenance.append("% provenance {} | {} | {}: {}".format(key, method, benchmark, source or "(no run)"))
                 body_rows.append(latex_escape(method) + " & " + " & ".join(cells) + " \\\\")
                 continue
-            # 配置分列：一个 (benchmark, 比较设置组) 一行，行标签带分组依据，避免同名方法行无法区分
+            # Keep each (benchmark, comparison-settings group) on its own row; row labels show the grouping basis and distinguish methods with the same name.
             for benchmark in benchmarks:
                 buckets = per_bench[benchmark]
                 if not buckets:
@@ -209,19 +209,19 @@ def build_tables(runs: list[dict]) -> tuple[list[dict], list[str]]:
                 for setting_key, setting_runs in sorted(buckets.items(), key=lambda i: str(i[0])):
                     members = [run for run in setting_runs if key in run["metrics"]]
                     text, _, _ = cell_stats([float(run["metrics"][key]) for run in members])
-                    label = f"{method}（{group_label(setting_key, setting_runs)}）"
-                    row_cells = [text if bench == benchmark else "---" for bench in benchmarks]
+                    label = f"{method} ({group_label(setting_key, setting_runs)})"
+
                     body_rows.append(latex_escape(label) + " & " + " & ".join(row_cells) + " \\\\")
                     source = ", ".join(
                         f"{run['run_id']}@{(run['commit'] or 'unknown')[:8]}" for run in members
                     )
                     provenance.append(
-                        f"% provenance {key} | {label} | {benchmark}: {source or '（无 run，该设置组无此指标）'}")
+                        "% provenance {} | {} | {}: {}".format(key, label, benchmark, source or "(no run; this settings group has no value for this metric)"))
         latex = "\n".join([
             "\\begin{table}[t]",
             "  \\centering",
-            f"  \\caption{{{latex_escape(key)} (mean $\\pm$ std, 样本标准差；n=1 标注而非伪造误差；"
-            "不同比较设置分行不合并)}}",
+            f"  \\caption{{{latex_escape(key)} (mean $\\pm$ std, sample standard deviation; n=1 is labeled rather than given a fabricated error; "
+            "different comparison settings are shown on separate rows)}}",
             f"  \\label{{tab:{label_safe(key)}-{hashlib.sha256(key.encode('utf-8')).hexdigest()[:8]}}}",
             f"  \\begin{{tabular}}{{l{'c' * len(benchmarks)}}}",
             "    \\toprule",
@@ -239,22 +239,22 @@ def build_tables(runs: list[dict]) -> tuple[list[dict], list[str]]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="聚合 runs 生成 LaTeX 表")
+    ap = argparse.ArgumentParser(description="Aggregate runs into LaTeX tables")
     ap.add_argument("--runs-dir", default=".grad/runs")
-    ap.add_argument("--out", default="", help="把所有表写入该 .tex 文件（默认只打印）")
-    ap.add_argument("--include-failed", action="store_true", help="显式纳入带数值指标的失败 run")
-    ap.add_argument("--force", action="store_true", help="允许覆盖 --out 指定的既有文件")
+    ap.add_argument("--out", default="", help="Write all tables to this .tex file (prints to stdout by default)")
+    ap.add_argument("--include-failed", action="store_true", help="Explicitly include failed runs that have numeric metrics")
+    ap.add_argument("--force", action="store_true", help="Allow overwriting the existing file specified by --out")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     if args.json and args.out:
-        die("BAD_ARGS", "--json 与 --out 不能同时使用")
+        die("BAD_ARGS", "--json and --out cannot be used together")
     if args.force and not args.out:
-        die("BAD_ARGS", "--force 只能与 --out 一起使用")
+        die("BAD_ARGS", "--force can only be used with --out")
 
     loaded = load_runs(Path(args.runs_dir))
     if not loaded:
-        die("NO_RUNS", f"{args.runs_dir} 下没有可聚合的 run（需要 meta.json）。先跑 run_register.py 登记")
+        die("NO_RUNS", f"No usable runs found under {args.runs_dir} (meta.json is required); register runs with run_register.py first")
 
     failed = [run for run in loaded if run["status"] == "failed"]
     running = [run for run in loaded if run["status"] == "running"]
@@ -263,9 +263,9 @@ def main() -> None:
     runs = successful + failed_with_metrics if args.include_failed else successful
     tables, warnings = build_tables(runs)
     if not tables:
-        die("NO_METRICS", "没有可聚合的有限数值指标；不会生成或覆盖表格文件")
+        die("NO_METRICS", "No finite numeric metrics are available; no table will be generated or overwritten")
     if running:
-        warnings.append(f"running 占位 run 不参与统计（结果未出）：{[run['run_id'] for run in running]}")
+        warnings.append("Running placeholder runs are excluded from statistics (results are not ready): {}".format([run["run_id"] for run in running]))
     counts = {
         "n_runs_loaded": len(loaded),
         "n_runs_included": len(runs),
@@ -274,16 +274,16 @@ def main() -> None:
     }
     out = Path(args.out) if args.out else None
     if out is not None and out.exists() and not args.force:
-        die("CONFLICT", f"输出已存在，不会覆盖：{out}；明确需要覆盖时加 --force")
+        die("CONFLICT", f"Output already exists and will not be overwritten: {out}; pass --force to overwrite it explicitly")
     if args.json:
         print(json.dumps({"ok": True, "data": {**counts, "tables": tables,
                                                "warnings": warnings}}, ensure_ascii=False))
         return
-    print(f"# {len(runs)}/{len(loaded)} 个 run 纳入 → {len(tables)} 张表")
+    print("# {}/{} runs included → {} tables".format(len(runs), len(loaded), len(tables)))
     if counts["n_failed_skipped"]:
-        print(f"# 默认跳过 {counts['n_failed_skipped']} 个失败 run；用 --include-failed 显式纳入")
+        print("# {} failed runs skipped by default; use --include-failed to include them".format(counts["n_failed_skipped"]))
     if counts["n_running_skipped"]:
-        print(f"# 跳过 {counts['n_running_skipped']} 个 running 占位 run（结果未出，不参与统计）")
+        print("# {} running placeholder runs skipped (results are not ready)".format(counts["n_running_skipped"]))
     for t in tables:
         print(f"\n{t['latex']}")
     for w in warnings:
@@ -303,8 +303,8 @@ def main() -> None:
                 with out.open("x", encoding="utf-8", newline="\n") as handle:
                     handle.write(content)
             except FileExistsError:
-                die("CONFLICT", f"输出已存在，不会覆盖：{out}；明确需要覆盖时加 --force")
-        print(f"\n已写入 {out}")
+                die("CONFLICT", f"Output already exists and will not be overwritten: {out}; pass --force to overwrite it explicitly")
+        print(f"\nWrote {out}")
 
 
 if __name__ == "__main__":

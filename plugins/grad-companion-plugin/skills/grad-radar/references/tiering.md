@@ -1,60 +1,59 @@
-# 分级规则（每日发现：筛选）
+# Tiering Rules (Daily Discovery: Screening)
 
-> **本文件是启发式，不是权威。** 排序结果是「启发式排序，不是质量判断」——它只反映与当前学习目标的关系，不评价论文好坏。每次输出必须带上这句话。
+> **This document is heuristic, not authoritative.** The result is “heuristic ranking, not a quality judgment.” It reflects relevance to the current learning goal, not overall paper quality. Include this statement with every result.
 
-## 两个概念必须分开（旧版把它们混在一起）
+## Keep these two concepts separate
 
-- **推荐级别（tier）**：`must_read` / `skim` / `archive`——**当次简报里的呈现档位**。数量先按本次要求，其次已有 `.grad/config.json` 的 `daily_caps`，均无时用 must_read 1 / skim 2；0 表示该类不安排。用户侧文案呈现为「优先关注 / 可以速览 / 其他候选」，避免强制任务感。
-- **重要性（importance）**：core / relevant / peripheral——论文与学习目标的**关系属性**，记在单篇主记录的 classification 里。
+- **Recommendation tier:** `must_read` / `skim` / `archive` — the display level for this brief. Follow the current request's quantity first, then `daily_caps` from `.grad/config.json`; if neither exists, use must_read 1 / skim 2. A limit of 0 means do not assign that tier. For the user, display “priority reading / quick look / other candidates” to avoid making it feel like a required task.
+- **Importance:** core / relevant / peripheral — a relationship between the paper and the learning goal, stored in the primary single-paper record's classification.
 
-tier ≠ importance：must_read 不自动等于 importance=core（今天可能只是 deadline 临近）；core 论文也不必出现在今天简报里（在读的可能早已登记）。反过来，归档一篇也不意味着它不重要——只意味着本次不投入。
+Tier ≠ importance. must_read does not automatically mean importance=core (a paper may be relevant because a deadline is close today). A core paper need not appear in today's brief (it may already be registered as in progress). Archiving a paper does not mean it is unimportant; it means only that no time is allocated to it now.
 
-## 本次范围与常规流程
+## Current scope and standard workflow
 
-从本次请求和同一任务会话中确认方向、要解决的问题、关注重点与时间。缺少范围时问一个简短问题，不套预设方向；已有关键词、阅读背景、旧简报和 seen 台账不自动变成本次兴趣。用户本次明确指定使用旧配置范围时可只读使用，不据此更新长期偏好。
+Use the current request and the same task's conversation to establish topic, question, focus, and timing. Ask a short question if scope is missing; do not apply a preset topic. Do not automatically turn saved keywords, reading background, old briefs, or the seen ledger into current interests. Read an old configured scope only when the user explicitly requests it, and do not update long-term preferences as a result.
 
-常规流程仍是：本次范围转实际查询 → 获取元数据 → 按任务初筛与分级 → 对少量优先/速览条目提取问题、做法和摘要实际支持的发现 → 用户选中后进单篇阅读。仅元数据不能证明正文质量；一般论文/综述推荐按 selection-protocol 的场景优先级核来源、年份、引用和关键正文。用户硬性要求近期顶刊顶会/高影响时逐项核条件，不因 tier=must_read 把预印本写成已正式接收，或把近期写成高被引。直接指定论文照常阅读。
+The standard workflow remains: convert the current scope to actual queries → retrieve metadata → screen and tier for the task → extract the question, approach, and findings supported by the available abstract for a small number of priority/quick-look items → send user-selected work to single-paper reading. Metadata alone does not prove body quality. For general paper/review recommendations, use the context priorities in selection-protocol to verify source, year, citations, and key body sections. If the user requires recent top venues or high impact, check every criterion; a must_read tier does not make a preprint formally accepted or a recent paper highly cited. Read directly specified papers as requested.
 
-每日查询默认追踪近期 arXiv 候选；分类和关键词由本次问题决定。经典原文可能用于解释或补充阅读，但不冒充本日窗口内的新稿。日期、来源和范围分别标清。
+Daily queries usually find recent arXiv candidates; choose categories and keywords based on the current question. A classic source may explain or complement the topic but must not be presented as a new submission in today's window. Label date, source, and scope separately.
 
-## 三级定义
+## Three tiers
 
-| 级别 | 上限 | 含义 | 产出 |
+| Tier | Limit | Meaning | Deliverable |
 |---|---|---|---|
-| **must_read** 优先关注 | 本次生效的 must_read 数量 | 与当前目标直接相关、值得今天或近几天投入 | 简述问题、做法与实际材料支持的发现；选中后进单篇阅读 |
-| **skim** 可以速览 | 本次生效的 skim 数量 | 有互补价值，但本次投入优先级较低 | quick 卡片或一句话；选中才升档 |
-| **archive** 其他候选 | 不限 | 其余 | **简短索引：id + 标题 + 一句可回查的理由**；不为其生成摘要长文 |
+| **must_read** (priority reading) | Current must_read limit | Directly relevant to the current goal and worth investing time in today or over the next few days | Briefly state the question, approach, and findings supported by the available material; selected papers continue to single-paper reading. |
+| **skim** (quick look) | Current skim limit | Offers complementary value but has lower priority for time investment now | Quick card or one sentence; expand only if the user selects it. |
+| **archive** (other candidates) | No limit | Everything else | **Short index: ID + title + one traceable reason.** Do not generate long summaries for these papers. |
 
-正文不超本次生效数量；不足不凑数，可以把建议花在「继续已有阅读」上。超上限时按与本次问题的匹配程度排序，其余进简短索引。排序和数量不证明质量。
+Do not exceed current limits in the body and do not pad a short list. Suggest continuing existing reading instead when useful. If results exceed the limits, rank by fit to the current question and put the rest in the short index. Ranking and quantity do not prove quality.
 
-## 按任务解释分级信号
+## Interpret signals by task
 
-信号用于解释与当前问题的联系，不按命中个数机械加分。只出现相同关键词不等于任务相关；一个精确命中也可能比多组词命中更重要。
+Use signals to explain relevance to the current question, not to award points mechanically for the number of matches. A shared keyword alone does not imply fit; one precise match may matter more than several broad matches.
 
-| 本次任务 | 可优先关注的内容 |
+| Current goal | Content worth prioritizing |
 |---|---|
-| 入门或建立领域地图 | 定义清楚、覆盖关键路线的综述；当前阅读的基础概念或代表方法 |
-| 改进方法或探索研究问题 | 同问题的竞品、机制变化、关键假设、负结果或反例 |
-| 应用或部署 | 与实际任务、环境、数据和资源约束对应的研究，尤其是新限制与可迁移经验 |
-| 评测或复现 | 设置匹配的 benchmark、协议分析、复现失败与不可比条件 |
-| 理论学习 | 所需定义、假设、定理、证明或与当前机制的关系 |
+| Beginner entry or a map of the field | A clearly defined review covering key approaches; foundational concepts or representative methods for current reading |
+| Improve a method or explore a research question | Competing work on the same question, mechanism changes, key assumptions, negative results, or counterexamples |
+| Application or deployment | Work matching the actual task, environment, data, and resource limits, especially new constraints and transferable lessons |
+| Evaluation or reproduction | Benchmarks and protocols with matching settings, reproduction analyses, failures, and non-comparable conditions |
+| Theory learning | Definitions, assumptions, theorems, proofs, or links to the current mechanism |
 
-综述、应用、理论、机器人、游戏、硬件等类型或领域不决定档位；与任务直接相关时均可优先关注。经典工作的基础作用不因旧而消失，近期预印本的影响未知也不等于质量差。
+A review, application, theory paper, robotics, games, hardware, or other field does not determine its tier; any can be priority reading when directly relevant. The foundational role of classic work does not disappear with age, and unknown impact for a recent preprint does not imply poor quality.
 
-速览适用于有具体互补价值、当前无需深入的候选；其他候选适用于只沾范围但未回答本次问题、设置不适用、身份待核或重复命中的条目。说明具体差距。重复命中先核身份，不仅凭标题相似合并；在其他主题见过的论文仍可因本次问题进入优先关注。
+Use skim for candidates with concrete complementary value that do not need deeper attention now. Use archive for items that touch the scope but do not answer the current question, have unsuitable settings, unresolved identity, or duplicate another result. State the specific gap. Verify duplicate identity; do not merge solely by similar titles. A paper seen under another topic may still deserve priority for the current question.
 
+## Required rationale
 
-## 理由的写法（硬要求）
+For every paper and every tier, state a reason containing **the current question + what the actual metadata/abstract supports + the trade-off**. Use your own words; quotations are not required. Each reason must be falsifiable and show its evidence. A venue name or “relevant” alone is not an explanation.
 
-每一篇、每一级都要写理由：**本次问题 + 元数据/摘要中实际支持的内容 + 取舍**，可用自己的话，不要求逐条引原文。理由必须可反驳，暴露实际依据，不用会议名或“相关”替代解释。
+- ✅ “Priority reading: You are checking how evaluation depends on execution environment; the abstract reports failures across environments for the same tool, so the setup is worth checking.”
+- ❌ “Must read: seems relevant.” / “Top-conference paper; read closely.” (The venue name is not a relevance signal.)
 
-- ✅ 「优先关注：你在核查评测的执行环境；摘要报告同一工具在不同环境的失败差异，值得进一步核设置」
-- ❌ 「必读：感觉相关」「顶会论文，建议精读」（会议名不是信号）
+## User feedback loop
 
-## 用户反馈回路
+When the user disagrees with a tier:
 
-用户对分级提出异议时：
-
-1. 按纠正更新本次问题、查询或排序；必要时在限速和预算内补查，不把一次纠正写进 config 或插件规则。
-2. 已授权保存本期简报时附简短调整理由；这只是本期记录，不作为下次自动采用的研究偏好。
-3. 涉及单篇的 importance/difficulty 且已授权维护记录时，走 `update-context` 并给理由；该记录不转成每日兴趣配置。
+1. Update the current question, query, or ranking according to the correction. Search further only within rate limits and budget. Do not save one correction to config or plugin rules.
+2. When this period's brief was authorized for saving, include a short reason for the adjustment. It is a record for this period only, not an automatically reused preference.
+3. If the feedback concerns a single paper's importance/difficulty and record maintenance is authorized, use update-context and state the reason. Do not turn the record into a daily-interest setting.

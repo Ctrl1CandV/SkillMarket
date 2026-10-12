@@ -1,25 +1,25 @@
 ---
 name: orchestrator
-description: 着手项目、功能或 bug 修复时组织有序开发；按风险缩放澄清、规划、质疑、实现、审查、修复、验证和交付，支持单代理顺序执行。
+description: Organize development when starting a project, feature, or bug fix. Scale clarification, planning, challenge, implementation, review, repair, verification, and delivery to the risks. Supports sequential work by a single agent.
 ---
 
-# 开发流程协调
+# Development Workflow Coordination
 
-先读 [共享流程契约](references/process.md)，其权限、交接和完成闸门适用于所有阶段。
+Read the [shared workflow contract](references/process.md) first. Its permissions, handoffs, and completion gates apply to every stage.
 
-## 输入与准备
+## Inputs and preparation
 
-接收用户目标、当前代码状态及已存在的证据。读取适用的 AGENTS.md、CLAUDE.md 和项目约定，检查工作树与任务范围；缺少材料先检查可用文件，不凭空创建文档结构。确定实际具备哪些读取、修改、测试、宿主代理能力。
+Receive the user's goal, current code state, and existing evidence. Read applicable AGENTS.md, CLAUDE.md, and project conventions; inspect the worktree and task scope. If materials are missing, inspect available files instead of inventing a document structure. Determine which read, edit, test, and host-agent capabilities are actually available.
 
-## 执行
+## Execution
 
-1. 判定规模和风险，告诉用户将采用简化还是完整链路。小 bug 也保留简短澄清、边界质疑、自审和验证。
-2. 依次使用本插件 [project-planner](../project-planner/SKILL.md)、[adversary](../adversary/SKILL.md)、[code-developer](../code-developer/SKILL.md)、[reviewer](../reviewer/SKILL.md) 的方法。可由同一执行者顺序完成，不要求生成代理。协调者切入具体阶段时明确当前角色，不停在只路由而无人实现。
-3. 维护共享契约中的交接字段；每阶段检查前进与返回条件。用户已给清晰要求就执行，只有真正属于用户的决定才暂停询问。
-4. reviewer 不通过：局部实现问题返回 code-developer；路线/契约问题返回 project-planner，必要时重做 adversary。修复后再次审查，再针对最终版本验证。
-5. 同一问题反复失败或方向混乱，使用 [untangler](../untangler/SKILL.md) 定位，不循环盲改。
-6. 闸门满足后用 [memory-keeper](../memory-keeper/SKILL.md) 核对必要记录，给出交付；没有记录需要维护就直接在会话汇总。
+1. Assess scale and risk, then tell the user whether you will use a streamlined or full workflow. Even a small bug fix retains brief clarification, boundary challenge, self-review, and verification.
+2. Apply the methods in this plugin's [project-planner](../project-planner/SKILL.md), [adversary](../adversary/SKILL.md), [code-developer](../code-developer/SKILL.md), and [reviewer](../reviewer/SKILL.md) in sequence. The same executor may perform them; spawning agents is not required. When the coordinator takes on a specific stage, state its current role and do not stop at routing with nobody implementing.
+3. Maintain the handoff fields in the shared contract and check each stage's entry and return conditions. Implement clear user requirements; pause only for decisions that genuinely belong to the user.
+4. If the reviewer rejects the work, return local implementation issues to code-developer and route plan or contract issues to project-planner, repeating adversary when needed. Review again after repairs, then verify the final version.
+5. If the same issue fails repeatedly or the direction becomes confused, use [untangler](../untangler/SKILL.md) to locate the cause instead of making blind changes in a loop.
+6. Once gates pass, use [memory-keeper](../memory-keeper/SKILL.md) to check necessary records and deliver. If no records need maintenance, summarize directly in the conversation.
 
-## 输出与停止
+## Output and stopping
 
-输出当前规模、顺序、实际产物、审查模式、验证证据、未决问题和下一责任角色。无宿主代理时明确“自审”，不能伪称独立评审。权限不足、用户决策待定、硬约束冲突或必需验证缺失时，状态为阻塞/待验证，不自动提交、部署或以归档充当完成。
+Report current scale, sequence, actual artifacts, review mode, verification evidence, unresolved questions, and the next responsible role. If no host agent is available, explicitly call it “self-review”; do not claim an independent review. When permissions are insufficient, a user decision is pending, hard constraints conflict, or required verification is missing, mark the work blocked or awaiting verification. Do not commit or deploy automatically, and do not treat an archive as proof of completion.

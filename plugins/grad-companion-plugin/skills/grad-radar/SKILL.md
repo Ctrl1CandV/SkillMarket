@@ -1,141 +1,141 @@
 ---
 name: grad-radar
-description: 根据读者基础和学习问题找、选、读论文与综述；按场景权衡刊会、年份和引用影响，进行有证据的信息压缩、完整综述导读、单篇精读及按本次方向的 arXiv 每日追新。默认照顾阅读经验较少的读者，支持链接/arXiv ID/PDF、快速判断与继续阅读，不代替系统性文献检索。
+description: Find, select, and read papers and reviews based on the reader's background and learning question. Weigh venue, year, and citation impact by context; provide evidence-grounded information synthesis, complete guides to reviews, close reading of one paper, and daily arXiv discovery for the current topic. By default, support readers with less experience. Accept links, arXiv IDs, or PDFs; provide quick assessments or continued reading. Does not replace systematic literature search.
 license: MIT
 metadata:
   version: "0.3.0"
 ---
 
-# grad-radar：需求选文、充分讲解与每日发现
+# grad-radar: Topic-Based Selection, Full Explanations, and Daily Discovery
 
-按意图进入对应流程，单篇内容继续复用现有主记录：
+Choose the workflow based on intent. For a single paper, continue using the existing primary record.
 
-默认服务阅读经验较少的学生或研究者，先解释必要概念、机制和证据；实际基础、任务、时间与用户已有读法决定展开程度。准确来源、重要条件和未读范围始终保留，流程、篇幅及理解题按需调整。
+By default, support students and researchers with less reading experience by explaining necessary concepts, mechanisms, and evidence. Adjust depth to the reader's actual background, task, time, and prior reading methods. Always retain source accuracy, important conditions, and the scope of material not read; adjust workflow, length, and comprehension questions as needed.
 
-- **主题选文**：用户描述领域、技术或研究问题 → 读 `references/selection-protocol.md` → 明确属性优先顺序与硬条件，核验来源、年份、引用及关键正文，给有理由的主读与互补推荐。一般优先顶刊顶会与近三年，经典基础和时效应用按场景调整，不套每日三天窗口。
-- **完整综述导读**：用户要求完整总结一篇综述 → 读 `references/survey-protocol.md` → 全篇覆盖、按需求展开、核对后交付可直接阅读的中文导读。选节工具按目录逐节调用；短预览不替代正文。
-- **单篇阅读（核心）**：用户指定论文（链接/arXiv ID/本地 PDF）或从每日简报选中 → 按 `references/reading-protocol.md` 判断与阅读 → 按 `references/note-templates.md` 产出笔记 → `scripts/reading_record.py` 落盘。每篇一个主记录、一个当前主笔记，AI 整理程度与人的阅读状态分开记录。
-- **每日发现（漏斗）**：本次输入确定方向/问题/偏好 → 元数据初筛、分级与少量信息提取 → 用户选中的论文**回到单篇阅读**。本次偏好不持久化；大部分论文不必读，读的那部分也只有一部分内容值得精读。
+- **Select papers for a topic:** The user describes a field, technology, or research question → read `references/selection-protocol.md` → state the priority order and hard requirements for this request, verify sources, year, citations, and key paper sections, then recommend a justified primary reading and complementary work. For general recommendations, usually prioritize leading journals/conferences and the past three years. Adapt for foundational or time-sensitive topics. Do not use the daily three-day window.
+- **Guide the reader through a full review:** The user asks for a complete summary of a review article → read `references/survey-protocol.md` → cover the full work, expand according to the request, and verify before delivering a guide that can be read directly. Use the section-selection tool for each section in the outline; a short preview does not replace the full text.
+- **Read one paper (core workflow):** The user specifies a paper (link/arXiv ID/local PDF) or selects one from a daily brief → follow `references/reading-protocol.md` → produce notes using `references/note-templates.md` → save them with `scripts/reading_record.py`. Keep one primary record and one current main note per paper; record AI organization and the user's reading status separately.
+- **Daily discovery (funnel):** Use the current input to determine the topic, question, and preferences → screen metadata, prioritize, and extract a small amount of information → return user-selected papers to the single-paper workflow. Do not persist the current preferences. Most papers need not be read, and only some parts of the papers that are read need close analysis.
 
-## 边界（不做什么）
+## Boundaries (what this skill does not do)
 
-- 主题选文服务当前学习问题，保留实际渠道、查询与取舍，不声称穷尽或形成可发表的系统综述。需要系统检索时使用实际可用的专项方法。
-- **阅读方法论在插件内**（reading-protocol/note-templates 就是它）；`paper-reader` 等外部精读工具若可用是可选增强，缺失不影响基本阅读——「无外部工具无法继续」不成立。
-- 不做语义向量检索；不发邮件/推送；不自动创建定时任务；「每日」= 用户调用时处理当天窗口。
-- 重要性/难度/阅读路线是**可纠正的建议**；「结论成立」「用户已读完」不由脚本或模型代判。
+- Topic-based selection serves the current learning question. Preserve actual sources, queries, and trade-offs; do not claim exhaustive coverage or a publishable systematic review. Use an available specialized method when systematic search is needed.
+- **The reading method is built into this plugin** (reading-protocol and note-templates define it). Optional external tools such as paper-reader can improve the workflow when available, but their absence does not prevent basic reading. “Cannot continue without an external tool” is not a valid limitation.
+- Do not do semantic-vector retrieval, send emails or notifications, or create scheduled tasks automatically. “Daily” means process the current day's window when the user invokes the skill.
+- Importance, difficulty, and reading route are **correctable recommendations**. Scripts and models do not decide that a conclusion is valid or that the user has finished reading.
 
-## 路径占位符
+## Path placeholder
 
-`{SKILL_DIR}` 指本 SKILL.md 所在目录的绝对路径，由调用方展开。脚本一律用引号包裹（路径可能含空格）。Windows 中文乱码时前置 `PYTHONUTF8=1`。
+`{SKILL_DIR}` means the absolute path to the directory containing this SKILL.md; the caller expands it. Always quote script paths. On Windows, prefix commands with `PYTHONUTF8=1` if Chinese text is garbled.
 
-## 配置：`.grad/config.json`
+## Configuration: `.grad/config.json`
 
-单篇讲解、主题选文和每日发现可直接使用本次会话，不要求先初始化。用户要求建立项目配置时才初始化；已有配置不覆盖（`CONFLICT` 转 `validate`）。日常可读取已有的数量/时间设置，研究方向以本次输入为准，不自动沿用旧查询：
+Single-paper explanations, topic selection, and daily discovery may use the current conversation directly; do not require project initialization first. Initialize only when the user asks for project configuration, and never overwrite an existing configuration (on `CONFLICT`, run `validate`). Routine work may read existing quantity and time settings, but use the current request for research direction and do not reuse old queries automatically. Read legacy query fields only when the user explicitly asks to use the saved scope:
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/radar_config.py" init --config ".grad/config.json" --json
 uv run --no-project "{SKILL_DIR}/scripts/radar_config.py" validate --config ".grad/config.json" --json
 ```
 
-- 脚本兼容 `keywords`/`categories`/`daily_caps`/`days`/`reading_profile`；`venues_watch`、`thesis_rules` 等其他 skill 字段原样保留。新模板的 `keywords`/`categories` 为空，不预填或保存研究方向。旧查询字段保留兼容，但不自动用于新的每日检索；用户本次明确指定使用旧配置范围时才读取它们。
-- 模板起点为低负担：`daily_caps: {must_read: 1, skim: 2}`、`days: 3`。本次数量/窗口要求优先；其余沿用已有设置，不静默覆盖。`daily_caps` 允许 0（该类不安排，允许零输出），拒绝负数/bool/非整数。
-- `reading_profile`（首次背景，四类）：direction/learning_goal/known_background/available_minutes。用户没填也能读论文（入门友好 + 难度标暂定）；会话内明确「我学过 X」本次生效；**用户明确要求记住才**按字段更新：
+- The script supports `keywords`, `categories`, `daily_caps`, `days`, and `reading_profile`; preserve other skill fields such as `venues_watch` and `thesis_rules` unchanged. New templates leave `keywords` and `categories` empty: do not prefill or store research topics. Keep legacy query fields for compatibility, but do not automatically use them for new daily searches. Read them only when the user explicitly asks to reuse the saved scope.
+- The low-burden starting defaults are `daily_caps: {must_read: 1, skim: 2}` and `days: 3`. The current request takes precedence; otherwise keep existing settings and do not silently overwrite them. `daily_caps` allows 0 (that tier may return no items) and rejects negative values, booleans, and non-integers.
+- `reading_profile` stores first-use background in four fields: direction, learning_goal, known_background, available_minutes. The paper can still be read if these are unset (use an introductory explanation and mark difficulty provisional). If the user says “I have studied X” in the current session, apply it for this session. **Update these fields only when the user explicitly asks you to remember the information:**
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/radar_config.py" profile --config ".grad/config.json" \
-  --direction "<方向>" --known-background "python,注意力机制" --available-minutes 20 --json
+  --direction "<direction>" --known-background "python,attention mechanisms" --available-minutes 20 --json
 ```
 
-- 每日拉取默认把本次方向转换成显式 `--keywords`/`--categories`，不写回配置；检查 `effective_params`，确保分类与关键词真实反映在查询上。`--config` 仍兼容用户明确指定的配置查询，显式 CLI > 该次指定配置 > 默认，读取不修改文件。已保存阅读背景供单篇讲解使用，不自动变成每日筛选方向。
+- For daily retrieval, turn the current topic into explicit `--keywords`/`--categories` parameters; do not write it into the configuration. Check `effective_params` to ensure the categories and keywords actually appear in the query. `--config` remains available when the user explicitly requests its query settings. Precedence is explicit CLI > configuration explicitly specified for this request > defaults. Reading the configuration does not modify it. Saved reading background may support single-paper explanations; it does not automatically become the topic for daily filtering.
 
-## 单篇阅读（主流程）
+## Single-paper reading (main workflow)
 
-对「帮我读这篇 / 值不值得读 / 讲详细一点 / 继续上次那篇」类请求：
+For requests such as “help me read this,” “is it worth reading,” “explain it in more detail,” or “continue the last paper”:
 
-1. **读协议**：`references/reading-protocol.md` §0 路由 → §1 处理顺序。先 `show` 查已有记录，已有进度与背景不重复询问。
-2. **取内容**：arXiv 走 `arxiv_html.py`（先目录，再按任务取节；完整综述须循环处理全篇）；用户提供 vN 必须读 vN；本地 PDF 用宿主实际可用的能力。只有摘要时最高交付 quick；仅身份交付原文入口，不生成内容笔记。
-3. **提取与写作**：读 `references/extraction-guide.md`，先建立关键论点的证据与条件清单，再按 `references/note-templates.md` 压缩和写连贯讲解。压缩前后核对定义、机制、设置、结果和限制，内容不足交付部分结果。完整综述另走 survey-protocol，不套短标准卡。
-4. **落盘**：用户请求笔记/继续更新或已有项目约定要求保存时使用脚本；只在聊天解释、推荐候选时可直接交付。公共内容生产用明确指定的隔离目录，不初始化或改写个人 `.grad`。每篇首次先 `register`（同身份幂等复用）：
+1. **Read the protocol:** Follow `references/reading-protocol.md` `0 for routing and `1 for the processing order. First run `show` to find an existing record; if one exists, do not ask again for recorded progress or background.
+2. **Retrieve content:** For arXiv, use `arxiv_html.py` (inspect the outline first, then retrieve sections needed for the task; a complete review guide must process the full work). If the user specifies version vN, read vN. Use the host's available capability for a local PDF. With only an abstract, the maximum deliverable is quick. With identity information alone, provide an original-source link, not a content note.
+3. **Extract and write:** Read `references/extraction-guide.md`. First make an evidence-and-conditions list for key claims, then compress it into a coherent explanation using `references/note-templates.md`. Before and after compression, verify definitions, mechanisms, settings, results, and limitations. If the content is insufficient, deliver partial results. A complete review has a separate survey-protocol; do not use the short card standard.
+4. **Save:** Use scripts when the user asks for notes, requests an update, or an existing project convention requires saving. For conversation-only explanations or recommendations, deliver directly. For public content production, use an explicitly named isolated directory; do not initialize or rewrite a personal `.grad`. On first save, run `register` for an idempotent record:
 
 ```bash
-uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" register --repo . --input-file <身份+来源+分类 JSON 文件> --json
+uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" register --repo . --input-file <identity-source-category-json> --json
 uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" save-note --repo . --paper <id> \
-  --note-file <笔记正文> --mode quick|standard|deep --basis sections \
-  --sections S1,S3 --limitations "图3仅提取到图注" --json
+  --note-file <note-body> --mode quick|standard|deep --basis sections \
+  --sections S1,S3 --limitations "Figure 3 was extracted from its caption only" --json
 ```
 
-5. **回复**：可直接阅读的结果；保存时附笔记路径。学习导读可给少量值得亲自读的原文位置及理解检查题；快速判断、结论核查或用户已有读法时按任务收尾，不固定出题。没有目录不猜定位。
-6. **用户表达阅读状态**只有这一条路（AI 生成笔记≠读完，脚本层面禁止）：
+5. **Reply:** Provide the result in a form the user can read directly and include the note path when saved. A learning guide may include a few useful locations in the original and comprehension checks. For a quick assessment, claim check, or reader with an existing method, finish according to the task; do not generate questions mechanically. Do not guess a location when there is no outline.
+6. **Update reading status only from the user's statement:** Use this one path when the user expresses reading status (an AI-generated note does not equal completion; scripts prohibit agent-assigned status):
 
 ```bash
-uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" set-status --repo . --paper <id或带版本的id> \
-  --status read --user-quote "<用户原话>" [--read-version v1] --json
+uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" set-status --repo . --paper <id-or-versioned-id> \
+  --status read --user-quote "<user's own words>" [--read-version v1] --json
 ```
 
-已读 v1 后又获取 v2：呈现「读过 v1，当前资料 v2」，不宣称 v2 已读，不抹阅读历史。**读完的版本以用户表达为准**（`--read-version` 或带版本定位查询 `--paper 2410.06992v1`），没有任何版本依据时 last_read_version 留 null——不拿当前资料版本冒充。笔记冲突（被人工编辑/merge 过）脚本默认拒绝整体替换；`--merge` 可连续多次追加补充段、人工内容永不丢，merge 过的笔记后续普通保存也继续走追加保护；确需整体重写才用 `--force`（旧稿自动快照进 history）。`.user.md` 用户批注 AI 永不覆盖。没有可读来源时不保存任何档笔记（`--basis unavailable` 会被拒），用 `--record-failure` 只登记获取失败与待补材料。
+After v1 was read and v2 is retrieved, say “v1 was read; current material is v2.” Do not claim that v2 was read or erase reading history. **The version read is determined by the user's statement** (use `--read-version` or a version-qualified lookup such as `--paper 2410.06992v1`). If no version is specified, leave `last_read_version` null; do not treat the current material version as the version read. By default the script rejects wholesale replacement when notes conflict with manual edits or have been merged. `--merge` may append additions repeatedly without losing human content, and subsequent ordinary saves to a merged note retain append protection. Use `--force` only when a full rewrite is truly needed; the old note is snapshotted to history. Never overwrite the user's `.user.md` annotations. If no readable source is available, do not save any note ( `--basis unavailable` is rejected); use `--record-failure` to record only the retrieval failure and materials needed.
 
-## 每日发现
+## Daily discovery
 
-复用本次请求和同一任务会话中的方向、问题及偏好；只缺少会改变查询范围的信息时才询问。没有范围时不套默认 LLM/Agent 方向、不从阅读记录推断兴趣。按本次目标拆关键词、选择分类：分类仅在有助限定时给出，不猜分类编号；只查关键词时省略 --categories。
+Reuse topic, question, and preferences from the current request and the same task conversation. Ask only when missing information would change the search scope. Without a defined scope, do not assume an LLM/Agent topic or infer interest from reading records. Split the current goal into keywords and choose categories; specify categories only when they narrow the search, and do not guess category IDs. Omit `--categories` when searching keywords alone.
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/arxiv_fetch.py" \
-  --keywords "<本次一组关键词，逗号分隔>" --days 3 --json
+  --keywords "<current comma-separated keyword group>" --days 3 --json
 ```
 
-- `days` 用本次要求或已有时间设置，未指定时 3；关键词重复传参表示组间 OR，组内 AND，可按本次范围增补分类。查询、元数据筛选、分级、少量提取和选中后阅读这套常规流程保留，不要求持久化研究偏好。
-- 脚本内部串行 + 1 req/3s + 429 指数退避，不要并行调用；窗口默认 3 天（arXiv 索引滞后 1—3 天）。旧条目标 `new: false` 表示曾获取；同一范围避免重复提醒，另一主题仍可因当前相关性被推荐，不把 seen 当兴趣过滤器。
-- 空结果且非网络错误：先怀疑索引滞后，可扩大窗口跑一次（`--days 5`），仍空就如实说。网络错误（NETWORK/RATE_LIMITED）与「没有匹配论文」分开呈现，**不把离线当零新文**。
-- 结果截断（`truncated: true`）必须展示，不能称已覆盖全部新论文。
+- Use the current request's `days` or an existing time setting; default to 3 when unspecified. Repeating the keyword argument means OR between groups and AND within a group; categories may be added for the current scope. This normal workflow keeps query, metadata filtering, prioritization, limited extraction, and reading of selected papers; it does not require persistent research preferences.
+- The script runs sequentially at one request every three seconds with exponential backoff on 429. Do not call it in parallel. The default window is three days (arXiv indexing can lag by 1–3 days). `new: false` marks an item retrieved before; avoid repeating it for the same scope. Another topic may still justify it based on current relevance; do not use seen status as an interest filter.
+- For empty results without a network error, suspect indexing lag first and expand the window once (for example, `--days 5`). If still empty, report that accurately. Separate network errors (`NETWORK`/`RATE_LIMITED`) from “no matching papers”; **do not present offline status as zero new papers**.
+- If results are truncated (`truncated: true`), state that; do not claim all new papers were covered.
 
-拿到列表后**读 `references/tiering.md`** 分级：machine 枚举 `must_read`/`skim`/`archive` 继续用，但用户侧呈现为「优先关注/可以速览/其他候选」——must_read 是当次推荐等级，≠ importance=core，更不是阅读任务。数量先按本次要求，其次已有 daily_caps，均无时用低负担起点 1+2；不足不凑数，其余进简短索引。按本次问题排列信号，不按论文类型或领域固定降级。默认不为几十篇候选获取全文；用户选中的才进单篇阅读。每篇写明可反驳的理由，输出声明「启发式排序，不是质量判断」。
+After retrieving the list, **read `references/tiering.md`** for prioritization. Continue using machine enums `must_read`/`skim`/`archive` internally, but display “priority reading,” “quick look,” and “other candidates” to the user. `must_read` is this search's recommendation tier, not `importance=core` and not a reading task. Quantity: follow the current request, then existing `daily_caps`; if neither specifies it, use the low-burden default of 1+2. Do not pad a short list; put remaining items in a brief index. Order evidence by the current question, not by fixed paper type or field. Do not retrieve full texts for dozens of candidates by default; only selected papers enter the single-paper workflow. Give a falsifiable reason for each paper and state that the ranking is heuristic, not a quality judgment.
 
-arXiv 新稿只表示近期候选，不自动满足“顶会/高被引”。用户要求高质量推荐时，最终主读还须走 selection-protocol 的来源与内容核验；用户直接指定某篇时照常阅读，不因未满足推荐门槛拒绝解释。
+A new arXiv submission is only a recent candidate; it does not automatically satisfy “top conference” or “highly cited.” For high-quality recommendations, verify the final primary reading's source and content using selection-protocol. Read a user-specified paper normally even if it does not meet recommendation criteria.
 
-用户请求留存或项目约定需要时保存当日简报 `.grad/radar/YYYY-MM-DD.md`。先核日期、查询范围与参数：同日同范围已有文件默认复用；范围变化时使用有区分的文件名，或按用户刷新请求保留旧版再更新，不把另一主题的旧简报当本次结果。简报记录本期查询与取舍供复核，不作为以后自动采用的偏好：
+When the user asks to save a brief or a project convention requires it, save the daily brief as `.grad/radar/YYYY-MM-DD.md`. First check date, search scope, and parameters. Reuse an existing brief for the same date and scope by default; if scope changes, use a distinct filename or preserve the old version before refreshing as requested. Do not mistake a previous brief on another topic for current results. The brief records this search and its decisions, not preferences to reuse automatically:
 
 ```markdown
 ---
 date: YYYY-MM-DD
 papers:
   - tier: must_read
-    arxiv_id: "<基础 id>"
-    paper_id: "arxiv-<基础 id>"
-    path: "radar/digest/arxiv-<基础 id>.md"
+    arxiv_id: "<base ID>"
+    paper_id: "arxiv-<base ID>"
+    path: "radar/digest/arxiv-<base ID>.md"
   - tier: skim
-    arxiv_id: "<id>"
+    arxiv_id: "<ID>"
     paper_id: null
     path: null
 ---
 ```
 
-头部是机器可读契约：`papers` 覆盖本期全部论文；`tier` 枚举 `must_read`/`skim`/`archive`；`arxiv_id` 字符串；`paper_id` 连接主记录（未登记写 null）；`path` 相对 `.grad/` 的笔记路径，无笔记 null。正文供人阅读，头部供 weekly-brief 等下游读取。简报末尾最多给一个当前学习建议（可以是「继续读完手里的 X」）。
+This header is a machine-readable contract: `papers` covers every paper in this period; `tier` is `must_read`/`skim`/`archive`; `arxiv_id` is a string; `paper_id` links to a primary record (null if not registered); `path` is relative to `.grad/` and null when there is no note. The body is for people; downstream tools such as weekly-brief read the header. End the brief with at most one current learning suggestion (for example, “finish the paper already in progress”).
 
-去重台账 `~/.grad-radar/seen.jsonl`（跨项目共享）**只表示曾获取/见过基础 ID**——seen ≠ 用户读过，也不表示兴趣；不从见过的论文推断未来偏好。单篇处理、笔记、阅读状态仍在项目 `.grad/` 的主记录里，日常分级反馈仅影响本次结果，不改 config 或插件规则。
+The shared deduplication ledger `~/.grad-radar/seen.jsonl` means only that a base ID was retrieved or seen. Seen does not mean the user read it or is interested in it. Do not infer future preferences from seen papers. Single-paper processing, notes, and reading status remain in the primary records under the project's `.grad/`. Feedback on daily tiers affects only the current result; do not change the configuration or plugin rules.
 
-## 章节切片（HTML 主路径）
+## Section slicing (HTML main path)
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/arxiv_html.py" <id|idvN> --outline --json
 uv run --no-project "{SKILL_DIR}/scripts/arxiv_html.py" <id|idvN> --sections 3,3.2 --json
 ```
 
-先目录后取节。输出带 `version/version_status/fetched_at`：缓存按版本隔离，命中保留原始获取时间；显式版本 404 如实报，不静默换版。
+Read the outline first, then fetch sections. Output includes `version`, `version_status`, and `fetched_at`. Cache entries are isolated by version and retain their original retrieval time when reused. If an explicitly requested version returns 404, report it; do not silently switch versions.
 
-## 降级链（按顺序，失败要说清卡在哪一级）
+## Fallback chain (in order; state where a failure occurred)
 
-1. `arxiv.org/html/<id>` 有 LaTeXML 结构 → 章节切片（主路径，`source: arxiv_html`）
-2. `NO_HTML`（无 LaTeXML，极老论文/纯图投稿）→ 询问用户是否有 PDF，或经宿主/外部解析器（mineru 等，若可用）读取（`source: host_pdf`/`external_parser` + `parser_name`）
-3. 用户直接粘正文/摘要 → `source: user_text`
-4. 有可靠摘要、无正文 → quick，`basis: abstract`；仅身份/标题 → 原文入口，按授权只登记身份。`basis: metadata` 不能保存内容笔记。
+1. `arxiv.org/html/<id>` provides a LaTeXML structure → slice by section (primary path, `source: arxiv_html`).
+2. `NO_HTML` (no LaTeXML; very old or image-only submission) → ask whether the user has a PDF or use a host capability or an external parser such as MinerU if available (`source: host_pdf`/`external_parser` plus `parser_name`).
+3. User pastes body text or an abstract → `source: user_text`.
+4. Reliable abstract but no body → quick mode with `basis: abstract`. Identity/title only → original-source link and, when authorized, register identity only. `basis: metadata` cannot save a content note.
 
-## 铁律
+## Non-negotiable rules
 
-- 每篇、每级都写可反驳的理由；不编造 arXiv id、章节号、数字；脚本报什么就是什么
-- AI 没读的章节就写进「未覆盖」，不假装读完全文；图的图注≠看过图
-- 简报与笔记都是新建/授权更新，不静默覆盖；重复展示与重读不产生重复笔记
-- 记录维护时间（created_at/updated_at/note.generated_at）永远不等于用户完成阅读的时间
+- Give a falsifiable reason for each paper and tier. Do not invent arXiv IDs, section numbers, or numbers; report scripts accurately.
+- List unread sections under “not covered.” Do not pretend to have read the full text; a figure caption is not the figure.
+- Briefs and notes are created or updated only when authorized; do not silently overwrite. Repeated display or rereading must not create duplicate notes.
+- Record-maintenance timestamps (created_at/updated_at/note.generated_at) are never the time the user finished reading.
 
-## 错误契约
+## Error contract
 
-脚本输出 `{"ok": false, "error": ..., "detail": ...}` 时如实转述，不盲目重试：`RATE_LIMITED`/`NETWORK` 说明离线或稍后再试，已有历史仅作为明确标记的旧资料；`NO_CONFIG`/`BAD_CONFIG` 核对本次指定的配置，日常检索可改用显式查询参数；`BAD_ARGS` 缺范围时补本次范围，不以空配置发起全领域查询；`AMBIGUOUS_IDENTITY` 列候选让用户确认；`CONFLICT` 说明保护了哪份旧内容、给哪几个出口；`NOT_FOUND` 说明没有这条记录。`ok: true` 只说明脚本完成，不说明笔记质量。
+When a script returns `{"ok": false, "error": ..., "detail": ...}`, report it accurately and do not retry blindly. `RATE_LIMITED`/`NETWORK` means offline or try later; prior material may be used only if clearly labeled old. For `NO_CONFIG`/`BAD_CONFIG`, check the configuration specified for this request; routine discovery may use explicit query parameters instead. For `BAD_ARGS` with no scope, ask for the current scope rather than searching all fields with an empty configuration. For `AMBIGUOUS_IDENTITY`, list candidates and ask the user to choose. For `CONFLICT`, explain what old content was protected and the available options. For `NOT_FOUND`, say that the record does not exist. `ok: true` means only that the script completed, not that the note is high quality.

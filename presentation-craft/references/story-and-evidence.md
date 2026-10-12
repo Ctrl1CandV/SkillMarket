@@ -1,37 +1,37 @@
-# 内容与证据
+# Content and Evidence
 
-## 选择讲述顺序
+## Choose the narrative order
 
-先确定听众听完后应理解或能够判断的事，再选择论证顺序。以下是可调整的路线，不是固定章节模板。
+First decide what the audience should understand or be able to judge after the presentation. Then choose an order that supports that goal. The following paths can be adapted; they are not fixed chapter templates.
 
-| 场景 | 有用的内容关系 |
+| Setting | Useful content relationships |
 | --- | --- |
-| 论文组会 | 问题与已有缺口 → 研究设计/方法 → 关键证据 → 验证与局限 → 对本组研究的意义与讨论 |
-| 实验进展 | 本轮目标 → 相对上次的变化 → 设置和结果 → 失败/不确定因素 → 下一步及需讨论的决定 |
-| 课程汇报 | 学习目标/问题 → 必需背景 → 核心概念 → 推导、实例或案例 → 比较和理解检查 → 结论 |
-| 答辩/完整研究 | 主问题 → 贡献及证据 → 各贡献之间的关系 → 可靠性与边界 → 总结及备份问答 |
-| 其他现场报告 | 听众的问题 → 事实和解释 → 可比较的选项/结果 → 所需决定或可用结论 |
+| Lab meeting | Problem and gap in prior work → study design/method → key evidence → validation and limits → relevance to the group's research and discussion |
+| Research update | This cycle's goal → changes since last time → setup and results → failures/uncertainties → next steps and decisions to discuss |
+| Course presentation | Learning goal/problem → necessary background → key concept → derivation, example, or case → comparison and comprehension check → conclusion |
+| Defense/full study | Main question → contributions and evidence → relationships among contributions → reliability and boundaries → summary and backup Q&A |
+| Other live report | Audience's question → facts and interpretation → comparable options/results → decision needed or usable conclusion |
 
-“内容丰富”由证据完整和讲述层次体现，不靠塞满每页。页面给出可观看的证据与主旨，详细推导、方法设置、参考和问答可放讲稿备注或附录。无需每套报告都有目录、章节页、三点总结或谢谢页。
+A rich presentation comes from complete evidence and narrative depth, not from filling every slide. Slides show viewable evidence and the main point. Detailed derivations, method settings, references, and Q&A can go in speaker notes or an appendix. A table of contents, section divider, three-point summary, or thank-you slide is not required in every deck.
 
-## 材料处理
+## Work with source materials
 
-先读摘要、目录、图注/表注和用户笔记，再深读支撑核心结论的部分。扫描件、复杂公式或密集图表确有需要时再用 OCR 或专门解析；不默认把全文交给外部服务。已有宿主 PDF 工具可直接复用，无需再装论文解析 MCP。
+Read the abstract, table of contents, captions, and user notes first. Then read the parts that support the core conclusions in depth. Use OCR or specialized parsing only when scanned pages, complex equations, or dense charts call for it; do not send the entire document to an external service by default. Reuse PDF tools already available in the host environment rather than installing a new paper-parsing MCP.
 
-区分作者报告、自己的解释、用户研究结果和假设。记录可核对结论的来源、页码/图号或实验文件；正文不需要每句话都脚注，关键数字和证据必须可追溯。准备给用户的报告不嵌入脚本路径等无关实现信息。
+Distinguish author-reported findings, your interpretation, the user's research results, and hypotheses. Record where conclusions can be checked: a source, page or figure number, or experiment file. Every sentence in the slide does not need a footnote, but key numbers and evidence must be traceable. Do not put irrelevant implementation details such as script paths into a presentation for the user.
 
-有用户要求清单时，在工作笔记里建立“要求 → 对应页面/备注”的映射，检查内容遗漏。没有精确页数要求时，给密集证据足够页面，不将详细要求压成同样的短摘要。
+If the user provides a requirements checklist, map each requirement to a slide or note in working notes and check for omissions. If there is no exact page-count requirement, give dense evidence enough room; do not compress a detailed request into the same short summary.
 
-## 图表与数据
+## Charts and data
 
-- 优先原图，或者由原始数据确定性重建。生成图只能承担概念说明，不能冒充实验数据、原图或精确系统结构。
-- 选择最支持论证的图/子图。裁切后保留必要的坐标轴、单位、误差、图例、面板标签、样本数和比例尺；密集多面板图可拆页。
-- 可获得原始值时，普通图表优先原生 PPT 图表；仅有论文图时保留清晰原图，不能反推或捏造准确数值。
-- 尽量直接标注数据；同一类别保持颜色和顺序一致。不要因风格美化改变坐标比例、有效位数、统计含义或排序逻辑。
-- 标明“来源”“改绘自”“本实验”“示意”或“演示数据”等适当归属。模板不能被当成新的事实来源。
+- Prefer original figures or deterministic reconstruction from source data. Generated diagrams can explain concepts; they must not impersonate experimental data, an original figure, or an exact system architecture.
+- Select figures or panels that best support the argument. Preserve necessary axes, units, errors, legends, panel labels, sample sizes, and scale bars when cropping. Split dense multipanel figures across slides when needed.
+- When raw values are available, prefer native PowerPoint charts for ordinary charts. If only a paper figure exists, keep the original image legible; do not infer or invent exact values.
+- Label data directly where possible, and keep color and ordering consistent for the same categories. Do not change axes, significant digits, statistical meaning, or sorting logic for aesthetic reasons.
+- Use appropriate attribution such as “Source,” “Adapted from,” “This experiment,” “Schematic,” or “Demo data.” A template is not a source of facts.
 
-## 讲稿与修订
+## Speaker notes and revisions
 
-结论式标题适用于有明确结论的页；背景、提问和讨论页可用问题式标题。不要为了标题显得有力夸大结果或抹掉条件。
+Use a conclusion-style heading on slides with a clear conclusion. Background, question, and discussion slides may use question-style headings. Do not exaggerate a result or erase its conditions just to make a heading sound forceful.
 
-备注补充图表解释、逻辑转折和易被追问的限定条件，不逐字重复页面。名称、缩写、方法、数据集、符号和指标在全稿保持一致。局部修改时同时核对相关备注、页码和交叉引用。
+Use notes to add chart explanation, transitions in logic, and caveats likely to be questioned. Do not repeat the slide text verbatim. Keep names, abbreviations, methods, datasets, symbols, and metrics consistent throughout the deck. For local edits, also check relevant notes, page numbers, and cross-references.

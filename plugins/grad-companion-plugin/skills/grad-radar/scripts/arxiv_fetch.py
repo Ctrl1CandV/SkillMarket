@@ -2,20 +2,20 @@
 # requires-python = ">=3.12"
 # dependencies = ["httpx"]
 # ///
-"""arXiv 元数据检索（阅读漏斗·阶段一：筛选）。
+"""Search arXiv metadata (reading funnel, stage 1: screening).
 
-只用元数据（标题/摘要/作者/分类/日期），不取全文——大部分论文在这一层被筛掉。
+Use metadata only (title, abstract, authors, categories, and date), not full text; most papers are filtered out at this stage.
 
-网络约束（实测教训）：
-- 端点必须用 https，http 返回 301
-- 串行请求，间隔 >= 3s；429 指数退避 3s/6s/12s，耗尽后如实报错退出，不静默返回空结果
-- httpx 默认只读环境变量代理、不读 Windows 系统代理：机器开着系统代理（Clash 等）时
-  脚本仍直连，若直连被网络阻断（持续超时/reset），表现即「网络对 arXiv 持续阻断」。
-  故显式读注册表系统代理；通道优先级 = 环境变量代理（httpx 自认）> 系统代理 > 直连，
-  连接层失败才换通道，拿到过 HTTP 响应就固定通道
+Network constraints (lessons from actual use):
+- Use HTTPS endpoints; HTTP returns 301.
+- Send requests serially with at least 3 seconds between them. Back off after 429 responses for 3/6/12 seconds; report an error after retries are exhausted rather than silently returning no results.
+- httpx reads environment proxy variables by default, but not the Windows system proxy. If a system proxy (such as Clash) is enabled,
+  the script would still connect directly; repeated timeouts or resets would look like a persistent network block on arXiv.
+  Read the system proxy from the registry explicitly. Route priority: environment proxy (handled by httpx) > system proxy > direct connection;
+  switch routes only after a connection-layer failure, and keep the route after receiving an HTTP response.
 
-输出契约：--json 时 stdout 打印单个 JSON 对象：
-  {"ok": true, "data": {...}}  或  {"ok": false, "error": "...", "detail": "..."}
+Output contract: with --json, stdout prints one JSON object:
+  {"ok": true, "data": {...}} or {"ok": false, "error": "...", "detail": "..."}
 """
 
 from __future__ import annotations
@@ -35,10 +35,10 @@ API_URL = "https://export.arxiv.org/api/query"
 ATOM = "{http://www.w3.org/2005/Atom}"
 ARXIV_NS = "{http://arxiv.org/schemas/atom}"
 OPENSEARCH = "{http://a9.com/-/spec/opensearch/1.1/}"
-MIN_INTERVAL = 3.0          # 请求间隔下限（秒）
-BACKOFF_SECONDS = (3, 6, 12)  # 429/网络错误的指数退避
+MIN_INTERVAL = 3.0          # Minimum interval between requests (seconds)
+BACKOFF_SECONDS = (3, 6, 12)  # Exponential backoff for 429 responses and network errors
 PAGE_SIZE = 100
-MAX_PAGES = 3               # 单次运行最多 3 页，尊重 ToU
+MAX_PAGES = 3               # At most 3 pages per run, in respect of the Terms of Use
 
 if sys.stdout and sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -50,7 +50,7 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 def windows_system_proxy() -> str | None:
-    """读 Windows 注册表的系统代理（手动代理那档）；非 Windows 或未启用返回 None。"""
+    """Read the manually configured system proxy from the Windows registry; return None when unavailable or disabled."""
     try:
         import winreg
     except ImportError:
@@ -67,7 +67,7 @@ def windows_system_proxy() -> str | None:
     if not enabled:
         return None
     server = str(server or "").strip()
-    if "=" in server:  # 形如 http=127.0.0.1:7890;https=127.0.0.1:7890，按协议取
+    if "=" in server:  # For example, http=127.0.0.1:7890;https=127.0.0.1:7890; select the proxy by scheme.
         per_protocol = {}
         for part in server.split(";"):
             name, _, value = part.partition("=")
@@ -81,10 +81,10 @@ def windows_system_proxy() -> str | None:
 
 
 def proxy_candidates() -> list[str | None]:
-    """联网通道候选，按优先级排列；None 表示直连。
+    """Return candidate network routes in priority order; None means direct connection.
 
-    环境变量代理 httpx 自己会认（trust_env），设了就不重复指定；
-    没设时补上它不读的 Windows 系统代理。直连永远垫底作回退。
+    httpx handles environment proxy variables itself (trust_env), so do not specify them again;
+    add the Windows system proxy only when no environment proxy is set. Direct connection is always the final fallback.
     """
     candidates: list[str | None] = []
     env_proxied = any(os.environ.get(v) for v in (
@@ -114,21 +114,21 @@ def http_get(url: str) -> str:
                 headers={"User-Agent": "grad-companion-arxiv-fetch/0.1"},
                 proxy=routes[route_index],
             )
-        except Exception as exc:  # 连接层失败：换通道再试；退避耗尽后如实报错
+        except Exception as exc:  # Retry on connection-layer failures; report the error after backoff is exhausted.
             if i == len(waits) - 1:
-                tried = "、".join(r or "直连" for r in routes)
-                die("NETWORK", f"无法连接 arXiv（已尝试 {tried}）：{exc}")
+                tried = ", ".join(r or "direct connection" for r in routes)
+                die("NETWORK", f"Could not connect to arXiv (tried {tried}): {exc}")
             route_index = (route_index + 1) % len(routes)
             continue
-        # 拿到 HTTP 响应说明当前通道能通，后续重试固定走它
+        # An HTTP response confirms that this route works; keep using it for subsequent retries.
         if resp.status_code == 200:
             return resp.text
         if resp.status_code == 429:
             if i == len(waits) - 1:
-                die("RATE_LIMITED", "arXiv 返回 429，退避耗尽。请稍后再试（限速 1 req/3s）", retry_after=60)
+                die("RATE_LIMITED", "arXiv returned 429 and retries were exhausted. Try again later (limit: 1 request per 3 seconds).", retry_after=60)
             continue
-        # 非 429 的 HTTP 错误：重试无意义，如实报错
-        die(f"HTTP_{resp.status_code}", f"arXiv API 返回 {resp.status_code}：{resp.text[:200]}")
+        # Retrying a non-429 HTTP error is not useful; report it as received.
+        die(f"HTTP_{resp.status_code}", f"arXiv API returned {resp.status_code}: {resp.text[:200]}")
 
 
 def build_search_query(categories: list[str], groups: list[list[str]],
@@ -178,8 +178,8 @@ def parse_feed(xml_text: str) -> tuple[int, list[dict]]:
             "updated": e.findtext(f"{ATOM}updated", default=""),
             "abs_url": f"https://arxiv.org/abs/{raw}",
             "html_url": f"https://arxiv.org/html/{raw}",
-            # F04：元数据返回的当前版本与版本化链接——指定版本读取时以这两个为准，
-            # 无 version 字段的旧消费者继续用 abs_url/html_url（基础 ID）
+            # F04: metadata provides the current version and versioned links; use them when a specific version is requested.
+            # Older consumers without a version field continue to use abs_url/html_url (the base ID).
             "abs_versioned_url": f"https://arxiv.org/abs/{raw}{version}",
             "html_versioned_url": (f"https://arxiv.org/html/{raw}{version}" if version else None),
         })
@@ -197,7 +197,7 @@ def load_seen_ids(path: Path) -> set[str]:
         try:
             seen.add(json.loads(line).get("id", ""))
         except json.JSONDecodeError:
-            continue  # 坏行跳过：台账局部损坏不应中断拉取
+            continue  # Skip malformed rows; a partially damaged ledger should not stop the fetch.
     seen.discard("")
     return seen
 
@@ -229,7 +229,7 @@ def fetch_all(query: str, max_results: int) -> tuple[list[dict], int, str]:
         }
         last_url = API_URL + "?" + urllib.parse.urlencode(params)
         if page > 0:
-            time.sleep(MIN_INTERVAL)  # 翻页前强制间隔
+            time.sleep(MIN_INTERVAL)  # Enforce the delay before fetching the next page.
         total, entries = parse_feed(http_get(last_url))
         papers.extend(entries)
         if not entries or len(papers) >= min(total, max_results):
@@ -238,55 +238,55 @@ def fetch_all(query: str, max_results: int) -> tuple[list[dict], int, str]:
 
 
 def load_radar_config(path: str) -> dict:
-    """读 .grad/config.json 的 radar 字段（keywords/categories/daily_caps）。
+    """Read the radar fields (keywords/categories/daily_caps) from .grad/config.json.
 
-    只读不校验（校验归 radar_config.py）；解析失败 fail-closed——配置存在但读不懂
-    不能假装没配置去用默认值，那会让用户的设置静默失效。
+    Read without validating (validation belongs to radar_config.py). Fail closed if parsing fails: if a config exists but cannot
+    be read, do not pretend it is absent and silently use defaults, which would ignore the user settings.
     """
     cfg_path = Path(path)
     if not cfg_path.is_file():
-        die("NO_CONFIG", f"配置不存在：{cfg_path}；先运行 radar_config.py init，或去掉 --config 用显式参数")
+        die("NO_CONFIG", f"Configuration not found: {cfg_path}; run radar_config.py init or omit --config and pass explicit options.")
     try:
         data = json.loads(cfg_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        die("BAD_CONFIG", f"配置无法解析：{cfg_path}：{exc}")
+        die("BAD_CONFIG", f"Could not parse configuration: {cfg_path}: {exc}")
     if not isinstance(data, dict):
-        die("BAD_CONFIG", f"配置根节点必须是 JSON 对象：{cfg_path}")
+        die("BAD_CONFIG", f"The configuration root must be a JSON object: {cfg_path}")
     return data
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="arXiv 元数据检索（筛选层）")
+    ap = argparse.ArgumentParser(description="Search arXiv metadata (screening stage)")
     ap.add_argument("--days", type=int, default=None,
-                    help="回看天数（默认 3：arXiv 索引滞后 1-3 天）；--config 时可由配置 days 字段提供")
+                    help="Look back this many days (default 3: arXiv indexing can lag by 1–3 days); with --config, use its days field")
     ap.add_argument("--keywords", action="append", default=None,
-                    help="逗号分隔关键词=一组（组内 AND）；重复给出=组间 OR。如 --keywords \"llm,agent\"；"
-                         "给出任一组即整体替代配置组，不与配置混拼")
+                    help="Comma-separated keywords form one group (AND within each group); repeated options mean OR across groups. Example: --keywords \"llm,agent\";"
+                         "Supplying any group replaces all configured groups; CLI groups are not merged with configured groups")
     ap.add_argument("--categories", default=None,
-                    help="逗号分隔 arXiv 分类；显式给出时替代配置 categories")
+                    help="Comma-separated arXiv categories; when specified, replaces configured categories")
     ap.add_argument("--config", default="",
-                    help="从 .grad/config.json 读取 keywords/categories/days（显式 CLI 参数 > 配置 > 默认）")
-    ap.add_argument("--max-results", type=int, default=100, help="上限（默认 100，封顶 300）")
+                    help="Read keywords/categories/days from .grad/config.json (explicit CLI options > config > defaults)")
+    ap.add_argument("--max-results", type=int, default=100, help="Maximum results (default 100, capped at 300)")
     ap.add_argument("--seen-file", default=str(Path.home() / ".grad-radar" / "seen.jsonl"),
-                    help="去重台账路径（默认 ~/.grad-radar/seen.jsonl，跨项目共享）")
-    ap.add_argument("--no-dedup", action="store_true", help="不读写台账，全部视为 new")
-    ap.add_argument("--json", action="store_true", help="stdout 输出 JSON")
+                    help="Deduplication ledger (default ~/.grad-radar/seen.jsonl, shared across projects)")
+    ap.add_argument("--no-dedup", action="store_true", help="Do not read or write the ledger; treat every result as new")
+    ap.add_argument("--json", action="store_true", help="Print JSON to stdout")
     args = ap.parse_args()
 
-    # 参数优先级：显式 CLI > 配置 > 默认（R12/R13）。argparse 默认全部置 None，
-    # 才能区分「用户没传」与「用户传了和默认相同的值」。
-    cli_categories = args.categories  # config 会改写 args.categories，先记住 CLI 原值
+    # Priority: explicit CLI options > config > defaults (R12/R13). argparse defaults are all None,
+    # which distinguishes an omitted option from one explicitly set to the same value as its default.
+    cli_categories = args.categories  # Applying config rewrites args.categories, so preserve the original CLI value first.
     config_used: list[str] = []
     groups: list[list[str]] | None = None
     if args.config:
         cfg = load_radar_config(args.config)
         if args.keywords is not None:
-            groups = [k.split(",") for k in args.keywords]  # 重复传组=整体替代配置组，不与旧组混拼
+            groups = [k.split(",") for k in args.keywords]  # Repeated groups replace all configured groups rather than merging with them.
             config_used.append("keywords=CLI")
         elif isinstance(cfg.get("keywords"), list) and cfg["keywords"]:
             if not all(isinstance(g, list) and g and all(isinstance(w, str) and w.strip() for w in g)
                        for g in cfg["keywords"]):
-                die("BAD_CONFIG", f"配置 keywords 必须是非空字符串的嵌套数组：{args.config}")
+                die("BAD_CONFIG", f"Configured keywords must be a nested array of non-empty strings: {args.config}")
             groups = cfg["keywords"]
             config_used.append("keywords=config")
         if args.categories is not None:
@@ -299,10 +299,10 @@ def main() -> None:
         elif cfg.get("days") is not None:
             days_value = cfg["days"]
             if isinstance(days_value, bool) or not isinstance(days_value, int) or days_value < 1:
-                die("BAD_CONFIG", f"配置 days 必须是 >=1 的整数，收到 {days_value!r}")
+                die("BAD_CONFIG", f"Configured days must be an integer >= 1; got {days_value!r}")
             args.days = days_value
             config_used.append("days=config")
-    # 无 --config 时补齐来源记录（--config 分支已逐项记录过）
+    # Record defaults when --config is absent; the --config branch records each source separately.
     if groups is None and args.keywords is not None:
         groups = [k.split(",") for k in args.keywords]
         config_used.append("keywords=CLI")
@@ -319,9 +319,9 @@ def main() -> None:
     categories = [c.strip() for c in (args.categories or "").split(",") if c.strip()]
 
     if args.days < 1:
-        die("BAD_ARGS", "--days 必须 >= 1")
+        die("BAD_ARGS", "--days must be >= 1")
     if not groups and not categories:
-        die("BAD_ARGS", "keywords 与 categories 至少给一个（CLI 或 --config 均可）")
+        die("BAD_ARGS", "At least one of keywords or categories is required (from CLI or --config)")
     max_results = min(args.max_results, PAGE_SIZE * MAX_PAGES)
     end = datetime.now(timezone.utc)
     start = end - timedelta(days=args.days)
@@ -343,7 +343,7 @@ def main() -> None:
     data = {
         "query": query,
         "api_url": api_url,
-        "effective_params": {  # 用户可见的实际生效参数（R12/R13 验收：查询用的是谁的值一目了然）
+        "effective_params": {  # Parameters actually used; R12/R13 make the source of each value visible.
             "days": args.days,
             "categories": categories,
             "keyword_groups": groups,
@@ -360,14 +360,14 @@ def main() -> None:
         print(json.dumps({"ok": True, "data": data}, ensure_ascii=False))
         return
 
-    print(f"查询：{query}")
-    print(f"有效参数：days={args.days}｜分类={','.join(categories) or '（无）'}｜"
-          f"来源：{'、'.join(data['effective_params']['sources'])}")
-    print(f"命中 {total}，取回 {len(papers)}，其中新 {len(new_ids)}" + ("（已截断）" if total > len(papers) else ""))
+    print(f"Query: {query}")
+    categories_text = ", ".join(categories) or "(none)"; sources_text = ", ".join(data["effective_params"]["sources"])
+    print(f"Effective parameters: days={args.days} | categories={categories_text} | sources: {sources_text}")
+    print(f"Matched {total}; fetched {len(papers)}; new {len(new_ids)}" + (" (truncated)" if total > len(papers) else ""))
     for p in papers:
-        flag = "新 " if p["new"] else "  "
+        flag = "NEW " if p["new"] else "    "
         first_author = p["authors"][0] if p["authors"] else "?"
-        more = f" 等{len(p['authors'])}人" if len(p["authors"]) > 1 else ""
+        more = " and {} more".format(len(p["authors"])) if len(p["authors"]) > 1 else ""
         print(f"{flag}arXiv:{p['id']}  {p['title']}  [{first_author}{more} / {p['primary_category']}]")
         print(f"     {p['abs_url']}")
 

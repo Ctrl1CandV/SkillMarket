@@ -1,54 +1,55 @@
-# Agent 岗考点清单（career-bridge 用）
+# Interview Topics for Agent Roles (career-bridge)
 
-> 来源：2026 年初公开渠道的大厂 Agent 岗面经整理。
-> 覆盖说明：完整面经提了「Agent 八股 14 维度」，本文件收录**已核实的 7 个维度**，其余未取证不编。用户新面经随时往这里补——这是活文档。
+> Source: interview reports for Agent roles at major technology companies, compiled from public sources in early 2026.
+> Coverage: the full collection mentions 14 “Agent fundamentals” areas. This file includes **7 verified areas**; the remaining areas are omitted because no supporting evidence was found. Add new user-provided interview reports as they become available; this is a living document.
 
-结论先行：2026 秋招中，字节/阿里/腾讯及垂类 AI 公司的算法岗，Agent 问题已是标配；不再只问 Transformer 原理，而是考**系统设计、任务拆解、记忆与上下文管理**。研究方向与面试考点高度重合，是顺风局——前提是答得出「为什么」。
+Conclusion first: in autumn 2026 recruiting, algorithm roles at ByteDance, Alibaba, Tencent, and vertical AI companies routinely ask about Agents. Interviews increasingly test **system design, task decomposition, memory, and context management**, not just Transformer fundamentals. These topics overlap strongly with research areas, which can be an advantage if you can explain “why.”
 
-## 1. LangChain vs LangGraph
+## 1. LangChain vs. LangGraph
 
-- 核心：隐式控制流 vs 显式状态机。一句话版：「LangChain 是让 LLM 自由发挥，LangGraph 是给 LLM 画跑道」
-- 追问方向：什么时候必须用图？（长流程、需要回退/分支/人工介入时；链式封装会把重试逻辑埋进 prompt）
+- Core distinction: implicit control flow vs. explicit state machine. In one sentence: “LangChain lets the LLM improvise; LangGraph gives it a track to follow.”
+- Likely follow-up: When is a graph necessary? For long workflows, or when rollback, branching, or human intervention is required; a chain wrapper can bury retry logic in the prompt.
 
-## 2. MCP vs Function Calling
+## 2. MCP vs. function calling
 
-- 核心：外接服务生态 vs 模型内嵌能力
-- 追问方向：生产环境取舍（工具治理、鉴权、版本管理放哪层；MCP 多一层协议但换供应商解耦）
+- Core distinction: an ecosystem of external services vs. capabilities built into the model.
+- Likely follow-up: production trade-offs—where to handle tool governance, authentication, and version management; MCP adds a protocol layer but decouples vendor changes.
 
-## 3. 任务拆解粒度
+## 3. Task decomposition granularity
 
-- MECE，**3-6 步为宜**：太粗则单步失败率高，太细则误差累积、上下文膨胀
-- 追问方向：怎么判断一个任务该拆还是该换模型
+- MECE; **3–6 steps is a useful range**. Too coarse means a high failure rate per step; too fine accumulates errors and expands context.
+- Likely follow-up: How do you decide whether to split a task or switch models?
 
-## 4. 多 Agent 一致性
+## 4. Multi-agent consistency
 
-- 三件套：**状态机 + 幂等 + 事件溯源**
-- 追问方向：两个 agent 同时写一条记录怎么办（幂等键、版本号/乐观锁、事件回放恢复）
+- Three essentials: **state machine + idempotency + event sourcing**.
+- Likely follow-up: What if two agents write the same record at once? Use idempotency keys, version numbers or optimistic locking, and event replay for recovery.
 
-## 5. 显存优化（SFT/微调场景高频）
+## 5. GPU memory optimization (common in SFT/fine-tuning interviews)
 
-7B 模型 SFT 的三大显存来源（量级数字，面试可直接背）：
+Three main sources of GPU memory for SFT of a 7B model (approximate scale figures often used in interviews):
 
-| 来源 | 量级 |
+| Source | Approximate size |
 |---|---|
-| 参数（FP16） | ~14 GB |
-| AdamW 优化器状态（fp32 动量+方差+主参数） | ~56 GB |
-| 激活值 | 20+ GB（随序列长度涨） |
+| Parameters (FP16) | ~14 GB |
+| AdamW optimizer state (FP32 momentum + variance + master parameters) | ~56 GB |
+| Activations | 20+ GB (increases with sequence length) |
 
-手段：ZeRO stage 1/2/3、gradient checkpointing、AMP 混合精度、按长度分桶
-**真实案例（字节二面原题「重来会怎么改」）**：直接上 ZeRO-3，后来发现 **ZeRO-2 + gradient checkpointing 在 8 卡下通信更少、吞吐更高**，本应先对比 Stage 1/2/3 的吞吐-显存曲线。教训：「不要假设主流方案就是最优，尤其在资源受限场景下」
+Techniques: ZeRO stages 1/2/3, gradient checkpointing, AMP mixed precision, and length-based bucketing.
 
-## 6. Memory 管理
+**Reported interview example (“What would you change if you did it again?” from a ByteDance second round):** They started with ZeRO-3 and later found that **ZeRO-2 + gradient checkpointing had less communication and higher throughput on 8 GPUs**. They should have compared throughput/memory curves for stages 1/2/3 first. Lesson: “Do not assume the mainstream approach is optimal, especially when resources are constrained.”
 
-- 短期（上下文窗口策略：截断/压缩/摘要）vs 长期（外部存储：向量库/结构化档案）
-- 追问方向：什么时候 memory 反而伤害（过期信息污染决策、检索噪声）
+## 6. Memory management
 
-## 7. Reward 设计
+- Short-term (context-window strategies: truncation, compression, summarization) vs. long-term (external storage: vector databases, structured records).
+- Likely follow-up: When can memory hurt? Stale information can contaminate decisions, and retrieval can add noise.
 
-- 稀疏奖励的 shaping 陷阱；过程奖励 vs 结果奖励；reward hacking 的典型表现
-- 追问方向：怎么验证 reward 函数本身没有 bug（抽样人工审查、对抗性测试）
+## 7. Reward design
 
-## 使用法（career-bridge 流程第 4 步）
+- Reward-shaping traps with sparse rewards; process reward vs. outcome reward; common forms of reward hacking.
+- Likely follow-up: How can you verify that the reward function itself has no bug? Use sampled human review and adversarial tests.
 
-逐维度自评：能脱稿讲 2 分钟并扛住一层追问 = ✅；能讲但扛不住追问 = ⚠️ 待补；讲不出 = ❌ 缺口。
-⚠️ 和 ❌ 生成「八股缺口清单」，优先补 ⚠️（离达标最近）。
+## How to use this list (step 4 of the career-bridge workflow)
+
+Self-assess each area: can explain it for two minutes without notes and handle one follow-up = ✅; can explain it but cannot handle a follow-up = ⚠️ needs work; cannot explain it = ❌ gap.
+Turn ⚠️ and ❌ items into an “interview fundamentals gap list,” prioritizing ⚠️ items because they are closest to the required level.

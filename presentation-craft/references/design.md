@@ -1,37 +1,37 @@
-# 视觉设计与投影可读性
+# Visual Design and Projection Readability
 
-## 先选方向，再做全稿
+## Choose a direction before building the deck
 
-优先用户指定的学校/实验室模板、风格、配色或正面参考。多个参考需区分内容参考与视觉参考；不能把用户给的旧稿自动当成满意的审美标准。查看参考的实际画面，分析主次面积、字体尺度、疏密节奏、图表处理与配色面积，不只提取色号。
+Prioritize a school or lab template, style, palette, or positive reference supplied by the user. Distinguish content references from visual references when there are several. Do not assume that an old deck the user provided is a satisfactory aesthetic model. Inspect the actual references and analyze area hierarchy, type scale, density and pacing, chart treatment, and color distribution; do not merely extract color values.
 
-没有参考时根据场合决定方向：学术结果可用清晰浅底、深色字和一个受控强调色；课程讲解可用更强的示意图和局部视觉隐喻；开场和结尾可适度变化气氛。克制可以有表现力，不等于套一个白底标题加列表的通用模板。用户已给视觉方向时不另行要求选模板。
+Without a reference, choose a direction that fits the setting. Research results can use a clear light background, dark text, and one controlled accent color. Teaching can use stronger diagrams and local visual metaphors. Opening and closing slides may shift the mood slightly. Restraint can still be expressive; it does not mean defaulting to a white title slide followed by generic bullet lists. If the user has already given a visual direction, do not ask them to choose a template.
 
-需要风格选项时读 [风格方向](styles.md)。那里给出可调整的视觉关系，不是必须照抄的模板；既有示例的深蓝与青绿配色不作为所有报告的默认样式。
+When style options are useful, read [style directions](styles.md). They describe adjustable visual relationships, not mandatory templates. The navy and teal colors in examples are not the default for every presentation.
 
-新稿先实现最能暴露问题的一页，如长中文标题、数据密集图、流程或比较页，并用实际渲染检查。风格不明且存在真实取舍时，可做两个低成本候选；不强制每次提供多方案，也不在低样式阶段只放短占位字。
+For a new deck, first build the page most likely to reveal design problems, such as a long Chinese title, a dense data chart, a process, or a comparison. Render it and inspect it. If the style is unclear and there is a real trade-off, prepare two low-cost candidates. Do not require options every time, and do not hide title wrapping or chart issues behind short placeholder text.
 
-## 版式
+## Layout
 
-一页有一个明确的阅读入口和主要证据。根据证据的形状、密度和作用分配空间：大图、非对称图文、横向流程、成对比较、完整表格或开放讨论。不要让所有内容争取同样面积，不因凑排版删掉关键事实。
+Each slide needs a clear entry point and primary evidence. Allocate space according to the evidence's shape, density, and purpose: a large image, asymmetric text and image, horizontal process, paired comparison, full table, or open discussion. Do not give every element equal space or remove essential facts just to make the layout fit.
 
-共享少量对齐线和间距档。标题、图边、图注和来源应体现明确关系，注释靠近被解释对象。容器在存在真实分组或比较关系时可用，不把全稿装进重复三卡片。缩略图总览要有连贯又不同的构图节奏；相似的证据页允许保持可比较结构。
+Use a small set of shared alignment guides and spacing increments. Titles, image edges, captions, and sources should have clear relationships; place annotations near the things they explain. Containers can show real grouping or comparison, but do not put the whole deck into the same repeated three-card layout. Thumbnails should show a coherent but varied composition rhythm; evidence slides that need comparison may keep a similar structure.
 
-分配足够空间给图表标签和中文混排标题。无法读清的原图应拆分、合理裁切或独占页面，不通过缩成小图保持“对称”。留白服务阅读和聚焦，不追求填满，也不留下孤立小对象和无意的大空洞。
+Give chart labels and mixed Chinese text and headings enough room. If an original image cannot be read, split it, crop it reasonably, or give it a full slide; do not shrink it to a tiny image for symmetry. Use empty space to support reading and focus. Avoid isolated small objects and unintended large gaps.
 
-## 字体与颜色
+## Type and color
 
-默认 16:9 宽屏可从标题约 28–36 pt、正文约 20–24 pt、图注/来源约 11–14 pt 开始，再按实际画布、讲堂和信息密度调整。它们是起点，不是对所有模板的硬门槛；不会因为字缩进盒子就认定投影可读。正文过多时先缩短或拆页，自动缩字是最后选择。
+For a default 16:9 widescreen canvas, start around 28–36 pt for titles, 20–24 pt for body text, and 11–14 pt for captions and sources. Adjust for the actual canvas, room, and information density. These are starting points, not hard requirements for every template. Text fitting inside a box does not prove it will be readable on a projector. When there is too much body text, shorten or split it first; automatic font shrinking is the last resort.
 
-选择环境和最终展示电脑实际有的中文字体，例如 Microsoft YaHei 或 Noto Sans CJK；英文字体与数字风格协调。不能只设置字体名称就认为字体已加载，渲染时检查缺字、字体替换和英中基线。源稿使用本地字体，不依赖演示现场网络。字体不一定随 PPTX 嵌入。
+Choose Chinese fonts that are available on the production and presentation computers, such as Microsoft YaHei or Noto Sans CJK. Coordinate Latin type and numeral styling. A font name alone does not prove the font loaded; check rendering for missing glyphs, font substitution, and Chinese/English baseline alignment. Keep fonts local to the source deck rather than depending on a network connection at the presentation venue. Fonts may not be embedded in the PPTX.
 
-建立标题、正文、数据、辅助说明的清晰层级。根据内容选有限的背景、文字、辅助和强调色，按面积控制强调。相同语义的图表用色保持一致；重点与背景应有足够对比。不能只靠红绿或颜色区分信息。
+Establish a clear hierarchy for titles, body, data, and supporting notes. Choose a limited set of background, text, supporting, and accent colors according to the content, and control the area used by the accent. Use consistent colors for the same chart meaning. Ensure sufficient contrast between important content and its background. Do not communicate distinctions through red and green alone or through color alone.
 
-## 素材与表达
+## Assets and expression
 
-不用无关图库图和装饰填充证据页。概念图、流程、图标或照片须承担明确的信息或表达作用，按最终尺寸检验画质与裁切。付费生图不是必需步骤；简单示意可用原生形状、SVG 或 Mermaid，精确图表用代码/数据重建。
+Do not use unrelated stock images or decorative filler on evidence slides. A concept drawing, process diagram, icon, or photo should have a clear information or expressive role; check its quality and crop at the final size. Paid image generation is not required. Simple diagrams can use native shapes, SVG, or Mermaid; rebuild precise charts from code or data.
 
-动画用于分步解释，按 [基本动画](basic-motion.md) 实现；阅读用的静态预览应保留完整内容，实际放映按点击逐步呈现。网页交互不能被当成 PDF/PPTX 里的可用功能。
+Use animation for step-by-step explanation, following [basic animation](basic-motion.md). Static previews for reading should retain all content, while actual slide shows may reveal it in steps. Web interactions are not functional features in a PDF or PPTX.
 
-## 审美检查
+## Aesthetic review
 
-同时看全稿缩略图和实际大小：是否有明确重点、自然阅读顺序、可读证据、适当文字量、连贯配色和字体；是否出现机械重复、图片质量不匹配、粗糙对齐和过强装饰。每轮指出最影响完成度的具体问题及页面，修正后重看实际结果。不能只写“高级感不足”或仅依据代码评审。
+Inspect both deck thumbnails and pages at actual size. Check for a clear focus, natural reading order, readable evidence, appropriate text density, coherent color and type, mechanical repetition, mismatched image quality, rough alignment, and overdone decoration. In each revision round, identify the specific slides and issues that most affect completion, fix them, and review the actual result again. “Needs more polish” is not actionable feedback, and code review alone is not visual review.

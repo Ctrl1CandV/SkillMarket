@@ -1,48 +1,48 @@
-# ARR 审稿指南：无效批评（H）与有效弱点（M/T/R/G）清单
+# ARR Review Guide: Invalid Criticisms (H) and Valid Weaknesses (M/T/R/G)
 
-来源：aclrollingreview.org/reviewerguidelines（2026-08-23 全文抓取复核，条目均为原文摘录或忠实转述）。
-用途：rebuttal 时把审稿意见分类——命中的 H 条是「可反驳的无效批评」，命中的 M/T/R/G 是「须实证回应的有效弱点」。
-**使用前注意**：指南会更新，重大 rebuttal 前回官网核对当届版本。
+Source: aclrollingreview.org/reviewerguidelines (full text retrieved and rechecked 2026-08-23; entries are quotations or faithful summaries).
+Use this to classify review comments during rebuttal: H items are “invalid criticisms that can be challenged”; M/T/R/G items are valid weaknesses that need empirical responses.
+**Before use:** the guide can change. Recheck the version for the current cycle before an important rebuttal.
 
-## H1-H17：这些批评不是当然的 weakness（可反驳）
+## H1–H17: Not automatically weaknesses (may be challenged)
 
-| # | 批评 | 为什么无效（原文要义） |
+| # | Criticism | Why it is invalid (source's point) |
 |---|---|---|
-| H1 | 结果不令人惊讶 | Many findings seem obvious in retrospect… 不代表社区已知晓并可用作 building blocks |
-| H2 | 结果与我的预期矛盾 | You may be a victim of confirmation bias（确认偏误） |
-| H3 | 结果不新颖 | 认为见过类似工作**必须给引用**；复现、分析类贡献在 CFP 范围内，应获公正评审 |
-| H4 | 文献里没有先例 | papers that are more novel tend to be harder to publish——审稿人对更新颖的工作往往过度保守 |
-| H5 | 没超过最新 SOTA | **SOTA results are neither necessary nor sufficient for a scientific contribution**；工程贡献可在效率/泛化/可解释/公平等维度 |
-| H6 | 结果是负面的 | 只发正面结果是已知的领域病态；systematically does not work 是社区需要知道的 |
-| H7 | 方法太简单 | The goal is to solve the problem, not to solve it in a complex way；简单方案更不易碎、更可部署 |
-| H8 | 没用我偏好的方法论（如深度学习） | NLP 是交叉领域，模型/资源/综述/分析/立场/理论都是合法贡献 |
-| H9 | 主题太小众 | A main track paper may well make a big contribution to a narrow subfield |
-| H10 | 只在非英语语言上测 | 只测英语的论文同样有此问题；任何语言的单语工作都重要 |
-| H11 | 有语言错误 | As long as the writing is clear enough，科学内容优先于文字功夫 |
-| H12 | 缺某引用 | 只有该工作在**截稿前 3 个月以上正式发表**（published ≠ arXiv preprint）才算问题；否则属 suggestions。resubmission 只需对比原截稿日前 3 个月以上的工作 |
-| H13 | 还能做额外实验 X | 论文只需为**它做出的 claim** 提供充分证据；额外实验属 nice-to-have，放 suggestions 不放 reasons to reject |
-| H14 | 应与闭源模型 X 比较 | 只有直接影响 claim 时才合理；test contamination 与闭源模型信息缺失使比较可能无意义 |
-| H15 | 应该用另一种做法 | 「我会换个写法」不是 weakness；只有作者的选择**阻碍回答研究问题**或 framing 误导时才成立 |
-| H16 | Limitations ≠ weaknesses | 已写进 Limitations 的内容不应直接列为 weakness 或拒稿理由；要说它推翻全文须单独论证 |
-| H17 | 引用数少 ≠ 不成立 | Citation count != validity |
+| H1 | The result is unsurprising | “Many findings seem obvious in retrospect…” That does not mean the community already knows them or can use them as building blocks. |
+| H2 | The result conflicts with my expectations | The reviewer may be experiencing confirmation bias. |
+| H3 | The result is not novel | If the reviewer believes similar work exists, they **must provide a citation**. Replication and analysis contributions are within the CFP scope and deserve fair review. |
+| H4 | There is no precedent in the literature | “Papers that are more novel tend to be harder to publish”; reviewers can be overly conservative about newer work. |
+| H5 | The result does not beat the latest SOTA | **SOTA results are neither necessary nor sufficient for a scientific contribution.** Engineering work can contribute on efficiency, generalization, interpretability, fairness, and other dimensions. |
+| H6 | The result is negative | Publishing only positive results is a known field pathology; the community needs to know when something systematically does not work. |
+| H7 | The method is too simple | “The goal is to solve the problem, not to solve it in a complex way.” Simple methods can be less fragile and easier to deploy. |
+| H8 | The paper does not use my preferred methodology (such as deep learning) | NLP is interdisciplinary. Models, resources, surveys, analyses, position papers, and theory are all valid contributions. |
+| H9 | The topic is too niche | “A main track paper may well make a big contribution to a narrow subfield.” |
+| H10 | The work evaluates only a non-English language | English-only papers have the same limitation; monolingual work in any language matters. |
+| H11 | The paper has language errors | “As long as the writing is clear enough,” scientific content takes priority over prose polish. |
+| H12 | A citation is missing | It is only a problem if the work was formally published **more than three months before the deadline** (`published` does not mean an arXiv preprint). Otherwise, it is a suggestion. For resubmission, compare against work published more than three months before the original deadline. |
+| H13 | The paper could run another experiment X | The paper needs sufficient evidence for **its stated claims**. Additional experiments are nice-to-have suggestions, not reasons to reject. |
+| H14 | The paper should compare against closed model X | This is reasonable only when it directly affects the claim; test contamination and missing details about closed models can make the comparison meaningless. |
+| H15 | The paper should use a different approach | “I would write this differently” is not a weakness. It matters only if the author's choice **prevents answering the research question** or the framing misleads. |
+| H16 | Limitations are not weaknesses | Content already disclosed in Limitations should not itself be listed as a weakness or rejection reason. To say it overturns the paper, the reviewer needs a separate argument. |
+| H17 | Few citations mean the result is invalid | Citation count does not establish validity. |
 
-## M/T/R/G：这些是有效弱点（须实证回应，不能只靠反驳）
+## M/T/R/G: Valid weaknesses (require evidence, not just rebuttal)
 
-**M 方法问题**：M1 LLM-as-judge 未验证可靠性（Agent 论文几乎必用 judge，高频命中）｜M2 可复现性问题（超参、代码/数据公开）｜M3 未披露的数据质量问题｜M4 模型/benchmark 选择无动机｜M5 假设或证明不完整
+**M — Method:** M1 Unvalidated reliability of an LLM-as-judge (especially common in Agent papers); M2 reproducibility (hyperparameters, public code/data); M3 undisclosed data-quality issues; M4 unjustified model/benchmark choice; M5 incomplete assumptions or proofs.
 
-**T 数据与发布条款**：T1 数据收集的伦理问题｜T2 许可证/发布条款不清
+**T — Data and release terms:** T1 research-ethics issues in data collection; T2 unclear license/release terms.
 
-**R 实验结果问题**：R1 分析问题（误导性统计、p-hacking、**多次试验挑最好（含 prompt tuning）**、基线未调好）｜R2 claim 范围不当（测的样本不代表 claim 的总体）｜R3 把假设当结论 ｜R4 误导性 framing / overclaiming｜R5 **缺统计显著性评估（error bars、置信区间、检验）**与变异因素讨论
+**R — Experimental results:** R1 analysis problems (misleading statistics, p-hacking, **cherry-picking the best run, including prompt tuning**, or poorly tuned baselines); R2 claim scope is too broad for the sampled population; R3 presenting an assumption as a conclusion; R4 misleading framing/overclaiming; R5 **missing statistical significance evaluation (error bars, confidence intervals, tests)** and discussion of sources of variation.
 
-**G 一般问题**：G1 研究问题/贡献不清｜G2 依赖坏先例｜G3 相关工作缺失或 misrepresented（与 H12 的区别：这里指表述错误）｜G4 关键术语含糊未定义｜G5 引用与被引内容不符
+**G — General:** G1 unclear research question/contribution; G2 reliance on a bad precedent; G3 missing or misrepresented related work (different from H12: this concerns inaccurate description); G4 undefined key terms; G5 citations do not support the cited content.
 
-## rebuttal 使用法
+## How to use in a rebuttal
 
-1. 逐条给审稿意见分类：命中 H（可反驳，引用上表原文要义）、命中 M/T/R/G（须给实验/证据/修改承诺）、两者皆非（中性建议，礼貌采纳）
-2. **排序服从「AC 只读前两条」现实**：每个 thread 最强的回应放第 1-2 条；无效批评的反驳虽然解气，若同时存在须实证的 R 类弱点，先回应 R
-3. 反驳 H 时引用指南原文（AC 与审稿人都知道这份指南），语气是「按指南此条属建议而非弱点」，不是指责审稿人
-4. 对 R5（error bar）与 R1（best-of-N）：有 run-provenance 登记的多 seed 数据就直接给表；没有就承诺补跑并给时间点
+1. Classify every review comment: H match (may challenge, citing the table's source point); M/T/R/G match (provide experiments/evidence or a concrete revision commitment); neither (neutral suggestion, consider it politely).
+2. **Order responses for the reality that area chairs read only the first two comments:** put the strongest response for each thread in positions 1–2. Challenging an invalid criticism may feel satisfying, but answer an empirical R weakness first when both are present.
+3. When challenging H items, cite the guide's wording. Area chairs and reviewers know it. Phrase it as “the guide classifies this as a suggestion rather than a weakness,” not as an accusation against the reviewer.
+4. For R5 (error bars) and R1 (best-of-N): give a table from registered multi-seed runs if available; otherwise commit to rerun and state a date.
 
-## 边界
+## Boundary
 
-本清单帮助**作者理解与回应**审稿意见。不生成审稿意见、不替用户判断稿件质量。
+This list helps **authors understand and respond to reviews**. It does not generate reviews or judge the quality of the user's paper.

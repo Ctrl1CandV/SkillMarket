@@ -1,20 +1,20 @@
-# 基本原生 PPTX 动画
+# Basic Native PPTX Animation
 
-目标是正常报告中的分步解释：点击显示下一条观点、下一张图、下一步流程。默认用出现；需要柔和进入时用短淡入。标题、背景、页码和必要的上下文在进入页面时就能看到。按内容决定点击数，不给所有装饰逐个加动画，也不默认自动换页。
+The goal is step-by-step explanation in an ordinary presentation: a click reveals the next point, image, or process step. Use appear by default; use a short fade when a softer entrance is useful. Titles, backgrounds, page numbers, and essential context should already be visible when a slide opens. Let the content determine the number of clicks. Do not animate every decorative element or enable automatic slide advance by default.
 
-## 制作方式
+## Workflow
 
-正文逐条出现时，将各条拆成独立原生文本框。辅助脚本按对象动画，单个文本框中的多段文字会一起出现；它不实现段落级构建。图表仍为原生图表，作为完整对象进入；它不实现按系列增长。一个步骤里的相关文本、图形、箭头和图注可同时出现。
+When body points should appear one at a time, make each point a separate native text box. The helper script animates objects; multiple paragraphs inside one text box appear together. It does not build text paragraph by paragraph. Keep charts as native charts and reveal each as a complete object; the script does not animate chart series. Related text, shapes, arrows, and captions in one step may appear together.
 
-PptxGenJS 完成布局后，运行 `scripts/animate_pptx.py`。该脚本只用 Python 标准库，在 PPTX 里写入标准动画时间线，不调用 PowerPoint、云模型或付费 API，不把页面变成图片。输入不被覆盖，不涉及的页面、图片、图表和备注保持原样。
+After laying out the deck with PptxGenJS, run `scripts/animate_pptx.py`. The script uses only the Python standard library to write a standard animation timeline into the PPTX. It does not call PowerPoint, a cloud model, or a paid API, and it does not turn slides into images. The input is not overwritten; untouched slides, images, charts, and notes remain unchanged.
 
-先列出当前文件的顶层对象 ID 与文本；不要猜 ID：
+First list the top-level object IDs and text in the current file; do not guess IDs:
 
 ```text
 python scripts/animate_pptx.py task/deck.pptx --list
 ```
 
-为需要分步的页面写 `task/motion.json`，示例如下，页码与 ID 替换为真实对象。`steps` 每个内层列表代表一次点击，同一步里的对象同时显示：
+Create `task/motion.json` for slides that need step-by-step builds. In this example, replace the page numbers and IDs with real objects. Each inner list in `steps` represents one click; objects in the same step appear together:
 
 ```json
 {
@@ -29,26 +29,26 @@ python scripts/animate_pptx.py task/deck.pptx --list
 python scripts/animate_pptx.py task/deck.pptx --plan task/motion.json --output task/deck-animated.pptx
 ```
 
-从最终动画文件重新审查与渲染。交付动画文件、源稿、素材及点击计划。支持顶层文本、形状、图片、图表/表格和组合；要分别控制组合内部对象时在制作阶段调整分组。对象 ID 必须唯一，每个对象只在一个出现步骤中使用。已有动画的目标页会被拒绝，避免覆盖用户原有动画；用原制作工具保留或修改其时间线。工具只支持 UTF-8 XML、出现和淡入，不声称提供退场、路径、Morph 或复杂触发功能。
+Review and render the final animated file. Deliver the animated file, source deck, assets, and click plan. Supported top-level objects include text, shapes, images, charts/tables, and groups. To control group members separately, change the grouping during authoring. Object IDs must be unique, and each object may appear in only one reveal step. Slides with existing animations are rejected to avoid overwriting the user's animation; use the original authoring tool to preserve or edit that timeline. The tool supports UTF-8 XML, appear, and fade only. It does not claim to support exits, motion paths, Morph, or complex triggers.
 
-## 检查与边界
+## Review and limits
 
-结构审查会清点动画与检查对象引用；还需在最终播放软件中进入放映，验证未揭示对象初始隐藏、一次点击只启动下一步、同组对象一起出现、展示完成后可以正常换页、返回和重播行为可用。
+Structural review counts animations and checks object references. Also open the final file in the presentation software and run the slide show. Verify that unrevealed objects start hidden, one click starts only the next step, grouped objects appear together, navigation works after the final step, and returning to or replaying the slide works.
 
-在 `qa/review.json` 加入实际放映记录，`pages` 覆盖所有带动画/转场的页面：
+Add actual slide-show results to `qa/review.json`, with `pages` covering every slide that has animations or transitions:
 
 ```json
 {
   "animation_review": {
     "status": "pass",
     "method": "slideshow",
-    "player": "实际使用的软件与版本",
+    "player": "Name and version of the software actually used",
     "pages": [2, 3],
-    "summary": "实际检查了初始隐藏、点击顺序、同组出现、返回及重播；按真实结果填写。"
+    "summary": "Record actual checks of initial visibility, click order, grouped reveals, return, and replay."
   }
 }
 ```
 
-只有导入识别或 XML 检查时不能写 `method: slideshow` 或通过。`finalize.py` 对含动画文件要求放映记录；静态画面通过不能冒充动画已验证。动画支持因 PowerPoint、WPS、Impress 版本而异；准确说明实际测试软件和剩余范围。PDF 是阅读/版面预览，不能代替动态 PPTX；不要用多张静态页代替用户要求的对象动画。
+Do not set `method: slideshow` or mark the review passed if you only checked import recognition or XML. `finalize.py` requires a slide-show record for animated files; a static preview cannot stand in for animation verification. Support varies across PowerPoint, WPS, and Impress versions, so report the software actually tested and any remaining limits. A PDF is a reading/layout preview, not a substitute for an animated PPTX. Do not replace requested object animation with a series of static slides.
 
-标准依据：[Microsoft PresentationML ShapeTarget](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.shapetarget)、[PowerPoint Effect](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.effect)。另参考了 [pptx-motion-lite](https://github.com/yinzige/pptx-motion-lite) 对原生动画与生成器的分工；本脚本为限定出现/淡入、显式点击计划的独立实现，不依赖或捆绑该技能。
+Standards references: [Microsoft PresentationML ShapeTarget](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.shapetarget) and [PowerPoint Effect](https://learn.microsoft.com/en-us/office/vba/api/powerpoint.effect). The division between native animation and generation tools was also informed by [pptx-motion-lite](https://github.com/yinzige/pptx-motion-lite). This script is an independent implementation limited to appear/fade and explicit click plans; it does not depend on or bundle that skill.

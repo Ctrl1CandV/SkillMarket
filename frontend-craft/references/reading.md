@@ -1,13 +1,13 @@
-# 阅读页面与中文排版
+# Reading Pages and Chinese Typography
 
-读者要理解一段论证，并知道在哪里、依据是什么、接下来去哪里。不要将正文切成几十个只有一句话的等权卡片。
+Help readers understand an argument, see where its evidence comes from, and know where to go next. Do not split the main text into dozens of equally weighted cards, each containing one sentence.
 
-- 主栏承载连续讲解；目录负责定位，来源负责核查。把必要的覆盖限制放在相关结论旁，详细审计折叠；不要把来源全部藏起来，也不要让实施报告占据主阅读区。
-- 题名、导语、正文、图注、元数据使用明确角色。中文正文从 16–18px、1.7–1.9 行高和约 32–40 个汉字的行宽试起，再看实际字体和视口；这些是起点，不是死标准。拉丁文本的 65ch 不直接等于中文舒适行长。
-- 用完整中文标点，不把英文短词计数限制照搬到中文标题。短标题可自然断行；长 URL/代码允许局部换行或滚动，不给整段中文强制 break-all。
-- 不用人为换行凑所有设备的标题形状。避免正文过细、过浅、过小以及大量字间距。数值比较可用 tabular-nums，不强制所有数字等宽字体。
-- 目录用真实标题和锚点，点击后定位不被 sticky 顶栏遮挡；当前节提示不能只靠颜色。手机将目录变成可展开块，不遮正文。
-- 图表有标题、单位、来源、可读标签及文字解释；缺原图应如实标明，不画貌似准确的替代图。长表保留表头关联和滚动边界。
-- 阅读状态、来源覆盖、作者推荐深度分开。页面被打开不表示用户读懂或读完。
+- Use the main column for continuous explanation, the table of contents for navigation, and sources for verification. Put necessary coverage limits beside the relevant conclusion and collapse detailed audits. Do not hide every source or let implementation reports take over the reading area.
+- Give titles, introductions, body text, captions, and metadata distinct roles. For Chinese body text, start around 16–18 px, 1.7–1.9 line height, and roughly 32–40 Chinese characters per line, then adjust for the actual font and viewport. These are starting points, not fixed standards. A 65ch line length for Latin text does not directly translate to a comfortable Chinese line length.
+- Use full-width Chinese punctuation. Do not apply English word-count limits directly to Chinese headings. Let short headings wrap naturally. Allow long URLs and code to wrap locally or scroll; do not force `break-all` on whole Chinese paragraphs.
+- Do not insert manual line breaks just to force a heading to look the same on every device. Avoid body text that is too thin, pale, small, or widely letter-spaced. Tabular numerals can help with comparisons; do not force every number into a monospaced font.
+- Build the table of contents from real headings and anchors. Ensure sticky headers do not cover the target after navigation, and do not indicate the current section through color alone. On phones, make the table of contents expandable without covering the text.
+- Give charts a title, units, source, readable labels, and a text explanation. If an original figure is missing, say so accurately; do not draw a replacement that looks precise. Long tables should retain header associations and clear scroll boundaries.
+- Keep reading progress, source coverage, and the author's recommended depth separate. Opening a page does not mean the user understood or finished it.
 
-验收至少包含最长中英混合题名、长段落、列表、来源链接、表格、手机目录与返回；不得只看首屏。网页打印和正式 PDF 的验收见边界文档。
+At minimum, review the longest mixed Chinese/English title, long paragraphs, lists, source links, tables, the mobile table of contents, and the return path. Do not inspect only the first screen. See the boundary document for web printing and final PDF checks.

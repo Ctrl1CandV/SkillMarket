@@ -1,61 +1,61 @@
-# 项目与分支决策
+# Project and Branch Decisions
 
-## 先回答会改变选择的问题
+## First answer the questions that change the choice
 
-查清：项目是应用、库、文档、研究还是素材仓库；主分支应随时可用还是只代表发布版；是否持续部署；是否同时支持旧版本；有没有独立的发布冻结期；谁有权合并；是否有 CI；是否已有下游用户依赖分支目录布局。能从仓库获得的信息不重复问用户。
+Determine whether the project is an application, library, documentation, research, or asset repository; whether the main branch should always be usable or represent only a release; whether deployment is continuous; whether older versions remain supported; whether releases have a freeze period; who may merge; whether CI exists; and whether downstream users depend on branch-specific directory layouts. Do not ask the user for facts available in the repository.
 
-分支模型按这些事实选择，人数和代码量只作为辅助。下面是本技能的建议起点，不是 Git 强制规定；模型可随需要演进。
+Choose a branch model from these facts; team size and code volume are secondary. The following are starting recommendations, not Git requirements; the model can evolve.
 
-| 情况 | 长期分支起点 | 临时分支与结束条件 |
+| Situation | Long-lived branch starting point | Short-lived branches and end condition |
 |---|---|---|
-| 个人脚本、小型文档、早期原型 | 1 个主分支 | 有隔离或审查需要才建 topic 分支；完成后整合或明确丢弃 |
-| 团队应用、开源贡献、持续交付的网站 | 1 个可集成主分支 | 短期 feature/fix/docs 分支，通过检查与审查后合并 |
-| 主干开发，具备快速 CI 与小批量集成能力 | 1 个主干 | 直接集成或很短的 topic 分支，依团队审核规则；未开放功能用项目已有机制隔离 |
-| 定期发布且需要单独稳定候选版 | 1 个主分支，按需另有集成分支 | release 分支只接纳稳定化修复，完成发布并回流修复后结束 |
-| 库、SDK、桌面软件，同时维护多条版本线 | 1 个主分支，加仍受支持的维护分支 | 如 `release/1.x`、`release/2.x`；跨版本修复按兼容性回补，版本停止支持后归档 |
-| 已有明确的下一版集成与生产版本隔离需求 | 主分支 + `develop`（名称遵项目） | 才考虑完整 Gitflow：feature、release、hotfix；承担多目标回流与长期同步成本 |
-| 研究、设计资产或模型实验 | 通常 1 个主分支 | 代码探索用短期 experiment 分支；实验数据和结果用运行标识及存储清单管理，不为每次运行建长期分支 |
+| Personal scripts, small documentation, early prototype | One main branch | Create topic branches only for isolation/review; integrate or explicitly discard them when done. |
+| Team application, open-source contribution, continuously delivered site | One integrable main branch | Short-lived feature/fix/docs branches, merged after checks and review. |
+| Trunk development with fast CI and small-batch integration | One trunk branch | Direct integration or very short topic branches per team review rules; isolate unreleased features using an existing project mechanism. |
+| Scheduled release with a separately stabilized candidate | One main branch, optionally an integration branch | Release branch accepts stabilization fixes only and ends after release and back-merging fixes. |
+| Library, SDK, or desktop product supporting multiple versions | One main branch plus supported maintenance branches | For example, release/1.x and release/2.x; backport compatible fixes as needed and archive a version when support ends. |
+| Explicit separation between next-version integration and production releases | Main plus develop (use the project's naming) | Consider full Gitflow only here, with feature, release, and hotfix branches; it brings ongoing multi-target back-merges and synchronization costs. |
+| Research, design assets, or model experiments | Usually one main branch | Use short-lived experiment branches for code exploration. Track experiment data/results with run IDs and storage manifests instead of permanent branches per run. |
 
-[GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) 提供分支、提交、PR、审查、合并的轻量流程。Gitflow 作者在 [2020 年反思](https://nvie.com/posts/a-successful-git-branching-model/) 中建议持续交付团队采用更简单的流程，同时保留显式版本及多版本维护场景的适用性。表中各项目的选择是据此和项目约束做出的建议。
+[GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) is a lightweight process for branches, commits, pull requests, review, and merge. In a [2020 reflection](https://nvie.com/posts/a-successful-git-branching-model/), the author of Gitflow recommended simpler processes for continuous-delivery teams while retaining its usefulness for explicit releases and multi-version maintenance. The choices in the table are recommendations based on those sources and project constraints.
 
-主干开发与 GitHub flow 可以都只有一个长期主分支，但集成频率、审查方式和功能开放方式不完全相同，不把二者当作同义词。开源 fork 是权限与贡献方式，不增加上游长期分支的必需数量；通常从上游目标分支开 topic，推到自己的 fork 后提交 PR。
+Trunk development and GitHub flow may each use one long-lived main branch, but differ in integration frequency, review, and feature exposure; do not treat the terms as synonyms. An open-source fork concerns permissions and contribution flow, not the required number of long-lived upstream branches. Usually branch from the upstream target, push a topic branch to your own fork, then open a PR.
 
-## 给每类分支写清生命周期
+## Document each branch's lifecycle
 
-每个分支角色至少记录：从哪个基线开始、接受什么变更、合并到哪里、要求哪些检查、何时删除或停止维护。例如采用 Gitflow 时：
+For each branch role, state its base, allowed changes, merge destination, required checks, and when it is deleted or no longer maintained. For example, with Gitflow:
 
-| 角色 | 起点 | 允许内容 | 回流 |
+| Role | Starts from | Allowed content | Back-merge |
 |---|---|---|---|
-| feature | 当前集成分支 | 一个逻辑功能及相关测试文档 | 集成分支 |
-| release | 已完成当期功能的集成状态 | 修复、版本和发布文档；不继续塞下一版功能 | 发布主分支与集成分支 |
-| hotfix | 受影响的已发布版本或维护分支 | 最小修复及回归测试 | 受影响发布线、当前开发线；有活动 release 时按项目规则处理 |
+| feature | Current integration branch | One logical feature with its related tests/docs | Integration branch |
+| release | Integration state with current features complete | Fixes, version/release documentation; no next-version features | Release and integration branches |
+| hotfix | Affected released version or maintenance branch | Minimal fix and regression test | Affected release line and current development line; handle active release branches per project rules |
 
-Gitflow 原文的起点与回流规则见 [原始模型](https://nvie.com/posts/a-successful-git-branching-model/)；这里对多版本维护的部分是项目决策建议。修复一次之后应明确哪些受支持版本需要回补，不能默认向所有历史分支合并，也不能只修线上而遗漏当前开发线。
+See the [original model](https://nvie.com/posts/a-successful-git-branching-model/) for Gitflow's branch bases and back-merge rules; the multi-version maintenance guidance here is a project decision recommendation. After a fix, identify which supported versions need it. Do not merge into every historical branch by default, and do not fix production while missing the active development line.
 
-命名遵仓库惯例；无约定时选择短且描述目的的名称，如 `feat/export-csv`、`fix/cache-race`、`docs/install`。`codex/` 等宿主前缀只在宿主或项目要求时使用。不要把固定前缀和固定分支数量宣传成 Git 标准。
+Follow repository naming. Without a convention, choose a short, purpose-specific name such as feat/export-csv, fix/cache-race, or docs/install. Use host prefixes such as codex/ only when the host or project requires them. Do not present a fixed prefix or branch count as a Git standard.
 
-## 分支文件树与发布清单
+## Branch file trees and release manifests
 
-普通主分支、功能分支、开发分支和维护分支应保留各自版本所需的源码、测试、构建配置、迁移、文档和 lockfile。其差异来自版本或任务，不是“主分支只能放最终成品”的通用规则。
+Main, feature, development, and maintenance branches ordinarily retain the source, tests, build configuration, migrations, documentation, and lockfiles needed for their respective version. Differences reflect versions or tasks; “main can contain only finished deliverables” is not a general rule.
 
-用户想让 main 只含运行资源、dev 含评估或维护资料时，先区分目标：
+If the user wants main to contain runtime resources only and dev to contain evaluations or maintenance material, clarify the goal:
 
-1. **只想减小发布包**：优先包管理器白名单、发布脚本、容器构建上下文或 `git archive` 排除；源仓库仍可保留开发资料。
-2. **明确要求分支树不同**：遵循已有约定，记录允许目录、禁止目录和整合方式；先比较拟发布的 diff，检查整个源分支的其他修改。
-3. **资料确实需要独立权限**：放入访问控制不同的仓库或外部存储。仅分支分离不能提供可靠的保密边界。
+1. **They only want smaller release packages:** Prefer package-manager allowlists, release scripts, container build contexts, or git archive exclusions; development material may remain in the source repository.
+2. **They explicitly require different branch trees:** Follow existing conventions and record allowed/excluded directories and integration method. Preview the release diff and inspect other changes in the whole source branch.
+3. **Material requires separate permissions:** Put it in a repository or external storage with different access control. Branch separation alone is not a reliable confidentiality boundary.
 
-`export-ignore` 用于归档排除；它不会阻止文件提交或 push，也不应被假定为所有包管理器的打包规则。Git 的归档行为见 [gitattributes](https://git-scm.com/docs/gitattributes) 与 [git archive](https://git-scm.com/docs/git-archive)。
+export-ignore excludes files from archives; it does not prevent commit or push and is not necessarily honored by every package manager. See [gitattributes](https://git-scm.com/docs/gitattributes) and [git archive](https://git-scm.com/docs/git-archive).
 
-维护分支树差异时，不直接完整 merge 含额外目录的 dev 然后反复删除它们。按现有流程只整合独立的运行资源提交，或在目标分支应用精确路径的差异；先预览，不覆盖目标分支独有修改。若提交混合运行资源和维护资料，应在可控的未共享历史里拆分，或形成一个单独的发布变更。保留回流/对账记录，避免长期悄悄漏修复。不要擅自改写共享 dev 历史来做到这一点。
+When maintaining branch-specific directory differences, do not merge all of dev and repeatedly delete extra directories. Follow the existing process to integrate runtime-only commits or apply an exact path diff to the target; preview first and preserve target-specific changes. If a commit mixes runtime resources and maintenance files, split it in unshared, controlled history or create a separate release change. Keep integration/reconciliation records so fixes are not silently missed. Do not rewrite shared dev history on your own to achieve this.
 
-## 环境、发布与权限
+## Environment, release, and permissions
 
-默认用同一源版本产生制品，再提升到测试、预发布和生产环境；环境差异用配置、部署记录和密钥系统管理。这是减少漂移的设计建议。有现成的环境分支时先查明部署依赖与晋升流程，不自行删除分支。
+By default, build artifacts from the same source version and promote them through test, staging, and production environments. Manage environment differences through configuration, deployment records, and a secret manager. This is a design recommendation for reducing drift. If environment branches already exist, first determine deployment dependencies and promotion workflow; do not delete branches on your own.
 
-发布使用可追溯的 tag、commit ID 和制品记录；不能只凭一个不断移动的 `production` 分支判断线上版本。采用 SemVer 时，先定义公共接口和兼容承诺，再决定版本号；0.x 和预发布遵项目规则，不机械地根据一条标题发布新版本。[SemVer 规范](https://semver.org/)
+Use traceable tags, commit IDs, and artifact records for releases; do not infer production version from a moving production branch. With SemVer, define public interfaces and compatibility promises before choosing version numbers. Follow project rules for 0.x and prereleases; do not release a version mechanically from a commit subject. [SemVer specification](https://semver.org/)
 
-合并权限、required checks、评审人数和签名要求由项目与平台决定。分支保护可落实这些约束，但只写贡献文档不等于已经启用保护；查看不到平台配置时标为未验证，不声称远端已受保护。[GitHub 分支保护](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
+Merge permissions, required checks, number of reviewers, and signing rules come from the project and platform. Branch protection can enforce them, but writing contribution docs does not activate protection. If platform configuration cannot be inspected, mark it unverified; do not claim the remote branch is protected. [GitHub branch protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 
-## 形成项目规范
+## Establish project conventions
 
-只有用户要建立或调整流程时才写入项目文档，普通修复不需要新建一份治理文件。用 [模板](../assets/git-policy-template.md) 填写实际分支、文件分类、提交规则、验证、发布和清理边界；标出已实施配置与仅建议配置。约定与现状冲突时先说明影响，再按用户范围修正，不把本技能的建议覆盖项目决定。
+Write or change project documentation only when the user asks to establish or adjust a workflow; ordinary fixes do not require a new governance file. Use the [template](../assets/git-policy-template.md) to record actual branch strategy, file classification, commits, verification, releases, and cleanup boundaries. Distinguish implemented configuration from proposed configuration. If a convention conflicts with reality, explain the impact and adjust only within the user's scope; do not replace project decisions with this skill's recommendations.

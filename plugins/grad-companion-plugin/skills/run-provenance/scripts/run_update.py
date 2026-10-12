@@ -1,17 +1,17 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""实验 run 结果补录（run-provenance）。更新已存在 run 的指标/状态，不重建 run id。
+"""Record results for an already registered experiment run (run-provenance). Update metrics/status without creating a new run ID.
 
-只允许改动：metrics、status（running/success/failed）、failure_reason、updated_at。
-**不重新采集 git 状态冒充实验当时的 commit，不改 config 快照与 seed**——原来源永远保留。
+Only update: metrics, status (running/success/failed), failure_reason, and updated_at.
+**Do not recollect Git state and present it as the commit from experiment time; do not change the config snapshot or seed**—preserve the original provenance.
 
-铁律：
-- 写入前先完成全部输入校验（指标有限数值、failed 必须带原因）；校验不过不落盘
-- 落盘用同目录临时文件 + 原子替换；第二步失败时回滚第一步，不留「半更新」状态
-- 历史 run 没有 updated_at 不猜补录时间；本脚本写入的 updated_at 是真实的本次更新时间
+Core rules:
+- Validate every input before writing (metrics must be finite numbers; failed runs require a reason); write nothing if validation fails.
+- Write through a same-directory temporary file and atomic replacement. If the second step fails, roll back the first; do not leave a partial update.
+- Do not invent updated_at for historical runs that lack it. This script writes the actual time of this update.
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -35,21 +35,21 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 def reject_json_constant(value: str) -> None:
-    raise ValueError(f"不允许非有限 JSON 常量：{value}")
+    raise ValueError(f"Non-finite JSON constant is not allowed: {value}")
 
 
 def parse_metrics(text: str, source: str) -> dict[str, int | float]:
     try:
         data = json.loads(text, parse_constant=reject_json_constant)
     except (json.JSONDecodeError, ValueError) as exc:
-        die("BAD_METRICS", f"{source} 不是合法指标 JSON：{exc}")
+        die("BAD_METRICS", f"{source} is not valid metrics JSON: {exc}")
     if not isinstance(data, dict):
-        die("BAD_METRICS", "metrics 必须是 JSON 对象（指标名到数值的映射）")
+        die("BAD_METRICS", "metrics must be a JSON object mapping metric names to values")
     for key, value in data.items():
         if not isinstance(key, str) or not key.strip():
-            die("BAD_METRICS", "metrics 的键必须是非空字符串")
+            die("BAD_METRICS", "metrics keys must be non-empty strings")
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-            die("BAD_METRICS", f"指标 {key!r} 必须是有限数值，不能是 bool、字符串、对象、NaN 或 Infinity")
+            die("BAD_METRICS", f"Metric {key!r} must be a finite number, not a bool, string, object, NaN, or Infinity")
     return data
 
 
@@ -63,85 +63,85 @@ def atomic_replace(path: Path, content: str) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="补录已登记 run 的结果（只动指标/状态/更新时间）")
-    ap.add_argument("--run-id", required=True, help="要补录的 run id（目录名）")
+    ap = argparse.ArgumentParser(description="Record results for an existing run (update metrics/status/timestamp only)")
+    ap.add_argument("--run-id", required=True, help="Run ID to update (directory name)")
     ap.add_argument("--runs-dir", default=".grad/runs")
     ap.add_argument("--status", choices=("running", "success", "failed"), default="",
-                    help="补录后的状态；不给则保持原状态")
-    ap.add_argument("--failure-reason", default="", help="失败原因；status=failed 时必填")
-    ap.add_argument("--metrics-file", default="", help="指标 JSON 文件路径（整体替换 metrics.json）")
-    ap.add_argument("--metrics", default="", help="内联指标 JSON（整体替换 metrics.json）")
+                    help="Status after the update; keep the existing status when omitted")
+    ap.add_argument("--failure-reason", default="", help="Failure reason; required when status=failed")
+    ap.add_argument("--metrics-file", default="", help="Metrics JSON file path (replaces metrics.json entirely)")
+    ap.add_argument("--metrics", default="", help="Inline metrics JSON (replaces metrics.json entirely)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     runs_input = Path(args.runs_dir)
     if ".grad" not in runs_input.resolve().parts:
-        die("BAD_ARGS", f"runs-dir 必须位于项目 .grad/ 下：{runs_input.resolve()}")
-    # REV-08：run-id 只接受单个合法目录名——绝对路径、父目录跳转、含分隔符一律先拒
+        die("BAD_ARGS", f"runs-dir must be under project .grad/: {runs_input.resolve()}")
+    # REV-08: accept only a single valid directory name for run-id; reject absolute paths, parent traversal, and path separators.
     rid = args.run_id
     if (not rid or rid.strip() != rid or rid.startswith(".")
             or "/" in rid or "\\" in rid or re.search(r"[<>|:*?\x00]", rid)):
-        die("BAD_ARGS", f"run-id 必须是单个合法目录名（不含路径分隔符/绝对路径/上级跳转）：{rid!r}")
+        die("BAD_ARGS", f"run-id must be one valid directory name (no path separators, absolute paths, or parent traversal): {rid!r}")
     runs_resolved = runs_input.resolve()
     run_dir = (runs_resolved / rid)
     if not run_dir.resolve().is_relative_to(runs_resolved):
-        die("BAD_ARGS", f"run-id 解析后逃逸 runs 根目录：{rid!r}；拒绝写入")
+        die("BAD_ARGS", f"Resolved run-id escapes the runs root directory: {rid!r}; refusing to write")
     if args.status == "failed" and not args.failure_reason.strip():
-        die("BAD_ARGS", "status=failed 时必须提供非空 --failure-reason")
+        die("BAD_ARGS", "A non-empty --failure-reason is required when status=failed")
     if args.status and args.status != "failed" and args.failure_reason.strip():
-        die("BAD_ARGS", "failure-reason 只用于 failed run")
+        die("BAD_ARGS", "failure-reason can only be used with a failed run")
     if args.metrics_file and args.metrics:
-        die("BAD_ARGS", "--metrics 与 --metrics-file 只能给一个")
+        die("BAD_ARGS", "Specify only one of --metrics and --metrics-file")
 
     metrics: dict[str, int | float] | None = None
     if args.metrics_file:
         metrics_file = Path(args.metrics_file)
         if not metrics_file.is_file():
-            die("BAD_METRICS", f"metrics 文件不存在：{metrics_file}")
+            die("BAD_METRICS", f"Metrics file not found: {metrics_file}")
         try:
             metrics_text = metrics_file.read_text(encoding="utf-8")
         except OSError as exc:
-            die("BAD_METRICS", f"无法读取 metrics 文件：{exc}")
-        metrics = parse_metrics(metrics_text, "metrics 文件")
+            die("BAD_METRICS", f"Could not read metrics file: {exc}")
+        metrics = parse_metrics(metrics_text, "metrics file")
     elif args.metrics:
         metrics = parse_metrics(args.metrics, "--metrics")
 
     meta_f = run_dir / "meta.json"
     if not run_dir.is_dir() or not meta_f.is_file():
-        die("NOT_FOUND", f"run 不存在：{run_dir}；补录只能针对已登记的 run（新 run 用 run_register.py）")
+        die("NOT_FOUND", f"Run not found: {run_dir}; updates apply only to registered runs (use run_register.py for a new run)")
     try:
         meta = json.loads(meta_f.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        die("BAD_RUN_DATA", f"{meta_f} 不可解析，拒绝在坏数据上补录：{exc}")
+        die("BAD_RUN_DATA", f"Could not parse {meta_f}; refusing to update corrupted data: {exc}")
     if not isinstance(meta, dict):
-        die("BAD_RUN_DATA", f"{meta_f} 必须是 JSON 对象")
+        die("BAD_RUN_DATA", f"{meta_f} must be a JSON object")
 
     old_meta_text = meta_f.read_text(encoding="utf-8")
     metrics_f = run_dir / "metrics.json"
     old_metrics_text = metrics_f.read_text(encoding="utf-8") if metrics_f.is_file() else None
 
-    # REV-07：状态与失败原因按「最终要写入的数据」处理——
-    # 只补指标（不给 --status）不动状态与原因；显式转 failed 必须带有效原因（可用新原因更新）；
-    # 显式转非 failed 才清除旧原因。
+    # REV-07: apply status and failure-reason rules to the final data that will be written:
+    # an update without --status leaves status and reason unchanged; an explicit transition to failed requires a valid reason (and may update it);
+    # an explicit transition away from failed clears the old reason.
     new_status = args.status or str(meta.get("status") or "success")
     meta["status"] = new_status
     if args.status == "failed":
         meta["failure_reason"] = args.failure_reason.strip()
     elif args.status and args.status != "failed":
         meta["failure_reason"] = None
-    # args.status 为空：status 与 failure_reason 均保持原值
+    # If args.status is empty, retain both status and failure_reason.
     if str(meta.get("status")) == "failed" and not str(meta.get("failure_reason") or "").strip():
-        die("BAD_ARGS", "补录后的最终状态是 failed 但没有有效失败原因；"
-                        "给 --failure-reason 或改到正确状态，拒绝写入半残记录")
+        die("BAD_ARGS", "The final status is failed but no valid failure reason is available; "
+                        "pass --failure-reason or choose the correct status. Refusing to write a partial record.")
     meta["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
     warnings: list[str] = []
     if metrics is not None and new_status == "success" and not metrics:
-        warnings.append("补录了空指标且状态为 success：无结果的 run 不应登记为成功实验，可保持 running 或如实 failed")
+        warnings.append("Metrics were updated to an empty object while status is success; a run with no results should not be marked successful. Keep it running or mark it failed accurately.")
     if metrics is None and args.status == "success":
-        warnings.append("仅改状态为 success 但未补录指标：该 run 仍无可核对数值")
+        warnings.append("Status changed to success without metrics; this run still has no checkable numeric results.")
 
-    # 先写 meta，再写 metrics；第二步失败回滚第一步（单写者顺序操作，不承诺断电级事务）
+    # Write meta first, then metrics; roll back the first write if the second fails (single-writer sequence, not a power-loss-safe transaction).
     try:
         atomic_replace(meta_f, json.dumps(meta, ensure_ascii=False, indent=2) + "\n")
         if metrics is not None:
@@ -152,20 +152,20 @@ def main() -> None:
             if old_metrics_text is not None:
                 atomic_replace(metrics_f, old_metrics_text)
             elif metrics_f.is_file():
-                metrics_f.unlink()  # 原本没有 metrics.json：删除本次写坏的半成品
-            rollback = "已回滚到更新前内容"
+                metrics_f.unlink()  # There was no metrics.json before; remove the incomplete file created by this update.
+            rollback = "Rolled back to the pre-update contents"
         except OSError as rollback_exc:
-            rollback = f"回滚也失败（{rollback_exc}），原 meta 文本仍可参照报错手工恢复"
-        die("WRITE_FAILED", f"补录未完成：{exc}；{rollback}，不返回成功")
+            rollback = f"Rollback also failed ({rollback_exc}); use the original meta text in the error to restore it manually"
+        die("WRITE_FAILED", f"Update did not complete: {exc}; {rollback}. The operation is not reported as successful.")
 
     data = {"run_id": args.run_id, "meta": meta,
-            "metrics": metrics if metrics is not None else "（未改动）",
+            "metrics": metrics if metrics is not None else "(unchanged)",
             "warnings": warnings,
-            "note": "补录只更新指标/状态/updated_at；created_at、git commit、config 快照保持原样"}
+            "note": "Update changes metrics/status/updated_at only; created_at, Git commit, and config snapshot remain unchanged"}
     if args.json:
         print(json.dumps({"ok": True, "data": data}, ensure_ascii=False))
         return
-    print(f"已补录 {args.run_id}：status={new_status}｜updated_at={meta['updated_at']}")
+    print("Updated run {}: status={} | updated_at={}".format(args.run_id, new_status, meta["updated_at"]))
     if metrics is not None:
         print(f"  metrics → {json.dumps(metrics, ensure_ascii=False)}")
     for w in warnings:

@@ -1,35 +1,35 @@
-# 布局：内容关系与空间结构
+# Layout: Content Relationships and Spatial Structure
 
-布局先于样式：先用真实内容理清关系，再把关系变成空间。结构错了，后续样式救不回来；结构对了，字体和色彩才有发挥的地基。不强制固定比例、列数或某个壳，也不禁止卡片、侧栏或表格——禁止的是未经选择的默认套用。
+Layout comes before styling: clarify relationships using real content, then express them in space. Styling cannot rescue a wrong structure; a sound structure gives typography and color a foundation. Do not require fixed proportions, column counts, or a specific shell, and do not ban cards, sidebars, or tables. The problem is unconsidered default use.
 
-## 排内容关系
+## Organize content relationships
 
-- 以真实内容标出主对象、主任务、必须一起看到的关联、按需出现的辅助，以及局部与全局动作。哪些必须同屏、哪些可折叠或分步，由任务决定。
-- 相邻表示关联，错误分组会误导操作；把互斥或危险操作与常用操作分开。响应式堆叠可能拆散原本相邻的关联，重组后要复查。
-- 优先级随任务阶段变化：浏览时筛选优先，阅读时正文优先，排错时状态优先。不为布局整齐把所有内容画成等权模块，也不按数据表字段直接分栏。
-- 内容清单不等于每项都要一个模块；不为构图舒服删除或弱化给定事实、功能与数据。
+- Use actual content to identify the primary object and task, related information that must be visible together, supporting material shown as needed, and local/global actions. Let the task determine what stays on screen and what may be collapsed or split into steps.
+- Proximity implies a relationship, and incorrect grouping can mislead. Separate mutually exclusive or dangerous actions from common ones. Responsive stacking may split related items; review the new grouping afterward.
+- Priorities change with task stage: filters matter most while browsing, the body while reading, and status while troubleshooting. Do not turn every item into an equal-weight module for a tidy layout or divide columns directly by database fields.
+- A content inventory does not require one module per item. Do not delete or downplay supplied facts, functions, or data to improve the composition.
 
-## 按关系选结构
+## Choose structure by relationship
 
-- 连续阅读、列表加详情、比较表、主内容加辅助面板、步骤流程、探索型信息流是常见组织方式；按内容关系选择并允许组合，一个区块职责清楚。不先决定某个后台壳（如侧栏＋统计卡＋等权网格）再把内容塞进去。
-- 卡片在分组、选中或确有边界与交互意义时可用；不等权的信息包进同一卡片会显得同级。高密度数据列表用表格；相同属性才纵向比较，树用于层级关系。
-- 先确定正文、表格、媒体需要的宽度和长内容要求，再分配导航与辅助区。说明哪部分固定、哪部分伸缩、空间不足时谁让位。必须逐项比较的数据保持同屏；连续阅读的正文不因辅助栏挤窄。
-- 关键图片、图表的尺寸在结构阶段就预留，避免布局完成后硬塞资产或留下空洞。
+- Continuous reading, list plus details, comparison table, main content with a support panel, step-by-step flow, and exploratory feed are common arrangements. Choose and combine them based on content relationships; each section should have a clear role. Do not choose an admin shell (such as sidebar + metric cards + equal grid) first and force content into it.
+- Use cards when they communicate grouping, selection, boundaries, or interaction. Putting unequal information into identical cards can imply false equality. Use tables for dense lists of data with repeated attributes; use trees for hierarchy.
+- First establish the width needed for body text, tables, media, and long content, then allocate navigation and support areas. State what stays fixed, what expands, and what gives way when space is limited. Keep information that must be compared side by side visible together; do not squeeze continuous reading text to make room for a support panel.
+- Reserve space for important images and charts at the structure stage instead of forcing assets into a finished layout or leaving empty gaps.
 
-## 用间距和对齐表达层级
+## Express hierarchy with spacing and alignment
 
-- 复用少量间距档，区分元素内、组内、组间与章节间；相关项视觉相连，不同任务不因同框同色混组。
-- 能用对齐和留白分组时不加框线；一条分隔线能解决的地方不必加一个盒子，容器只在有边界或交互意义时保留。
-- 局部紧凑与整体呼吸可以共存：表格可以密，章节之间仍要有节奏。大留白不是高级感公式，稠密也不等于拥挤。
+- Reuse a small spacing scale to distinguish inside an element, within a group, between groups, and between sections. Related items should look related; putting different tasks in the same frame or color should not group them accidentally.
+- Prefer alignment and whitespace to outlines when they are sufficient. Do not add a box when one divider will do; keep containers when they communicate a real boundary or interaction.
+- Dense local sections can coexist with an airy overall composition: tables may be compact while chapters still have rhythm. Large whitespace is not a formula for sophistication, and density is not automatically clutter.
 
-## 窄屏是重新组织，不是缩小
+## A narrow screen requires reorganization
 
-- 检查组是否被拆散、操作是否离对象太远、已选条目/筛选/阅读位置能否保留；不只是无溢出。
-- 辅助面板可转抽屉、分步或移到内容下方；列表是否保留取决于任务，不设统一规则。密集表格窄屏保留题名、状态与主动作，次要属性展开；确需跨列比较时允许有提示的局部横向滚动，不用隐藏列偷偷删信息。
-- 断点按内容需要设置，不照搬原生端数值。窄屏结构问题回结构步骤重排，不靠缩字和禁换行解决。
+- Check whether groups were split, actions moved too far from their objects, and selected items/filters/reading position can be preserved. Overflow is not the only check.
+- A support panel may become a drawer, a step, or content below the main area; choose based on the task. On a narrow, dense table, retain title, status, and primary action and expand secondary properties. If comparison across columns is necessary, allow clearly indicated local horizontal scrolling; do not secretly remove information by hiding columns.
+- Set breakpoints based on content, not copied native-platform values. If a narrow-screen structure fails, revisit and rearrange it; do not solve it by shrinking text or banning line wrapping.
 
-## 自检问句
+## Self-check
 
-- 关掉颜色后，分组和主次还能看出来吗？
-- 首屏第一眼落在主对象上吗？阅读顺序与任务顺序一致吗？
-- 空间不足时让位的是辅助信息，还是任务本身？
+- If color is removed, can readers still see grouping and priority?
+- Does the primary object draw attention first? Does reading order match task order?
+- When space is limited, does supporting information give way instead of the task itself?

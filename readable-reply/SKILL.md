@@ -1,75 +1,75 @@
 ---
 name: readable-reply
-description: 改善 ChatGPT 或其他AI对话回复的段落组织与排版可读性。用于较长的解释、分析、调研、评审、排障与建议类回答，尤其当用户抱怨难读、换行太多、满屏碎句，或要求改善回复格式时。正文按完整意思组织自然段，标题、列表和表格服务理解与操作；独立文稿、课程及前端成品文案的去AI味交给 de-ai-flavor，不因它们在聊天中交付就套用本技能。
+description: Improve the paragraph structure and formatting of replies from ChatGPT and other AI systems. Use for longer explanations, analyses, research, reviews, troubleshooting, and recommendations, especially when the user says the response is hard to read, has too many line breaks, or is broken into fragments. Organize body text into complete, natural paragraphs; use headings, lists, and tables to support understanding. For standalone writing, courses, and finished front-end copy, use de-ai-flavor instead; do not apply this skill merely because the work is delivered in chat.
 metadata:
   version: "1.0.1"
 ---
 
-# 可读回复：段落密度与排版纪律
+# Readable Replies: Paragraph Density and Formatting
 
-## 为什么要调整
+## Why adjust the formatting?
 
-一句一段、行行回车、每几个句子配一个标题或列表，会把本来连贯的解释切碎。终端、聊天界面与 Markdown 渲染器的换行表现不同，不用固定行数推断阅读负担；重点看读者能否跟上意思、找到答案和执行操作。
+Putting each sentence in its own paragraph, inserting a line break after every line, or adding a heading or list every few sentences can fragment an otherwise coherent explanation. Terminals, chat interfaces, and Markdown renderers handle line breaks differently, so do not infer reading difficulty from a fixed number of lines. Focus on whether readers can follow the point, find the answer, and act on it.
 
-规则的目标不是消灭结构，而是让结构服务理解。本技能只调整对话回复，不依赖 de-ai-flavor；事实、条件、否定、来源、代码和命令不会因为重新排版而改变。
+The goal is not to eliminate structure, but to make structure serve understanding. This skill only changes conversational replies and does not depend on de-ai-flavor. Reformatting must not change facts, conditions, negation, sources, code, or commands.
 
-## 三条原则
+## Three principles
 
-### R1 段落密度（最重要）
+### R1. Keep paragraphs coherent (most important)
 
-- 正文按一个完整意思组织自然段，相关句子写在同一段内，不在句子或分句之间手动换行；意思转变时分段，也避免堆成一堵长文。
-- 连续的“一句话 + 空行”若只是同一论述的碎片，就合并；不要为凑句数或字数扩写，简短答案与必要提醒可以独立成段。
-- 少量并列短语可用“；”或“、”放进一句话；需要逐项执行或核对时仍用列表。
-- 想强调某句话时，优先放到段首或段尾，不必为它单开一行加粗。
+- Organize body text into natural paragraphs, each expressing a complete idea. Keep related sentences together rather than inserting manual line breaks between sentences or clauses. Start a new paragraph when the idea changes, while avoiding walls of text.
+- Merge a series of “one sentence + blank line” fragments when they belong to the same point. Do not add text to reach a sentence or word count; short answers and necessary cautions can stand alone.
+- Put a few parallel phrases in one sentence with commas or semicolons. Use a list when readers need to carry out or check items one by one.
+- To emphasize a sentence, place it near the start or end of a paragraph instead of giving it an isolated bold line.
 
-### R2 结构要有增量
+### R2. Structure should add value
 
-- 列表：用于并行选项、操作步骤、检查清单或需要逐条引用的信息；连续因果解释优先用段落。
-- 表格：用于需要按相同维度比较的对象，两个方案也可以；单元格应能独立读懂，不为排版凑空泛列。
-- 标题：在话题转换或需要导航时使用，不按屏幕行数决定；避免标题下面只有一句过场话。
-- 引用块用于引文；加粗少量关键结论或警示，不用满屏的加粗标签替代段落主题句。
+- **Lists:** Use for parallel options, procedures, checklists, or information that readers need to cite item by item. Prefer prose for continuous causal explanations.
+- **Tables:** Use to compare items along the same dimensions; even two options may justify a table. Each cell should be understandable on its own, and columns should convey useful distinctions.
+- **Headings:** Use when the topic changes or navigation is helpful, not according to the number of lines on screen. Avoid headings followed by only a transition sentence.
+- **Block quotes:** Reserve for quotations. Bold only a few important conclusions or cautions; do not use bold labels throughout as a substitute for paragraph topic sentences.
 
-### R3 长度与排版解耦
+### R3. Separate length from layout
 
-- 合并同义复述和无信息的过场，保留必要推导、独立理由以及影响行动的条件与警示。
-- 问题的直接回答通常放在第一段开头，后文再展开依据；需要先澄清前提时，先说影响判断的前提。
-- 篇幅由问题需要决定，既不靠空行显得充分，也不为紧凑把解释压成摘要。
+- Merge synonymous repetition and empty transitions while retaining necessary reasoning, distinct rationales, and conditions or cautions that affect what the reader should do.
+- Usually answer the question directly at the start of the first paragraph, then explain the reasoning. If a premise must be clarified first, state the premise that affects the answer.
+- Let the task determine the length. Do not use blank space to make an answer look substantial or compress an explanation into a summary just to make it shorter.
 
-## 前后对照
+## Before and after
 
-以下用虚构的排障场景对照，只改变组织方式，不增加诊断结论。
+The fictional troubleshooting example below changes only the organization, not the diagnosis.
 
-碎片化写法：
-
-```text
-请求超时了。
-
-不一定是网络问题。
-
-服务端排队也可能导致超时。
-
-先检查请求日志。
-
-再对照服务端的处理耗时。
-```
-
-可读的写法：
+Fragmented version:
 
 ```text
-请求超时不一定是网络问题，服务端排队也可能导致超时。先检查请求日志，再对照服务端的处理耗时，区分时间花在传输还是等待处理上。
+The request timed out.
+
+It may not be a network problem.
+
+Server queuing can also cause a timeout.
+
+Check the request logs first.
+
+Then compare them with server processing time.
 ```
 
-若后续要给出多条命令、不同判断分支或恢复步骤，另用代码块和列表呈现，不把可执行操作塞入长段落。
+Readable version:
 
-## 例外（不受 R1 约束）
+```text
+The request timing out does not necessarily mean there is a network problem; server queuing can cause timeouts too. Check the request logs, then compare them with server processing time to determine whether the time was spent in transit or waiting for processing.
+```
 
-- 操作步骤、命令序列、检查清单、代码与配置文件：天然一行一项，保持原样。
-- 用户明确要求大纲、表格、要点式输出：按用户要求。
-- 独立文稿（课程、文章、报告、邮件）和前端页面等成品文案遵循各自文体，是否在聊天中交付不改变这一点；需要去AI味时使用 de-ai-flavor。
+If you need to provide multiple commands, decision branches, or recovery steps, present them in code blocks and lists instead of burying executable actions in a long paragraph.
 
-## 发出前自查
+## Exceptions (R1 does not apply)
 
-1. 同一意思是否被不必要的硬换行切碎？是否又把不同意思挤在一个长段里？
-2. 标题、列表和表格是否帮助定位、对比或操作，而不是只增加空白？
-3. 合并后是否保留了事实、限制、引用与必要解释，代码和步骤是否仍可直接使用？
-4. 开头是否回答了问题，或明确交代阻碍回答的前提？已经清楚就停止调整。
+- Procedures, command sequences, checklists, code, and configuration files naturally use one item per line; leave them that way.
+- Follow the user's request for an outline, table, or bullet-point format.
+- Standalone writing (courses, articles, reports, emails) and finished front-end copy follow their own conventions, whether or not they are delivered in chat. Use de-ai-flavor when they need more natural prose.
+
+## Final check
+
+1. Have hard line breaks unnecessarily split one idea? Have different ideas been crowded into one long paragraph?
+2. Do headings, lists, and tables help readers locate, compare, or act on information, or do they merely add whitespace?
+3. After merging text, are facts, limitations, citations, and necessary explanations preserved? Can the code and steps still be used as written?
+4. Does the opening answer the question or state the premise that prevents an answer? If it is already clear, stop editing.

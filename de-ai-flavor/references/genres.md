@@ -1,28 +1,28 @@
-# 按用途选表达
+# Choose Expressions by Purpose
 
-从零写作和改稿都先看读者与用途。有原稿或样稿时再参考其表达习惯；不把任何一种作者风格当默认标准。
+Whether drafting or revising, begin with the audience and purpose. Refer to an original draft or sample habits only when provided; do not assume one author's style is the default.
 
-| 用途 | 读者需要什么 | 表达怎么安排 |
-| --- | --- | --- |
-| 对话与工作回复 | 答案、理由、下一步 | 先回应当前问题，再补影响判断的内容；不重讲双方已知的背景，不用固定夸赞包住每次回答 |
-| 文章与评论 | 主张、依据、展开过程 | 围绕问题展开，保留有内容的转折和个人判断；不必每段都凑三点，不把完整论证缩成大纲 |
-| 邮件与通知 | 事情、行动、时间和条件 | 说清请谁做什么，使用已给出的时间与要求；礼貌称呼和必要结尾可以留 |
-| 报告与研究摘要 | 发现、证据、范围、待解决项 | 分清现状、目标和结果；用材料支持判断，保留必要限定，不用“意义重大”替代发现 |
-| 技术文档与README | 怎么用、前提、结果、失败处理 | 按操作依赖安排步骤，必要时解释原因；保留专业词、命令和参数，不把术语换成模糊外号 |
-| 网页与产品介绍 | 产品做什么、适合谁、怎样开始 | 用已有功能说明价值，按钮写具体动作；不把布局选择与制作进度写进正文 |
-| 界面提示与短标签 | 当前状态、对象、可做的动作 | 标签可以短，错误提示要能帮助处理；不编自动保存、恢复、退款等行为 |
-| 口播与演示 | 听得懂的完整意思、当前讲到哪一步 | 口播补足衔接和解释；投影片可以用短要点。用户要逐字稿时不改交提纲 |
-| 正式文件与规范 | 稳定、准确的含义与责任范围 | 可以保留书面语、被动句、固定层级；“应、须、可”不互换，不为口语化改变义务 |
-| 图表与图片文字 | 标签、单位、数据含义 | 先定准确措辞，保持名称和单位一致；不要为了标题醒目把波动写成突破 |
+| Purpose | What the reader needs | How to organize the writing |
+|---|---|---|
+| Conversation and work replies | Answer, reason, next step | Address the current question first, then add information that affects the decision. Do not repeat known background or wrap every response in generic praise. |
+| Articles and commentary | Claim, evidence, development | Develop the issue and retain meaningful turns and personal judgment. Not every paragraph needs three points; do not reduce a full argument to an outline. |
+| Emails and notices | Situation, action, time, conditions | State who should do what and use only given dates and requirements. Keep polite address and necessary closing. |
+| Reports and research summaries | Findings, evidence, scope, open items | Distinguish current status, goals, and results. Support judgments with material and retain necessary qualifiers; do not substitute “highly significant” for a finding. |
+| Technical documentation and README files | Usage, prerequisites, result, failure handling | Order steps by operational dependency and explain why when useful. Retain technical terms, commands, and parameters; do not replace them with vague nicknames. |
+| Web pages and product descriptions | What the product does, who it suits, how to start | Explain value through existing capabilities and make button actions specific. Do not put layout choices or production progress in the body copy. |
+| Interface messages and short labels | Current status, object, available action | Labels can be short; error messages should help resolve the issue. Do not invent autosave, recovery, refunds, or other behavior. |
+| Spoken scripts and presentations | A complete idea listeners can understand and where they are in the story | Add transitions and explanation to speech; slides may use short bullets. If the user requests a full script, do not deliver only an outline. |
+| Formal documents and standards | Stable meaning and responsibility scope | Retain formal language, passive voice, and fixed hierarchy as needed. Do not interchange “should,” “must,” and “may”; do not change obligations for a conversational tone. |
+| Charts and image text | Labels, units, data meaning | Choose accurate wording first and keep names and units consistent. Do not describe variation as a breakthrough just to make a title vivid. |
 
-## 篇幅取决于需要解释多少
+## Length depends on what needs explaining
 
-简单通知可以只有两句。推导、长文和完整讲解需要展开原因、例子和条件，不因为结论能用一句话概括就删掉过程。重复若承担不同作用，例如先定义、再应用、最后提醒例外，可以保留；只是换个说法重讲则合并。
+A simple notice may need only two sentences. Reasoning, long-form writing, and full explanations need causes, examples, and conditions; do not cut that process just because the conclusion fits in one sentence. Repetition may serve distinct functions—for example, defining a point, applying it, and then noting an exception—and can remain. Merge only repeated wording that adds nothing.
 
-## 语气不只一种
+## There is more than one suitable tone
 
-专业不等于绕口，友好不等于俏皮，正式不等于空泛。按场景保留礼貌、情感和明确立场，不强迫文字全都冷静中性，也不靠“说实话”“我直接说”制造口语感。有真实个人经历时可以写；没有时不替作者补一段。
+Professional does not mean awkward, friendly does not mean jokey, and formal does not mean vague. Retain courtesy, emotion, and a clear position when the context calls for them. Do not force every text into cool neutrality or create a conversational feel with phrases such as “to be honest” or “I'll be direct.” Include real personal experience when provided; do not invent it for the author.
 
-## 格式服务使用
+## Format should support use
 
-步骤用编号，独立条目用列表，对照可用表格，解释通常用段落。短按钮不需要完整主谓宾，正文不能只剩斜杠和标签。中英文按各自语法与标点习惯处理，术语名称保持一致。结构化文件只改任务允许的可见文案，保留键、ID与占位符语法。
+Number procedures, list independent items, use tables for comparisons, and use paragraphs for explanations. A short button label does not need a complete subject–verb sentence; body copy should not consist only of slash-separated tags. Follow the grammar and punctuation conventions of each language in mixed-language text and use terms consistently. For structured files, change only visible copy allowed by the task; preserve keys, IDs, and placeholder syntax.

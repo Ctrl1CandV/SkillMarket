@@ -1,15 +1,15 @@
-# 来源、借鉴与许可
+# Sources, Inspiration, and Licensing
 
-参考的角色与偏好边界见 SKILL.md；本文件只管方法归属与资产许可。
+See SKILL.md for reference roles and boundaries on user preferences. This file covers method attribution and asset licensing only.
 
-## 方法归属
+## Method attribution
 
-本技能以原创文字组织流程，借鉴 [oil-oil/oil-ui](https://github.com/oil-oil/oil-ui) 的方向设计、代表页、画面证据与修订方法，借鉴 [pbakaus/impeccable](https://github.com/pbakaus/impeccable) 的任务简报、按需读取与局部精修思路。借鉴方法不等于复制技能正文、模板、示例画面或组件代码，也不证明产出达到其展示质量。不继承上游自动更新、推广或隐藏示例性质的规则。
+This skill uses original wording to organize its workflow. It draws on [oil-oil/oil-ui](https://github.com/oil-oil/oil-ui) for design directions, representative pages, visual evidence, and revision methods, and on [pbakaus/impeccable](https://github.com/pbakaus/impeccable) for task briefs, reading only what is needed, and local-refinement ideas. Using these methods does not mean copying skill text, templates, example visuals, or component code, or that the result has achieved their demonstrated quality. Do not inherit upstream rules for automatic updates, promotion, or hiding the nature of examples.
 
-组件的行为资料与视觉标杆分开使用：[shadcn data-table](https://ui.shadcn.com/docs/components/data-table) 可参考按需组合及筛选/分页状态；[Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog) 可参考焦点与键盘契约。它们不是唯一美学，也不要求另装依赖；行为须按项目实际版本验证。
+Use component behavior references separately from visual benchmarks. [shadcn data-table](https://ui.shadcn.com/docs/components/data-table) can inform composition as needed and filter/pagination states; [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog) can inform focus and keyboard contracts. Neither is the only aesthetic direction, and neither requires a new dependency. Verify behavior against the actual project version.
 
-## 资产与许可
+## Assets and licenses
 
-优先使用用户授权素材和项目现有资源，但不因文件已存在就假定可对外分发。外部照片、字体、图标与代码分别记录来源、作者、许可、用途与修改情况；公开可见不等于可复制，代码许可不覆盖第三方图像、商标与肖像权。
+Prefer materials authorized by the user and resources already in the project, but do not assume a file may be redistributed simply because it exists. For external photos, fonts, icons, and code, record source, author, license, use, and modifications separately. Publicly visible does not mean free to copy; a code license does not cover third-party images, trademarks, or likeness rights.
 
-实际引入外部内容前核对对应版本的许可。复制或改编时按许可保留版权、完整许可及适用 NOTICE，并记录改动；上游许可不自动成为本技能的许可。无法确认授权时换用可授权资产或原创表达，不照搬标杆素材。不用真实品牌伪造背书，不默认接入付费生成服务，不泄露参考项目的私有数据。
+Before introducing external content, check the license for the actual version. When copying or adapting, preserve copyright notices, full license text, and applicable NOTICE files, and record modifications. An upstream license does not automatically apply to this skill. If permission cannot be confirmed, use an authorized asset or original expression; do not copy benchmark material. Do not fabricate endorsement with a real brand, default to a paid generation service, or disclose private data from reference projects.

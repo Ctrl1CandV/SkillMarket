@@ -1,14 +1,14 @@
 ---
 name: thesis-cn
-description: 中文学位论文（重邮）合规核对：中英文摘要一致性、GB/T 7714 参考文献格式、章节编号与图表清单、合规的写作质量提示。触发词：学位论文、毕业论文、中文论文、大论文、摘要一致性、参考文献格式、GB/T 7714、图表清单、查重风险。不做 AIGC 检测规避，校级阈值走用户配置不硬编码。
+description: Compliance checks for Chinese-language degree theses, including consistency between Chinese and English abstracts, GB/T 7714 references, section numbering, figure and table lists, and compliant writing-quality feedback. Trigger words include degree thesis, graduation thesis, Chinese thesis, dissertation, abstract consistency, reference format, GB/T 7714, figure and table list, and plagiarism risk. Does not help evade AI-generated-content detection. Read institution-specific thresholds from user configuration; never hardcode them.
 license: MIT
 ---
 
-# thesis-cn：中文学位论文合规
+# thesis-cn: Compliance Checks for Chinese-Language Theses
 
-中文学位论文与会议论文是两套要求：GB/T 7714、中英双摘要、校级格式细则。本 skill 做机械核对与合规提示。
+Chinese-language degree theses and conference papers follow different requirements: GB/T 7714, Chinese and English abstracts, and institution-specific formatting rules. This skill performs mechanical checks and compliance-focused feedback.
 
-**校级规则未取证**：重庆邮电大学研究生院站点在调研时不可达，查重阈值、格式模板细则没有一手来源。所以这些全部从 `.grad/config.json` 读，**首次运行先引导用户填写**（没有就写 null 并提示「未配置，无法核对该项」），绝不硬编码猜测值：
+**Institution-specific rules have not been verified:** the Chongqing University of Posts and Telecommunications graduate-school website was unavailable during research, and no primary source was found for plagiarism thresholds or detailed formatting templates. Therefore, read these values from `.grad/config.json`. **Guide the user to fill them in on first use.** For unset values, write null and state “Not configured; unable to check this item.” Never guess or hardcode them:
 
 ```json
 "thesis_rules": {
@@ -18,57 +18,57 @@ license: MIT
 }
 ```
 
-## 明确不做（先说清楚）
+## State clearly what this skill does not do
 
-**不降 AIGC 检出率、不做查重规避。** 社区里有 500+ star 的项目在做，但那是伦理灰色路线，且与「把论文写清楚」正交。本 skill 做的是让论文本身更规范：指出真实的写作质量问题（大段直引未标注、转述不彻底、术语不一致），改掉这些之后查重风险自然下降——这是副产品不是目标。
+**Do not lower AI-detection rates or help evade plagiarism checks.** Some community projects with 500+ stars pursue those aims, but that is an ethically questionable direction and separate from making a thesis clear. This skill improves compliance and points out verifiable writing-quality issues, such as long direct quotations without citations, incomplete paraphrasing, and inconsistent terminology. Fixing these may reduce plagiarism risk as a side effect; it is not the goal.
 
-## 路径占位符
+## Path placeholder
 
-`{SKILL_DIR}` 指本 SKILL.md 所在目录的绝对路径，由调用方展开。
+`{SKILL_DIR}` is the absolute path to the directory containing this SKILL.md; the caller expands it.
 
-## 工作流
+## Workflow
 
-### 1. 校级规则
+### 1. Institution rules
 
-读 `.grad/config.json` 的 `thesis_rules`。缺配置 → 生成模板让用户填，未填的项在后续输出里标「未核对（未配置）」。
+Read `thesis_rules` from `.grad/config.json`. If it is missing, generate a template for the user to complete. Mark every unset item “Not checked (not configured)” in the resulting report.
 
-### 2. 中英文摘要一致性
+### 2. Consistency between Chinese and English abstracts
 
-逐项比对：
+Compare each item:
 
-- **术语对齐**：中文术语与英文术语一一对应（「智能体 ↔ agent」「检索增强 ↔ retrieval-augmented」），同一概念前后译法不一致是最常见问题
-- **贡献点数量一致**：中文 3 条英文 2 条 = 不一致，逐条编号比对
-- **数字逐个比对**：实验数字在两个摘要里必须相同（含百分号小数位）
-- 时态与语态差异是正常的（英文惯例过去时），不算不一致
+- **Terminology alignment:** Match specialized terms consistently across languages (for example, use “agent” consistently for intelligent-agent concepts and distinguish retrieval augmentation from retrieval-augmented generation (RAG)). Inconsistent translations of the same concept are a common problem.
+- **Same number of contributions:** Three items in Chinese and two in English is a mismatch; compare them one by one.
+- **Compare every number:** Experimental values, including decimal places in percentages, must match in both abstracts.
+- Differences in tense and voice are normal (English often uses past tense) and do not count as inconsistencies.
 
-### 3. 参考文献格式
+### 3. Reference formatting
 
-**读 `{SKILL_DIR}/references/gbt7714.md`**。版本规则（F05）：GB/T 7714-2025 已于 2026-07-01 全部代替 2015 版（官方元数据已核对），但参考文件中的细则目前系按 2015 版整理并标 `legacy_2015`——2025 版正式文本未取得前逐条输出时注明「依据 2015 版细则（2025 对应条待核对）」，**不得宣称已按 2025 版适配，未知细则不判确定为违规**。学校有正式模板/细则（config `thesis_rules` 有实际文件依据）时学校要求优先。逐条核对文献表，输出：条号、问题、修改建议。按 DOI/标题先归并重复项。arXiv 引法单独检查（电子资源不是期刊）。
+**Read `{SKILL_DIR}/references/gbt7714.md`.** Version rule F05: GB/T 7714-2025 fully replaced the 2015 edition on 2026-07-01 (official metadata was checked), but the current reference document is based on the 2015 edition and marked `legacy_2015`. Until the official 2025 text is obtained, each reported item must say “Based on the 2015 edition rules; the corresponding 2025 rule remains to be checked.” **Do not claim compliance with the 2025 edition, and do not classify unknown rules as definite violations.** If the institution has a formal template or detailed rules with a real source in `thesis_rules`, those take precedence. Check the bibliography item by item and report the item number, issue, and suggested correction. Deduplicate by DOI or title first. Check arXiv citations separately; they are electronic resources, not journal articles.
 
-### 4. 章节编号与图表
+### 4. Sections, figures, and tables
 
-- 章节三级编号规范（1 / 1.1 / 1.1.1），跳号与重号报出
-- 图表编号按章（图 2-3、表 3-1 两种流派，跟学校模板走）
-- **图表清单生成**：从正文抽取全部图/表题 -> 生成清单页（目录后插）
+- Check three-level section numbering (1 / 1.1 / 1.1.1) and report skipped or duplicated numbers.
+- Number figures and tables by chapter (for example, Figure 2-3 and Table 3-1; follow the institution's template).
+- **Generate the lists of figures and tables:** extract all figure and table captions from the body and create list pages after the table of contents.
 
-### 5. 写作质量提示（合规面）
+### 5. Compliance-focused writing-quality feedback
 
-只指出可核实的问题：连续 >N 句与某来源字面重合（直引未标注）、转述后仍保留原句结构、关键术语全文不统一。每条附位置与证据。写作方法论（怎么改写、怎么组织）是 `academic-writing` skill 的职责，若可用则引导走它，本 skill 不复述。
+Report only verifiable issues: more than N consecutive sentences share wording with a source without direct-quotation marking; a paraphrase retains the source's sentence structure; or key terminology is inconsistent throughout. Include a location and evidence with every item. Rewriting methods and organization are the responsibility of the academic-writing skill; if available, refer the user to it instead of repeating its content.
 
-## 输出格式
+## Output format
 
 ```markdown
-# 学位论文核对报告 · YYYY-MM-DD
-## 摘要一致性（n 项）
-- ❌ 贡献点数量：中文 3 / 英文 2 —— 中文多出的第 3 条是…
-## 参考文献格式（n 项）
-- ❌ [12] 会议论文标成 [J]，应为 [C]//…
-## 章节与图表
-- ⚠️ 图 3-2 在清单中缺失
-## 写作质量
-- ⚠️ §2.3 与 [来源] 连续 4 句高度重合，未见引注
-## 未核对项
-- 查重阈值（未配置）
+# Thesis Compliance Report · YYYY-MM-DD
+## Abstract consistency (n items)
+- ❌ Contribution count: 3 in Chinese / 2 in English — the third Chinese item is ...
+## Reference formatting (n items)
+- ❌ [12] Conference paper marked [J]; should be [C]//...
+## Sections, figures, and tables
+- ⚠️ Figure 3-2 is missing from the list.
+## Writing quality
+- ⚠️ Four consecutive sentences in `2.3 closely match [source]; no citation was found.
+## Not checked
+- Plagiarism threshold (not configured)
 ```
 
-只报告，改动由用户做。判定权在人。
+Report findings only; the user makes edits. Judgment belongs to people.

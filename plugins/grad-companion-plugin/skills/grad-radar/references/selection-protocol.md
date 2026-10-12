@@ -1,71 +1,71 @@
-# 按学习需求选论文与综述
+# Select Papers and Reviews for a Learning Goal
 
-适用：找入门论文、推荐综述、学习某项技术、探索一个具体研究问题。检索由宿主实际可用的工具执行。每日追新继续走原漏斗；本流程是有边界的学习选文。
+Use this workflow to find introductory papers, recommend reviews, learn a technology, or explore a specific research question. Search with tools actually available on the host. Daily discovery stays in its existing funnel; this is bounded learning-oriented paper selection.
 
-## 1. 把需求写成能判断的选择问题
+## 1. Turn the request into a decision question
 
-复用本次请求、同一任务的会话及已授权的阅读背景；不猜导师方向、课程或掌握程度。记录本次意图（了解领域/学习技术/研究问题/近期进展）、要回答的问题、已有基础、先修负担、指定范围与排除项。通常一句话够用。只有缺失信息会显著改变推荐时才问。过去一次检索的方向和排序不能自动成为本次偏好。
+Reuse the current request, conversation in the same task, and authorized reading background. Do not guess the advisor's research direction, course, or the user's expertise. Record the current intent (understand a field, learn a technology, address a research question, or catch up on recent work), the question to answer, existing background, prerequisite burden, specified scope, and exclusions. Usually one sentence is enough. Ask only when missing information would materially change the recommendation. A previous search's topic and ranking do not automatically become current preferences.
 
-例：用户懂 Transformer，但想了解 Agent 记忆，尚未确定实现路线。选择问题是“先弄清记忆保存什么、如何更新和取用、怎样评价”，不预设向量检索是唯一方案。
+Example: The user understands Transformers and wants to learn about Agent memory, but has not chosen an implementation approach. Frame the decision as “first understand what memory stores, how it is updated and retrieved, and how it is evaluated,” without assuming vector retrieval is the only option.
 
-## 2. 少量搜索，及时看候选正文
+## 2. Search a little and inspect candidate contents early
 
-1. 拆成对象、机制、目的几个概念，补同义词和缩写。先分别查主要机制，避免把所有词 AND 后只剩极窄结果。
-2. 入门时可先找范围与基础分类，再按分类、关键术语或缺口收窄；已有明确问题时直接查对应机制或设置。经典基础可从已核综述追参考文献，时效任务优先查近期正式成果与最新版本，不要求每次执行相同轮数。
-3. 查询适配工具：通用搜索用自然语言短查询；数据库仅用当前支持的布尔语法。保存实际渠道、日期和查询，不把网页语法直接塞给 API。
-4. arXiv/作者页面找具体版本；刊会官方记录核身份与发表轨道。聚合网站与项目清单可发现候选，关键事实回到原始来源。
-5. 标题和摘要初筛；主读候选必须核看最影响选择的正文部分。论文通常看问题/方法/关键比较/限制；综述看范围、分类定义、一处实质比较、文献截止与限制。只拿到摘要时保留为候选，不能说已核正文质量。
+1. Split the request into concepts such as objects, mechanisms, and goals; add synonyms and abbreviations. Search for major mechanisms separately before combining terms, so an AND query does not become too narrow.
+2. For a beginner, first find overviews and basic taxonomies, then narrow by category, key term, or gap. When the question is already specific, search the relevant mechanism or setting directly. For foundational work, follow references from verified reviews; for time-sensitive tasks, prioritize recent formal publications and current versions. The number of search rounds need not be fixed.
+3. Match the query to the tool: use short natural-language queries for general search and only Boolean syntax supported by the current database. Record the actual source, date, and query; do not pass web-search syntax directly to an API.
+4. Use arXiv or author pages to identify specific versions; use official venue records to verify identity and publication track. Aggregators and project lists may surface candidates, but verify important facts against primary sources.
+5. Screen by title and abstract, then inspect the paper sections that most affect selection for any primary reading. For a paper, check the question, method, key comparison, and limitations. For a review, check scope, taxonomy definitions, one substantive comparison, literature cutoff, and limitations. If only the abstract is available, keep it as a candidate; do not claim the body was quality-checked.
 
-主题选文不使用每日三天窗口；常见近期范围及经典/时效场景的优先顺序见下一节。确认 arXiv 与正式版关系，去掉重复命中但不拼接不同版证据。搜索失败、受限样本和无结果分别说明。
+Topic-based selection does not use the daily three-day window. See the next section for common recency ranges and priority orders for foundational versus time-sensitive topics. Confirm the relationship between arXiv and the formal publication. Remove duplicate results, but do not merge evidence from different versions. Report search failures, limited samples, and no-results cases separately.
 
-已有足够材料能回答选择问题，且一轮收窄没有新增实质互补内容时停止；出现具体缺口才继续。数量与数据库个数不证明搜索完整，不为凑推荐扩大范围。
+Stop when the evidence is sufficient to answer the selection question and another narrowing round adds no substantively complementary content. Continue only to address a concrete gap. The number of papers or databases does not prove search completeness; do not expand the scope just to fill a list.
 
-## 3. 核验共同质量条件，按场景重排属性
+## 3. Check shared quality criteria and reorder priorities by context
 
-相关性、身份可靠、证据与结论相符是共同底线。刊会信誉、论文级影响、研究时效性、先修负担和材料可得性根据当前读者与任务排序，不使用固定加权分。没有特殊目标时，优先找顶刊顶会、近三年且有可信影响证据的论文或综述；这是常见起点，不是所有任务必须同时满足的硬门槛。
+Relevance, reliable identity, and evidence that supports the conclusion are baseline requirements. Order venue reputation, paper-level impact, recency, prerequisite burden, and material availability according to the current reader and task; do not use a fixed weighted score. With no special goal, a common starting point is reliable leading venues, work from the past three years, and credible evidence of impact. These are starting preferences, not hard requirements for every task.
 
-| 本次场景 | 建议优先顺序 | 对推荐的影响 |
+| Current context | Suggested priority order | Effect on recommendations |
 |---|---|---|
-| 一般领域了解、论文或综述推荐 | 问题适配与内容质量 → 可靠顶刊顶会、近三年 → 已核论文级影响 → 阅读负担 | 以近期可靠成果为起点；说明刊会、年份和引用，条件不足时按当前目标解释取舍 |
-| 经典领域、基础概念或方法学习 | 基础性与目标适配 → 刊会信誉和长期引用影响 → 对读者的可解释性 → 年份 | 较旧的奠基工作可以直接作主读，近期综述用于补全地图；不为近三年替换掉最合适的原始工作 |
-| 应用场景、快速变化的技术与近期进展 | 当前任务/环境适配与时效 → 正文证据及适用条件 → 刊会信誉和引用影响 | 近三年通常作为必要范围，变化很快时进一步缩短；具体截止按任务说明。新作引用尚少不自动降级，未正式发表者如实标记 |
-| 实现、复现或核查具体结论 | 方法/设置对应 → 实际版本与证据 → 可用代码/数据及实现条件 → 刊会、影响、年份 | 选择能回答或实施当前问题的原文，不仅因名气或新旧换成另一篇 |
+| General field orientation or paper/review recommendations | Fit to the question and content quality → reliable leading venue and past three years → verified paper-level impact → reading burden | Start with recent reliable work; state venue, year, and citations, and explain trade-offs when a criterion cannot be met. |
+| Foundational field, core concepts, or methods | Foundational value and fit → venue reputation and long-term citations → clarity for the reader → year | Older foundational work may be the primary reading; use a recent review to complete the map. Do not replace the best original work just to meet a three-year window. |
+| Application, fast-changing technology, or recent progress | Fit to current task/environment and recency → body evidence and conditions → venue reputation and citation impact | The past three years are usually a necessary window; shorten it further when change is rapid and state the cutoff. Do not automatically downgrade new work for having few citations; label unpublished work accurately. |
+| Implementation, reproduction, or checking a specific claim | Matching method/settings → actual version and evidence → available code/data and conditions → venue, impact, year | Choose the original source that answers or enables the current task; do not substitute another paper solely because it is more famous or newer. |
 
-这是判断示例，可按实际任务合并或调整。先说明本次最看重什么，再执行筛选；用户明确的刊会、年份、引用阈值等硬条件始终优先。严格要求三项同时满足时，不自行改成满足任意一项。
+These are decision examples; combine or adjust them for the actual task. State what matters most in this search before screening. The user's explicit hard requirements for venue, year, citation threshold, and so on always take precedence. If the user requires all three criteria simultaneously, do not reinterpret them as “any one of the three.”
 
-| 维度 | 常见高质量起点 | 核查与适用范围 |
+| Dimension | Common high-quality starting point | Verification and scope |
 |---|---|---|
-| 相关性与可读证据 | 必须直接回答选择问题，主读候选已核关键正文 | 名气高但不相关的排除；只有摘要保留“待核候选”，不进入已核主读 |
-| 刊会 | 计算机领域优先参考当前 CCF A 正式期刊/会议；其他领域使用该领域有出处的权威清单或用户名单 | 按学科与任务核信誉，不把名单外直接等同于质量差。分别记 journal/conference、目录版本和实际发表轨道。预印本、Workshop、Demo、Short、Findings 不冒充目录中的正式长文；不预置永久排名 |
-| 近期性 | 常见起点为当前年及前两年的正式发表作品，截止到本次检索日期 | 2026-10-12 的窗口为 2024-01-01 至 2026-10-12；经典学习不套此窗口，时效任务按当前环境收紧或明确范围。arXiv 首发、正式发表及文献截止分别记录；上传新版本不把旧研究变成新论文 |
-| 引用影响 | 查论文级引用量、统计来源和查询日期；有归一化数据时优先同类型/同年/同领域的高影响作品 | OpenAlex `citation_normalized_percentile` 的 top-10% 可作高影响信号，不是普适质量阈值。不同数据库计数不相加、不择最大值，缺数据记未知，不记 0 |
-| 实际内容质量 | 机制明确，关键对照/设置支持结论，限制可定位 | 上述三类元数据不能替代正文核查；撤稿、重要更正或身份矛盾先解决，不直接推荐 |
+| Relevance and readable evidence | Directly answers the selection question; key body sections of the primary-reading candidate have been checked | Exclude famous but irrelevant work. If only an abstract was checked, retain it as “candidate pending verification,” not as a verified primary reading. |
+| Venue | For computer science, first consider current CCF A formal journals/conferences; in other fields, use an authoritative, sourced list or a user-provided list | Check reputation for the discipline and task; being outside a list does not mean low quality. Record journal/conference type, list version, and actual publication track. Do not present preprints, Workshop, Demo, Short, or Findings as formal full papers in a list. Do not assume a permanent ranking. |
+| Recency | A common starting window is formal publications from the current year and previous two years, ending on the search date | On 2026-10-12, this window is 2024-01-01 through 2026-10-12. Do not apply it to foundational learning; narrow or state a cutoff for time-sensitive work. Record arXiv first-posted date, formal publication date, and literature cutoff separately. A new upload does not make an old study new. |
+| Citation impact | Check paper-level citations, source, and query date; when normalized data exists, prefer influential papers of the same type, year, and field | OpenAlex citation_normalized_percentile top 10% can signal high impact; it is not a universal quality threshold. Do not add counts from different databases or select the maximum. Mark missing data as unknown, not zero. |
+| Actual content quality | Mechanism is clear, key comparisons/settings support the claim, and limitations can be located | The three metadata dimensions above do not replace reading the body. Resolve retractions, major corrections, or identity conflicts before recommending. |
 
-主读由本次属性优先顺序决定：经典学习可以选较旧的基础作，近期应用可以选引用积累尚少但设置匹配、正文可靠的新作。**经典基础**、**近期待观察**和**预印本**是说明来源与成熟度的标签，不是固定的次级推荐。说明为什么适合、哪些属性较弱或未知，不混写成“三项全部满足”，不为凑数量放宽硬条件或正文质量底线。
+Choose the primary reading according to this search's priorities. For foundational learning, it may be older; for a recent application, it may be a new, well-supported paper with few citations but a matching setting. **Foundational classic**, **recent candidate**, and **preprint** describe source or maturity; they are not fixed secondary recommendation tiers. Explain why the paper fits and which criteria are weaker or unknown. Do not imply it satisfies all three criteria, and do not relax hard conditions or body-quality requirements to fill a quota.
 
-用户设定硬条件（如仅 CCF A 正式长文、近三年且引用至少某值）时先筛硬条件，再按内容相关性排序。严格结果为空或计数无法查得，就如实给零个已核主读，可另外给待核清单；不能把经典例外或预印本偷偷算进严格结果。新作低引用可说明积累期，但不能豁免用户明确的硬门槛。
+If the user sets hard requirements (for example, only formal CCF A full papers from the past three years with at least a given number of citations), filter by those requirements first, then rank by relevance. If the strict result is empty or citation counts cannot be checked, report zero verified primary readings; a separate pending-verification list is allowed. Do not quietly count classic exceptions or preprints as strict matches. Few citations on a new paper may reflect time to accumulate citations, but do not waive an explicit user threshold.
 
-“引用率”先明确论文级口径：累计被引、近期年增量、同年同领域百分位不是同一指标。若只有总量和年份，可在同领域同类型内计算粗略 `累计引用 / (当前年 - 发表年 + 1)` 作辅助，并明确不是领域归一化影响力；不对刚发表几周的论文外推全年速率。优先保存原始值与口径，不只保存自算排序分。
+Define the paper-level meaning of “citation rate” first: cumulative citations, recent annual growth, and same-year/same-field percentile are different measures. If only total citations and publication year are available, a rough cumulative-citations/(current year - publication year + 1) value within the same field and paper type may be useful. State that it is not field-normalized impact; do not annualize a paper published only weeks ago. Prefer to save source values and their definitions instead of only a self-calculated ranking.
 
-实际元数据渠道：刊会/轨道看出版方、会议 proceedings 或 OpenReview 的正式接收记录；DOI 身份可交叉核对 Crossref，计算机书目信息可用 dblp；引用及同年同领域影响可用 OpenAlex，Semantic Scholar 可交叉查计数。记录实际查得的渠道与缺口，dblp 不承担引用排名，Crossref 的元数据存在不等于同行评审已完成。 API 不可用时回官方页面，不新增账户、不把网络失败写成无引用。来源与适用范围见 [method-sources.md](method-sources.md)。
+Metadata sources in practice: verify venue and track from the publisher, conference proceedings, or official OpenReview acceptance record; cross-check DOI identity with Crossref and computer-science bibliography information with dblp; use OpenAlex for citations and normalized same-year/field impact, with Semantic Scholar as a cross-check. Record the sources actually checked and any gaps. dblp does not provide citation rankings; Crossref metadata does not prove peer review is complete. If an API is unavailable, use an official page. Do not create an account or treat network failure as zero citations. See [Method Sources](method-sources.md) for source and scope details.
 
-## 4. 用内容判断质量，用目标判断适配
+## 4. Judge quality from content and fit from the goal
 
-| 对象 | 核看内容 | 对用户的取舍 |
-| --- | --- | --- |
-| 普通论文 | 问题/贡献明确；机制可解释；对照、设置和证据支持主张；有适用边界 | 能学到哪个概念/方法/评测读法？当前需要多少先修？ |
-| 综述 | 覆盖与截止时间明确；分类依据有定义；分支有比较；争议与限制交代 | 是否先建立全景，还是补一个专题？与已有读物是否重复？ |
+| Work | Inspect | Decision for the reader |
+|---|---|---|
+| Research paper | Clear question/contribution; explainable mechanism; comparisons, settings, and evidence that support claims; limits of applicability | What concept, method, or evaluation approach can the reader learn? What prerequisites are needed now? |
+| Review | Clear scope and cutoff; defined taxonomy; comparison among branches; stated controversies and limitations | Is a broad map needed first or a specific topic? Does it duplicate existing reading? |
 
-身份可信、内容质量、目标相关性、材料可得性分别判断。会议名、引用量和年份可以帮助取舍，不能替代内容核查；不用一个综合分假装客观质量。预印本身份如实写，来源不可得保留重要性并说明无法完成的核查。
+Judge identity reliability, content quality, relevance to the goal, and material availability separately. Venue, citation count, and year can inform selection but do not replace content checks; do not disguise an overall score as objective quality. Label preprints accurately. If the source is unavailable, state its relevance and the checks that could not be completed.
 
-## 5. 推荐结果
+## 5. Recommendations
 
-通常先给 1 篇主读和少量互补，数量随本次问题、时间和用户要求调整；不足不凑。每篇给准确标题/原文、实际阅读版本、选择理由、具体能学到什么、与其他候选的差别、必要先修、材料核查范围。理由要能指到本文分类/方法或证据，不能只是“值得深入、建立视野”。
+Usually start with one primary reading and a few complementary papers; adjust to the question, time, and user request. Do not pad a short list. For each paper, provide the exact title and original source, version actually read, reason for selection, what the reader can learn, differences from other candidates, necessary prerequisites, and scope of material checked. Reasons should point to the paper's taxonomy, method, or evidence, not merely say “worth exploring” or “broadens perspective.”
 
-内部保留候选表：本次问题、属性优先顺序与硬条件；题名与 DOI/arXiv、实际版本、命中问题、正式发表年/首发年、刊会类型/轨道/目录来源、引用量/归一化信号/数据库/查询日期、正文已核范围、是否主读、来源/成熟度标签及取舍理由。返回结果给一行足以复核的刊会、年份与影响信息；未知项照实标记，不让推荐措辞暗示已核。完整检索记录用于回查，回复不铺日志。仅当用户请求保存或项目明确约定时写到指定目录，不为候选逐篇初始化个人台账，不把该次取舍保存成长期研究偏好。
+Keep an internal candidate table with the question, priority order, hard requirements, title, DOI/arXiv ID, actual version, matched question, formal and first-posted years, venue type/track/list source, citation count and normalized signal/source/date, body sections checked, primary-reading status, source/maturity label, and trade-off rationale. Include enough venue, year, and impact information in the response for a reader to verify a recommendation. Mark unknown fields accurately; do not imply verification through wording. Keep the full search record for later review but do not paste logs into the response. Save records only when the user requests it or project conventions require it; do not initialize a personal ledger for every candidate or save this search's choices as persistent research preferences.
 
-### 取舍示例（不是本次已执行的选文结果）
+### Trade-off example (not a result of an actual search)
 
-若候选 A 的范围与记忆写入/管理/读取相符，相关正文也已核，可推荐主读；B 只讨论检索，可补读取细节；C 虽较新却主要讨论金融应用，应说明当前学习分类时为何暂缓。候选名字、引用量和章节定位必须来自真实检索，不能把 A/B/C 写成具体论文。
+If candidate A covers writing, managing, and retrieving memory and its relevant body sections have been checked, it may be the primary reading. B discusses retrieval alone and may complement it. C is newer but focuses mainly on a financial application; explain why it is deferred when the current goal is to learn the taxonomy. Candidate names, citation counts, and section locations must come from a real search; do not treat A/B/C as actual papers.
 
-选中后进入单篇阅读；要求完整综述时切换 survey-protocol。
+After a paper is selected, use the single-paper reading workflow. For a complete review guide, switch to survey-protocol.

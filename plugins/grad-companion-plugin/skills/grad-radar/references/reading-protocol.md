@@ -1,114 +1,114 @@
-# 单篇阅读协议（grad-radar·阶段 1）
+# Single-Paper Reading Protocol (grad-radar · Stage 1)
 
-用户把一篇论文交给本插件时（主动指定，或从每日简报选中），按本协议读。协议服务两个入口的共同目标：**用户得到与自己基础和论文特点相匹配、可回查、知道下一步怎么读的笔记**。脚本存记录与笔记；本协议管判断与写作——判断错了用户可以纠正，纠正优先于先前推测。
+When the user gives a paper to this plugin—by specifying it directly or choosing it from a daily brief—follow this protocol. Both entry points share the goal: **give the user a traceable note matched to their background and the paper, with a clear next step for reading**. Scripts store records and notes; this protocol guides judgment and writing. The user may correct an interpretation, and that correction overrides an earlier guess.
 
-默认照顾经验较少的读者，补足关键概念、方法联系与证据读法；不以身份头衔猜能力。有明确基础或自己的读法时按实际问题减少铺垫。默认教学支持不意味着每次出理解题，也不改变来源、条件和未覆盖内容的核查要求。
+By default, support readers with less experience by explaining essential concepts, methodological relationships, and how to interpret evidence. Do not infer ability from a title or affiliation. When the user states their background or reading method, reduce unnecessary setup according to the actual question. Teaching support does not require comprehension questions every time and does not change source, condition, or coverage checks.
 
-## 0. 入口路由（先判断用户要什么）
+## 0. Route by the user's request
 
-| 用户输入 | 路由 |
+| User request | Route |
 |---|---|
-| 「今天有哪些值得关注的新论文」 | 每日发现（SKILL 阶段一）；用户选中的论文**回到本协议**走单篇流程 |
-| 「找适合我入门的论文 / 推荐这个领域的综述」 | selection-protocol：按问题、读者和场景重排刊会/年份/引用等属性，明确硬条件；经典基础可作主读 |
-| 「完整总结这篇综述，重点讲 X」 | survey-protocol：处理全篇，重点充分展开，其他分支仍有实质交代 |
-| 「帮我读这篇：<链接 / arXiv ID / 本地 PDF>」 | 直接定位论文 → 读已有记录 → 单篇流程（默认 standard） |
-| 「这篇我基础不够，讲详细一点」 | 用已有记录：调 difficulty 解释力度 → deep 补笔记（不推倒重来） |
-| 「先判断这篇值不值得读」 | quick 卡片，**不自动展开完整精读** |
-| 「上次那篇继续看方法部分」 | `reading_record.py list --status reading` 定位在读论文；读主记录+已有笔记+用户批注，继续未完成部分 |
-| 「我读完了 / 暂缓这篇」 | 只有这种明确表态才 `set-status`（read 会记 last_read_at 与当时的材料版本） |
+| “What new papers are worth following today?” | Daily discovery (SKILL stage 1); papers chosen by the user return to this protocol for single-paper reading. |
+| “Find an introductory paper for me” / “Recommend a review in this field” | selection-protocol: prioritize venue, year, citations, and other criteria according to the question, reader, and context; state hard requirements. A classic foundational paper may be the primary reading. |
+| “Give me a complete summary of this review, focusing on X” | survey-protocol: cover the whole review, explain the requested focus in depth, and still provide substantive treatment of other branches. |
+| “Help me read this: <link / arXiv ID / local PDF>” | Identify the paper → read any existing record → single-paper workflow (standard by default). |
+| “I lack the background for this; explain it in detail” | Reuse the existing record: adjust explanation using difficulty and add deep notes without starting over. |
+| “First tell me if it is worth reading” | Quick card; **do not expand automatically into complete close reading**. |
+| “Continue the methods section from last time” | Use `reading_record.py list --status reading` to locate the in-progress paper; read the primary record, existing notes, and user annotations, then continue the unfinished part. |
+| “I finished this” / “Pause this paper” | Only this explicit statement permits `set-status`. A read status records `last_read_at` and the material version at that time. |
 
-裸标题：先 `reading_record.py show --repo . --paper "<标题>"` 查已有记录；查不到再用宿主检索或 arXiv 查询定位。**无法唯一定位时列候选让用户确认；不要猜 ID、DOI 或本地路径**（AMBIGUOUS_IDENTITY 的 detail 里就带着候选）。仅凭标题无法唯一确认时，要求用户给链接或文件，并把已经确定的信息（标题等）保留在会话中。
+For a bare title, first run `reading_record.py show --repo . --paper "<title>"` to search existing records. If none is found, use host search or arXiv lookup to identify it. **If identity is ambiguous, list candidates and ask the user; do not guess an ID, DOI, or local path** (AMBIGUOUS_IDENTITY detail already contains candidates). When a title alone cannot establish a unique match, ask for a link or file and retain confirmed details such as the title in the conversation.
 
-## 1. 共享处理顺序（每篇都走）
+## 1. Shared processing order (every paper)
 
-1. 确认用户请求、目标论文、期望深度（用户没说就按 §3 的默认）。
-2. `reading_record.py show` 读已有记录与 `config.json` 的 `reading_profile`（最少背景信息），**避免重复询问已经知道的事**。
-3. 根据标题/摘要暂定 importance / difficulty / paper_type，各附一句独立理由；此时 `provisional=true`。
-4. 确认来源、实际版本、当前可读取范围（§6 来源与降级）。
-5. 根据任务选择章节、图表与必要前置知识——**不存在固定「永远不读」的章节名单**（背景、设置、附录都可以按任务展开）。
-6. 先按 `extraction-guide.md` 保留有效信息及原文定位，再写相应深度的讲解（`note-templates.md`）；正文不足降低实际交付范围。仅身份不写内容摘要。
-7. 保存按用户请求/项目约定执行；只讲解或选候选不强制落盘。需要保存时 `register`（首次）+ `save-note`，保护个人批注（§7）。登记时版本与分类可能暂定，读后用 `update-context` 回填实际 source 与分类。`reading.mode` 是实际笔记深度，不能借上下文更新在材料不足时升档。
-8. 回复给可直接阅读的内容；保存时附路径。学习导读通常给少量原文位置及阅读目的，理解检查题在有助当前学习时给；快速判断、复现或结论核查按目标给下一步，不固定收尾格式。重解释、少套话；时间少时减少本次单元，不删单元内决定理解的条件与例子。
+1. Confirm the request, target paper, and desired depth (use the default in `3` if unspecified).
+2. Run `reading_record.py show` to read existing records and `reading_profile` from `config.json`. **Do not ask again for information already known.**
+3. Based on title and abstract, provisionally classify importance, difficulty, and paper_type, with a separate one-sentence reason for each; set `provisional=true` at this stage.
+4. Confirm the source, actual version, and currently readable scope (`6: sources and fallbacks).
+5. Select sections, figures, tables, and necessary prerequisites for the task. **There is no fixed list of sections that must never be read**; background, settings, and appendices may all be relevant.
+6. First use `extraction-guide.md` to preserve useful information and original locations. Then write the explanation at the chosen depth using `note-templates.md`. If body text is insufficient, narrow the actual deliverable. Identity information alone does not justify a content summary.
+7. Save only when requested or required by project convention. A recommendation or conversation-only explanation does not require a saved note. To save, use `register` on first use and `save-note`; protect personal annotations (`7`). The initial version and classification may be provisional; after reading, update the actual source and classification with `update-context`. `reading.mode` is the depth of the note actually produced; do not upgrade it through a context update when source material is insufficient.
+8. Reply with content the user can read directly and include the note path when saved. A learning guide usually gives a few locations in the original and why to read them; add comprehension checks only when useful to this learning task. For quick assessment, reproduction, or claim checking, give next steps that fit the goal rather than a fixed closing format. Explain clearly without boilerplate. If time is limited, shorten the current unit, but do not remove conditions and examples needed to understand that unit.
 
-## 2. 三个维度分别判断
+## 2. Classify three dimensions separately
 
-| 维度 | 枚举 | 判断依据 | 必须避免 |
+| Dimension | Values | Basis | Avoid |
 |---|---|---|---|
-| importance | core / relevant / peripheral / unknown | 与用户学习目标的关系、基础性、代表性 | 把引用数、会议名、发布时间当重要性 |
-| difficulty | accessible / needs_background / challenging / unknown | 用户已掌握的基础、必要前置概念、论证复杂度 | 只写「较难」不说明卡在哪；把新术语数量当分数 |
-| paper_type | method / survey / theory / system / evaluation / other | 论文主要任务与贡献的组织方式 | 按标题关键词机械决定；把所有综述降级 |
+| importance | core / relevant / peripheral / unknown | Relationship to the user's learning goal, foundational value, representativeness | Treating citation count, venue, or publication date as importance |
+| difficulty | accessible / needs_background / challenging / unknown | Background already mastered, required prerequisites, complexity of reasoning | Saying only “difficult” without naming the barrier; treating the number of new terms as a score |
+| paper_type | method / survey / theory / system / evaluation / other | How the paper's main task and contribution are organized | Classifying mechanically from title keywords; downgrading every review |
 
-- 混合类型论文：选一个主类型，次要特征在文字里说明，不建多标签权重。
-- selection-protocol 的刊会/引用/年份按本次场景排序，用户指定阈值时才作为对应硬门槛；这里的 importance 表示与当前学习目标的关系。满足筛选条件不自动等于 core，用户指定论文也不因推荐条件未满足而拒绝阅读。
-- 读完正文后可以调整三维判断（`update-context --classification-json`），分类变更要说明原因。
-- 「重要且容易」也要核对关键设置与结论，不因容易漏掉证据；「相关且适中」标准笔记读懂思想与关键实验即可。
+- For a mixed-type paper, choose one primary type and describe secondary characteristics in prose; do not create weighted multi-label scores.
+- selection-protocol orders venue, citations, year, and related criteria for the current context. Treat them as hard thresholds only when the user specifies them. Here, importance means relevance to the current learning goal. Meeting selection criteria does not automatically mean core. Do not refuse to read a paper the user specified just because it fails recommendation criteria.
+- After reading the body, update the classification if appropriate using `update-context --classification-json` and explain why.
+- An “important and accessible” paper still needs key settings and conclusions checked; ease does not justify skipping evidence. For a “relevant and moderate” paper, standard notes may focus on understanding the idea and key experiments.
 
-## 3. 三档阅读深度
+## 3. Three reading depths
 
-| mode | 中文呈现 | 目的 | 最低材料 | 产出规模参考 |
+| mode | User-facing label | Purpose | Minimum material | Approximate output |
 |---|---|---|---|---|
-| quick | 快速判断 | 决定是否继续投入 | 可靠摘要（**只有标题不能生成内容摘要**） | 约 150—300 中文字卡片 |
-| standard | 标准阅读 | 解释问题、核心机制、关键证据与范围 | 与解释直接相关的正文 | 通常约 800—1500 中文字 |
-| deep | 重点精读 | 解决重要且困难的理解问题 | 指定核心章节及必要上下文、可用图表/公式 | 首页保持简短，深解释按需展开 |
+| quick | Quick assessment | Decide whether to invest more time | Reliable abstract (**title alone cannot support a content summary**) | Roughly 150–300 Chinese characters |
+| standard | Standard reading | Explain the question, core mechanism, key evidence, and scope | Body sections directly relevant to the explanation | Usually about 800–1,500 Chinese characters |
+| deep | Focused deep reading | Resolve a substantial and difficult comprehension question | Specified core sections and necessary context, with figures/formulas when available | Keep the opening short; expand as needed |
 
-字数是呈现参考，不是验收阈值：不为凑字数编造，也不为压短删掉决定结论含义的设置。
+Lengths are presentation guidance, not acceptance thresholds. Do not invent content to meet a count or remove settings that affect the conclusion to make a note shorter.
 
-quick 也可以依据部分正文，范围按实际材料写；简短交付不等于只读摘要。仅有身份时是原文入口，不是第四种阅读完成模式。完整综述的篇幅按内容决定，完成度由全篇覆盖与核对决定，不能由 deep 标签证明。
+A quick assessment may use some body text; describe the scope actually available. A short deliverable does not mean only the abstract was read. Identity alone provides an original-source entry point, not a fourth “reading complete” mode. The length of a complete review guide depends on the work; completeness depends on whole-work coverage and checks, not on a deep label.
 
-**决策顺序**：① 用户明确要求的深度优先；② 材料可得性**限制实际交付**——选了 deep 但只读到摘要，就按 quick 交付并明说未完成（save-note 会自动降级并警告）；③ 无明确要求时：用户主动给论文默认 standard，每日初筛默认 quick；④ core 论文建议 deep，是否现在展开结合用户本次时间；⑤ needs_background/challenging 改变解释力度与阅读顺序，不是归档理由；⑥ peripheral 通常保持 quick，用户要深入时照样 standard/deep。
+**Decision order:** (1) Follow the depth the user explicitly requested. (2) Source availability **limits the actual deliverable**: if deep was requested but only an abstract was retrieved, deliver quick and clearly state it is incomplete; save-note automatically downgrades and warns. (3) Without an explicit request, a paper supplied directly by the user defaults to standard; daily initial screening defaults to quick. (4) Suggest deep for a core paper, but decide whether to expand now based on the user's available time. (5) needs_background/challenging changes explanation and reading order; it is not a reason to archive a paper. (6) Peripheral papers normally stay quick; if the user wants detail, use standard or deep.
 
-## 4. 各类型的阅读重点（standard 第 2 节的组织方式）
+## 4. Reading focus by paper type (organization of section 2 in standard notes)
 
-| 主类型 | 建议先看 | 笔记重点 | 合适的停止条件（建议，非认证） |
+| Primary type | Read first | Note focus | Suggested stopping point (not certification) |
 |---|---|---|---|
-| method | 问题定义、整体方法图、核心模块、关键对比 | 相比 baseline 改了什么；机制为什么可能有效；证据支持到哪里 | 能用自己的话解释输入、处理、输出与主要对照 |
-| survey | 范围、分类图、核心分支、代表工作 | 建立问题地图；区分分支；给一个与用户目标相关的入门顺序 | 能说明主要路线及差异，选出下一篇要读的工作 |
-| theory | 定义、定理、假设、证明主线 | 结论成立的条件；关键推导；直觉例子与反例边界 | 能说清结论、必要假设及一个假设不成立的情形 |
-| system | 需求、整体架构、模块接口、性能代价 | 数据/控制流程；瓶颈；设计取舍；测量条件 | 能解释各模块职责及一项主要性能取舍 |
-| evaluation | 测量目标、样本/任务构造、协议、主要发现 | 到底测什么；比较条件；结果能否推广；失效情形 | 能说明测量对象、协议和至少一个结论边界 |
-| other | 摘要与目录确认主体结构 | 标准骨架 + 说明无法准确分类之处 | 能回答「问题、做法、证据」三项，不强塞模板 |
+| method | Problem definition, overview diagram, core modules, key comparisons | What changed from the baseline; why the mechanism might work; where evidence reaches | Explain the input, processing, output, and main comparison in the reader's own words. |
+| survey | Scope, taxonomy figure, main branches, representative work | Map the problem; distinguish branches; suggest an entry sequence related to the user's goal | Describe main approaches and differences, then choose the next paper. |
+| theory | Definitions, theorems, assumptions, proof outline | Conditions for the conclusion; key derivation; intuition and counterexample boundaries | State the conclusion, necessary assumptions, and one case where an assumption fails. |
+| system | Requirements, architecture, module interfaces, performance cost | Data/control flow, bottlenecks, trade-offs, measurement conditions | Explain module roles and one major performance trade-off. |
+| evaluation | Measurement goal, sample/task construction, protocol, main findings | What is measured; comparison conditions; generalizability; failure cases | Describe the measurement target, protocol, and at least one limit on the conclusion. |
+| other | Use abstract and outline to establish the structure | Standard outline plus what prevents accurate classification | Answer “question, approach, evidence” without forcing a template. |
 
-基础综述可能是 core——重点给知识分类和阅读顺序，不套「提升多少」的方法论文模板。
+A foundational survey may be core: focus on its taxonomy and reading order rather than forcing it into a “how much did the method improve?” template.
 
-## 5. 背景解释与推导的尺度
+## 5. Scale background explanations and derivations
 
-- 初次通常从少量关键概念讲起：先给直觉，再说在本文中的作用，必要时给短例子。数量按基础与本次单元调整；已经掌握的省略，需要更多前置时分批补，不扩成未经请求的整门课。
-- 自编例子、类比、推导一律标为**辅助解释**，不能写成作者做过的实验。
-- 公式先说明符号、输入输出和为什么出现，再解释关键步骤。
-- 推导缺步骤且补不齐：列出断点，建议查原文/前置材料，**不伪造证明**。
-- 用户的个人理解只属于用户的批注区；助手推测不得写成「我的理解」。
+- For a first-time reader, start with a few essential concepts: give intuition, explain their role in the paper, and add a short example when useful. Adjust the amount to the reader and current unit. Skip concepts already mastered; add further prerequisites in stages instead of turning the task into an unrequested full course.
+- Label self-created examples, analogies, and derivations as **supporting explanations**; never present them as experiments by the authors.
+- For equations, explain symbols, inputs and outputs, and why the equation appears before unpacking key steps.
+- If a derivation has missing steps that cannot be reconstructed, identify the gap and suggest the original source or prerequisite material. **Do not fabricate a proof.**
+- The user's personal interpretation belongs only in the user's annotation section; do not present an assistant's guess as “my understanding.”
 
-## 6. 来源与降级（决定能交付什么）
+## 6. Sources and fallbacks (determine what can be delivered)
 
-获取优先级：arXiv HTML（`arxiv_html.py`，保留章节抽取）> 用户本地 PDF 走宿主实际可用的阅读能力 > 外部解析器（mineru 等，若可用）。来源枚举记入主记录 `source.parser`：`arxiv_html` / `host_pdf` / `external_parser`（另记 `parser_name`）/ `user_text`（用户直接粘贴）/ `metadata_only`（只有摘要）——不得把其他阅读工具伪装成 mineru。
+Retrieval priority: arXiv HTML via `arxiv_html.py` with section extraction; a user-provided local PDF using a reading capability actually available on the host; then an external parser such as MinerU if available. Store the source enum in primary-record `source.parser`: `arxiv_html`, `host_pdf`, `external_parser` (also record `parser_name`), `user_text` (text pasted directly by the user), or `metadata_only` (abstract only). Do not mislabel another reading tool as MinerU.
 
-- **用户提供 vN 时必须读 vN**；未给版本按实际确认的固定版本获取（`arxiv_html.py` 会报告 version/version_status/fetched_at）。无法确认版本 → 记 version=null、version_status=unknown，不猜 v1。
-- 复杂版式/扫描件/关键图片无法识别：准确说明未读内容；影响核心理解就停在摘要卡或已有部分笔记。
-- **PDF 的图只提取到图注不算看过图；表格文字被提取不等于结构已核对；公式乱码必须标出来。** 这些如实写进 `--limitations` / 笔记「未覆盖」。
-- 没有任何可靠文本：只 register 身份与失败原因（save-note 拒绝空内容），不生成虚构摘要。
-- 网络错误与「本次没有匹配论文」分开说；空结果不能直接归因索引延迟，可按限速做一次扩大窗口尝试（`--days 5`）。
-- `--sections` 报 not_found 就如实说没有该章节号——不猜不存在的编号。
+- **When the user specifies version vN, read vN.** Without a specified version, retrieve a fixed version that can actually be confirmed (`arxiv_html.py` reports version/version_status/fetched_at). If version cannot be confirmed, record `version=null` and `version_status=unknown`; do not guess v1.
+- For complex layout, scans, or key images that cannot be read, state exactly what was not read. If it affects core understanding, stop at an abstract card or a partial note.
+- **Extracting only a figure caption does not mean the figure was viewed; extracted table text does not mean its structure was checked; garbled equations must be identified.** Record these limitations in `--limitations` and “Not covered.”
+- If no reliable text is available, register only identity and the retrieval failure. save-note rejects empty content; do not fabricate a summary.
+- Separate network errors from “no matching paper.” An empty result is not automatically an indexing delay; within rate limits, one expanded-window attempt such as `--days 5` may be made.
+- If `--sections` returns `not_found`, report that the requested section number was not found; do not guess missing numbering.
 
-## 7. 保存与个人批注
+## 7. Saving and personal annotations
 
-- 每篇一个主记录（`.grad/radar/papers/<paper_id>.json`）+ 一个当前主笔记（`radar/digest/…`）。旧 digest 首次注册时自动衔接（note.path 指旧路径，不搬迁）。
-- 同论文更新笔记：脚本自动把旧稿快照进 `digest/history/`；主笔记被人工编辑过（外部修改）时默认拒绝整体替换——按用户意图选 `--merge`（追加「补充阅读」段）或让用户先处理，**不吞批注**。
-- 用户批注文件 `<paper-key>.user.md` 由用户维护；整理批注时保留原话。
-- 「继续读/补充/重做」本身就是更新授权，不必反复确认；但**重复展示不产生重复笔记**，同内容保存不产生新历史。
-- 不同版本追加时，原文范围按版本保存在 `note.coverage_sources`；主笔记的 baseline source_version 不代表补充段都来自该版。含旧版内容时不能只把标题改成新版便称新版完整。
+- Keep one primary record per paper (`.grad/radar/papers/<paper_id>.json`) and one current primary note (`radar/digest/...`). During initial registration, an existing digest is linked automatically (note.path retains the old path; the file is not moved).
+- When updating a paper note, the script snapshots the old draft under `digest/history/`. If the primary note has manual edits, the script rejects wholesale replacement by default. Use `--merge` to append a “Further Reading” section when that fits the user's intent, or ask the user to resolve it first. **Do not swallow annotations.**
+- The user maintains `<paper-key>.user.md`. Preserve their words when organizing annotations.
+- “Continue,” “add,” or “redo” itself authorizes the requested update; do not repeatedly confirm. But **displaying the same note again must not create another note**, and saving identical content must not create another history entry.
+- When adding another version, preserve source scope per version in `note.coverage_sources`. The primary note's baseline `source_version` does not mean every added section came from that version. If old-version content remains, do not merely change the title to a new version and call it complete.
 
-## 8. 首次背景配置（四类信息，够用就行）
+## 8. Initial background configuration (four useful fields)
 
-`reading_profile` 只存：direction（方向）、learning_goal（近期学习目标）、known_background（已掌握基础）、available_minutes（可支配阅读时间）。
+`reading_profile` stores only direction, learning_goal, known_background, and available_minutes.
 
-- 用户没填也能读：背景不足采用入门友好解释，difficulty 标暂定（provisional）。
-- 不强制问卷；不猜学校课程、导师方向、算力。会话内明确「我学过 X」「只想快速了解」本次立即生效；**用户要求记住时**才 `radar_config.py profile …` 持久化。
-- 本次请求 > 同一任务会话 > 已授权的单篇阅读背景 > 插件默认。旧 config 直接可用，新增字段按缺省；阅读背景与方向不自动用于新的每日检索。
+- Reading may proceed when these are empty: use an introductory explanation and mark difficulty provisional.
+- Do not require a questionnaire or guess the user's courses, advisor's research direction, or compute resources. Statements such as “I have studied X” or “I only want a quick overview” take effect immediately in the current session. Persist them with `radar_config.py profile ...` **only when the user asks you to remember them**.
+- Priority: current request > same-task conversation > authorized single-paper reading profile > plugin defaults. Existing config works; treat new fields as optional. Reading background and topic do not automatically carry over to future daily searches.
 
-## 9. 场景速查
+## 9. Scenario quick reference
 
-- **课后二十分钟看新论文**：简报按 daily_caps 出少量内容；正在读的核心论文更值得继续时，明说「今天不加新文，继续 X」。
-- **搜到一篇重要的方法论文**：默认 standard；复用已有条目不重复登记；不能只丢给用户一个外部工具。
-- **重要但困难**：importance 与 difficulty 分开处理；先列前置知识，分层解释核心公式并给出处；一次先完成一个清楚的阅读单元，留下一单元入口。
-- **只有摘要**：输出 quick 卡片并明确 deep 未完成；save-note 自动记实际降级。
-- **继续 + 有批注**：先读主记录、笔记与 `.user.md`，优先回答用户的问题，本次新增内容单独标注。
+- **Twenty minutes after class for a new paper:** use daily_caps to return a short list. If continuing an important in-progress paper is more useful, say so directly, for example, “No new paper today; continue X.”
+- **A key methods paper was found:** default to standard, reuse its existing record instead of registering it twice, and do not simply hand the user to an external tool.
+- **Important but difficult:** keep importance and difficulty separate; list prerequisites, explain key formulas in layers with sources, complete one clear reading unit at a time, and provide an entry point for the next unit.
+- **Abstract only:** deliver a quick card and state that deep reading is incomplete; save-note records the actual downgrade.
+- **Continue with existing annotations:** read the primary record, note, and .user.md first; answer the user's question, then mark new content separately.

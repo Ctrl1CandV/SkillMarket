@@ -1,22 +1,20 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""组会承诺对账（weekly-brief）。提取上一份 brief 的计划条目 + 本期证据池，供 agent 机械对账。
+"""Lab-meeting commitment reconciliation (weekly-brief). Extract prior-brief plan items and the current evidence pool for mechanical review.
 
-分工边界（Type-A / Type-B）：
-- 本脚本只做**机械提取**：待对账条目、证据池（commit / run 新增与补录 / claim 变化）、时间窗计算
-- 「条目是否兑现」由 agent 按 SKILL.md 规则判断：**证据直接覆盖承诺才算完成；只覆盖一部分标
-  部分完成；无证据标未找到完成证据；数据源读不了标无法核对（不等于证明没做）**。脚本不替人下结论
+Division of responsibility (Type-A / Type-B):
+- This script performs **mechanical extraction only**: items to reconcile, evidence pool (commits/new or updated runs/claim changes), and window calculation.
+- The agent decides whether an item was fulfilled under SKILL.md: **evidence must directly cover the commitment; partial coverage is partial; no evidence means no completion evidence found; unreadable sources mean unverifiable, not proof that it was not done.** The script does not adjudicate.
 
-时间窗（F03）：本期窗口由生成方明确给出——CLI 不给时默认宿主当地「今天及之前 6 天」。
-prev brief 只提供待核对计划与问题，**不再从其标题推导本期**。
---since/--until 起止都含当天（按起日 00:00 至结束日后一天 00:00 半开区间）；
-只给一侧时另一侧 ±6 天。带时区的时间戳统一换算到宿主当地时区再比较；
-无时区的历史时间戳标 legacy，不宣称精确跨时区归属。
-证据池三源：git log、.grad/runs/（new_runs 按 created_at、updated_runs 按 updated_at 补录）、
-claims.jsonl 新增行（含 support 判定）。
+Reporting window (F03): the generator supplies the current window explicitly; if omitted, the CLI defaults to the host's local today and previous six days.
+The previous brief provides plans and questions to check; **the current window is no longer derived from its heading**.
+--since/--until include both dates (half-open interval from start-day 00:00 through the day after end-day 00:00).
+If only one side is supplied, the other is six days away. Convert timezone-aware timestamps to host-local time before comparing.
+Mark historical timestamps without timezones as legacy; do not claim precise timezone attribution.
+Evidence sources: git log; .grad/runs/ (new_runs by created_at, updated_runs by updated_at); new rows in claims.jsonl (including support decisions).
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+With --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -39,8 +37,8 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 def parse_prev_date(text: str) -> str | None:
-    """brief 头部格式：`# 周报 · YYYY-MM-DD ~ YYYY-MM-DD` 或 frontmatter date。"""
-    m = re.search(r"#\s*周报\s*·\s*(\d{4}-\d{2}-\d{2})", text)
+    """Brief heading format: `# Weekly Report · YYYY-MM-DD ~ YYYY-MM-DD` or frontmatter date."""
+    m = re.search(r"#\s*Weekly Report\s*·\s*(\d{4}-\d{2}-\d{2})", text, re.I)
     if m:
         return m.group(1)
     m = re.match(r"^---\n.*?^date:\s*(\d{4}-\d{2}-\d{2})", text, re.S | re.M)
@@ -48,8 +46,8 @@ def parse_prev_date(text: str) -> str | None:
 
 
 def extract_plan_items(text: str) -> list[str]:
-    """「下周计划」段的顶层 bullet；无该段返回空表。"""
-    m = re.search(r"^#+\s*[^#\n]*下周计划[^\n]*\n(.*?)(?=^#{1,3}\s|\Z)", text, re.S | re.M)
+    """Extract top-level bullets from the “Plan for next week” section; return an empty list if absent."""
+    m = re.search(r"^#+\s*[^#\n]*Plan for next week[^\n]*\n(.*?)(?=^#{1,3}\s|\Z)", text, re.S | re.M | re.I)
     if not m:
         return []
     items = []
@@ -63,9 +61,9 @@ def extract_plan_items(text: str) -> list[str]:
 
 
 def extract_pending_decisions(text: str) -> list[str]:
-    """「需要拍板」/「拍板的问题」段的条目；无该段返回空表。"""
-    m = re.search(r"^#+\s*[^#\n]*(?:需要导师拍板|拍板的问题|需要拍板)[^\n]*\n(.*?)(?=^#{1,3}\s|\Z)",
-                  text, re.S | re.M)
+    """Extract items from the advisor-decision section; return an empty list if absent."""
+    m = re.search(r"^#+\s*[^#\n]*Questions requiring the advisor's decision[^\n]*\n(.*?)(?=^#{1,3}\s|\Z)",
+                  text, re.S | re.M | re.I)
     if not m:
         return []
     items = []
@@ -79,7 +77,7 @@ def extract_pending_decisions(text: str) -> list[str]:
 
 
 def git_log(repo: Path, start: datetime, end: datetime) -> dict:
-    """REV-09：区分「读不了」与「确实没有」——不可用时给非空 reason，周报据此标无法核对。"""
+    """REV-09: distinguish unreadable sources from genuinely empty ones; include a reason when unavailable."""
     try:
         proc = subprocess.run(
             ["git", "-C", str(repo), "log", "--since", start.isoformat(),
@@ -88,10 +86,10 @@ def git_log(repo: Path, start: datetime, end: datetime) -> dict:
             capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError as exc:
         return {"commits": [], "source_status": "unavailable",
-                "reason": f"git 返回 {exc.returncode}（非 git 目录/缺历史）：证据池不可用，不是零证据"}
+                "reason": f"git exited with {exc.returncode} (not a Git directory or history missing); evidence pool unavailable, not empty"}
     except OSError as exc:
         return {"commits": [], "source_status": "unavailable",
-                "reason": f"git 不可执行：{exc}：证据池不可用，不是零证据"}
+                "reason": f"git could not run: {exc}; evidence pool unavailable, not empty"}
     commits = []
     for line in proc.stdout.splitlines():
         parts = line.split("\x00")
@@ -101,10 +99,10 @@ def git_log(repo: Path, start: datetime, end: datetime) -> dict:
 
 
 def to_local(ts: str | None) -> tuple[datetime | None, bool]:
-    """时间戳换算到宿主当地时区。返回 (本地 naive 或 None, legacy?)。
+    """Convert timestamps to the host's local timezone; return (local naive datetime or None, legacy?).
 
-    带时区的先 convert 到同一时区再比较（不截前十位、不裸去 tzinfo）；
-    无时区的历史值按原值归属并标 legacy；不可解析返回 (None, False)。
+    Convert timezone-aware values before comparison (do not truncate to ten characters or strip tzinfo);
+    keep timezone-naive historical values and mark them legacy; invalid input returns (None, False).
     """
     if not ts:
         return None, False
@@ -118,12 +116,12 @@ def to_local(ts: str | None) -> tuple[datetime | None, bool]:
 
 
 def collect_runs(grad: Path, start: datetime, end: datetime) -> dict:
-    """按时间窗收集 run：created_at 在窗内 → 新 run；否则 updated_at 在窗内 → 本期补录。
+    """Collect runs by window: created_at in range -> new run; otherwise updated_at in range -> result update this period.
 
-    本期创建又更新的 run 只按新 run 计一次，并保留更新时间。
-    REV-09：损坏的 meta.json 不再静默跳过——计入 unreadable_entries 并降级 source_status，
-    让周报能区分「证据池完整为小」与「部分条目读取失败」。
-    返回 {new_runs, updated_runs, legacy_ids, source_status, unreadable_entries}。
+    A run created and updated this period counts once as new and retains its update time.
+    REV-09: do not silently skip a corrupt meta.json; include it in unreadable_entries and downgrade source_status
+    so the report can distinguish a complete but small evidence pool from partial read failure.
+    Return {new_runs, updated_runs, legacy_ids, source_status, unreadable_entries}.
     """
     new_runs: list[dict] = []
     updated_runs: list[dict] = []
@@ -133,13 +131,13 @@ def collect_runs(grad: Path, start: datetime, end: datetime) -> dict:
     if not runs_dir.is_dir():
         return {"new_runs": [], "updated_runs": [], "legacy_ids": [],
                 "source_status": "not_present", "unreadable_entries": [],
-                "reason": f"{runs_dir} 不存在：没有 run 记录这一事实可信，但不等于证据池覆盖全部工作"}
+                "reason": f"{runs_dir} does not exist: no run records is a reliable fact, but does not mean the evidence pool covers all work"}
     for d in sorted(runs_dir.iterdir()):
         meta_f = d / "meta.json"
         if not d.is_dir():
             continue
         if not meta_f.is_file():
-            unreadable.append(d.name)  # 有 run 目录却读不到 meta：不能假装它不存在
+            unreadable.append(d.name)  # A run directory exists but its meta is unreadable; do not pretend it is absent.
             continue
         try:
             meta = json.loads(meta_f.read_text(encoding="utf-8"))
@@ -157,27 +155,27 @@ def collect_runs(grad: Path, start: datetime, end: datetime) -> dict:
                "status": meta.get("status"),
                "created_at": meta.get("created_at"), "updated_at": meta.get("updated_at")}
         if created is not None and start <= created < end:
-            new_runs.append(row)  # 当周创建又补录：只按新 run 计一次，updated_at 已随行带出
+            new_runs.append(row)  # Created and updated this week: count once as new; updated_at remains in the row.
             if created_legacy:
                 legacy_ids.append(run_id)
         elif updated is not None and start <= updated < end:
             row["result_updated"] = True
-            updated_runs.append(row)  # 上周创建、本期补录结果
+            updated_runs.append(row)  # Created earlier; results appended this period.
             if updated_legacy:
                 legacy_ids.append(run_id)
-        # 历史 run 没有 updated_at：不猜补录时间，也不把迁移/登记时间当结果完成时间
+        # If an old run lacks updated_at, do not guess when results were added or use migration/registration time.
     return {"new_runs": new_runs, "updated_runs": updated_runs, "legacy_ids": legacy_ids,
             "source_status": "partial" if unreadable else "ok", "unreadable_entries": unreadable,
-            "reason": (f"{len(unreadable)} 个 run 目录的 meta.json 读取失败：证据池不完整"
+            "reason": (f"Could not read meta.json in {len(unreadable)} run directories; evidence pool is incomplete"
                        if unreadable else None)}
 
 
 def new_claims(grad: Path, start: datetime, end: datetime) -> dict:
-    """REV-09：台账缺文件 / 坏行 / 不可读分别上报，坏行不中断其余有效行。"""
+    """REV-09: report missing files, malformed rows, and unreadable files separately; bad rows do not stop valid rows."""
     path = grad / "claims.jsonl"
     if not path.is_file():
         return {"claims": [], "legacy_ids": [], "source_status": "not_present",
-                "reason": f"{path.name} 不存在：没有 claim 事件可信，但不覆盖其他记录源"}
+                "reason": f"{path.name} does not exist: no claim events is reliable, but other evidence sources remain"}
     out: list[dict] = []
     legacy_ids: list[str] = []
     bad_lines = 0
@@ -185,7 +183,7 @@ def new_claims(grad: Path, start: datetime, end: datetime) -> dict:
         text = path.read_text(encoding="utf-8")
     except OSError as exc:
         return {"claims": [], "legacy_ids": [], "source_status": "unavailable",
-                "reason": f"claims 台账读取失败：{exc}"}
+                "reason": f"Could not read claims ledger: {exc}"}
     for line in text.splitlines():
         if not line.strip():
             continue
@@ -197,7 +195,7 @@ def new_claims(grad: Path, start: datetime, end: datetime) -> dict:
         if not isinstance(row, dict):
             bad_lines += 1
             continue
-        # 只追加台账：带 support_at 的行是人的判定事件；否则按 recorded_at 记新增绑定
+        # Append-only ledger: support_at marks a human judgment; otherwise recorded_at marks a new binding.
         stamp = row.get("support_at") or row.get("recorded_at")
         ts, legacy = to_local(stamp)
         if ts is None:
@@ -213,32 +211,32 @@ def new_claims(grad: Path, start: datetime, end: datetime) -> dict:
                 legacy_ids.append(str(row.get("claim_id") or "?"))
     if bad_lines:
         return {"claims": out, "legacy_ids": legacy_ids, "source_status": "partial",
-                "reason": f"claims 台账 {bad_lines} 行损坏被跳过：证据池不完整"}
+                "reason": f"Skipped {bad_lines} malformed row(s) in claims ledger; evidence pool is incomplete"}
     return {"claims": out, "legacy_ids": legacy_ids, "source_status": "ok", "reason": None}
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="组会承诺对账：机械提取条目与证据池（判定归人/agent 规则）")
-    ap.add_argument("--prev", required=True, help="上一份周报的路径（提供待核对计划，不推导本期窗口）")
-    ap.add_argument("--repo", default=".", help="项目根（git 与 .grad/ 所在）")
-    ap.add_argument("--since", default="", help="本期窗口起点 YYYY-MM-DD（默认宿主当地今天−6 天）")
-    ap.add_argument("--until", default="", help="本期窗口终点 YYYY-MM-DD（默认宿主当地今天）")
+    ap = argparse.ArgumentParser(description="Reconcile lab commitments: mechanically extract prior items and current evidence")
+    ap.add_argument("--prev", required=True, help="Path to previous weekly report (provides plans to check, not the current window)")
+    ap.add_argument("--repo", default=".", help="Project root (contains Git repository and .grad/)")
+    ap.add_argument("--since", default="", help="Current window start YYYY-MM-DD (default: host-local today minus six days)")
+    ap.add_argument("--until", default="", help="Current window end YYYY-MM-DD (default: host-local today)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     prev = Path(args.prev)
     if not prev.is_file():
-        die("NO_PREV", f"上一份周报不存在：{prev}；首次生成时无需对账，跳过本步即可")
+        die("NO_PREV", f"Previous weekly report does not exist: {prev}; skip reconciliation when creating the first report")
     text = prev.read_text(encoding="utf-8")
     plan_items = extract_plan_items(text)
     pending_decisions = extract_pending_decisions(text)
 
-    # 本期窗口：显式 > 默认「今天及之前 6 天」；不再从 prev 标题推导（上期窗口是旧周期）。
+    # Current window: explicit arguments > default (today and previous six days); never derive it from the prior heading.
     today = datetime.now().astimezone()
     if args.since and args.until:
         since, until = args.since, args.until
     elif args.since:
-        since, until = args.since, args.since  # 占位，下面 +6 天
+        since, until = args.since, args.since  # Placeholder; add six days below.
     elif args.until:
         since, until = args.until, args.until
     else:
@@ -248,7 +246,7 @@ def main() -> None:
         start_dt = datetime.strptime(since, "%Y-%m-%d")
         end_dt = datetime.strptime(until, "%Y-%m-%d")
     except ValueError as exc:
-        die("BAD_ARGS", f"--since/--until 日期不合法：{exc}")
+        die("BAD_ARGS", f"Invalid --since/--until date: {exc}")
     if args.since and not args.until:
         until = (start_dt + timedelta(days=6)).strftime("%Y-%m-%d")
         end_dt = datetime.strptime(until, "%Y-%m-%d")
@@ -256,9 +254,9 @@ def main() -> None:
         since = (end_dt - timedelta(days=6)).strftime("%Y-%m-%d")
         start_dt = datetime.strptime(since, "%Y-%m-%d")
     if end_dt < start_dt:
-        die("BAD_ARGS", f"窗口反向：until {until} 早于 since {since}；不会静默返回空证据池")
+        die("BAD_ARGS", f"Reversed window: until {until} is earlier than since {since}; refusing to return a silently empty evidence pool")
     start = start_dt
-    end = end_dt + timedelta(days=1)  # 起止均含当天：按半开区间 [start 00:00, until+1 00:00) 比较
+    end = end_dt + timedelta(days=1)  # Both dates inclusive; compare using [start 00:00, until+1 00:00).
 
     repo = Path(args.repo).resolve()
     grad = repo / ".grad"
@@ -268,7 +266,7 @@ def main() -> None:
     tz_offset = datetime.now().astimezone().utcoffset()
     offset_str = f"UTC{tz_offset / timedelta(hours=1):+g}" if tz_offset is not None else "UTC?"
     legacy_ids = sorted(set(runs_info["legacy_ids"]) | set(claims_info["legacy_ids"]))
-    # REV-09：每个证据源单独给状态；顶层 overall 让周报消费者知道证据池是否完整
+    # REV-09: report each source status separately; top-level overall tells the report whether evidence is complete.
     source_status = {
         "commits": {"status": commits_info["source_status"], "reason": commits_info["reason"]},
         "runs": {"status": runs_info["source_status"], "reason": runs_info["reason"],
@@ -293,26 +291,26 @@ def main() -> None:
         },
         "evidence_status": {"per_source": source_status, "overall": overall},
         "legacy_naive_ids": legacy_ids,
-        "note": ("对账规则在 weekly-brief/SKILL.md：证据必须直接覆盖承诺内容才算完成；"
-                 "只覆盖承诺的一部分标「部分完成」并写明未覆盖部分；窗口内指不回证据标「未找到完成证据」；"
-                 "某证据源 source_status=unavailable/not_present 时对相关条目用「无法核对」，不能推断用户没做；"
-                 "overall=partial 时输出必须声明证据池不完整；"
-                 "拍板问题只在有实际决定记录时标解决，不能由相关代码提交推断导师决定"),
+        "note": ("Reconciliation rules are in weekly-brief/SKILL.md: evidence must directly cover the commitment to count as complete; "
+                 "mark partial coverage and state what remains; if no evidence points to an item in this window, say no completion evidence was found; "
+                 "when source_status=unavailable/not_present, mark affected items unverifiable and do not infer that the user did nothing; "
+                 "when overall=partial, state that the evidence pool is incomplete; "
+                 "mark advisor questions resolved only with an actual decision record, never infer an advisor decision from a related code commit."),
     }
     if args.json:
         print(json.dumps({"ok": True, "data": data}, ensure_ascii=False))
         return
     e = data["evidence"]
-    print(f"# 对账窗口 {since} ~ {until}（含起止当天；时区 {offset_str}"
-          + (f"；legacy 无时区时间戳 {len(legacy_ids)} 个，归属不宣称精确" if legacy_ids else "") + "）")
-    print(f"## 待对账计划 {len(plan_items)} 条｜拍板问题 {len(pending_decisions)} 条")
-    print(f"## 证据池（overall={overall}）：commit {len(e['commits'])}｜新 run {len(e['new_runs'])}"
-          f"｜补录更新 run {len(e['updated_runs'])}｜claim 变化 {len(e['new_claims'])}")
+    print(f"# Reconciliation window {since} ~ {until} (inclusive; timezone {offset_str}"
+          + (f"; {len(legacy_ids)} legacy timezone-naive timestamps with imprecise attribution" if legacy_ids else "") + ")")
+    print(f"## Plans to reconcile: {len(plan_items)} | Pending advisor decisions: {len(pending_decisions)}")
+    print(f"## Evidence pool (overall={overall}): commits {len(e['commits'])} | new runs {len(e['new_runs'])}"
+          f" | updated runs {len(e['updated_runs'])} | claim changes {len(e['new_claims'])}")
     for name, info in source_status.items():
         if info["status"] != "ok" and info["reason"]:
             print(f"  ⚠ {name}：{info['reason']}")
     for row in e["updated_runs"]:
-        print(f"  ↻ {row['run_id']}（本期补录，创建于 {row['created_at']}）")
+        print(f"  ↻ {row['run_id']} (results added this period; created {row['created_at']})")
 
 
 if __name__ == "__main__":

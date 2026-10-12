@@ -1,46 +1,47 @@
-# 质量与证据
+# Quality and Evidence
 
-## 先分开四类结论
+## Keep four kinds of conclusions separate
 
-1. 源码检查：规则、结构、路由与状态实现。
-2. 自动检查：构建、单元测试、HTML 链接与依赖、对比度计算。
-3. 实际运行：浏览器真实点击、键盘、加载及恢复。
-4. 视觉检查：真实截图被查看后的布局、层级、中文与素材判断。
+1. **Source review:** rules, structure, routes, and state implementation.
+2. **Automated checks:** builds, unit tests, HTML links/dependencies, and contrast calculations.
+3. **Actual use:** real browser clicks, keyboard, loading, and recovery.
+4. **Visual review:** judgment of layout, hierarchy, Chinese text, and assets after inspecting real screenshots.
 
-它们互补，任何一类不能冒充另一类。没有独立评审就写自检；没有浏览器就写待验证，不给虚构分数。
+These are complementary; none substitutes for another. If there was no independent review, call it self-review. If there was no browser, say verification is pending. Do not invent scores.
 
-## 最小验证矩阵
+## Minimum verification matrix
 
-| 维度 | 默认检查 | 可观察通过条件 |
+| Dimension | Default check | Observable pass condition |
 |---|---|---|
-| 桌面 | 1280×800 或项目主视口 | 主任务明显，无遮挡/异常空洞，行列有序 |
-| 手机 | 390×844；必要时 320 宽 | 页面无意外横滚，内容与操作不丢失 |
-| 字体缩放 | 200%，必要时 400% 回流 | 控件及内容可达，允许符合要求的局部二维滚动 |
-| 键盘 | Tab/Shift+Tab、Enter/Space、Escape（适用时） | 焦点可见、顺序有意义、弹层焦点正确返回 |
-| 状态 | 加载、空、错误、选中、成功、禁用 | 文案真实，失败可恢复，输入不丢失 |
-| 无障碍 | 标签、语义、图替代、颜色、动态偏好 | 不只靠颜色传意，不把自动扫描当完整认证 |
-| 长内容 | 最长题名、混排、长列表、页面底部 | 不截关键信息，不靠缩字过关 |
+| Desktop | 1280×800 or the project's primary viewport | Main task is clear; no obstruction or unexplained empty space; rows/columns are organized. |
+| Phone | 390×844; use 320px width when needed | No unexpected horizontal scrolling; content and actions remain available. |
+| Text zoom | 200%; test 400% reflow when needed | Controls/content are reachable; local two-dimensional scrolling is allowed where appropriate. |
+| Keyboard | Tab/Shift+Tab, Enter/Space, Escape when applicable | Focus is visible and ordered meaningfully; dialog focus returns correctly. |
+| States | Loading, empty, error, selected, success, disabled | Copy matches the real state; failures recover; user input is not lost. |
+| Accessibility | Labels, semantics, image alternatives, color, motion preferences | Meaning does not rely on color alone; automated scans are not presented as full certification. |
+| Long content | Longest title, mixed-language text, long lists, bottom of page | Important content is not clipped; text is not shrunk just to pass. |
 
-按任务缩放矩阵，不为了单个间距修改重测全站。正文对比目标 WCAG AA 4.5:1，大字 3:1（18pt 或 14pt 加粗，不是笼统“18px”）；必要控件边界/状态信息通常目标 3:1，结合实际成功准则判断。焦点、hover、disabled 各有适用条件，不只算默认颜色。
+Scale checks to the task; do not retest the whole site for a spacing-only change. Target WCAG AA contrast of 4.5:1 for body text and 3:1 for large text (18pt or 14pt bold, not a vague “18px”). Aim for 3:1 for necessary control boundaries/state information, applying the actual success criterion. Focus, hover, and disabled states have separate applicable conditions; do not check only default colors.
 
-## 视觉完成度审视
+## Review visual polish
 
-可用性矩阵是底线，不是美观验收的替代。实际查看代表页与正面参考的同屏图，逐项记录落差与下一步修正：
-- 构图与比例：主次面积、视觉重心、首屏与后续区段是否形成整体，而非容器堆叠。
-- 字体与节奏：标题/正文/元数据的尺度关系、字重、行长、行距与组间距是否协调；疏密有变化而不失秩序。
-- 色彩与素材：颜色面积和强调位置是否合理，图片/图表/图标的风格、清晰度、裁切是否一致；纯文字页面看排版本身是否有表现力。
-- 细节：边框、圆角、阴影、图标基线、控件与状态是否精确一致，窄屏是否延续同一方向。
+A usability matrix is a baseline, not a substitute for visual acceptance. Inspect screenshots of a representative page alongside positive references and record each gap and next correction:
 
-正面标杆比较视觉品质，不要求复制布局或资产；负面案例检查是否仍有被否定的问题。改版前后证据用相同内容、视口和状态，跨项目参考则明确差异。按画面指出实际优点与落差，不用规则数量、构建成功或虚构评分宣称达到标杆。若未观图，明确写“视觉未验证”；已观图但未获用户确认，写“视觉自检”，不称用户已验收。
+- **Composition and proportions:** primary/secondary area, focal point, and whether the first screen and later sections form a coherent page rather than a stack of containers.
+- **Typography and rhythm:** scale relationships, weight, line length, line spacing, and group spacing for headings/body/metadata; enough density variation without losing order.
+- **Color and assets:** whether color coverage and emphasis are appropriate; consistency of style, clarity, and cropping for images/charts/icons; for a text-only page, whether the typography itself is expressive.
+- **Details:** accuracy and consistency of borders, radii, shadows, icon baselines, controls, and states, including at narrow widths.
 
-落差分层级处理：结构失败（主次颠倒、分组误导、阅读顺序断裂、窄屏拆散关联）回布局重排；样式失败（字体角色、色彩面积、素材质量、细节档位）按[视觉样式](visual-style.md)修正；细节偏差才局部修。结构是否成立，看真实读者能否一眼看出正确的主次与分组，而不是设计者能否解释；不强迫证明某个美学分数。局部修复后只复查受影响区域与相邻关系，不为流程完整重测全站。
+Use positive references to compare visual quality, not to require copying their layout/assets. Use negative examples to check whether the rejected problems remain. Compare before/after evidence with the same content, viewport, and state; explain differences when comparing across projects. Name actual strengths and gaps from the composition instead of claiming benchmark quality based on rule count, a successful build, or an invented score. If no screenshots were viewed, say “visual review not performed.” If they were viewed but not approved by the user, say “visual self-review,” not “user accepted.”
 
-## 取证闭环
+Handle gaps by layer: return to layout when structure fails (reversed priority, misleading grouping, broken reading order, or split relationships on mobile); use [Visual Style](visual-style.md) for styling issues (type roles, color coverage, asset quality, detail scale); fix isolated detail issues locally. Judge structure by whether a real reader can quickly identify the right priority and grouping, not whether the designer can explain it. Do not require proof of an aesthetic score. After a local fix, inspect affected and adjacent areas; do not retest the whole site just to complete a process.
 
-加载官方浏览器技能 → 核对目标页面 → 快照确认内容/状态 → 真实动作 → 状态观察 → 需要视觉判断时截图并查看 → 记录问题 → 修复 → 同状态重拍/复查。按官方技能限制使用浏览器，不另开未经允许的自动化后门。
+## Close the evidence loop
 
-每条记录保留：版本或文件哈希、页面、视口、数据集/状态、操作、观察、证据文件或会话调用、结论。截图文件存在不等于已看图。对比图用相同内容、视口和状态；不可用一张不同页面图宣称改进。
+Load the official browser skill → check the target page → capture a snapshot of content/state → perform real actions → observe state → inspect a screenshot when visual judgment is needed → record findings → fix → capture/recheck the same state. Follow the official skill's browser limits; do not open an unauthorized automation back door.
 
-阻塞记录示例：`官方浏览器返回 Browser is not available in subagent；未生成截图；390/1280、键盘和交互均待主会话验证。已完成静态检查不改变该状态。`
+For every check, retain version/file hash, page, viewport, data/state, action, observation, evidence file or session call, and conclusion. The existence of a screenshot file does not prove it was inspected. Before/after images need matching content, viewport, and state; a screenshot of a different page cannot prove improvement.
 
-性能按真实工具结果报告；不因无外部依赖声称 Core Web Vitals 达标。含私有数据的截图不上传外部服务。Web 不使用文档专用视觉 judge；PDF 则遵循 PDF 技能的渲染检查。
+Example blocker record: “Official browser returned Browser is not available in subagent; no screenshot was captured; 390/1280 viewport, keyboard, and interactions await verification in the main session. Completed static checks do not change this status.”
+
+Report performance only from actual tool results; do not claim Core Web Vitals passed because no external dependency was added. Do not upload screenshots with private data to external services. Do not use a document-only visual judge for Web; for PDFs follow the PDF skill's rendering checks.

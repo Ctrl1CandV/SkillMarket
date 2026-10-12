@@ -1,57 +1,57 @@
 ---
 name: career-bridge
-description: 科研产出转求职资产：从实验 run 生成简历项目卡片（业务场景/技术难点/量化成果）、反向生成面试深挖追问（为什么这么做/更好方案/重来怎么改/先做哪个 ablation）、Agent 岗八股缺口清单、投递时间线与论文截稿冲突检测。触发词：简历、项目经历怎么写、面试准备、深挖问题、模拟面试、八股、秋招、实习、Agent 岗面试。素材只来自真实实验记录，不编数字。
+description: Turn research outputs into job-search materials: create résumé project cards from experiment runs (problem context, technical challenges, quantified results); generate probing interview questions about rationale, alternatives, what to change, and which ablation to run first; identify gaps in standard Agent interview topics; and check application timelines against paper deadlines. Trigger phrases include résumé, project experience, interview prep, deep-dive questions, mock interview, standard interview topics, new-grad hiring, internship, and Agent interview. Use real experiment records only; do not invent numbers.
 license: MIT
 ---
 
-# career-bridge：科研产出 → 求职资产
+# career-bridge: From Research Results to Job-Search Materials
 
-字节式面试的核心环节是**项目深挖**：连环追问「为什么这么做 / 有没有更好的方案 / 重来会怎么改」，二面能持续近 100 分钟。背题库扛不住这个——但 `.grad/runs/` 里存着真实的配置对比、ablation、seed 记录，这些正是深挖答案的一手素材。静态面经仓库做不到这一点。
+A core part of ByteDance-style interviews is **deep project questioning**: a chain of questions such as “Why did you do this?”, “Was there a better approach?”, and “What would you change if starting over?” A second-round interview may continue for nearly 100 minutes. Memorizing question banks is not enough, but .grad/runs/ contains real configuration comparisons, ablations, and seed records—the primary material for answering in depth. Static collections of interview notes cannot provide this.
 
-## 铁律
+## Non-negotiable rules
 
-- **每条量化成果必须可追溯**：标注来源 run id 或 commit 哈希。run 里没有的数字不写，不编
-- 素材缺失的地方明确标「待补——缺素材」，这本身就是行动项，不是缺陷
-- 不代投简历、不刷题、不承诺结果
+- **Every quantified result must be traceable:** include a run ID or commit hash. Do not include or invent numbers absent from the run records.
+- Explicitly mark missing material as “To be supplied — source material missing.” This is itself an action item, not a defect.
+- Do not submit applications for the user, drill questions on their behalf, or promise an outcome.
 
-## 工作流
+## Workflow
 
-### 1. 收集素材
+### 1. Collect material
 
-读：`.grad/runs/`（方法×benchmark×seed×status×配置差异×成本）、`.grad/claims.jsonl`（claim 台账：读 support/support_by，supported 才是可写进简历的已确认论断）、git log（工程工作量）、`.grad/radar/digest/`（技术视野佐证；只认每篇的主笔记文件，`digest/history/` 旧稿快照与 `*.user.md` 用户批注不算新增论文/新素材，`.grad/radar/papers/` 主记录可用来确认身份与阅读状态）。全空时如实说明：先积累 run 再来，本 skill 不凭空生成项目经历。失败 run 不进入量化成果，但它的 failure_reason 可作为“为什么失败、如何定位、重来如何止损”的真实面试素材。
+Read .grad/runs/ (method × benchmark × seed × status × config differences × cost), .grad/claims.jsonl (claim ledger; read support/support_by, and include only supported claims as confirmed résumé statements), Git log (engineering work), and .grad/radar/digest/ (evidence of technical breadth). For papers, use only the current primary note; old snapshots in digest/history/ and user annotations in *.user.md are not new papers or materials. Use primary records in .grad/radar/papers/ to confirm identity and reading status. If all sources are empty, say so: accumulate run records first; this skill does not invent project experience. Failed runs do not count as quantified achievements, but their failure_reason can support a truthful interview discussion of what failed, how it was diagnosed, and how to reduce risk next time.
 
-### 2. 项目卡片（三段式）
+### 2. Project cards (three parts)
 
-每个项目输出：
+For each project, provide:
 
 ```markdown
-### <项目名>（<时间段>，来源：<repo>）
-- **业务场景**：一句话说清解决什么问题、给谁用（非技术人能懂）
-- **技术难点**：2-3 个真实的——从 run 记录的 dirty work 提取（配置不收敛、评测不稳、成本爆炸），不写"高并发"这类空话
-- **量化成果**：只列 run 里有的数字，格式「指标 (mean±std, n=seed 数)」，附 run id
+### <Project> (<period>; source: <repository>)
+- **Problem context:** In one sentence, explain what problem was solved and for whom, in terms a non-technical reader can understand.
+- **Technical challenges:** Give 2–3 real challenges from dirty work in the run records (for example, configuration did not converge, evaluation was unstable, or cost exploded). Avoid empty claims such as “high concurrency.”
+- **Quantified results:** Include only numbers in runs, in the format “metric (mean ± std, n=<number of seeds>),” with run IDs.
 ```
 
-n=1 的结果写 `(n=1)`——面试官追问方差时，诚实比好看值钱。
+For n=1, write “(n=1).” Honesty is more valuable than appearances when an interviewer asks about variance.
 
-### 3. 反向深挖模拟（核心输出）
+### 3. Reverse-engineered deep-dive practice (core output)
 
-对每张项目卡生成 **≥10 个连环追问**，四类各至少两个：
+Generate **at least 10 chained questions** per project card, with at least two questions in each category:
 
-1. **为什么这么做** —— 为什么选 A 不选 B？（从 run 记录的配置对比找答案：试过什么、放弃了什么、数据是什么）
-2. **有没有更好的方案** —— 当时没试的路径、为什么没试（时间/算力/认知），现在怎么看
-3. **重来会怎么改** —— 参照字节真实案例：ZeRO-3 vs ZeRO-2+gradient checkpointing 的吞吐-显存权衡。从自己 run 记录里找同构故事
-4. **先做哪个 ablation** —— 资源有限时的优先级排序与理由
+1. **Why this approach?** Why choose A over B? Use configuration comparisons in the run records: what was tried, what was dropped, and what the data showed.
+2. **Was there a better approach?** Ask what was not tried and why (time, compute, or knowledge), then how the candidate sees it now.
+3. **What would you change if starting over?** Use a real example of a throughput–memory trade-off, such as ZeRO-3 versus ZeRO-2 with gradient checkpointing. Find an analogous story in the user's run records.
+4. **Which ablation would you run first?** Ask for priorities and reasoning when resources are limited.
 
-每个问题附「答案素材指针」（run id / commit / config 快照路径）。refuted 的 claim 是高质量深挖素材——「我们试过 X、被否证、原因是 Y」来自真实台账，比编的故事强；项目卡引用 claim 时标注其 support 状态。**素材找不到的问题标『待补』**——模拟面试时优先攻这些。
+Attach an “answer material pointer” to every question (run ID, commit, or configuration snapshot path). A refuted claim is strong interview material: “We tried X, disproved it, and found reason Y” is more credible than an invented story. Mark the support status when a project card cites a claim. **Mark questions without source material as “To be supplied.”** Prioritize them during mock interview practice.
 
-### 4. 八股缺口清单
+### 4. Gaps in standard interview topics
 
-**读 `{SKILL_DIR}/references/agent-topics.md`**（2026 一手面经的 7 个已核实维度），用户逐条自评（✅/⚠️/❌），汇总成缺口清单。⚠️ 优先补。
+**Read `{SKILL_DIR}/references/agent-topics.md`**, which contains seven dimensions verified from first-hand 2026 interview notes. Ask the user to self-rate each item (✅/⚠️/❌) and summarize the gaps. Prioritize ⚠️.
 
-### 5. 投递时间线与论文 ddl 冲突
+### 5. Application timeline and paper-deadline conflicts
 
-读 `.grad/cache/ccfddl/allconf.yml`（submission-gate 的 ddl 缓存；没有就先跑它的 ddl_fetch），把目标投递窗口与论文截稿（含 rebuttal 窗口）画在同一条时间线上，重叠处显式标出并给建议（如「ICLR 冲刺期避开 9 月中下旬的提前批高峰」）。给参照不代决定。
+Read `.grad/cache/ccfddl/allconf.yml`, the submission-gate deadline cache. If it is missing, first run its ddl_fetch. Put the target application window and paper deadlines, including rebuttal periods, on one timeline. Explicitly mark overlaps and offer options (for example, “Avoid the mid-to-late September early-application rush during the ICLR crunch”). This is a reference, not a decision for the user.
 
-## 边界
+## Boundaries
 
-不做题库、不模拟技术通识问答（那不是基于用户素材的）、不生成「保过」话术。判定权在人：卡片与问题清单是素材，投什么岗、怎么答是用户的决定。
+Do not provide question-bank drills, simulate general technical trivia unrelated to the user's material, or generate “guaranteed pass” language. People decide: the cards and question list are source material; the user decides which roles to apply for and how to answer.

@@ -1,64 +1,64 @@
-# 先保留有效信息，再写讲解
+# Preserve Useful Information Before Writing the Explanation
 
-按当前需求与论文类型提取。提取稿保留原文定位和条件，最终作者能回读它与原文；不能只对上一次摘要再总结。仅身份不写内容结论，摘要只能支持摘要实际报告的内容。
+Extract information according to the current request and paper type. Keep source locations and conditions in the extraction so the author can return to the original. Do not summarize only from an earlier abstract or AI summary. Identity alone does not support content conclusions; an abstract supports only what it actually reports.
 
-先确定本次要理解的问题及读者基础，默认采用对经验较少读者友好的解释。核心项以任务范围为准：选读只覆盖有关章节，完整综述保留所有主要分支；不把一篇论文的全部信息都当作每次必须输出的内容。与目标无关的细节可以略去，承载当前解释的条件和反例不能丢；未读范围如实写。
+First identify the question the user wants to understand and their background. By default, explain for a reader with less experience. Let the task define coverage: topic selection may use only relevant sections, while a complete review preserves every major branch. Do not treat all information in one paper as mandatory for every response. Omit details unrelated to the goal, but preserve conditions and counterexamples needed for the current explanation. State what was not read.
 
-## 0. 分阶段读，不把压缩率当质量
+## 0. Read in stages; compression rate is not quality
 
-参考 Keshav 的三遍阅读：先辨问题、类型、背景、贡献与是否值得继续；再看机制、关键图表和支持证据；需要深理解时重建论证/方法并检验假设。这里的“重建”是阅读中的推演，不等于已经复现实验。按任务选深度，不强制每篇都精读三遍。[Waterloo 作者指南，UCSD 课程托管版](https://cseweb.ucsd.edu/~dstefan/cse227-spring22/papers/keshav%3Ahow.pdf)
+Use Keshav's three-pass approach as a reference: first identify the question, type, background, contribution, and whether deeper reading is worthwhile; next inspect the mechanism, key figures/tables, and supporting evidence; when deeper understanding is needed, reconstruct the argument or method and examine its assumptions. “Reconstruct” here means reason through the material while reading; it does not mean the experiment was reproduced. Adjust depth to the task rather than requiring three complete reads of every paper. [Waterloo author guide, hosted by a UCSD course](https://cseweb.ucsd.edu/~dstefan/cse227-spring22/papers/keshav%3Ahow.pdf)
 
-压缩的目标是减少重复而保住决定理解与结论含义的信息，不是固定字数或比例。先从指定原文固定版本做提取，后写中文；不得从旧 AI 摘要层层再摘要。若正文暂缺，交付范围随之缩小。
+Compression should remove repetition while preserving information that determines understanding or the meaning of the conclusion. There is no fixed length or ratio. First extract from the specified, fixed version of the original, then write the explanation. Do not repeatedly summarize an old AI summary. If the body is unavailable, narrow the deliverable accordingly.
 
-## 1. 根据类型选择信息
+## 1. Choose information by paper type
 
-| 类型 | 提取主线 | 最容易丢的信息 |
-| --- | --- | --- |
-| method | 问题/前作缺口 → 输入输出 → 改动与步骤 → 对照和消融 → 范围 | 步骤之间怎样传信息，优势是否依赖设置，负结果 |
-| evaluation | 测量对象 → 数据/真值 → 环境与接口 → 判据 → 发现 | 样本子集、分母、测试覆盖、协议变化后还能否横比 |
-| system | 需求 → 模块职责 → 数据/控制流 → 瓶颈与取舍 → 测量 | 每个模块具体做什么，资源/预算条件和故障情形 |
-| theory | 定义 → 假设 → 结论 → 推导主线 → 反例/边界 | 量词、必要条件、证明断点；直觉不能当证明 |
-| survey | 范围/截止 → 分类维度 → 分支机制和差异 → 证据/局限 | 维度是否互斥、可组合或正交，综述转述的证据层级 |
+| Type | Main thread to extract | Most easily lost |
+|---|---|---|
+| method | Problem/gap in prior work → inputs and outputs → changes and steps → comparisons and ablations → scope | How information passes between steps; whether gains depend on settings; negative results |
+| evaluation | Object measured → data/ground truth → environment and interface → criteria → findings | Sample subset, denominator, test coverage, and whether results remain comparable after protocol changes |
+| system | Requirements → module responsibilities → data/control flow → bottlenecks and trade-offs → measurements | What each module actually does; resource/budget conditions and failures |
+| theory | Definitions → assumptions → conclusion → proof outline → counterexample/boundary | Quantifiers, necessary conditions, gaps in the proof; intuition is not proof |
+| survey | Scope/cutoff → taxonomy dimensions → branch mechanisms and differences → evidence/limitations | Whether dimensions are exclusive, composable, or orthogonal; the evidence level behind a review's summary |
 
-混合论文按主任务组织，保留次要贡献，不机械填满所有栏目。
+For a mixed paper, organize around its primary task and retain secondary contributions. Do not fill every column mechanically.
 
-## 2. 每个关键点保留什么
+## 2. What to preserve for each key point
 
-临时提取稿用简短条目或表格：**信息/论点、依据与准确版本定位、必要条件、归属（作者主张/直接证据/教学解释）、缺口**。只填实际材料支持的内容。
+Use concise bullets or a table in the working extraction: **information/claim, evidence and exact version location, necessary conditions, attribution (author claim/direct evidence/teaching explanation), and gap**. Include only content supported by material actually inspected.
 
-给需要在成品中保留的核心项一个短 ID，记录它在成品的去向（保留、与哪项合并、延后并说明原因）。原文定位与解释分开存，使用自己的话；关键结果、假设、反例和分类分支不能仅因“篇幅短”被丢弃。普通小笔记可用简单表格，不要求数据库或新增个人记录。
+Give each core point that must survive into the final note a short ID. Record where it goes in the final note (retained, merged with which item, or deferred with a reason). Keep source locations separate from explanations and use your own words. Do not drop key results, assumptions, counterexamples, or taxonomy branches just to shorten the note. An ordinary short note can use a simple table; no database or new personal record is required.
 
-- 动机与贡献：已有做法在哪个场景失效？本文具体改了哪个环节？
-- 方法：输入/输出、假设、各步骤之间的关系；公式附近解释符号和用途，缺推导如实保留断点。
-- 实验：数据集/任务、训练或测试拆分、比较对象、模型/工具与预算、指标及分母、核心结果。影响比较的设置不能丢。
-- 证据：保留消融、失败、否定与限制；相关性不改成因果，任务成绩不改成普适能力。
-- 数字：保留单位、分母、比较对象、预算和变异性（原文报告时）；分清百分点与相对变化，均值与最好结果，以及作者报告与自行计算。正文/表格矛盾原样指出，不擅自挑选较好数字。
-- 资源：原文代码、数据和实现细节的位置。仅存在链接不能写成已运行、可复现或已验证有效。
-- 学习价值：具体能掌握哪个概念、读法、差别，怎样接当前问题；不强行把每篇都写成创新机会。
+- **Motivation and contribution:** In what setting did prior methods fail? Which specific stage does this paper change?
+- **Method:** Inputs/outputs, assumptions, and relationships between steps. Explain symbols and purpose near equations; state unrecoverable derivation gaps accurately.
+- **Experiments:** Dataset/task, train/test split, comparison, model/tool and budget, metric and denominator, core result. Preserve settings that affect comparison.
+- **Evidence:** Keep ablations, failures, negative results, and limitations. Do not turn correlation into causation or task performance into universal ability.
+- **Numbers:** Preserve units, denominators, comparison, budget, and variability when reported. Distinguish percentage points from relative change, mean from best result, and author-reported from independently calculated values. If body text and a table conflict, point it out without selecting the more favorable number.
+- **Resources:** Locate original code, data, and implementation details. A link alone does not mean it was run, reproduced, or verified as useful.
+- **Learning value:** State the specific concept, reading method, difference, and connection to the current question; do not turn every paper into a new research opportunity.
 
-## 3. 图、表、公式需要回到实际材料
+## 3. Check figures, tables, and equations against actual material
 
-图要看实际图像与图注，辨认箭头、图例、分组、坐标和承载的论点。只得到图注时不描述图中未看内容。表要核表头、行列、单位、子集与脚注，跨表比较先核同设置。公式要辨认符号、条件与关键步骤；乱码不凭常识补写。
+For a figure, inspect the actual image and caption; identify arrows, legend, groups, axes, and the claim it supports. If only the caption is available, do not describe unseen content. For a table, verify headers, rows/columns, units, subsets, and footnotes; check that settings match before comparing tables. For an equation, identify symbols, conditions, and key steps; do not fill garbled text from prior knowledge.
 
-图表提取失败仍可交其他有据内容，但缺口影响核心机制时不能称该部分已充分解释。来自综述的代表工作写“综述归纳”，不能说独立读过原论文。
+If figures or tables fail to extract, other evidence-based content may still be delivered. But when the gap affects the core mechanism, do not claim it was fully explained. Work described by a review must be attributed as “summarized by the review”; do not say the original paper was read independently.
 
-## 4. 写成能顺着读懂的内容
+## 4. Write prose readers can follow
 
-先讲本节问题和必要术语，再展开机制/论证、贯穿例子或对照，随后说明条件与边界。自编例子标“辅助解释”，保持原定义；允许按内容分节，不强制五个相同标题。
+Start with the question and necessary terminology, then explain the mechanism or argument, using a running example or comparison, and state conditions and boundaries. Label self-created examples “supporting explanation” and keep original definitions intact. Use sections as appropriate; do not force every note into the same five headings.
 
-预览短，正文按理解需要展开。删重复话和制作话语，保留动机、推理、例子、数字设置、否定及作者/编辑归属。使用 de-ai-flavor 时以这条为准，不压成结论列表，不做全库词语替换。
+Keep previews short; expand the body to the level needed for understanding. Remove repetition and production notes, but keep motivation, reasoning, examples, numeric settings, negative findings, and attribution to the author/editor. If using de-ai-flavor, follow this principle: do not compress the note into a list of conclusions or apply a global word replacement.
 
-### 两个核对例子（示意，不是论文实验数据）
+### Two review examples (illustrative only; not experimental data)
 
-- “成功率由 40% 到 60%”：必须先确认任务、分母、对照与预算；原文缺设置就标待核，不能生成“提升 50%，全面优于”之类结论。
-- “测试通过”：说明它检查哪些输出/条件；不能从已有测试通过推出所有真实需求正确，更不能推断模型的内部理解过程。
+- “Success rate rose from 40% to 60%”: first verify task, denominator, comparison, and budget. If the source lacks settings, mark it as needing verification; do not invent a claim such as “a 50% improvement and universally superior.”
+- “Tests passed”: state which outputs and conditions they check. Passing existing tests does not establish that every real requirement is correct, and does not prove an internal reasoning process.
 
-## 5. 写完回查
+## 5. Recheck after writing
 
-逐条回查核心定义、因果、数字、范围和否定；确认来源确实支持对应句子。随后试读：能否解释输入怎样变成输出、两种方法有什么差别、结论在哪些条件下成立？来源核查和中文试读分别做，不用字数或标题数替代。
+Recheck key definitions, causal claims, numbers, scope, and negation item by item; verify that sources support the adjacent statements. Then read as a learner: can the reader explain how inputs become outputs, how two methods differ, and under which conditions a conclusion holds? Check source support and readability separately; word count and heading count are not substitutes.
 
-压缩前后的清单逐项对账，至少核查：主要贡献没有移义；核心机制能重述；结果仍带设置；关键负例/局限没有消失；引用确实支持邻近论点；未处理内容有入口和原因。理论论文用假设/结论/证明主线代替实验项。主张、条件或证据仍缺时标为部分讲解并列下一步，不能用流畅文风掩盖。
+Reconcile the key-point list before and after compression. At minimum, verify that the main contribution retains its meaning; the core mechanism can be restated; results retain their settings; important negative findings/limitations remain; citations support adjacent claims; and unread material has an entry point and reason. For a theory paper, check assumptions, conclusion, and proof outline instead of experiments. If claims, conditions, or evidence remain incomplete, label the explanation partial and list the next step. Do not hide missing support behind fluent prose.
 
-比较不同论文时明确共同任务与设置、真实差异及是否可比，不把几份短摘要拼接当综合分析。这一思路参考 [Stanford CS224U 文献评述要求](https://web.stanford.edu/class/cs224u/projects.html)；不沿用其课程篇数、页数或格式配额。
+When comparing papers, state their common task and settings, real differences, and whether the results are comparable. Do not treat several short summaries pasted together as synthesis. This approach draws on [Stanford CS224U literature review requirements](https://web.stanford.edu/class/cs224u/projects.html), but does not adopt its course-specific paper, page, or format quotas.
 
-学习导读可收尾给少量值得亲自读的原文位置及阅读目的，必要时附理解检查题；结论核查或实现任务按当前问题给待核点或行动，不强制出题。仅有摘要而没有目录时只说章节类型，不造节号。
+A learning guide may end with a few original passages worth reading and why, plus comprehension checks when useful. For claim checking or implementation, give the relevant open questions or actions instead; do not force a quiz. If there is only an abstract and no outline, describe section types without inventing section numbers.

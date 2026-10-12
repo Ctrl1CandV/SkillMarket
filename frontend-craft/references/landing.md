@@ -1,12 +1,12 @@
-# 品牌说服型页面
+# Brand and Conversion Pages
 
-让目标访客知道是什么、是否适合、凭什么相信、下一步做什么。强烈风格服务这个顺序，不自动胜过朴素表达。
+Help a prospective visitor understand what the offering is, whether it fits them, why they should trust it, and what to do next. A strong visual style should serve that sequence; it does not automatically beat clear, plain language.
 
-- 开篇用具体产品、活动或成果，而非万能价值口号。把关键对象作为视觉主角：实物、真实界面、作品或清晰论点均可。不强制图片数量或巨型 hero。
-- 标题、证据、行动有主次；存在合理需求时可在长页重复同一动作，保持同名。不为追求“差异”不断换分区结构。
-- 对价格、名额、评价、合作品牌核对来源。样例数据放显著说明；不能用真实公司 logo 伪造背书。没有可授权素材时请求素材或用注明性质的原创图解，不随机热链照片。
-- 优先品牌字体与中文覆盖；不要套禁用某个颜色、字体、标点的绝对清单。字体角色与许可核查见[视觉样式](visual-style.md)。
-- 一处有分量的表达通常比每处都特殊更好。动画要解释状态或叙事；不接管滚轮，不用持续运动妨碍阅读。减弱动态时保留全部内容与功能。
-- CTA 必须到达有意义的结果；静态小样可以跳转到真实内容或本地试用，不能用“已提交”掩盖未接入服务。
+- Open with a specific product, event, or outcome instead of a generic value slogan. Make the key subject the visual focus: a real object, a real interface, a piece of work, or a clear argument. Do not require a huge hero section or a fixed number of images.
+- Establish a clear hierarchy among the headline, evidence, and actions. On a long page, repeat the same action when useful and keep its label consistent. Do not keep changing section patterns just to create novelty.
+- Verify sources for prices, availability, reviews, and partner brands. Label sample data prominently; never use a real company's logo to fabricate an endorsement. If licensed assets are unavailable, request them or use an original illustration labeled as such. Do not hotlink random photos.
+- Prefer the brand's typefaces and Chinese glyph coverage. Avoid absolute bans on particular colors, fonts, or punctuation. See [visual style](visual-style.md) for typography roles and license checks.
+- One distinctive design choice is usually stronger than making every element unusual. Animation should explain a state or support a narrative; do not take over scrolling or keep moving in ways that obstruct reading. Reduced-motion settings must preserve all content and functions.
+- Every call to action must lead to a meaningful result. A static mockup can link to real content or a local trial, but must not claim “submitted” when no service is connected.
 
-验收：陌生人能否快速回答产品是什么、为谁、何种证据、下一步？然后检查首屏/中段/结尾、手机标题换行、CTA 焦点与目标、图片裁切和慢加载。
+Acceptance check: Can a stranger quickly explain what the offering is, who it is for, what evidence supports it, and what to do next? Then check the top, middle, and end of the page, mobile heading wraps, CTA focus and destination, image crops, and slow loading.

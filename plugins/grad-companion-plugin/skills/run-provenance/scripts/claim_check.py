@@ -1,25 +1,25 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""claim 机械核对（run-provenance）。只核对，不宣判：输出是证据与清单，不是结论。
+"""Mechanical claim checks (run-provenance). Check, do not adjudicate: output evidence and a checklist, not a conclusion.
 
-默认（台账自检）：对每条 claim 现算 evidence，从严到宽命中即止：
+Default (ledger self-check): calculate evidence for each claim, from strictest to broadest, and stop at the first match:
   run_missing → pending → metric_missing → needs_review / value_mismatch → verified
-evidence 是派生属性，不写回 claims.jsonl；--log 把结果追加到 .grad/claims_checks.jsonl。
+evidence is derived and is not written back to claims.jsonl; --log appends results to .grad/claims_checks.jsonl.
 
-verified 的门槛（F01/F02）：只有实际完成数值比对且明确匹配、且绑定 run 属同一比较设置
-（同配置快照或用户显式声明同一实验组）才 verified。多数字、无数字、量纲歧义、
-配置不可比一律 needs_review——保留已有数值与原因供人查看，不升级为已验证。
+verified threshold (F01/F02): only an actual numeric comparison with a clear match and runs under the same comparison setup
+(same config snapshot or a user-declared experiment group) qualifies. Multiple/no numbers, unit ambiguity, or incomparable
+configurations remain needs_review; preserve existing values and reasons for human review.
 
---draft <路径>：额外提取草稿（tex/md）数字做**候选匹配**回查：
-  found / suspected_drift（末位级差异，如论文写 71.2、均值 71.1）/ unbacked_candidates
-  （表格、±、百分号上下文里无 claim 支撑的数字——候选清单，需人工筛）
-  草稿回查按全文数字出现做匹配，只是「数字候选匹配」——同一数字出现在草稿某处
-  不足以证明某句话正确，不构成「该 claim 已在草稿中验证」。
+--draft <path>: also extract numbers from the draft (tex/md) for **candidate matching**:
+  found / suspected_drift (last-digit difference, e.g. paper says 71.2, mean is 71.1) / unbacked_candidates
+  (numbers near tables, ±, or percent signs with no supporting claim; candidate list for human screening).
+  Draft lookup matches number occurrences across the full text. A number appearing somewhere in the draft
+  does not prove a sentence is correct and does not mean “this claim was verified in the draft.”
 
-发现 mismatch / missing 不是失败（ok: true，发现即数据）；只有运行错误才 ok: false。
+Finding mismatch/missing is not an execution failure (ok: true; findings are data); only runtime errors return ok: false.
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+With --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_grouping import group_label, same_setting_runs  # 与 table_gen 共用同一套可比性规则
+from run_grouping import group_label, same_setting_runs  # Share comparability rules with table_gen.
 
 if sys.stdout and sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -46,7 +46,8 @@ CAVEATS_PATH = Path(__file__).resolve().parent.parent / "references" / "benchmar
 
 
 def load_benchmark_caveats() -> dict[str, str]:
-    """从活文档条目表提取 (关键词 -> 一手来源+缺陷短摘要)。解析失败返回空表（提示不可用，不阻断核对）。"""
+    """Extract keyword -> primary source + short defect summary from the living-document table.
+    On parse failure, return an empty table (report unavailable but do not block checks)."""
     if not CAVEATS_PATH.is_file():
         return {}
     try:
@@ -60,11 +61,11 @@ def load_benchmark_caveats() -> dict[str, str]:
             keyword = m.group(1).strip()
             entry_id = f"{keyword}（{m.group(2)}）"
             summary = re.sub(r"\s+", " ", m.group(3)).strip()
-            # 关键词单元格按 / 与空格切分为原子（「TAU-bench / τ-bench」→ tau-bench、τ-bench），
-            # 每个原子独立参与子串匹配，避免多别名合写让条目永远无法命中
+            # Split keyword cells on slash and whitespace (e.g. “TAU-bench / tau-bench”),
+            # then match each atom separately so multiple aliases do not prevent a hit.
             for atom in re.split(r"[/\s]+", keyword):
                 atom = atom.strip().casefold()
-                if atom and atom not in ("关键词", "benchmark"):
+                if atom and atom not in ("Benchmark keyword", "benchmark"):
                     table[atom] = f"{entry_id}：{summary}"
     return table
 
@@ -86,15 +87,15 @@ def load_rows(path: Path) -> list[dict]:
         try:
             row = json.loads(line)
         except json.JSONDecodeError as exc:
-            die("BAD_LEDGER", f"{path} 第 {no} 行不是合法 JSON：{exc}")
+            die("BAD_LEDGER", f"{path} line {no} is not valid JSON: {exc}")
         if not isinstance(row, dict):
-            die("BAD_LEDGER", f"{path} 第 {no} 行必须是 JSON 对象")
+            die("BAD_LEDGER", f"{path} line {no} must be a JSON object")
         rows.append(row)
     return rows
 
 
 def resolve_claims(rows: list[dict]) -> list[dict]:
-    """同 claim_id 取最后一行为当前（位置按首次出现）；无 claim_id 的行为独立 legacy claim。"""
+    """Use the last row for each claim_id as current, preserving first-seen order; rows without claim_id are separate legacy claims."""
     latest: dict[str, dict] = {}
     first_pos: dict[str, int] = {}
     legacy_rows: dict[int, dict] = {}
@@ -114,10 +115,10 @@ def resolve_claims(rows: list[dict]) -> list[dict]:
 
 
 def drift_hints(available_keys: list[str], metric_path: str) -> list[str]:
-    """只发现疑似拼写漂移并提示；原始 key 永远不自动合并（与 table_gen 同一纪律）。
+    """Detect and report possible key spelling drift; never merge original keys automatically (same rule as table_gen).
 
-    判定三选一命中即提示：归一化相等 / 编辑距离 ≤1（单字符插入、删除、替换）/
-    SequenceMatcher 相似度 ≥0.94（长键的复合变形）。
+    Report a possible match on normalized equality, edit distance <= 1 (one-character insertion/deletion/substitution),
+    or SequenceMatcher similarity >= 0.94 (compound change for long keys).
     """
     def norm(key: str) -> str:
         return re.sub(r"[\s\.,;:!?，。；：]+$", "", key.strip().casefold())
@@ -133,13 +134,13 @@ def drift_hints(available_keys: list[str], metric_path: str) -> list[str]:
 
 
 def _within_one_edit(a: str, b: str) -> bool:
-    """编辑距离 ≤1：单字符插入 / 删除 / 替换内相等。"""
+    """Edit distance <= 1: equality after one-character insertion/deletion/substitution."""
     if abs(len(a) - len(b)) > 1:
         return False
     if len(a) == len(b):
         return sum(x != y for x, y in zip(a, b)) <= 1
     if len(a) > len(b):
-        a, b = b, a  # 保证 b 比 a 恰长 1：等价于「b 删去一个字符后恰等于 a」
+        a, b = b, a  # Ensure b is one character longer; deleting one character from b yields a.
     i = 0
     while i < len(a) and a[i] == b[i]:
         i += 1
@@ -147,41 +148,41 @@ def _within_one_edit(a: str, b: str) -> bool:
 
 
 def check_claim_value(claim_text: str, mean: float | None) -> tuple[str, str | None, str]:
-    """返回 (value_check 展示文本, claim 声明数字, 机械状态 verified/mismatch/needs_review)。
+    """Return (value_check display text, claim number, mechanical status: verified/mismatch/needs_review).
 
-    只有 claim 恰含一个数字、且与均值完成明确数值比对（量纲调和：原值 / ×100）才算匹配。
-    多数字、无数字、量纲歧义都是 needs_review：不能升级为 verified，保留原因供人查看。
+    A match requires exactly one number in the claim and a clear comparison with the mean (try raw value or x100).
+    Multiple/no numbers or ambiguous units stay needs_review; do not upgrade them, and retain the reason for review.
     """
     nums = NUMBER_RE.findall(claim_text)
     if len(nums) != 1:
-        reason = (f"claim_text 含 {len(nums)} 个数字，无法确定哪个数字对应本指标" if nums
-                  else "claim_text 不含数字，无数值可比对")
-        return f"needs_review（{reason}，数值需人工核对）", None, "needs_review"
+        reason = (f"claim_text contains {len(nums)} numbers; cannot identify which refers to this metric" if nums
+                  else "claim_text contains no number to compare")
+        return f"needs_review ({reason}; numeric check required)", None, "needs_review"
     if mean is None:
-        return "needs_review（无可用的 run 数值）", None, "needs_review"
+        return "needs_review (no usable run values)", None, "needs_review"
     declared_raw = nums[0]
     declared = float(declared_raw)
     decimals = len(declared_raw.split(".")[1]) if "." in declared_raw else 0
-    candidates = [mean, mean * 100] if mean != 0 else [mean]  # mean=0 时两种量纲同值，不报 ambiguous
+    candidates = [mean, mean * 100] if mean != 0 else [mean]  # At mean=0, both units are identical; do not report ambiguity.
     matched = [c for c in candidates if abs(round(c, decimals) - declared) < 1e-9]
     if len(matched) == 1:
         return "matched", declared_raw, "verified"
     if len(matched) > 1:
-        return ("needs_review（量纲歧义：原值与 ×100 两种量纲都吻合，未做单位推理）",
+        return ("needs_review (ambiguous units: both raw value and x100 match; no unit inference was made)",
                 declared_raw, "needs_review")
     return "mismatch", declared_raw, "mismatch"
 
 
 def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
                    caveats: dict[str, str]) -> tuple[dict, set[float], set[float]]:
-    """返回 (claim 输出, 主候选, 全部候选)。主候选 = mean 渲染（found 以它为准）；
-    次候选 = std 渲染（只在 matched_candidates 与 drift 里参考）。"""
+    """Return (claim output, primary candidate, all candidates). Primary renders mean (used for found);
+    secondary renders std (used only for matched_candidates and drift)."""
     row, legacy = entry["row"], entry["legacy"]
     run_ids = [str(r) for r in (row.get("run_ids") or [])]
     metric_path = row.get("metric_path")
     claim_text = str(row.get("claim_text", ""))
     if not claim_text.strip():
-        warnings: list[str] = ["claim_text 为空"]
+        warnings: list[str] = ["claim_text is empty"]
     else:
         warnings: list[str] = []
     runs_detail: list[dict] = []
@@ -193,7 +194,7 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
     methods, benchmarks = set(), set()
     metrics_by_run: dict[str, dict] = {}
     status_by_run: dict[str, str] = {}
-    settings_by_run: dict[str, dict] = {}  # 比较设置归组用（experiment_group / config 快照）
+    settings_by_run: dict[str, dict] = {}  # Group comparison settings (experiment_group/config snapshot).
 
     for rid in run_ids:
         run_dir = runs_dir / rid
@@ -209,7 +210,7 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
                 if isinstance(loaded, dict):
                     meta = loaded
             except (OSError, json.JSONDecodeError):
-                warnings.append(f"run {rid} 的 meta.json 不可解析")
+                warnings.append(f"Could not parse meta.json for run {rid}")
         metrics: dict = {}
         metrics_f = run_dir / "metrics.json"
         if metrics_f.is_file():
@@ -218,9 +219,9 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
                 if isinstance(loaded, dict):
                     metrics = loaded
                 else:
-                    warnings.append(f"run {rid} 的 metrics.json 不是 JSON 对象")
+                    warnings.append(f"metrics.json for run {rid} is not a JSON object")
             except (OSError, json.JSONDecodeError):
-                warnings.append(f"run {rid} 的 metrics.json 不可解析")
+                warnings.append(f"Could not parse metrics.json for run {rid}")
         status = str(meta.get("status") or "success")
         status_by_run[rid] = status
         settings_by_run[rid] = {
@@ -239,12 +240,12 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
         metrics_by_run[rid] = metrics
         runs_detail.append({"run_id": rid, "found": True, "status": status})
     if len(methods) > 1:
-        warnings.append(f"绑定的 run 混用 method：{sorted(methods)}（它们将被求均值，请确认）")
+        warnings.append(f"Bound runs use mixed methods: {sorted(methods)} (they will be averaged; review this)")
     if len(benchmarks) > 1:
-        warnings.append(f"绑定的 run 混用 benchmark：{sorted(benchmarks)}（它们将被求均值，请确认）")
+        warnings.append(f"Bound runs use mixed benchmarks: {sorted(benchmarks)} (they will be averaged; review this)")
 
     values: list[float] = []
-    used_rids: list[str] = []  # 实际进入均值的 run（可比性只对它们判定；被排除的 running/failed 不拖组）
+    used_rids: list[str] = []  # Runs actually included in the mean; comparability applies to these only.
     excluded_failed: list[str] = []
     excluded_running: list[str] = []
     mean: float | None = None
@@ -257,9 +258,9 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
         evidence = "run_missing"
     elif not metric_path:
         evidence = "metric_missing"
-        warnings.append("该行缺 metric_path")
+        warnings.append("This row is missing metric_path")
     elif placeholder_runs:
-        evidence = "pending"  # 设计内状态：run 先登记占位、结果未出
+        evidence = "pending"  # Intentional state: run registered as a placeholder; no result yet.
     else:
         assert metric_path is not None
         for rid in run_ids:
@@ -283,35 +284,36 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
         if metric_missing_runs or non_numeric_runs:
             evidence = "metric_missing"
         elif not values:
-            # 没有任何可比数字：全部 run 为 running 占位，或 failed 全被排除——fail-closed 不给 verified
+            # No comparable values: all runs are pending or failed runs were excluded; fail closed, never verified.
             evidence = "pending"
             if excluded_running and not excluded_failed:
-                warnings.append("全部绑定 run 仍为 running 占位（结果未出），无可核对的数值")
+                warnings.append("All bound runs are still running placeholders (no results); there are no values to check")
             else:
-                warnings.append("全部绑定 run 均为 failed/running 被排除，无可核对的数值"
-                                "（failed 可用 --include-failed 纳入；running 等补录后再核对）")
+                warnings.append("All bound failed/running runs were excluded; there are no values to check "
+                                "(include failed runs with --include-failed; check running runs after results are added)")
         else:
             if excluded_failed:
-                warnings.append(f"已从均值排除 failed run：{excluded_failed}（--include-failed 可纳入）")
+                warnings.append(f"Failed runs excluded from the mean: {excluded_failed} (include with --include-failed)")
             if excluded_running:
-                warnings.append(f"已从均值排除 running 占位 run：{excluded_running}（结果未出，不参与统计）")
+                warnings.append(f"Running placeholder runs excluded from the mean: {excluded_running} (no results; not included in statistics)")
             mean = statistics.fmean(values)
             if len(values) >= 2:
-                std = statistics.stdev(values)  # 样本标准差 ddof=1，与 table_gen 一致
+                std = statistics.stdev(values)  # Sample standard deviation, ddof=1, consistent with table_gen.
             value_check, claim_number, value_status = check_claim_value(claim_text, mean)
-            # F02：参与统计的 run 必须属同一比较设置（同配置快照或同一显式实验组）才有均值可比性；
-            # 混用设置时不给已验证均值，needs_review 交人确认（与 table_gen 同一套规则）
+            # F02: runs must share a comparison setup (same config snapshot or explicit experiment group) to be comparable.
+            # Mixed settings cannot produce a verified mean; leave needs_review for a person (same rule as table_gen).
             buckets = same_setting_runs(
                 [settings_by_run[rid] for rid in used_rids if rid in settings_by_run])
             comparable = len(buckets) <= 1
             if value_status == "verified" and not comparable:
                 value_status = "needs_review"
-                value_check = ("needs_review（绑定的 run 分属不同比较设置（method/benchmark/配置），"
-                               "均值无对比基础："
+                value_check = ("needs_review (bound runs use different comparison settings (method/benchmark/config), "
+                               "so the mean has no comparison basis: "
                                + "；".join(group_label(k, v)
                                           for k, v in sorted(buckets.items(), key=lambda i: str(i[0]))) + "）")
-                warnings.append("绑定 run 不可比（不同 method/benchmark/配置快照/缺配置）：显式实验组不能跨 "
-                                "method/benchmark 边界；确认后修正绑定或用 run_register.py --experiment-group 重新分组")
+                warnings.append("Bound runs are not comparable (different method/benchmark/config snapshots or missing config). "
+                                "Explicit experiment groups cannot cross method/benchmark boundaries; after review, fix the bindings "
+                                "or regroup with run_register.py --experiment-group")
             evidence = {"verified": "verified", "mismatch": "value_mismatch"}.get(value_status, "needs_review")
     detail = {
         "runs": runs_detail,
@@ -337,7 +339,7 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
 
     support = row.get("support") if not legacy else None
     if support not in SUPPORT_VALUES:
-        support = "unreviewed"  # legacy 行的旧 status 是执行者写的，不继承为人的判定
+        support = "unreviewed"  # Do not treat a legacy executor-written status as a human judgment.
     benchmark_caveats = [
         entry for name, entry in caveats.items() if any(name in b.casefold() for b in benchmarks)
     ]
@@ -356,7 +358,7 @@ def classify_claim(entry: dict, runs_dir: Path, include_failed: bool,
 
 
 def candidate_renderings(mean: float | None, std: float | None) -> tuple[set[float], set[float]]:
-    """草稿回查的候选渲染：mean 与 std 各自 ×1 / ×100、1-3 位小数。"""
+    """Render draft-check candidates: mean and std at x1/x100, with one to three decimal places."""
     if mean is None:
         return set(), set()
     primary = {round(value, digits) for value in (mean, mean * 100) for digits in (1, 2, 3)}
@@ -411,7 +413,7 @@ def match_draft(claims_out: list[dict], primaries: list[set[float]],
         found = any(abs(n["value"] - c) < 1e-9 for n in draft_numbers for c in primary)
         drifts: list[dict] = []
         if not found:
-            # 同一草稿数字只报一条（取最近候选），避免一次漂移在 summary 里虚增计数
+            # Report one nearest candidate per draft number so one drift does not inflate summary counts.
             for n in draft_numbers:
                 if n["value"] in globally_matched:
                     continue
@@ -423,8 +425,8 @@ def match_draft(claims_out: list[dict], primaries: list[set[float]],
                     drifts.append({"expected": expected, "draft": n["value"], "line": n["line"]})
         claim["draft"] = {"found": found, "matched_candidates": matched,
                           "suspected_drift": drifts,
-                          "match_scope": "全文数字候选匹配：只能说明该数值出现在草稿某处，"
-                                         "不足以证明某句话正确，不构成 claim 已核验"}
+                          "match_scope": "Full-text numeric candidate match: this only means the value occurs somewhere in the draft; "
+                                         "it does not prove a sentence is correct or verify the claim."}
     unbacked: list[dict] = []
     for n in draft_numbers:
         if not n["context"]:
@@ -432,18 +434,18 @@ def match_draft(claims_out: list[dict], primaries: list[set[float]],
         if any(abs(n["value"] - c) < 1e-9 for c in all_candidates):
             continue
         if n["decimals"] == 0 and float(n["value"]).is_integer() and 1900 <= n["value"] <= 2100:
-            continue  # 年份
+            continue  # Year.
         unbacked.append({"value": n["value"], "context": n["context"], "line": n["line"]})
     return unbacked
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="claim 机械核对（只核对，不宣判）")
-    ap.add_argument("--repo", default=".", help="项目根（claims 与 runs 在其 .grad/ 下）")
-    ap.add_argument("--draft", default="", help="草稿路径（tex/md）；给了就额外做数字回查")
+    ap = argparse.ArgumentParser(description="Mechanical claim checks (check, do not adjudicate)")
+    ap.add_argument("--repo", default=".", help="Project root (claims and runs are under .grad/)")
+    ap.add_argument("--draft", default="", help="Draft path (tex/md); also check numeric candidates when supplied")
     ap.add_argument("--include-failed", action="store_true",
-                    help="均值纳入带数值指标的 failed run（默认排除，与 table_gen 语义一致）")
-    ap.add_argument("--log", action="store_true", help="把本次结果追加到 .grad/claims_checks.jsonl")
+                    help="Include failed runs with numeric metrics in the mean (excluded by default, like table_gen)")
+    ap.add_argument("--log", action="store_true", help="Append results to .grad/claims_checks.jsonl")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
@@ -452,7 +454,7 @@ def main() -> None:
     claims_path = grad / "claims.jsonl"
     runs_dir = grad / "runs"
     if not claims_path.is_file():
-        die("NO_CLAIMS", f"{claims_path} 不存在；先用 claim_register.py add 登记 claim")
+        die("NO_CLAIMS", f"{claims_path} does not exist; register claims with claim_register.py add first")
 
     entries = resolve_claims(load_rows(claims_path))
     claims_out: list[dict] = []
@@ -469,7 +471,7 @@ def main() -> None:
     if args.draft:
         draft_path = Path(args.draft)
         if not draft_path.is_file():
-            die("NO_FILE", f"草稿不存在：{draft_path}；不降级到部分核对")
+            die("NO_FILE", f"Draft does not exist: {draft_path}; refusing partial checks")
         draft_numbers = extract_draft_numbers(draft_path.read_text(encoding="utf-8", errors="replace"))
         unbacked = match_draft(claims_out, primaries, all_candidates_per_claim, draft_numbers)
 
@@ -502,8 +504,8 @@ def main() -> None:
 
     data = {
         "mechanical_check": True,
-        "note": "机械核对结果，不是审稿意见；needs_review 与 unbacked/suspected_drift 都需人工确认；"
-                "draft.found 只是全文数字候选匹配，不等于该论断已在草稿中验证",
+        "note": "Mechanical check, not a review verdict. needs_review and unbacked/suspected_drift require human confirmation; "
+                "draft.found is only a full-text numeric candidate match, not verification of the claim in the draft.",
         "claims": claims_out,
         "unbacked_candidates": unbacked,
         "summary": summary,
@@ -512,21 +514,21 @@ def main() -> None:
         print(json.dumps({"ok": True, "data": data}, ensure_ascii=False))
         return
     s = summary
-    print(f"# claim 核对 {s['claims']} 条：verified {s['verified']} | value_mismatch {s['value_mismatch']} "
+    print(f"# Checked {s['claims']} claims: verified {s['verified']} | value_mismatch {s['value_mismatch']} "
           f"| needs_review {s['needs_review']} "
           f"| metric_missing {s['metric_missing']} | pending {s['pending']} | run_missing {s['run_missing']}")
     for c in claims_out:
         text = c["claim_text"][:36] + ("…" if len(c["claim_text"]) > 36 else "")
         suffix = ""
         if "draft" in c:
-            suffix = (f" | draft候选: {'出现' if c['draft']['found'] else '未出现'}"
-                      "（全文数字匹配，不证明论断正确）")
+            suffix = (f" | draft candidate: {'found' if c['draft']['found'] else 'not found'}"
+                      " (full-text numeric match; does not prove the claim)")
             if c["draft"]["suspected_drift"]:
                 suffix += f", suspected_drift ×{len(c['draft']['suspected_drift'])}"
         print(f"  {c['claim_id']:<12} evidence={c['evidence']:<15} support={c['support']:<11}"
               f"{' [legacy]' if c['legacy'] else ''} {text}{suffix}")
     for item in unbacked:
-        print(f"  ⚠ unbacked 候选：{item['value']}（line {item['line']}，{'+'.join(item['context'])}）——需人工确认")
+        print(f"  ⚠ unbacked candidate: {item['value']} (line {item['line']}, {'+'.join(item['context'])}) — human review required")
     for c in claims_out:
         for warning in c["detail"]["warnings"]:
             print(f"  ⚠ {c['claim_id']}: {warning}")

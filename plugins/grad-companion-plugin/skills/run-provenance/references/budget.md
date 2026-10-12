@@ -1,40 +1,40 @@
-# 评测预算参照（run-provenance）
+# Evaluation Budget Reference (run-provenance)
 
-> 数字只有两类：**带 arXiv id 的一手数字**（可直接引用）与**用户自己填的**（单价、卡时）。没有第三类。
+> There are only two kinds of numbers here: **primary-source figures with an arXiv ID** (which can be cited directly) and **values the user enters** (unit prices and accelerator hours). There is no third category.
 
-## 量级锚点：HAL
+## Scale anchor: HAL
 
-Holistic Agent Leaderboard（`arXiv:2510.11977`）公开账单：
+The public bill for the Holistic Agent Leaderboard (`arXiv:2510.11977`):
 
-- 21,730 次 rollout = 9 模型 × 9 benchmark
-- 约 **$40,000**、2.5B tokens
-- 推算量级（由上两行算术得出，仅作感知）：**单次 rollout 约 $1.8 / 约 11.5 万 token**
+- 21,730 rollouts = 9 models × 9 benchmarks
+- About **$40,000** and 2.5B tokens
+- Derived scale estimate (arithmetic from the two lines above, for intuition only): **about $1.8 / 115,000 tokens per rollout**
 
-含义：学生项目「全量跑」不现实。9 模型 × 9 benchmark 是机构行为；个人的合理规模是 1-3 模型 × 1-2 benchmark × 20-100 task。
+Implication: students cannot realistically run the full suite. Nine models × nine benchmarks is an institutional-scale effort; a reasonable individual scope is 1–3 models × 1–2 benchmarks × 20–100 tasks.
 
-## 为什么不能随意砍样本
+## Why samples cannot be cut arbitrarily
 
-`arXiv:2607.12338` 研究部分 run 与完整 benchmark 的成对结论一致性，原文要点：
-「costly evaluations make partial runs tempting. A task fraction alone does not show whether a partial run supports the same pairwise conclusion as the completed benchmark」——
-只按比例砍 task 数**不能保证**保留与全量相同的「A 优于 B」结论。砍样本前先想清楚要支撑的是绝对数字还是成对比较，后者对样本量更敏感。
+`arXiv:2607.12338` studies whether pairwise conclusions from partial runs agree with those from complete benchmarks. Its key point is: “costly evaluations make partial runs tempting. A task fraction alone does not show whether a partial run supports the same pairwise conclusion as the completed benchmark”.
 
-## 预算工作表（登记前填）
+Cutting the task count by a percentage **does not guarantee** that the same “A is better than B” conclusion will hold as in a full run. Before reducing samples, decide whether you need to support an absolute score or a pairwise comparison; the latter is more sensitive to sample size.
 
+## Budget worksheet (fill in before registering)
+
+```text
+Number of tasks × number of seeds × cost per run = total budget
 ```
-task 数 × seed 数 × 单次成本 = 总预算
-```
 
-1. 先跑 pilot（3-5 task × 1 seed）确认管线通，再放全量——pilot 的 run 也登记（label 标 pilot）
-2. 单次成本：用户填（API 按价目表算 token，本地卡按卡时），脚本不猜
-3. seed 数 ≥3 才能报 ±（n=2 的 std 勉强，n=1 只能标 `(n=1)`，见 table_gen）
-4. 超预算的信号：预估 token > 数十亿 或 费用 > 四位数美元 → 建议先砍模型数再砍 task 数，最后才砍 seed（seed 决定能不能报 error bar）
+1. Run a pilot first (3–5 tasks × 1 seed) to confirm the pipeline, then run the full set. Register the pilot run too, with the label `pilot`.
+2. The user supplies the per-run cost (API token prices from the price list, local accelerator time from hours); the script does not guess.
+3. At least 3 seeds are needed to report ±. The standard deviation from n=2 is weak; for n=1, label the result `(n=1)`. See `table_gen`.
+4. Budget warning signs: estimated tokens above several billion or cost above four figures in US dollars. Recommend reducing model count first, then task count, and seed count last (seeds determine whether an error bar can be reported).
 
-## 发布包检查清单（对冲 83% vs 38% 差距）
+## Release checklist (addressing the 83% vs. 38% gap)
 
-`arXiv:2608.05179` 审计 24 个 AI Scientist 系统：83% 发布代码，但只有 **38% 发布 seed 或执行 trace**。发布前自查：
+`arXiv:2608.05179` audited 24 AI Scientist systems: 83% released code, but only **38% released seeds or execution traces**. Check before release:
 
-- [ ] 代码发布：repo 指向论文里的 commit（不是"最新 main"）
-- [ ] 每个 seed 都在 README/脚本里显式列出
-- [ ] 关键实验的完整命令行可复制粘贴重跑（从 meta.json 的 cmd 字段来）
-- [ ] 随机性来源盘点：Python/numpy/torch seed、CUDA 非确定性、数据 shuffle、温度采样——逐一固定或声明
-- [ ] 执行 trace（可选但差异化）：输入输出日志、中间 checkpoint 索引
+- [ ] Code release: point to the commit used in the paper, not “latest main”.
+- [ ] List every seed explicitly in the README or scripts.
+- [ ] Make the complete command line for key experiments easy to copy and rerun (from the `cmd` field in `meta.json`).
+- [ ] Inventory sources of randomness: Python/numpy/torch seeds, CUDA nondeterminism, data shuffling, temperature sampling. Fix or disclose each one.
+- [ ] Execution trace (optional, but differentiating): input/output logs and an index of intermediate checkpoints.

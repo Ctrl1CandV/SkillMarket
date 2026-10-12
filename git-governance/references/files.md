@@ -1,76 +1,76 @@
-# 文件入库、本地保留与外部存储
+# Tracking Files, Keeping Them Local, and External Storage
 
-## 按用途分类
+## Classify by purpose
 
-先看项目如何构建、测试和交付，再对具体路径分类；以下是建议，不是凭文件后缀机械判断。
+First inspect how the project is built, tested, and delivered, then classify actual paths. The following are recommendations, not decisions to make mechanically from file extensions.
 
-| 类别 | 通常做法 | 决策条件 |
+| Category | Usual treatment | Decision criteria |
 |---|---|---|
-| 源码、测试、构建/依赖声明、CI、数据库迁移、安装文档 | 入库 | 新克隆应能理解并重建该版本；测试小夹具需可分发且已脱敏 |
-| 团队配置、格式规则、`.gitignore`、必要 `.gitattributes` | 入库 | 含可共享默认值，避免个人绝对路径和真实凭据 |
-| 依赖 lockfile | 按工具规则入库，通常保留 | 与 manifest 同步；不要以“自动生成”或“这是库”为由一律忽略 |
-| 包依赖安装目录、虚拟环境、编译缓存、可重建日志 | 忽略、需要时定向清理 | 必须确实能重建；不能只凭名字判断 `build/` 或 `dist/` |
-| 编译产物、生成代码、网页站点、导出的 PDF | 通常走制品存储；必要时入库 | 若它是下游直接使用的交付源、规范要求的 generated code，或无法可靠重建，应记录生成方式与更新约束 |
-| 密钥、token、私钥、带口令的连接串、真实 `.env` | 密钥系统或本地安全存储 | 不入任何普通分支或 LFS；示例文件只放占位值 |
-| 私人笔记、个人 IDE 配置、临时草稿 | 本地或用户选定的私人位置 | 团队共享的 IDE 设置可入库，个人状态不随之入库 |
-| 原始数据、模型权重、大型视频、二进制设计源文件 | 按权限/体积选 LFS 或外部存储 | 有许可证、可获取性、版本标识与完整性记录；LFS 适合需随源版本协作的资产 |
-| 研究配置、种子、环境声明、小型结果索引 | 通常入库 | 原始运行结果外存；保存版本、数据标识和复现入口，不把每次输出都塞进 Git |
-| 项目要求保留的审查记录和历史说明 | 入库或按已约定分支存放 | 有持续使用价值；工作临时记录没有自动入库的理由 |
+| Source code, tests, build/dependency declarations, CI, database migrations, installation docs | Track in Git | A fresh clone should explain and rebuild this version; small test fixtures must be distributable and sanitized. |
+| Team configuration, format rules, .gitignore, necessary .gitattributes | Track in Git | Include shareable defaults; avoid personal absolute paths and real credentials. |
+| Dependency lockfiles | Track according to tool conventions; usually keep them | Keep synchronized with the manifest. Do not ignore them universally because they are generated or because the project is a library. |
+| Installed dependency directories, virtual environments, compiler caches, reproducible logs | Ignore; clean selectively when needed | Confirm they can really be rebuilt. Do not decide from the name alone that build/ or dist/ is disposable. |
+| Compiled output, generated code, web sites, exported PDFs | Usually use artifact storage; sometimes track | Track when downstream users consume it directly, generated code is required by policy, or rebuilding is unreliable. Record how it is generated and its update rules. |
+| Secrets, tokens, private keys, credential-bearing connection strings, real .env files | Secret manager or secure local storage | Never put in ordinary branches or LFS. Example files contain placeholders only. |
+| Private notes, personal IDE settings, temporary drafts | Local or user-selected private storage | Shared team IDE settings may be tracked; do not include personal state with them. |
+| Raw data, model weights, large videos, binary design sources | Use LFS or external storage based on permissions/size | Keep license, availability, version identity, and integrity records. LFS suits assets that need to collaborate alongside source revisions. |
+| Research configuration, seeds, environment declarations, small result indexes | Usually track in Git | Store raw run output elsewhere; preserve versions, data identifiers, and a reproduction entry point instead of putting every output in Git. |
+| Review records and historical notes required by the project | Track or store on the agreed branch | Keep material with continuing use. Temporary work notes do not automatically belong in Git. |
 
-自动生成不等于不该跟踪：npm 明确建议提交 `package-lock.json`，Cargo 则解释了 `Cargo.lock` 的确定性和对库消费者的限制。具体工具策略以当前官方文档和项目约定为准。[npm lockfile](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/)、[Cargo FAQ](https://doc.rust-lang.org/cargo/faq.html)
+Generated does not mean “do not track”: npm recommends committing package-lock.json, while Cargo explains Cargo.lock determinism and constraints for library consumers. Follow current official documentation and project conventions for the actual tool. [npm lockfile](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/), [Cargo FAQ](https://doc.rust-lang.org/cargo/faq.html)
 
-不把 `*.json`、`*.yaml`、`*.csv`、`*.pdf`、`*.lock`、整个 `data/` 或所有隐藏目录设成默认忽略；它们可能是配置、数据夹具、论文原稿或交付资产。框架模版忽略规则也要逐项匹配实际项目。
+Do not ignore *.json, *.yaml, *.csv, *.pdf, *.lock, all of data/, or every hidden directory by default; they may contain configuration, test data, a manuscript, or a deliverable. Review framework-template ignore rules against the actual project.
 
-## 把分类落实为本次提交清单
+## Turn classification into a commit checklist
 
-暂存之前先列出具体文件或经逐文件审查的目录：目标分支、本次用途、是否跟踪、提交/本地保留/外存/待确认，以及理由。小改动可在工作记录中简短列明，不要求每次生成治理文档。检查新增、修改、删除和改名两端路径，不能只筛选 untracked 文件。
+Before staging, list exact files or a directory reviewed file by file. For each, state target branch, purpose in this change, whether it is tracked, destination (commit/local/external/pending), and reason. A short note in the task record is enough for a small change; a governance document is not required every time. Check both ends of additions, modifications, deletions, and renames; do not filter only untracked files.
 
-| 容易误入提交的内容 | 默认处理 | 必须核对的例外 |
+| Content likely to slip into a commit | Default handling | Exceptions to verify |
 |---|---|---|
-| `testt/`、临时调试目录、一次性 smoke 文件 | 未明确用途前不暂存；保留本地，核实可重建再清理 | 若实际是团队维护的测试源，按项目规则入库；不能把拼写猜测当结论 |
-| 正式 `tests/`、回归夹具 | 通常与对应源码入库 | 发布包可排除；仓库明确区分运行分支与维护分支时放到规定位置，别全局忽略测试 |
-| `private/`、个人笔记、内部草稿、真实配置 | 默认本地或有独立权限的存储，所有普通分支均不纳入 | 名为 private 的代码模块可能是合法源码，先查内容与项目规则；明确允许共享且脱敏的资料才能例外 |
-| Agent 的计划、对话导出、临时审查/验证报告、截图 | 当前任务没有维护需求时留本地；项目要求留档则归维护位置 | 可复用规范、用户手册或正式设计决策有明确用途时可入库，不用“AI 生成”作为排除理由 |
-| 项目文档 | 安装、接口、构建和使用必需的文档随源版本保留 | 内部会议记录、工作日记、评估和归档按项目分支/权限规则处理；引用链需要的 references 不能漏发 |
+| testt/, temporary debugging directory, one-off smoke file | Do not stage until purpose is known; keep local and clean only after confirming it is reproducible | If it is a test source maintained by the team, track it according to project rules. Do not decide from a suspected typo. |
+| Formal tests/ and regression fixtures | Usually track with the relevant source | A release package may exclude them. If the repository deliberately separates runtime and maintenance branches, put them in the defined location; do not ignore tests globally. |
+| private/, personal notes, internal drafts, real configuration | By default keep local or in separately permissioned storage; exclude from all ordinary branches | A directory named private may contain legitimate code; inspect contents and project rules. Share materials only when explicitly allowed and sanitized. |
+| Agent plans, conversation exports, temporary review/verification reports, screenshots | Keep local unless the current task needs a maintained record; when retention is required, use the maintenance location | Reusable conventions, user docs, and formal design decisions may have a clear purpose. Do not exclude something solely because AI generated it. |
+| Project documentation | Keep installation, interfaces, build, and usage documents required for the version | Handle meeting notes, work diaries, evaluations, and archives according to branch and permissions. Do not omit references needed by the citation chain. |
 
-新增整个 skill/plugin 时，从 `SKILL.md` 的相对引用继续核对脚本、参考和模板，确保使用者拿到后能运行；评测代码与运行依赖是两类内容。执行 `git add -- DIRECTORY` 前确认该目录的每个新增文件都在清单内，否则逐路径暂存。
+When adding a skill/plugin, follow relative references from SKILL.md and check its scripts, references, and templates so recipients can run it. Evaluation code and runtime dependencies are different categories. Before running git add -- DIRECTORY, confirm every added file in that directory is on the checklist; otherwise stage explicit paths.
 
-只留本地的**共享项目规则**写入适当的 `.gitignore`，个人规则写入本地 exclude；对已有 tracked 文件先按后文处理，不能以为加 ignore 已经排除。仅在 dev 入库而 main 排除的维护资料，靠分支整合范围管理，不能在 dev 全局忽略它来代替规则。
+Put **shared project ignore rules** in an appropriate .gitignore; personal rules belong in the local exclude file. For already tracked files, follow the later instructions; adding an ignore rule does not untrack them. Maintenance files tracked only on dev and excluded from main should be managed through branch integration scope; do not globally ignore them on dev as a substitute for branch rules.
 
-commit 前将 `git diff --cached --name-status` 与清单对账，push 前还要核对所有待推送提交的路径。所有文件都在允许目录下也不代表本次任务授权修改它们；分支允许范围与任务清单必须同时满足。未知分类先保留文件，阻止其进入提交即可，不自动删除。
+Before commit, reconcile git diff --cached --name-status against the checklist. Before push, check paths from every pending commit too. Being under an allowed directory does not mean a file is authorized for this task; both branch scope and task checklist must be satisfied. For an unknown classification, retain the file and keep it out of the commit; do not delete it automatically.
 
-## 三个忽略层级
+## Three ignore layers
 
-- `.gitignore`：共享的项目忽略规则，随仓库版本管理。
-- 仓库的本地 exclude 文件：个人在此仓库的辅助文件；通常是 `.git/info/exclude`，worktree 场景用 `git rev-parse --git-path info/exclude` 找真实位置。
-- `core.excludesFile`：用户跨仓库的个人忽略规则；不为一个项目擅自修改全局配置。
+- .gitignore: shared project ignore rules, versioned with the repository.
+- Repository-local exclude: personal helper rules for this repository, usually .git/info/exclude. In a worktree, locate the actual path with git rev-parse --git-path info/exclude.
+- core.excludesFile: user's personal ignore rules across repositories. Do not change global configuration for one project.
 
-忽略只控制未跟踪文件。已跟踪文件仍会被检查和提交；`assume-unchanged`、`skip-worktree` 是 index 功能，不能当作可靠的“本地配置不上传”方案。[gitignore 文档](https://git-scm.com/docs/gitignore)、[Git FAQ](https://git-scm.com/docs/gitfaq)
+Ignore rules affect only untracked files. Tracked files are still inspected and committed. assume-unchanged and skip-worktree are index features; do not use them as a reliable way to hide local configuration from a commit. [gitignore documentation](https://git-scm.com/docs/gitignore), [Git FAQ](https://git-scm.com/docs/gitfaq)
 
-需要跟踪默认配置而保留本地差异时，拆成受版本管理的 defaults/example 和被忽略的 local override，并在程序中明确加载方式。不要让同一个被跟踪配置靠 Git 标志“藏住”本地口令。
+When tracking a default configuration while keeping local differences, separate versioned defaults/example from an ignored local override and make the program's loading behavior explicit. Do not hide a local password with a Git flag on a tracked configuration.
 
-下面是按需选取的规则片段，不是完整的通用模板；复制前确认路径和用途：
+The following are optional rule snippets, not a complete generic template. Confirm the path and purpose before copying:
 
 ```gitignore
-# 仅在这些目录确为可再安装/可重建内容时使用
+# Use only when these are reinstallable/rebuildable in this project
 node_modules/
 .venv/
 __pycache__/
 *.py[cod]
 /coverage/
 
-# 本地环境；示例必须先检查为占位值
+# Local environment; first confirm examples contain placeholders
 .env
 .env.*
 !.env.example
 !.env.sample
 
-# 允许小夹具，不要直接忽略整个父目录
+# Allow small fixtures rather than ignoring the parent directory
 /data/*
 !/data/fixtures/
 ```
 
-`/name/` 锚定当前 `.gitignore` 所在层级，`name/` 可匹配下层同名目录；否定规则不能重新包含已被忽略父目录里的文件。验证候选规则：
+/name/ is anchored at the current .gitignore level; name/ can match directories of the same name below it. A negation cannot re-include files inside an ignored parent directory. Verify a candidate rule:
 
 ```sh
 git check-ignore -v -- path/to/local-file
@@ -79,31 +79,31 @@ git ls-files --others --exclude-standard
 git ls-files --others --ignored --exclude-standard
 ```
 
-`check-ignore` 默认不报告已跟踪文件；要诊断它们匹配哪些规则可用 `git check-ignore -v --no-index -- path/to/file`。不匹配时退出码 1 不表示故障。[git check-ignore](https://git-scm.com/docs/git-check-ignore)
+By default, check-ignore does not report tracked files. To diagnose which rules match them, use git check-ignore -v --no-index -- path/to/file. Exit code 1 means no match and is not an execution failure. [git check-ignore](https://git-scm.com/docs/git-check-ignore)
 
-## 已跟踪文件改为本地保留
+## Stop tracking a file while keeping its local copy
 
-适用于本地配置或缓存等确实不该再跟踪的路径。先检查 staged/unstaged 状态，必要时安全备份；不要用 `-f` 绕过状态检查。添加准确 ignore 规则后：
+Use for local configuration or caches that should no longer be tracked. First inspect staged and unstaged state and make a safe backup if needed; do not use -f to bypass state checks. After adding a precise ignore rule:
 
 ```sh
 git rm --cached -- path/to/local-file
 git diff --cached --name-status
 ```
 
-`--cached` 只移除 index 中的路径，在当前工作区保留文件；下一次提交会记录该路径从版本树删除。这不清除历史，其他成员更新到删除提交时可能失去此前受跟踪的副本，需提前安排本地配置迁移。首次仓库也可用它移除误暂存的新增文件。不用 `git rm -r --cached .` 全库重建 index 来解决一个路径。[git rm](https://git-scm.com/docs/git-rm)
+--cached removes the path from the index but leaves the worktree file in place. The next commit records its deletion from the version tree. This does not erase history. Other collaborators updating to that deletion commit may lose their previously tracked copy, so arrange local configuration migration first. It may also remove a mistakenly staged addition from the first commit. Do not run git rm -r --cached . to rebuild the entire index for one path. [git rm](https://git-scm.com/docs/git-rm)
 
-跟踪停止、物理删除、历史清除是三种不同操作。若文件是敏感信息，转到 [泄露处理](recovery-and-cleanup.md)，仅改 ignore 和删除最新版本不足以解决问题。
+Stopping tracking, deleting a file from disk, and purging history are three different operations. If the file contains sensitive information, follow [credential exposure handling](recovery-and-cleanup.md); ignore rules and deleting the latest copy are not enough.
 
-## 大文件与复现信息
+## Large files and reproducibility metadata
 
-确认大文件是否需要随源版本追踪、是否频繁变更、下游是否能使用 LFS。LFS 把 pointer 放入 Git，内容放到 LFS 存储；先确认托管支持、权限、配额和完整下载，再选择，不硬编码某平台的限额。[Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)
+Check whether a large file must be versioned with source, how often it changes, and whether downstream users can use LFS. LFS stores a pointer in Git and content in LFS storage. Confirm host support, permissions, quota, and that content can be downloaded before choosing it; do not hardcode one host's limits. [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)
 
-采用 LFS 时提交相应 `.gitattributes` 和 pointer，并验证内容可获取；新设 tracking 规则不会自动把旧提交转换为 LFS。历史迁移另作有授权的操作。外部存储则记录数据/制品 ID、版本、校验值、许可、获取方式与必要权限，避免在清单中保存短期含签名凭据的 URL。
+When using LFS, commit the relevant .gitattributes and pointer and verify that the content is available. A new tracking rule does not automatically convert older commits to LFS. Treat history migration as a separate, explicitly authorized operation. For external storage, record artifact/data ID, version, checksum, license, retrieval method, and required access. Avoid keeping expiring signed URLs with credentials in a manifest.
 
-对于普通 Git 中的大文件，检查待推送历史，而非只看工作区大小；增加一个“删除大文件”的提交仍可能推送它的旧对象。不要未经调查重写全仓库历史。
+For large ordinary Git files, inspect the history to be pushed, not only the current worktree size; a commit that deletes a large file may still push its old object. Do not rewrite repository history without first investigating.
 
-## 跨平台与嵌套仓库
+## Cross-platform and nested repositories
 
-共享换行、二进制识别和归档属性放进 `.gitattributes`。如要采用 `* text=auto` 和具体脚本的 EOL 规则，先检查现状；`git add --renormalize` 会造成大范围变更，应单独审查，不混在功能修复里。[gitattributes](https://git-scm.com/docs/gitattributes)
+Put shared line-ending, binary-detection, and archive rules in .gitattributes. Before adopting * text=auto or script-specific EOL rules, inspect existing behavior. git add --renormalize can produce a broad diff and should be reviewed separately, not mixed into a feature fix. [gitattributes](https://git-scm.com/docs/gitattributes)
 
-留意大小写改名、可执行位、符号链接和平台专用路径；Linux CI 与大小写不敏感的本地文件系统可能表现不同。遇到嵌套 `.git`，先查它是 submodule、独立项目还是误嵌套，不删除 `.git` 来“整理”；需要 submodule 时记录可访问的 URL 与具体提交，不把本地独立仓库误当成普通目录提交。
+Check case-only renames, executable bits, symlinks, and platform-specific paths; Linux CI and a case-insensitive local filesystem may behave differently. If a nested .git directory appears, determine whether it is a submodule, independent project, or accidental nesting; do not delete .git to “tidy up.” For a submodule, record an accessible URL and exact commit instead of committing a local independent repository as an ordinary directory.

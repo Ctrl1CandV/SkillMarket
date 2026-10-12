@@ -1,25 +1,25 @@
-# 可调整的风格方向
+# Adaptable Style Directions
 
-样式不限于示例。以下是内容、颜色、字体层级与构图的组合方向，不是现成模板包或经过所有播放软件验证的主题。用户可指定其他风格、配色，或混合相容的特征；学校/实验室模板与用户明确要求优先。
+Styles are not limited to these examples. The directions below combine content, color, type hierarchy, and composition; they are not ready-made template packs or themes verified in every presentation app. Users may choose other styles, palettes, or compatible combinations. A school or lab template and the user's explicit requirements take priority.
 
-## 选择方向
+## Choose a direction
 
-| 方向 | 适合的内容 | 视觉与构图 | 可用的颜色起点 |
+| Direction | Suitable content | Visual treatment and composition | Possible starting colors |
 | --- | --- | --- | --- |
-| 清晰学术 | 组会、实验进展、常规答辩 | 浅底、深色标题、图表占主要面积；结论与图注紧靠证据 | 背景 `F7F9FC`，正文 `182B42`，强调 `2764A5` |
-| 黑白论文 | 密集原图、理论推导、正式论文讲解 | 白底黑字、细线和直接标签；大图或对照页，靠尺度和字重突出重点 | 背景 `FFFFFF`，正文 `171717`，辅助 `5C6470`，必要强调 `355C8C` |
-| 深色数据 | 算法系统、图像/视频研究、少量关键指标 | 深底亮字、清楚的数据高亮；大图与紧凑注释，保持投影对比 | 背景 `142330`，正文 `F3F6FA`，辅助 `BCC9D2`，强调 `67D4C0` |
-| 暖色编辑 | 人文、案例、跨学科课程报告 | 米白、墨色和少量暖色；较强标题、非对称图文和自然阅读节奏 | 背景 `FBF7EF`，正文 `302C29`，辅助 `71665F`，强调 `A34C35` |
-| 图解教学 | 概念解释、课程 presentation、方法流程 | 浅底、清晰示意图、不同步骤的语义色；按讲解逐步出现，保留稳定上下文 | 背景 `F8FBFD`，正文 `203244`，强调 `287BA8`，次强调 `7A4CA0` |
-| 机构模板 | 有学校、实验室或课程指定模板 | 沿用母版、字体、页眉/页脚及品牌色；在允许的内容区优化证据大小与阅读顺序 | 从用户模板读取，不另造品牌配色 |
+| Clear academic | Lab meetings, research updates, standard defenses | Light background, dark title, charts as the main area; conclusions and captions close to evidence | Background `F7F9FC`, body `182B42`, accent `2764A5` |
+| Monochrome paper | Dense source figures, theoretical derivations, formal paper presentations | White background, black text, fine rules and direct labels; large figures or comparisons, with scale and weight creating emphasis | Background `FFFFFF`, body `171717`, support `5C6470`, optional accent `355C8C` |
+| Dark data | Algorithms, systems, image/video research, a few key metrics | Dark background with light text and clear data highlights; large images and compact notes with strong projection contrast | Background `142330`, body `F3F6FA`, support `BCC9D2`, accent `67D4C0` |
+| Warm editorial | Humanities, case studies, interdisciplinary teaching | Warm white, ink-like text, and a small amount of warm color; stronger headings, asymmetric text/image layouts, and a natural reading rhythm | Background `FBF7EF`, body `302C29`, support `71665F`, accent `A34C35` |
+| Illustrated teaching | Concept explanations, course presentations, method flows | Light background, clear diagrams, semantic colors for steps; reveal incrementally while keeping context stable | Background `F8FBFD`, body `203244`, accent `287BA8`, secondary accent `7A4CA0` |
+| Institutional template | A required university, lab, or course template | Keep the master, fonts, headers/footers, and brand colors; optimize evidence size and reading order within the allowed content area | Read from the user's template; do not invent another brand palette |
 
-颜色只是起点，最终对比、字体和原图需在实际文件中检查。深色主题不能直接把坐标轴、标签为黑色的原图置于深底；可保留浅底图版。暖色方向不能淡化正文或实验数据。多种语义色只在步骤/类别确实需要区分时使用，并补文字或形状标记。
+Colors are only a starting point. Check actual contrast, fonts, and source images in the final file. A dark theme cannot place an original figure with black labels directly on a dark background; keep a light figure panel when needed. A warm style must not fade body text or experimental data. Use several semantic colors only when the steps or categories truly need distinction, and add text or shape labels.
 
-## 落实为全稿
+## Apply it across the deck
 
-1. 根据听众、材料、投影环境和用户偏好选一个主方向。用户直接选方向时执行；要求“给几个样式选项”时，用同一份真实内容做少量候选，让差异可比较。普通制作请求不强制用户先选模板。
-2. 记录少量主题参数：背景、正文、辅助与强调色，实际可用字体，标题/正文/图注尺度，对齐线和间距。需要重建时把这些参数留在源稿；无需另造一套主题框架。
-3. 风格差异要体现在信息层级、图文关系、线条/容器、疏密和构图，不能只替换色号。同一全稿保持一致，按页面职责变化布局；不能为了展示选项把六种风格混入同一份正式报告。
-4. 新稿先检查一页密集证据和一页长中文标题。复用同一个问题页比较候选，避免用短占位文字掩盖换行与图表难题。已有稿只要求换样式时保留事实、来源、备注和原有点击逻辑；对象改动后重新核对动画目标。
+1. Choose one main direction based on the audience, source material, projection environment, and user preference. If the user picks one, use it. If they ask for style options, make a small set of comparable candidates from the same real content. Do not force users to pick a template before ordinary presentation work.
+2. Record a few theme values: background, body, supporting and accent colors; available fonts; title, body, and caption scales; alignment guides and spacing. Keep the values in the source when a deck needs rebuilding; do not invent another theme system.
+3. Make style differences visible in information hierarchy, image/text relationships, lines/containers, density, and composition, not just color values. Keep the deck coherent while varying layouts according to each slide's purpose. Do not mix six styles in one formal deck just to show options.
+4. For a new deck, inspect one dense evidence slide and one long Chinese heading. Compare candidates using the same problem slide rather than short placeholder text that hides wrapping and chart difficulties. When restyling an existing deck, preserve facts, sources, notes, and existing click logic. Recheck animation targets after changing objects.
 
-这些方向是本技能给出的设计建议，不冒称已查看过外部设计标杆，也不保证套用某个名称就能达到审美要求。
+These are design recommendations from this skill. They do not claim to have reviewed external design exemplars, and do not guarantee that a style label will produce a good-looking result.

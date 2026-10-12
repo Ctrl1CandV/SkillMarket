@@ -1,20 +1,20 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""可复现发布包生成（run-provenance）。从 .grad/runs/ 与 claims 台账生成 REPRODUCING.md。
+"""Generate a reproducibility package (run-provenance). Build REPRODUCING.md from .grad/runs/ and the claims ledger.
 
-对冲「83% 发布代码 vs 38% 发布 seed/trace」的差距（arXiv:2608.05179）：发布包里
-seed 表 + 可复制命令行 + commit/config 指针，审稿人问「怎么跑出来的」直接给文件。
+Address the gap between "83% release code" and "38% release seed/trace" (arXiv:2608.05179): include
+a seed table, copyable commands, and commit/config references so reviewers can see how the results were produced.
 
-铁律：
-- 不执行任何命令、不猜缺失字段——缺 seed/cmd/hardware 一律标 MISSING 并汇总计数
-- **只报告复现信息登记状态，不声称实验可复现**：seed/commit/干净工作区齐全 = 信息已登记
-  （reproducibility_status=not_verified）；本工具从未在别的机器重跑过，没有验证这回事。
-  历史 run 的 `reproducible` 布尔仅作旧字段兼容读取，不继承为「已验证可复现」
-- 默认只打印；--out 写文件走 CONFLICT/--force 护栏（同 table_gen）
-- 自查清单来自 references/budget.md 五项，其中两项按表自动填 ✅/❌，其余留给人工
+Core rules:
+- Do not run commands or guess missing fields. Mark missing seed/cmd/hardware as MISSING and report counts.
+- **Report only the recording status of reproducibility information; do not claim the experiment is reproducible**: complete seed/commit/clean-worktree data
+  means reproducibility metadata was recorded (reproducibility_status=not_verified); this tool has never rerun the experiment on another machine.
+  Read the legacy reproducible boolean only for backward compatibility; do not treat it as proof of verified reproducibility.
+- Print to stdout by default; --out uses the CONFLICT/--force guard, as in table_gen.
+- The self-check list has five items from references/budget.md. The tool fills two mechanically; leave the rest for a person.
 
-输出契约：--json 时 stdout 打印 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_grouping import reproducibility_info  # F06：复现信息只登记、不证明（与 run_register 同一规则）
+from run_grouping import reproducibility_info  # F06: record metadata without proving reproducibility (same rule as run_register).
 
 if sys.stdout and sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -49,9 +49,9 @@ def load_runs(runs_dir: Path) -> list[dict]:
         try:
             meta = json.loads(meta_f.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            die("BAD_RUN_DATA", f"{d} 的 meta.json 解析失败：{exc}")
+            die("BAD_RUN_DATA", f"Could not parse meta.json in {d}: {exc}")
         if not isinstance(meta, dict):
-            die("BAD_RUN_DATA", f"{meta_f} 必须是 JSON 对象")
+            die("BAD_RUN_DATA", f"{meta_f} must be a JSON object")
         config = meta.get("config") or {}
         runs.append({
             "run_id": str(meta.get("run_id") or d.name),
@@ -66,15 +66,15 @@ def load_runs(runs_dir: Path) -> list[dict]:
             "dirty": (meta.get("git") or {}).get("dirty"),
             "config_path": config.get("path"),
             "config_sha256": config.get("sha256"),
-            # F06：每 run 现算复现信息登记状态；legacy `reproducible` 布尔只兼容读取，
-            # 不继承为「已验证可复现」——本工具从未在别的机器重跑过
+            # F06: compute the current metadata-recording status for each run; read the legacy reproducible boolean
+            # only for backward compatibility; it does not establish that a rerun was verified.
             "repro": reproducibility_info(meta),
         })
     return runs
 
 
 def resolve_claims(claims_path: Path) -> list[dict]:
-    """同 claim_id 最后一行为当前；无 claim_id 为 legacy 行（support 视为 unreviewed）。"""
+    """The latest row for a claim_id is current; rows without claim_id are legacy (support is treated as unreviewed)."""
     if not claims_path.is_file():
         return []
     rows: list[dict] = []
@@ -83,7 +83,7 @@ def resolve_claims(claims_path: Path) -> list[dict]:
             try:
                 rows.append(json.loads(line))
             except json.JSONDecodeError:
-                continue  # 坏行跳过并计数，不中断发布包生成
+                continue  # Skip and count malformed rows; do not abort package generation.
     latest: dict[str, dict] = {}
     legacy: list[dict] = []
     for row in rows:
@@ -95,7 +95,7 @@ def resolve_claims(claims_path: Path) -> list[dict]:
     out = list(latest.values()) + [{"claim_id": f"legacy-{i}", **row} for i, row in enumerate(legacy)]
     for c in out:
         if c.get("support") not in SUPPORT_VALUES:
-            c["support"] = "unreviewed"  # 执行者写的旧 status 不继承为人的判定
+            c["support"] = "unreviewed"  # Do not inherit an old status written by the run registrar as a human verdict.
     return out
 
 
@@ -103,12 +103,12 @@ def render(runs: list[dict], claims: list[dict]) -> tuple[str, dict]:
     lines: list[str] = [
         "# REPRODUCING",
         "",
-        f"> 由 repro_pack.py 于 {datetime.now().astimezone().isoformat(timespec='seconds')} 从 .grad/runs/ 生成；"
-        "MISSING 表示台账里没有该字段（不猜测）。",
+        f"> Generated by repro_pack.py on {datetime.now().astimezone().isoformat(timespec='seconds')} from .grad/runs/;"
+        "MISSING means the ledger has no value for that field; nothing is inferred.",
         "",
-        "## Seed 表",
+        "## Seed table",
         "",
-        "| run | method × benchmark | seed | status | hardware | commit | config (sha256 前 8) |",
+        "| run | method × benchmark | seed | status | hardware | commit | config (first 8 of sha256) |",
         "|---|---|---|---|---|---|---|",
     ]
     missing = {"seed": [], "cmd": [], "hardware": []}
@@ -139,7 +139,7 @@ def render(runs: list[dict], claims: list[dict]) -> tuple[str, dict]:
             f"| {(run['commit'] or '')[:10] or 'MISSING'} | {config_cell} |"
         )
 
-    cmd_section = ["", "## 复现命令（已登记，不等于已验证重跑）", ""]
+    cmd_section = ["", "## Reproduction commands (recorded; not the same as a verified rerun)", ""]
     usable_cmds = [run for run in runs if run["cmd"]]
     if usable_cmds:
         for run in usable_cmds:
@@ -148,24 +148,24 @@ def render(runs: list[dict], claims: list[dict]) -> tuple[str, dict]:
                             f"@ {(run['commit'] or 'unknown')[:10]}",
                             "```bash", str(run["cmd"]), "```", ""]
     else:
-        cmd_section += ["（没有任何 run 登记过 `--cmd`，全部标 MISSING——可复制性检查不过）", ""]
+        cmd_section += ["(No run has a recorded --cmd; all are marked MISSING, so the copyability check fails.)", ""]
     missing_cmds = sum(1 for run in runs if not run["cmd"])
 
-    repro_section = ["", "## 复现信息登记状态（reproducibility_status: not_verified——未执行复现验证）", ""]
+    repro_section = ["", "## Reproducibility metadata status (reproducibility_status: not_verified; no rerun verification)", ""]
     for run in runs:
         info = run["repro"]
-        missing_note = "、".join(info["repro_missing"]) if info["repro_missing"] else "无（登记信息齐全）"
-        repro_section.append(f"- `{run['run_id']}`：缺 {missing_note}")
+        missing_note = ", ".join(info["repro_missing"]) if info["repro_missing"] else "(none; recorded metadata is complete)"
+        repro_section.append("- {}: missing {}".format(run["run_id"], missing_note))
     repro_section += [
         "",
-        "登记信息齐全也只说明复现材料完备；本包从未在其他机器重跑验证，不能据此宣称实验可复现。"
-        "历史 run 的旧 `reproducible` 布尔仅兼容读取，不继承为已验证结论。",
+        "Complete metadata means the reproduction materials are documented; this package has never been rerun on another machine and does not prove that the experiment is reproducible. "
+        "The legacy reproducible boolean is read only for compatibility and is not inherited as a verified conclusion.",
         "",
     ]
 
-    claim_section = ["", "## 论文数字 ↔ run 关联（claims 台账当前状态）", ""]
+    claim_section = ["", "## Paper claim ↔ run mapping (current claims-ledger state)", ""]
     if claims:
-        claim_section += ["| claim | runs | evidence 键存在 | support | by |", "|---|---|---|---|---|"]
+        claim_section += ["| claim | runs | evidence key exists | support | by |", "|---|---|---|---|---|"]
         n_supported = 0
         for claim in claims:
             supports = ", ".join(f"`{r}`" for r in (claim.get("run_ids") or [])) or "—"
@@ -176,25 +176,25 @@ def render(runs: list[dict], claims: list[dict]) -> tuple[str, dict]:
             if len(text) > 60:
                 text = text[:57] + "…"
             claim_section.append(
-                f"| {text} | {supports} | （见 seed 表与 metrics.json） | {support} "
+                f"| {text} | {supports} | (see seed table and metrics.json) | {support} "
                 f"| {claim.get('support_by') or '—'} |")
         claim_section.append("")
-        claim_section.append(f"{len(claims)} 条中 {n_supported} 条为 supported（人的判定），"
-                             "其余 unreviewed/partial/refuted 如实保留。")
+        claim_section.append(f"{len(claims)} claims: {n_supported} are supported by human verdicts; preserve all other states (unreviewed/partial/refuted) as recorded.")
+
     else:
-        claim_section += ["（claims.jsonl 不存在或为空：没有论文数字 ↔ run 绑定记录。）"]
+        claim_section += ["(claims.jsonl is missing or empty; no paper claim-to-run links are recorded.)"]
 
     all_seeded = len(missing["seed"]) == 0
     all_cmds = missing_cmds == 0
     checklist = [
-        "", "## 发布前自查（budget.md 清单；✅ 已机械核对 / ❌ 未过 / ☐ 需人工）", "",
-        f"- {'✅' if all_seeded else '❌'} 每个 seed 都在上方 Seed 表显式列出"
-        + ("" if all_seeded else f"（缺：{', '.join(missing['seed'])}）"),
-        f"- {'✅' if all_cmds else '❌'} 关键实验命令行可复制粘贴重跑"
-        + ("" if all_cmds else f"（{missing_cmds}/{len(runs)} 个 run 缺 cmd）"),
-        "- ☐ 代码发布：repo 指向论文里的 commit（不是最新 main）",
-        "- ☐ 随机性来源盘点：numpy/torch seed、CUDA 非确定性、shuffle、温度采样——逐一固定或声明",
-        "- ☐ 执行 trace（可选但差异化）：输入输出日志、中间 checkpoint 索引",
+        "", "## Pre-release checklist (from budget.md; ✅ checked mechanically / ❌ failed / ☐ requires human review)", "",
+        "- {} Every seed is listed explicitly in the seed table above".format("✅" if all_seeded else "❌")
+        + ("" if all_seeded else " (missing: " + ", ".join(missing["seed"]) + ")"),
+        "- {} Key experiment commands can be copied and rerun".format("✅" if all_cmds else "❌")
+        + ("" if all_cmds else " ({}/{} runs missing cmd)".format(missing_cmds, len(runs))),
+        "- ☐ Release code: repository points to the paper commit, not the latest main",
+        "- ☐ Audit randomness sources: numpy/torch seeds, CUDA nondeterminism, shuffling, temperature sampling; fix or declare each one",
+        "- ☐ Execution trace (optional, but useful): input/output logs and intermediate checkpoint index",
     ]
     body = "\n".join(lines + cmd_section + repro_section + claim_section + checklist) + "\n"
     stats = {"n_runs": len(runs), "n_claims": len(claims), "n_seeded": seeded_count,
@@ -206,29 +206,29 @@ def render(runs: list[dict], claims: list[dict]) -> tuple[str, dict]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="生成 REPRODUCING.md（只搬运台账事实，不猜不执行）")
+    ap = argparse.ArgumentParser(description="Generate REPRODUCING.md (copy ledger facts only; do not guess or execute anything)")
     ap.add_argument("--runs-dir", default=".grad/runs")
     ap.add_argument("--claims", default=".grad/claims.jsonl")
-    ap.add_argument("--out", default="", help="写入该 .md 文件（默认打印）；已存在时报 CONFLICT")
-    ap.add_argument("--force", action="store_true", help="允许覆盖 --out 指定的既有文件")
+    ap.add_argument("--out", default="", help="Write to this Markdown file (prints by default); fail with CONFLICT if it exists")
+    ap.add_argument("--force", action="store_true", help="Allow overwriting the existing file specified by --out")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     if args.json and args.out:
-        die("BAD_ARGS", "--json 与 --out 不能同时使用")
+        die("BAD_ARGS", "--json and --out cannot be used together")
     if args.force and not args.out:
-        die("BAD_ARGS", "--force 只能与 --out 一起使用")
+        die("BAD_ARGS", "--force can only be used with --out")
 
     runs_dir = Path(args.runs_dir)
     runs = load_runs(runs_dir)
     if not runs:
-        die("NO_RUNS", f"{runs_dir} 下没有可用的 run（需要 meta.json）。先跑 run_register.py 登记")
+        die("NO_RUNS", f"No usable runs found under {runs_dir} (meta.json is required); register runs with run_register.py first")
     claims = resolve_claims(Path(args.claims))
     doc, stats = render(runs, claims)
 
     out = Path(args.out) if args.out else None
     if out is not None and out.exists() and not args.force:
-        die("CONFLICT", f"输出已存在，不会覆盖：{out}；明确需要覆盖时加 --force")
+        die("CONFLICT", f"Output already exists and will not be overwritten: {out}; pass --force to overwrite it explicitly")
     if args.json:
         print(json.dumps({"ok": True, "data": {**stats}}, ensure_ascii=False))
         return
@@ -242,11 +242,11 @@ def main() -> None:
             os.replace(temp, out)
         finally:
             temp.unlink(missing_ok=True)
-        print(f"\n已写入 {out}")
+        print(f"\nWrote {out}")
     flagged = stats["n_missing_seed"] + stats["n_missing_cmd"]
-    print(f"\n# {stats['n_runs']} 个 run｜seed 覆盖 {stats['n_seeded']}/{stats['n_runs']}｜"
-          f"cmd 覆盖 {stats['n_runs'] - stats['n_missing_cmd']}/{stats['n_runs']}｜MISSING 提示 {flagged} 处")
-    print("# 复现信息登记状态：not_verified——未执行复现验证（见文档「复现信息登记状态」段）")
+    print("\n# {} runs | seeds recorded {}/{} | commands recorded {}/{} | MISSING notices: {}".format(stats["n_runs"], stats["n_seeded"], stats["n_runs"], stats["n_runs"] - stats["n_missing_cmd"], stats["n_runs"], flagged))
+
+    print("# Reproducibility metadata status: not_verified; no rerun verification (see the Reproducibility metadata status section).")
 
 
 if __name__ == "__main__":

@@ -1,65 +1,65 @@
-# 项目 Git 规范模板
+# Project Git Policy Template
 
-这是用于制定规范的模板，不是项目已实施配置。填入真实决策、删掉不适用项；未知事实标为“未验证”，不要把占位符原样当作最终规范。可放在已有 CONTRIBUTING 中，或项目约定的 Git 规范文件。
+This template helps define a policy; it is not evidence that a project has implemented one. Fill in actual decisions and remove irrelevant sections. Mark unknown facts “unverified”; do not leave placeholders as final policy. It can be added to an existing CONTRIBUTING file or the project's designated Git-policy document.
 
-## 现状与选择
+## Current state and decisions
 
-- 项目用途、交付对象与复现入口：
-- 远端角色（上游、个人 fork、发布仓库）：
-- 主分支真实名称与可用性要求：
-- 发布节奏、部署是否由 push/tag 自动触发：
-- 支持的版本线与停止支持条件：
-- 选择的工作流、理由与新增分支的触发条件：
+- Project purpose, delivery audience, and reproduction entry point:
+- Remote roles (upstream, personal fork, release repository):
+- Actual main-branch name and availability requirements:
+- Release cadence and whether push/tag triggers deployment:
+- Supported version lines and end-of-support conditions:
+- Selected workflow, reasons, and conditions for creating branches:
 
-## 分支生命周期
+## Branch lifecycle
 
-| 分支角色/名称 | 起点 | 允许变更 | 整合目标 | 检查/审查门槛 | 结束条件 |
+| Branch role/name | Base | Allowed changes | Integration target | Check/review gates | End condition |
 |---|---|---|---|---|---|
-| 按实际项目填写 | | | | | |
+| Fill in for this project | | | | | |
 
-修复回流到哪些开发/维护线，如何记录 backport：
+Which development/maintenance lines receive backports, and how they are recorded:
 
-## 文件与交付
+## Files and delivery
 
-| 具体路径或类别 | 入库/本地/外存/清理 | 理由、复现或获取方式 | 权限与维护人 |
+| Exact paths or category | Track/local/external/clean | Reason, reproduction, or retrieval method | Permissions and owner |
 |---|---|---|---|
-| 按实际项目填写 | | | |
+| Fill in for this project | | | |
 
-- manifest 与 lockfile 的同步规则：
-- 本地配置与共享 defaults/example 的位置、加载方式：
-- 大文件/LFS/外存的版本标识、校验值与获取方式：
-- `.gitignore`、本地 exclude、`.gitattributes` 的适用范围：
-- 发布包清单与具体打包工具：
-- 分支目录有差异时的允许路径、整合和对账方式：
-- 可重建清理目标与必须保留的本地数据：
+- Rules for keeping manifests and lockfiles synchronized:
+- Location and loading behavior for local configuration and shared defaults/examples:
+- Version IDs, checksums, and retrieval methods for large files/LFS/external storage:
+- Scope of .gitignore, local exclude, and .gitattributes:
+- Release-package manifest and packaging tool:
+- Allowed paths and integration/reconciliation for branch-specific directories:
+- Rebuildable cleanup targets and local data that must be retained:
 
-| 目标分支 | 必须保留的路径/依赖 | 允许的维护资料 | 排除内容 | 整合前核对方式 |
+| Target branch | Required paths/dependencies | Allowed maintenance material | Exclusions | Pre-integration checks |
 |---|---|---|---|---|
-| 按实际项目填写 | | | | |
+| Fill in for this project | | | | |
 
-- `testt/`、正式测试、`private/`、临时报告与项目文档各自的去向：
-- 本次提交如何形成精确路径清单、发现范围外 staged 内容如何处理：
+- Destination for testt/, formal tests, private/, temporary reports, and project docs:
+- How to build the exact path list for each commit and handle out-of-scope staged content:
 
-## 提交与审查
+## Commits and review
 
-- 标题格式、语言、scope 和破坏性变更表示：
-- 消息验收：标题说明对象与变化，正文补充原因/影响，内容与最终 staged 快照一致：
-- 一项逻辑变更的划分与相关测试/文档要求：
-- staged 快照检查及验证命令：
-- PR/MR 目标、模板、评审和合并方式：
-- 作者身份、签名或 DCO 要求（若适用）：
-- 分支保护与 required checks：分别列出“已核实启用”与“建议启用”：
+- Subject format, language, scope, and breaking-change marker:
+- Message review: subject identifies object/change; body adds reason/impact; text matches final staged snapshot:
+- How to split logical changes and requirements for related tests/docs:
+- Staged-snapshot review and verification commands:
+- PR/MR target, template, review, and merge strategy:
+- Author identity, signing, or DCO rules, if applicable:
+- Branch protection and required checks; distinguish “verified enabled” from “recommended”:
 
-## 发布与操作边界
+## Releases and operation boundaries
 
-- tag/版本规则、制品与 commit 的映射：
-- 发布前检查、发版权限、回滚与修复回流：
-- commit、push、PR、合并、部署分别由谁执行、何时授权：
-- 共享历史重写/强推的允许条件、精确引用和恢复步骤：
-- 删除文件/分支/worktree 前的预览、保全和确认范围：
-- 凭据泄露时的撤销/轮换负责人及平台处理入口：
+- Tag/version policy and mapping between artifacts and commits:
+- Release checks, release permissions, rollback, and backport rules:
+- Who performs and authorizes commit, push, PR, merge, and deployment:
+- Conditions for rewriting shared history/force-push, exact refs, and recovery procedure:
+- Preview, preservation, and scope checks before deleting files/branches/worktrees:
+- Owner and platform process for credential revocation/rotation:
 
-## 维护
+## Maintenance
 
-- 规范维护人、核验日期和再次评估的触发条件：
-- 当前未验证事实或尚未实施的事项：
+- Policy owner, verification date, and review triggers:
+- Facts not yet verified or settings not yet implemented:

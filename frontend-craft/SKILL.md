@@ -1,87 +1,90 @@
 ---
 name: frontend-craft
-description: 设计和优化美观、具有视觉完成度且可用的 Web 界面；用于产品网站、业务工具、数据界面、落地页、长文阅读页，以及“前端不好看、信息太乱、中文难读、像模板、手机不好用”等请求。先理内容关系与空间结构，再用字体、色彩、素材完成有整体感的画面；通过观图、方向设计与实际截图审视提升质量；局部优化保留指定品牌与既有行为。不用于纯后端、仅文案润色或直接生成 PDF；原生 App 与文档排版需交接专门技能。
+description: Design and improve attractive, polished, usable web interfaces. Use for product sites, business tools, data interfaces, landing pages, long-form reading pages, and requests such as “the front end looks bad,” “the information is disorganized,” “Chinese text is hard to read,” “it looks like a template,” or “it does not work well on phones.” First clarify content relationships and spatial structure, then use typography, color, and assets to create a coherent visual result. Improve quality by inspecting references, designing directions, and reviewing actual screenshots. In local refinements, preserve specified branding and existing behavior. Not for back-end-only tasks, copy polishing alone, or direct PDF generation; hand off native apps and document layout to specialized skills.
 ---
 
-# Frontend craft
+# Frontend Craft
 
-版本 0.2.0
+Version 0.2.0
 
-美观与视觉完成度是核心目标；可读、可操作、行为正确是底线，不是全部。设计有先后：先弄清内容关系，再选空间结构，用真实内容检验结构，然后以字体、色彩、素材完成画面，最后在窄屏和真实操作里修订。布局先于样式，但样式不是收尾装饰——字体、色彩和素材的判断决定页面是成品还是线框。工具也应有审美，克制不等于单调；布局正确不自动等于美观，最终仍要看画面。
+Visual appeal and polish are core goals; readability, operability, and correct behavior are minimum requirements, not the whole objective. Design in sequence: understand content relationships, choose a spatial structure, test it with real content, create the visual result with typography, color, and assets, then refine it on narrow screens and through real interactions. Layout comes before styling, but styling is not decoration at the end: decisions about type, color, and assets distinguish a finished page from a wireframe. Tools should also show visual judgment; restraint need not be bland. A correct layout is not automatically attractive—the final composition still needs to be inspected.
 
-## 先确定这次工作的边界
+## Set the scope for this task
 
-读用户要求、相关页面、现有组件与样式，再用几句话给出：
-- 谁在什么情境下使用；这页帮助他完成哪一个主要任务。
-- 必须保留的内容、行为、路由、记录与品牌；允许修改的文件。
-- 内容与数据来源；哪些只是明确标出的测试样例。
-- 每份参考的角色：业务/内容参考提供实体、流程和文案；正面视觉标杆提供要学习的视觉品质；负面案例提供要避开的具体问题。同一项目可以承担多个角色，分别记录。用户给了旧项目不代表认可其外观，不把旧实现自动当风格约束。
-- 主要设备和本次能做的验证；缺少的事实写成假设，不编造用户审美。
+Read the user's request, relevant pages, existing components, and styles. Then briefly state:
 
-局部精修只检查目标及相邻区域，跳过与本次无关的流程步骤：结构没动就不重排，只调颜色就不重做布局；重设计才走完整流程。缺失信息会改变不可逆决定时才问；其余采用可逆默认并说明。不要擅自装依赖、改技术栈、写入个人记录或发布。
+- Who uses the page and in what context; what primary task does the page help them complete?
+- Which content, behavior, routes, records, and branding must be preserved; which files may change?
+- Where the content and data come from; which items are explicitly marked as test examples?
+- The role of each reference: business or content references provide entities, workflows, and copy; positive visual references show qualities to learn from; negative examples show specific problems to avoid. One project may serve multiple roles; identify each role separately. An old project does not imply approval of its appearance, and its implementation does not automatically constrain the visual direction.
+- The primary devices and checks feasible for this task; state missing facts as assumptions and do not invent aesthetic preferences.
 
-## 按任务加载，不读整套手册
+For a local refinement, inspect only the target and adjacent areas, skipping process steps unrelated to this change: if the structure stays the same, do not rearrange it; if only colors change, do not redo the layout. A redesign follows the full process. Ask only when missing information would affect an irreversible decision; otherwise use and explain a reversible default. Do not install dependencies, change the stack, write to personal records, or publish without authorization.
 
-| 当前问题 | 开始前读 |
-|---|---|
-| 任何界面的分组、结构、比例、间距、重排 | [布局](references/layout.md) |
-| 字体、色彩、素材、细节风格 | [视觉样式](references/visual-style.md) |
-| 研究平台、表格、筛选、仪表盘、密集操作 | [工具界面](references/workspaces.md) |
-| 营销、活动、产品介绍、转化 | [落地页](references/landing.md) |
-| 中文长文、论文导读、目录与来源 | [阅读页面](references/reading.md) |
-| 任何实现或验收 | [质量与证据](references/verification.md) |
-| 原生 App、PDF 或跨媒介请求 | [边界与交接](references/boundaries.md) |
-| 外部组件、图片、字体或方法归属 | [来源与许可](references/sources.md) |
+## Load only the relevant parts of the guide
 
-混合页面按区块分任务。例如研究平台首页是找入口，论文正文是阅读；不把营销页的大标题和空白直接套在两者上。
+| Current need | Read first |
+| --- | --- |
+| Grouping, structure, proportions, spacing, or rearranging any interface | [Layout](references/layout.md) |
+| Typography, color, assets, or detailed styling | [Visual Style](references/visual-style.md) |
+| Research platforms, tables, filters, dashboards, or dense operations | [Workspace Interfaces](references/workspaces.md) |
+| Marketing, campaigns, product descriptions, or conversion | [Landing Pages](references/landing.md) |
+| Long Chinese text, paper guides, contents, and sources | [Reading Pages](references/reading.md) |
+| Any implementation or acceptance check | [Quality and Evidence](references/verification.md) |
+| Native apps, PDFs, or cross-media requests | [Boundaries and Handoffs](references/boundaries.md) |
+| Ownership and licenses for external components, images, fonts, or methods | [Sources and Licenses](references/sources.md) |
 
-## 主流程
+For mixed pages, assign tasks by section. For example, a research platform homepage helps users find an entry point while the paper itself is for reading; do not apply a marketing page's oversized heading and empty space to either.
 
-### 1. 看现状与参考，识别任务和视觉问题
+## Main workflow
 
-已有页面先留实际基线图和关键操作路径。逐项区分：可观察问题、源码推断、个人偏好。写清证据位置与影响，例如“快捷入口悬停改成白字，但底色仍浅，文字对比不足”，而非“缺少高级感”。源码里有旧页面时先核对实际路由，避免评审死代码。
+### 1. Inspect the current page and references; identify the task and visual problems
 
-实际查看正面参考图，不只读源码或凭项目名联想。拆解构图重心、主次区域比例、字体角色与尺度、疏密节奏、色彩面积、素材选择/裁切，以及边框、图标、阴影等细节如何协同；说明哪些适合当前内容、哪些不能照搬。负面案例同样拆解，但把问题转成避让依据，不复刻其布局再换皮。没有可查看的参考时说明限制，用暂定方向推进，不能声称已对照标杆。
+For an existing page, capture a real baseline screenshot and key interaction paths. Distinguish observable problems, inferences from source code, and personal preferences. State the evidence and impact, such as “the shortcut text turns white on hover but the background remains light, reducing contrast,” rather than “it lacks polish.” If old pages remain in source, confirm the actual route before reviewing so dead code is not mistaken for the current page.
 
-分清底线缺陷、视觉完成度不足与品牌偏离。先排除阻断使用的问题，再认真处理失衡的比例、平铺的层级、贫乏的节奏和粗糙的细节；熟悉的操作模式可以保留，不等于沿用旧外观。
+Inspect actual positive reference images; do not rely only on source code or assumptions based on a project name. Analyze the composition's focal point, proportions of primary and secondary areas, type roles and scale, density and rhythm, color coverage, asset choice and cropping, and how borders, icons, and shadows work together. Explain what suits the current content and what should not be copied. Break down negative examples too, but turn their problems into avoidance criteria instead of copying their layout and reskinning it. If no reference can be inspected, state that limitation and proceed with a provisional direction; do not claim to have compared against a benchmark.
 
-### 2. 排内容关系
+Separate blocking defects, lack of visual polish, and brand drift. First remove issues that prevent use, then address unbalanced proportions, flat hierarchy, weak rhythm, and rough details. Familiar interaction patterns may remain without retaining the old visual style.
 
-以真实内容标出：主对象与主任务、必须一起看到的关联信息、按需出现的辅助，以及局部动作与全局动作。哪些必须同屏、哪些可折叠或分步，由任务决定；优先级随任务阶段变化，不等于标题级别。相邻表达关联，错误分组会误导操作。不为构图舒服删除或弱化给定事实、功能与数据；不确定怎么分组时回到用户任务，不按数据字段直接分栏。
+### 2. Organize content relationships
 
-### 3. 选空间结构并分配空间
+Use real content to identify the main object and task, related information that must be seen together, supporting material shown as needed, and local versus global actions. Let the task determine what must remain on screen and what may be collapsed or split into steps; priorities may change by task stage and are not the same as heading levels. Keep related information adjacent because incorrect grouping can mislead actions. Do not delete or downplay supplied facts, functions, or data to make the composition look cleaner. If grouping is unclear, return to the user's task instead of dividing content by data field.
 
-按关系选择组织方式：连续阅读、列表加详情、比较表、主内容加辅助面板、步骤流程、探索型信息流；它们是选择依据而非模板目录，允许组合，但一个区块职责清楚。先确定正文、表格、媒体需要的尺寸和长内容要求，再分配导航与辅助区；说明哪部分固定、哪部分伸缩、空间不足时谁让位。用少量间距档表达组内、组间与章节关系；能用对齐和留白就不用框线。不强制固定比例、列数，也不先套某个后台壳；卡片、侧栏、表格在分组、比较或边界确有意义时可用，不因反模板禁用。关键图片与图表的尺寸在结构阶段预留。方法与正反例见[布局](references/layout.md)。
+### 3. Choose a spatial structure and allocate room
 
-### 4. 用真实内容做低样式检验，定代表页
+Choose an organization based on the relationships: continuous reading, a list with details, a comparison table, main content with a support panel, a step-by-step flow, or an exploratory feed. These are options, not a template catalog. They can be combined, but each section must have a clear purpose. First determine the space needed for body text, tables, media, and long content; then allocate room for navigation and supporting areas. Explain what stays fixed, what expands, and what gives way when space is limited. Use a small set of spacing values to show relationships within groups, between groups, and across sections. Prefer alignment and whitespace over borders when they suffice. Do not enforce fixed proportions or column counts, or start from a standard admin shell. Cards, sidebars, and tables are useful when grouping, comparison, or boundaries call for them; do not ban them merely to avoid templates. Reserve room for important images and charts at this stage. See [Layout](references/layout.md) for methods and examples.
 
-新建或整体重设计而方向不明时，先做低成本的结构候选再决定：候选之间在分组、主对象位置、主辅比例或阅读顺序上有实质差异，不是换皮；只有真实取舍（如列表快速比较 vs 分组逐条阅读）才并列比较。方向清楚就只做一套，不强制方案数。候选固定同一套基础字体、色彩与素材，保留真实文字长度、必要字重与字号层级，不能只画灰色方块；灰度或减色是辅助检查，比较的始终是结构差异。局部精修跳过候选，直接在真实页面上检查。没有用户反馈时按任务与视觉依据选择，标为设计判断，不将选择记为用户偏好。
+### 4. Test with real content at low styling, then choose a representative page
 
-选一个能体现方向并暴露内容难点的代表页及关键链路实现：使用实际长度的中文标题、英文术语、数据和失败信息，不用短占位文本掩盖布局；没有生产数据时显式标样例，不伪装本人进度、客户评价或成果。列出关键状态并实现所需项：默认、悬停、焦点、选中、加载、空、错误、禁用、成功、长内容。错误保留输入并给恢复动作；“保存成功”须有真实保存及重读证据。无后端的小样明确只在页面内演示。
+For a new page or full redesign with an unclear direction, create low-cost structural alternatives before deciding. They should differ meaningfully in grouping, primary-object placement, primary-to-secondary proportions, or reading order—not just in their skin. Compare alternatives only when there is a genuine trade-off, such as quick comparison in a list versus reading grouped items individually. If the direction is clear, create one design; there is no required number of options. Keep the same base typography, colors, and assets across alternatives. Include real text lengths and necessary type hierarchy instead of drawing only gray boxes; grayscale or reduced color can help inspect structure, but comparisons must still show structural differences. Skip alternatives for local refinements and inspect the actual page directly. If the user gives no feedback, choose based on the task and visual evidence. Label the choice as a design judgment; do not record it as a user preference.
 
-### 5. 结构成立后完成视觉
+Implement a representative page and key path that express the direction and expose difficult content. Use realistic Chinese headings, English terms, data, and error messages; short placeholder text must not conceal layout problems. If production data is unavailable, label examples as samples and do not present them as the user's progress, customer reviews, or achievements. List key states and implement those needed: default, hover, focus, selected, loading, empty, error, disabled, success, and long content. Errors should preserve input and offer a recovery action. “Saved successfully” requires real save and reload evidence. Clearly label a sample without a back end as an in-page demonstration only.
 
-样式强化第 2–3 步建立的主次，不是重新排版。“精致、克制”等形容词落成能在画面上检查的决定：
-- 字体：为标题、正文、元数据、数字、控件指定角色与字重，用真实长内容做样张比较后再定；声明的字体不等于实际加载的字体。
-- 色彩：层级色、语义色和一个主强调色各司其职；强调色靠面积对比指向当前任务，不在各处漂移。对比在真实底色上核对。
-- 素材：先问它承担什么信息或情绪，按最终尺寸试放候选再取舍；不用无关装饰填空，也不因克制一概排除视觉表达。
-- 细节：边框、圆角、阴影、图标基线用少量档位全局一致。
+### 5. Finish the visual design after the structure works
 
-颜色、字号、间距落成少量变量，仅继承与方向相容的现有变量，保留用户明确指定的品牌。具体方法见[视觉样式](references/visual-style.md)。
+Styling should reinforce the hierarchy established in steps 2–3, not start a new layout. Turn words such as “refined” and “restrained” into decisions that can be checked in the composition:
 
-### 6. 看实际结果，分层修订
+- **Typography:** Assign roles and weights for headings, body text, metadata, numbers, and controls. Compare samples with realistic long content before deciding; declaring a font does not prove it actually loaded.
+- **Color:** Give hierarchy colors, semantic colors, and one primary accent distinct roles. Use the accent's coverage and contrast to direct attention to the current task; do not let it drift across unrelated areas. Check contrast on the actual background.
+- **Assets:** Decide what information or mood each asset serves, test candidates at their final size, then choose. Do not fill space with unrelated decoration or ban expressive visuals in the name of restraint.
+- **Details:** Use a small, consistent set of border, radius, shadow, and icon-alignment values.
 
-加载宿主官方浏览器技能，用其支持的操作打开页面。先确认 DOM/状态，再在桌面和窄屏看真实截图；长页看下半部，检查中文换行及键盘路径。截图要记录版本、视口、路由与状态；图片生成的界面不是运行证据。
+Express colors, type sizes, and spacing as a small set of variables. Reuse existing variables only when they fit the direction, and retain branding the user explicitly specified. See [Visual Style](references/visual-style.md) for methods.
 
-窄屏是重新组织任务，不是等比缩小：检查组是否被拆散、操作是否离对象太远、已选条目/筛选/阅读位置能否保留；辅助面板可转抽屉、分步或移到下方，列表是否保留取决于任务。
+### 6. Inspect actual results and refine by layer
 
-把代表页实际截图与正面参考同屏审视，逐项看结构（主次面积、阅读顺序、疏密节奏）与样式（字体节奏、色彩面积、素材质量、细节一致性）；比较视觉完成度而非像素复刻，说明内容与视口差异。负面案例用于确认未重复其问题，不作为相似度目标。每轮列出最影响完成度的少数落差并标明层级：结构失败回第 2–3 步重排，字体或素材失败换选角色，细节失败局部修；先修任务阻断与阅读障碍，再修主要视觉落差，重查受影响区域。不为流程完整强制来回，也不能在“没有溢出”处停止。
+Load the host's official browser skill and use supported operations to open the page. Confirm the DOM and state, then inspect real screenshots on desktop and narrow screens. On long pages, inspect lower sections; check Chinese line wrapping and keyboard navigation. Record the version, viewport, route, and state for each screenshot. A generated image of an interface is not evidence that the page runs.
 
-只有小样、静态测试或构建结果，不能称“视觉通过”；自检也不等于用户验收或达到标杆水准。工具不可用时保存准确报错，列待验证项；不用别的媒介的 judge 冒充 Web 验收。
+A narrow screen requires reorganizing the task, not scaling everything down proportionally. Check whether related groups were split apart, actions moved too far from their objects, and selected items, filters, or reading position can be preserved. A support panel may become a drawer, a step, or a section below the main content; whether a list remains depends on the task.
 
-### 7. 交付有限而诚实的结果
+Review screenshots of the representative page alongside positive references. Check structure (relative importance, reading order, and density) and styling (typographic rhythm, color coverage, asset quality, and consistency of detail). Compare visual polish, not pixel-level duplication, and explain differences in content and viewport. Use negative examples to confirm that their specific problems were avoided, not as similarity targets. In each round, list a few of the largest remaining gaps and identify their layer: if the structure fails, revisit steps 2–3; if typography or assets fail, reconsider their roles; if details fail, make local changes. Fix task blockers and reading problems first, then major visual gaps, and recheck affected areas. Do not force unnecessary cycles to complete a process, but do not stop merely because nothing overflows.
 
-说明改动、选择理由、已做验证、未做验证与剩余项。证据用任务目录已有组织保存，不改已安装技能。没有授权不写额外长报告、不提交 Git。
+If you have only a small prototype, static test, or build result, do not call it a “visual pass.” Self-review is not user acceptance and does not prove benchmark-level quality. If the tool is unavailable, preserve the exact error and list what remains to be verified; do not treat a judge using a different medium as Web acceptance.
 
-交付示例：
-> 保留论文筛选与记录格式，把标题、来源和操作重新分组：来源不再与正文抢主栏，操作跟随条目；390px 下筛选转可展开块，已选条件保留。字体样张核对过中英混排，强调色只用于当前筛选。已核对空筛选和错误恢复。桌面与窄屏截图已查看；键盘与 200% 缩放未验收，不能宣称全端完成。
+### 7. Deliver a limited, honest result
+
+Explain the changes, reasons for the choices, checks completed, checks not completed, and remaining work. Save evidence using the organization already present in the task directory; do not modify an installed skill. Without authorization, do not write an extra long report or create a Git commit.
+
+Example delivery:
+
+> Preserved the paper filters and record format while regrouping headings, sources, and actions. Sources no longer compete with the paper body for the main column, and actions stay with their item. At 390px, filters become an expandable section and selected filters remain visible. Checked samples of mixed Chinese and English typography; the accent color now marks only the active filter. Verified empty-filter behavior and error recovery. Reviewed desktop and narrow-screen screenshots. Keyboard navigation and 200% zoom were not checked, so this is not a claim of full-device acceptance.

@@ -1,49 +1,49 @@
-# 内容、视觉与交付检查
+# Content, Visual, and Delivery Checks
 
-## 区分检查证据
+## Distinguish review evidence
 
-| 检查 | 能确认什么 | 不能替代什么 |
+| Check | What it can confirm | What it cannot replace |
 | --- | --- | --- |
-| 材料和全文检查 | 要求覆盖、事实、单位、引用、顺序、备注与限定条件 | 实际视觉检查 |
-| PPTX 结构审查 | 内容清单、明显越界、媒体缺失、空页、原生/图片页的提示 | 文本实际排版、投影可读性、真实性和审美 |
-| 实际文件渲染与看图 | 缺字、截断、重叠、布局、图表可读性、全稿风格 | 用户认可和不同 Office/字体环境下的完全一致性 |
-| 实际放映 | 初始隐藏、点击顺序、同组显示、返回及重播 | 仅有静态截图、XML 动画节点或软件导入识别 |
+| Source materials and full-text review | Coverage of requirements, facts, units, citations, order, notes, and caveats | Visual inspection of the actual output |
+| PPTX structural review | Content inventory, obvious overflow, missing media, empty slides, and indicators of native/image slides | Actual text layout, projection readability, authenticity, and aesthetics |
+| Rendering the actual file and inspecting images | Missing glyphs, clipping, overlap, layout, chart readability, and deck-wide style | User approval or consistency across every Office/font environment |
+| Actual slide show | Initial hidden state, click order, grouped reveal, return, and replay | Static screenshots, XML animation nodes, or software import recognition alone |
 
-结构审查返回问题清单；`warning` 是需要判读的线索，不是必然缺陷，例如大背景/装饰超出页面、文字较多、图片式页面。严重问题修复后重新检查。不要只为了消除 warning 删内容或改动统计表达。
+Structural review returns a list of issues. A `warning` is a clue to interpret, not automatically a defect; for example, a large background or decorative object outside the page, dense text, or image-based slides. Fix serious problems and review again. Do not remove content or alter statistical presentation just to eliminate a warning.
 
-## 看图方法
+## Inspect rendered slides
 
-查看每页真实渲染图，密集页面放大。缩略图总览辅助检查构图节奏与一致性，不能替代阅读每页。页面数量过多时分批查看，不能用抽样结果声称所有页都检查过。
+Inspect the real render of every slide and zoom into dense pages. A thumbnail overview helps review composition and consistency, but cannot replace reading each slide. If there are too many slides, review in batches; do not claim full review based on a sample.
 
-检查主旨和图表能否在报告场景中读清；中文和英文混排有无过度换行；标题是否压到内容；图注和来源是否附着于证据；表格行/列、单位、颜色语义和原图裁切是否正确。再检查重心、视觉层级、留白、图像质量、字体/配色与构图节奏。没有外部参考时将美观判断标为自己的设计判断。
+Check whether the main point and charts are readable in the presentation setting; whether mixed Chinese and English causes excessive wrapping; whether titles collide with content; whether captions and sources are attached to evidence; and whether table rows and columns, units, color meanings, and source image crops are correct. Then review visual weight, hierarchy, empty space, image quality, type, palette, and composition rhythm. If there is no external reference, label aesthetic conclusions as your own design judgment.
 
-有问题时先记录页面与具体影响，修订后重新生成。最终再审查导出文件；修改共享字体、主题或图表样式时需要重查所有受影响页面。
+When you find an issue, record the slide and specific impact, revise it, and generate the output again. Review the final exported file. If you change shared fonts, the theme, or chart styling, recheck every affected slide.
 
-## 留下简短审查记录
+## Keep a short review record
 
-`render_pptx.py` 生成 `manifest.json`，记录输入文件 hash、PDF hash 和每页图片 hash。看图后在任务目录写 `qa/review.json`，不要写到技能目录。它是模型的检查记录，不是自动视觉评分。示例字段如下；hash 与页数必须来自实际结果，不能照抄示例值。
+`render_pptx.py` creates a `manifest.json` containing the input file hash, PDF hash, and image hash for each slide. After inspecting the rendered pages, write `qa/review.json` in the task directory, not the skill directory. This is a model review record, not an automated visual score. The fields below are examples; actual hashes and page counts must come from the real output, not copied from this sample.
 
 ```json
 {
-  "deck_sha256": "实际 PPTX 的 SHA256",
+  "deck_sha256": "SHA256 of the actual PPTX",
   "content_review": {
     "status": "pass",
-    "summary": "要求与来源已核对；不存在未标记的演示数据。"
+    "summary": "Requirements and sources were checked; there is no unlabelled demo data."
   },
   "pages": [
     {
       "page": 1,
       "status": "pass",
-      "summary": "查看实际导出图，标题和证据清晰，未发现截断或重叠。"
+      "summary": "Inspected the actual export; the title and evidence are clear, with no clipping or overlap."
     }
   ]
 }
 ```
 
-`status` 可写 `pass` 或 `needs_fix`，每页 summary 应表达实际查看结果，不机械重复同一句。记录未解决的缺陷时使用 `needs_fix`；源稿/成品改变之后旧审查不再有效。
+Use `pass` or `needs_fix` for `status`. Each page summary should report the actual result, rather than mechanically repeating one sentence. Use `needs_fix` for unresolved defects. An old review is no longer valid after the source or output changes.
 
-## 最终核对
+## Final verification
 
-`scripts/finalize.py` 只核对当前 PPTX、结构审查、渲染及审查记录是否一致，所有页面是否记录通过、PDF/图片文件是否仍与审查版本匹配。带动画或转场时还要求实际放映记录，格式见 [基本动画](basic-motion.md)。它无法证明模型真的看过图或实际播放，也无法证明判断正确。不得修改记录绕开实际缺陷。
+`scripts/finalize.py` checks whether the current PPTX, structural review, render, and review record are consistent, whether every slide is recorded as passing, and whether the PDF/images still match the reviewed version. Animated or transitioned files also require an actual slide-show record; see [basic animation](basic-motion.md). This script cannot prove that the model really looked at the images or played the deck, and cannot prove that its judgments are correct. Do not edit the record to bypass a real defect.
 
-运行该脚本后如报告 `complete: true`，代表证据链齐全；仍要在用户回复里准确说明审查范围和主观判断，不称为独立人工验收或百分之百质量保证。没有可靠渲染、关键来源缺失或用户要求未覆盖时保留准确失败信息；仅在用户明确接受时交付有标注的草稿。
+If the script reports `complete: true`, the evidence chain is complete. In the user response, still accurately state the review scope and subjective judgments. Do not call it independent human acceptance or a 100% quality guarantee. Preserve accurate failure information when rendering is unreliable, key sources are missing, or user requirements are not covered; deliver a labelled draft only if the user explicitly accepts it.

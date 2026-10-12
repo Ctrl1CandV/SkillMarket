@@ -1,16 +1,16 @@
 ---
-description: 按需求找论文与综述、完整综述导读、单篇有效信息提取、快速判断、精读、续读或每日 arXiv 简报。
-argument-hint: "[论文链接/ID/PDF 路径或自然语言意图，可省略=每日发现]"
+description: Find papers and reviews, guide the reader through a full review, extract useful information from one paper, make a quick assessment, read closely, continue a previous reading, or prepare a daily arXiv brief.
+argument-hint: "[paper link/ID/PDF path or natural-language request; omit for daily discovery]"
 skill: grad-radar
 ---
 
-按用户意图路由（协议见 grad-radar 技能）：
+Route by user intent (see the grad-radar skill for protocols):
 
-- **找某主题的论文/综述** → selection-protocol：按本次问题、读者与场景重排筛选属性，明确硬条件。一般推荐优先顶刊顶会与近三年，经典基础重基础性/刊会/长期影响，时效应用重近期与场景适配；核实际来源、引用和关键正文，不为凑数量放宽硬条件。推荐数量按问题与时间调整，不套每日三天窗口。
-- **完整总结指定综述** → survey-protocol：固定身份和材料版本，按全目录提取并建立跨节比较与导读映射，核对覆盖和重要图表；期刊 PDF 可用 DOI/文件指纹，材料缺口交付部分导读和续作位置。
-- **带论文指向**（链接/arXiv ID/PDF/标题）或「帮我读/值不值得读/讲详细一点/继续上次那篇」→ 单篇阅读流程：`reading_record.py show` 查已有记录（有则复用进度与背景）→ 按阅读协议取内容、定三档深度（quick 快速判断 / standard 标准阅读 / deep 重点精读）→ 按笔记模板产出 → 有保存请求或项目约定时才 `register`+`save-note` 落盘（人工批注与旧稿受保护）。用户明确表达读完/暂缓才 `set-status`；生成笔记不等于读完。
-- **省略参数或问「今天有什么新论文」**→ 每日发现：从本次输入及同一任务会话确认方向、问题和关注重点，以显式参数跑 `arxiv_fetch.py`；没有范围时简短询问，不采用预填方向。按 tiering 规则做元数据初筛、分级与少量信息提取；本次数量要求优先，其次已有 daily_caps，默认低负担起点、不足不凑数。方向/偏好及分级反馈不写入长期配置；保存的简报只记录本期查询与取舍，用户选中的论文回到单篇流程。
+- **Find papers or reviews on a topic** → Use selection-protocol: reorder selection criteria for the current question, reader, and context, and state hard requirements. For general recommendations, usually prioritize leading journals and conferences and work from the past three years. For foundational topics, prioritize foundational value, venue, and long-term impact; for time-sensitive applications, prioritize recency and fit. Verify sources, citations, and key parts of the paper. Do not relax hard requirements to fill a quota. Adjust the number of recommendations to the question and available time; do not apply the daily three-day window.
+- **Give a complete guide to a specified review** → Use survey-protocol: establish the work's identity and source version, extract the full outline, map comparisons across sections, and check coverage and important figures and tables. A journal PDF can be identified by DOI or file fingerprint. If source material is missing, provide a partial guide and say where work can continue.
+- **A paper is specified** (link, arXiv ID, PDF, or title), or the user asks to read it, assess whether it is worth reading, explain it in detail, or continue a previous paper → Use the single-paper workflow: run `reading_record.py show` to find existing records and reuse progress and background; retrieve content and choose one of three depths in the reading protocol (quick assessment, standard reading, or focused deep reading); create a note from the template; save it with `register` and `save-note` only when requested or required by project convention (protect human annotations and old drafts). Run `set-status` only when the user explicitly says they finished or paused reading. A generated note does not mean the paper was read.
+- **No argument is provided, or the user asks what new papers appeared today** → Daily discovery: use the current request and the same task's conversation to establish the topic, question, and focus, then run `arxiv_fetch.py` with explicit parameters. Ask briefly if no scope is available; do not use prefilled topics. Apply the tiering rules for metadata screening, prioritization, and limited extraction. Follow the current quantity request, then existing `daily_caps`; otherwise use the low-burden default and do not pad a short list. Do not save topics, preferences, or tiering feedback to persistent configuration. A saved brief records only the current search and selection; papers chosen by the user return to the single-paper workflow.
 
-无法唯一定位「上次那篇」时列候选请用户确认，不猜 ID/DOI/路径。
+If "the previous paper" cannot be uniquely identified, list candidates and ask the user to choose. Do not guess an ID, DOI, or path.
 
-提取信息先读 extraction-guide，先保留证据和条件再压缩，并对账关键论点、结果设置与局限；仅身份不给内容摘要。默认照顾经验较少的读者，解释深度随实际基础和目标调整，理解题按需给。综述仅在请求更新现状或当前问题依赖后续进展时补充检索。保存按用户请求或项目约定执行，不为了推荐自动建个人台账。
+Read extraction-guide before extracting information. Preserve evidence and conditions before compressing, and cross-check key claims, result settings, and limitations; when only the paper's identity is known, do not provide a content summary. By default, support readers with less experience, adjusting explanation depth to their actual background and goal; include comprehension questions when useful. Search for additional reviews only when the user asks for an update or the question depends on later developments. Save records only when requested or required by project convention; do not create a personal ledger just to make a recommendation.

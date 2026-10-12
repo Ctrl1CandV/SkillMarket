@@ -2,20 +2,20 @@
 # requires-python = ">=3.12"
 # dependencies = ["httpx"]
 # ///
-"""arXiv HTML 全文抽取与章节切片（阅读漏斗·阶段二：总结）。
+"""Extract and slice full-text arXiv HTML by section (reading funnel, stage 2: summarization).
 
-抓取 https://arxiv.org/html/<id>（LaTeXML 输出），按章节锚点（S2 / S2.SS1）切片，
-单篇选读只取相关节；完整综述按原始目录循环取全篇，再独立核对必要图表。
+Fetch https://arxiv.org/html/<id> (LaTeXML output) and slice by section anchors (S2 / S2.SS1).
+For focused reading, fetch only relevant sections. For a full survey, follow the original outline, then check required figures and tables separately.
 
-判定 HTML 是否真实可用看的是页面里有无 LaTeXML 结构（ltx_ 类与 S 锚点），
-不是只看 HTTP 200。无 HTML 时输出 NO_HTML，PDF 一律交外部解析器，本脚本不碰。
+A page is usable HTML only if it contains LaTeXML structure (ltx_ classes and S anchors),
+not merely an HTTP 200 response. If HTML is unavailable, return NO_HTML; PDFs are handled by an external parser, not this script.
 
-网络通道：环境变量代理（httpx 自认）> Windows 系统代理（httpx 不读注册表，显式补读）> 直连；
-连接层失败换通道轮试，拿到过 HTTP 响应就固定通道（同 arxiv_fetch 的实测教训）。
+Network routes: environment proxy (handled by httpx) > Windows system proxy (read explicitly because httpx ignores the registry) > direct connection;
+retry another route only after a connection-layer failure; keep using the route after receiving an HTTP response (lessons from arxiv_fetch).
 
-HTML 缓存在 .grad/cache/arxiv/（TTL 7 天，删除只影响速度不影响正确性）。
+HTML is cached in .grad/cache/arxiv/ (TTL 7 days; deletion affects speed, not correctness).
 
-输出契约：--json 时 stdout 打印单个 JSON 对象 {"ok": true, "data": {...}} 或 {"ok": false, ...}。
+Output contract: with --json, stdout prints one JSON object: {"ok": true, "data": {...}} or {"ok": false, ...}.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ def die(error: str, detail: str, **extra) -> None:
 
 
 class LatexmlReader(HTMLParser):
-    """把 LaTeXML HTML 读成章节树：每节 {id, kind, level, title, blocks[]}。"""
+    """Parse LaTeXML HTML into a section tree; each section has {id, kind, level, title, blocks[]}."""
 
     VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
     LINE_TAGS = {"br", "li", "p", "pre", "tr"}
@@ -91,7 +91,7 @@ class LatexmlReader(HTMLParser):
         if self.capture in ("para", "caption"):
             text = " ".join("".join(self.buf).split())
             if text:
-                self.emit(text, "图注：" if self.capture == "caption" else "")
+                self.emit(text, "Caption: " if self.capture == "caption" else "")
             self.buf = []
             self.capture = None
 
@@ -113,7 +113,7 @@ class LatexmlReader(HTMLParser):
         lines = [" ".join(line.split()) for line in "".join(self.structured_buf).splitlines()]
         text = "\n".join(line for line in lines if line)
         if text:
-            self.emit(text, "算法：" if self.structured_kind == "algorithm" else "代码清单：")
+            self.emit(text, "Algorithm: " if self.structured_kind == "algorithm" else "Code listing: ")
         resume = self.structured_resume
         self.structured_depth = 0
         self.structured_kind = ""
@@ -307,7 +307,7 @@ class LatexmlReader(HTMLParser):
                 width = max((len(row) for row in self.table_rows), default=0)
                 rows = [" | ".join(row + [""] * (width - len(row))) for row in self.table_rows]
                 if rows:
-                    self.emit("\n".join(rows), "表格：")
+                    self.emit("\n".join(rows), "Table: ")
                 self.table_rows = None
                 self.rowspans = {}
         if tag in ("section", "div"):
@@ -329,10 +329,10 @@ class LatexmlReader(HTMLParser):
 
 
 def split_version(raw: str) -> tuple[str, str | None]:
-    """F04：区分「论文身份（基础 ID）」与「材料版本（vN）」。
+    """F04: distinguish paper identity (base ID) from material version (vN).
 
-    2608.12345v2 → ("2608.12345", "v2")；裸 ID → (id, None)。
-    现代 ID 与旧式 ID（cs.AI/0309136）都合法；非法输入 fail-closed。
+    2608.12345v2 → ("2608.12345", "v2"); a bare ID → (id, None).
+    Both modern IDs and legacy IDs (cs.AI/0309136) are valid; invalid input fails closed.
     """
     s = raw.strip().lower().removeprefix("arxiv:")
     version = None
@@ -342,23 +342,23 @@ def split_version(raw: str) -> tuple[str, str | None]:
         s = s[: m.start()]
     if re.fullmatch(r"\d{4}\.\d{4,5}", s) or re.fullmatch(r"[a-z-]+(?:\.[a-z]{2})?/\d{7}", s):
         return s, version
-    die("BAD_ARGS", f"无法识别的 arXiv id：{raw}")
-    raise AssertionError  # die 会退出，这里只为类型检查
+    die("BAD_ARGS", f"Could not parse arXiv ID: {raw}")
+    raise AssertionError  # die exits; this line is only for type checking.
 
 
 def normalize_id(raw: str) -> str:
-    """论文身份用的基础 ID（去版本、规范化）；获取内容请用 split_version 的版本化形式。"""
+    """Return the normalized base ID for a paper identity; use split_version for versioned content retrieval."""
     base, _ = split_version(raw)
     return base
 
 
 def safe_key(arxiv_id: str) -> str:
-    """目录/缓存键安全化：旧式 ID 含斜杠不能直接当路径。"""
+    """Make an ID safe for directory and cache keys; legacy IDs contain slashes and cannot be used as paths directly."""
     return arxiv_id.replace("/", "_")
 
 
 def windows_system_proxy() -> str | None:
-    """读 Windows 注册表的系统代理（手动代理那档）；非 Windows 或未启用返回 None。"""
+    """Read the manually configured system proxy from the Windows registry; return None when unavailable or disabled."""
     try:
         import winreg
     except ImportError:
@@ -375,7 +375,7 @@ def windows_system_proxy() -> str | None:
     if not enabled:
         return None
     server = str(server or "").strip()
-    if "=" in server:  # 形如 http=127.0.0.1:7890;https=127.0.0.1:7890，按协议取
+    if "=" in server:  # For example, http=127.0.0.1:7890;https=127.0.0.1:7890; choose by scheme.
         per_protocol = {}
         for part in server.split(";"):
             name, _, value = part.partition("=")
@@ -389,10 +389,10 @@ def windows_system_proxy() -> str | None:
 
 
 def proxy_candidates() -> list[str | None]:
-    """联网通道候选，按优先级排列；None 表示直连。
+    """Return candidate network routes in priority order; None means direct connection.
 
-    环境变量代理 httpx 自己会认（trust_env），设了就不重复指定；
-    没设时补上它不读的 Windows 系统代理。直连永远垫底作回退。
+    httpx handles environment proxy variables itself (trust_env), so do not specify them again;
+    add the Windows system proxy only when no environment proxy is set. Direct connection is always the final fallback.
     """
     candidates: list[str | None] = []
     env_proxied = any(os.environ.get(v) for v in (
@@ -406,9 +406,9 @@ def proxy_candidates() -> list[str | None]:
 
 
 def query_arxiv_version(base: str):
-    """裸 ID 时经 arXiv API 元数据确认当前版本（F04：不猜 v1）。
+    """For a bare ID, confirm the current version through arXiv API metadata (F04: never assume v1).
 
-    返回 "vN" 或 None（查询失败/无结果也返回 None——version_status 如实 unknown，不阻断读取）。
+    Return "vN" or None (a failed query or no result also returns None; version_status remains unknown and reading can continue).
     """
     import httpx
     import xml.etree.ElementTree as ET
@@ -444,10 +444,10 @@ def query_arxiv_version(base: str):
 
 
 def fetch_html(versioned_id: str, cache_dir: Path, no_cache: bool):
-    """抓取指定版本化 ID 的 HTML，返回 (html, cached, fetched_at)。
+    """Fetch HTML for a specific versioned ID and return (html, cached, fetched_at).
 
-    缓存按版本隔离（含版本后缀的文件名 + .meta.json）；缓存命中保留原始获取时间，
-    不重写为今天。无版本旧缓存只作 legacy 内容查看，不为其补写已确认版本。
+    Keep cache entries separate by version (versioned filename plus .meta.json). A cache hit preserves the original fetch time,
+    rather than resetting it to today. Treat unversioned legacy cache entries as viewable content; do not assign them a confirmed version.
     """
     key = safe_key(versioned_id)
     cache_file = cache_dir / f"{key}.html"
@@ -479,27 +479,27 @@ def fetch_html(versioned_id: str, cache_dir: Path, no_cache: bool):
             resp = httpx.get(url, timeout=30.0, follow_redirects=True,
                              headers={"User-Agent": "grad-companion-arxiv-html/0.1"},
                              proxy=routes[route_index])
-        except Exception as exc:  # 连接层失败：换通道再试；退避耗尽后如实报错
+        except Exception as exc:  # Retry another route after a connection-layer failure; report the error after backoff is exhausted.
             if i == len(waits) - 1:
-                tried = "、".join(r or "直连" for r in routes)
-                die("NETWORK", f"无法连接 arXiv（已尝试 {tried}）：{exc}")
+                tried = ", ".join(r or "direct connection" for r in routes)
+                die("NETWORK", f"Could not connect to arXiv (tried {tried}): {exc}")
             route_index = (route_index + 1) % len(routes)
             continue
-        # 拿到 HTTP 响应说明当前通道能通，后续重试固定走它
+        # An HTTP response confirms that this route works; keep using it for subsequent retries.
         if resp.status_code == 404:
             if re.search(r"v\d+$", versioned_id):
-                die("NO_HTML", f"{url} 返回 404：该论文没有这个版本，或版本尚无 LaTeXML HTML。"
-                               "显式指定的版本不做静默换版——请核对版本号或不带版本重试")
-            die("NO_HTML", f"{url} 返回 404：该论文无 LaTeXML HTML。可下载 PDF 交外部解析器处理")
+                die("NO_HTML", f"{url} returned 404: this paper has no HTML for this version, or its LaTeXML HTML is not available yet."
+                               "Do not silently switch versions when a specific version was requested; check the version or retry without one.")
+            die("NO_HTML", f"{url} returned 404: this paper has no LaTeXML HTML. Download the PDF and use an external parser.")
         if resp.status_code == 429:
             if i == len(waits) - 1:
-                die("RATE_LIMITED", "arXiv 返回 429，退避耗尽。请稍后再试", retry_after=60)
+                die("RATE_LIMITED", "arXiv returned 429 and retries were exhausted. Try again later.", retry_after=60)
             continue
         if resp.status_code != 200:
-            die(f"HTTP_{resp.status_code}", f"arXiv HTML 返回 {resp.status_code}")
+            die(f"HTTP_{resp.status_code}", f"arXiv HTML returned {resp.status_code}")
         text = resp.text
         if "ltx_document" not in text and "ltx_title_section" not in text:
-            die("NO_HTML", f"{url} 返回 200 但无 LaTeXML 结构（非 ltx_ 页面），不可按章节切片")
+            die("NO_HTML", f"{url} returned 200 but contains no LaTeXML structure (not an ltx_ page); section slicing is unavailable.")
         fetched_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         cache_dir.mkdir(parents=True, exist_ok=True)
         cache_file.write_text(text, encoding="utf-8")
@@ -516,10 +516,10 @@ def resolve_section(name: str, by_id: dict[str, dict]) -> str | None:
     s = name.strip()
     if not s:
         return None
-    if s in by_id:                      # 已经是锚点 id（S3.SS2.SSS1 / A4.SS1 / abstract / bib）
+    if s in by_id:                      # Already an anchor ID (S3.SS2.SSS1 / A4.SS1 / abstract / bib).
         return s
-    # 数字点号形式：3 / 3.2 / 3.2.1 → S3 / S3.SS2 / S3.SS2.SSS1
-    # 附录形式：    A1 / A4.1 / A10.10 → A1 / A4.SS1 / A10.SS10
+    # Numeric dotted form: 3 / 3.2 / 3.2.1 → S3 / S3.SS2 / S3.SS2.SSS1.
+    # Appendix form: A1 / A4.1 / A10.10 → A1 / A4.SS1 / A10.SS10.
     m = re.fullmatch(r"([A-Za-z]?)(\d+)((?:\.\d+)*)", s)
     if not m:
         return None
@@ -533,7 +533,7 @@ def resolve_section(name: str, by_id: dict[str, dict]) -> str | None:
 
 def section_text(sec_id: str, reader: LatexmlReader) -> str:
     parts: list[str] = []
-    for sec in reader.sections:  # 文档顺序；含自身与全部后代（id 前缀匹配）
+    for sec in reader.sections:  # Document order, including each section and all descendants (ID prefix match).
         if sec["id"] == sec_id or sec["id"].startswith(sec_id + "."):
             hashes = "#" * max(2, (sec["level"] or 1) + 1)
             head = f"{hashes} {sec['title'] or sec['id']}"
@@ -542,27 +542,27 @@ def section_text(sec_id: str, reader: LatexmlReader) -> str:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="arXiv HTML 全文按章节切片")
-    ap.add_argument("paper_id", help="arXiv id，如 2410.06992（可带 arxiv: 前缀或 v2 版本号）")
-    ap.add_argument("--outline", action="store_true", help="只返回章节目录（先看目录再决定读哪节）")
-    ap.add_argument("--sections", default="", help="逗号分隔的章节号，如 3,3.2,A1（S2.SS1 形式也可）")
-    ap.add_argument("--cache-dir", default=".grad/cache/arxiv", help="HTML 缓存目录（默认 .grad/cache/arxiv）")
-    ap.add_argument("--no-cache", action="store_true", help="绕过缓存强制抓取")
+    ap = argparse.ArgumentParser(description="Slice full-text arXiv HTML by section")
+    ap.add_argument("paper_id", help="arXiv ID, e.g. 2410.06992 (may include the arxiv: prefix or a v2 version suffix)")
+    ap.add_argument("--outline", action="store_true", help="Return only the section outline so you can choose what to read")
+    ap.add_argument("--sections", default="", help="Comma-separated section numbers, e.g. 3,3.2,A1 (S2.SS1 form is also accepted)")
+    ap.add_argument("--cache-dir", default=".grad/cache/arxiv", help="HTML cache directory (default: .grad/cache/arxiv)")
+    ap.add_argument("--no-cache", action="store_true", help="Bypass the cache and fetch again")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     base_id, requested_version = split_version(args.paper_id)
     cache_dir = Path(args.cache_dir)
 
-    # F04/REV-05：显式版本只请求该版本。裸 ID 必须先经 API 元数据确认当前版本，
-    # 不能按文件名字符串排序取任意旧缓存（v10<v2 也是错的）。API 不可达才回退到
-    # 缓存里数字最大的已知版本，并如实标注 version_status=cache-fallback。
+    # F04/REV-05: an explicit version requests only that version. Confirm the current version for a bare ID through API metadata first;
+    # do not select an arbitrary older cache by sorting filenames as strings (v10 < v2 is also wrong). Fall back to the
+    # numerically highest known cached version only when the API is unreachable, and report version_status=cache-fallback.
     version = requested_version
     version_status = "confirmed" if version else None
     cache_fallback = False
     if version is None:
         if args.no_cache:
-            # 明确绕过缓存：仍走 API（API 本身不是本地缓存）
+            # Explicit cache bypass: still use the API (the API itself is not a local cache).
             version = query_arxiv_version(base_id)
             version_status = "confirmed" if version else "unknown"
         else:
@@ -570,7 +570,7 @@ def main() -> None:
             if version:
                 version_status = "confirmed"
             else:
-                # API 不可达：从缓存挑版本号数字最大者（不是字符串序），并说明只用了本地资料
+                # If the API is unreachable, choose the cached version with the largest number (not string order) and state that only local data was used.
                 best = None
                 for f in cache_dir.glob(f"{safe_key(base_id)}v*.html") if cache_dir.is_dir() else []:
                     tail = f.name[len(safe_key(base_id)):-len(".html")]
@@ -586,7 +586,7 @@ def main() -> None:
     versioned_id = f"{base_id}{version}" if version else base_id
     legacy_cache_only = False
     if requested_version is None and version is None:
-        # 无法确认版本、也无带版本缓存：若有无版本旧缓存，作为 legacy 内容查看，不补写版本号
+        # If the version is unknown and no versioned cache exists, allow an unversioned legacy cache for viewing without assigning a version.
         old_cache = cache_dir / f"{safe_key(base_id)}.html"
         if not args.no_cache and old_cache.exists():
             legacy_cache_only = True
@@ -603,9 +603,9 @@ def main() -> None:
         "version": version,
         "version_status": "legacy" if legacy_cache_only else version_status,
         "requested_version": requested_version,
-        "version_note": ("API 不可达，仅回退到本地缓存的最高已知版本，当前线上版本可能更新"
+        "version_note": ("The API was unreachable; using the highest known local cached version only. The current online version may be newer."
                          if cache_fallback else
-                         ("无版本旧缓存，内容可用但版本未确认" if legacy_cache_only else None)),
+                         ("An unversioned legacy cache is available, but its version is unconfirmed." if legacy_cache_only else None)),
         "title": reader.doc_title,
         "html_url": html_url,
         "cached": cached,
@@ -634,10 +634,10 @@ def main() -> None:
         for p in picked:
             print(f"\n{p['url']}\n{p['text']}\n")
         if missing:
-            print(f"未找到的章节号：{','.join(missing)}")
+            print("Section numbers not found: " + ",".join(missing))
         return
 
-    # 默认 --outline
+    # Default to --outline.
     data = {**base, "sections": [
         {"id": s["id"], "level": s["level"], "kind": s["kind"], "title": s["title"],
          "paragraphs": len(s["blocks"])} for s in reader.sections]}
@@ -647,7 +647,7 @@ def main() -> None:
     print(f"# {reader.doc_title} ({versioned_id})")
     for s in data["sections"]:
         indent = "  " * max(0, (s["level"] or 1) - 1)
-        print(f"{indent}{s['id']:<12} {s['title']}  [{s['kind']}, {s['paragraphs']} 段]")
+        print("{}{:<12} {}  [{}, {} sections]".format(indent, s["id"], s["title"], s["kind"], s["paragraphs"]))
 
 
 if __name__ == "__main__":

@@ -1,63 +1,63 @@
 ---
 name: presentation-craft
-description: 制作或改进用于组会、论文汇报、课程 presentation 和其他现场报告的完整幻灯片；组织材料与证据，设计版式，使用免费本地工具生成可编辑 PPTX、基本点击动画或网页，并检查实际输出。用于用户要求可展示的成品，不用于仅查找工具或仅写普通文章。
+description: Create or improve complete slide decks for lab meetings, paper presentations, courses, and other live talks. Organize material and evidence, design layouts, create editable PPTX files, basic click animations, or web presentations with free local tools, and inspect the actual output. Use when the user requests a presentable deliverable, not when they only want tools found or an ordinary article written.
 ---
 
-# Presentation craft
+# Presentation Craft
 
-目标是内容可信、叙事完整、投影可读、视觉有完成度的成品。使用宿主已有的 AI 和免费的本地制作、渲染工具；不依赖额外付费 API、素材库或云平台额度。软件免费不表示宿主 AI 额度免费，也不表示每个开源模型都同样可靠。
+The goal is a finished deck with trustworthy content, a complete narrative, readability on a projector, and visual polish. Use the host's existing AI and free local authoring and rendering tools; do not depend on additional paid APIs, asset libraries, or cloud quotas. Free software does not mean the host's AI quota is free, and open-source models do not all have the same reliability.
 
-## 接收任务
+## Receive the task
 
-读取材料与明确要求，确认听众、用途、时长、播放软件、输出格式、语言、必须呈现的证据和参考风格。只有缺失信息会实质改变内容或交付时才询问；其余采用可逆默认并说明。未指定时用中文、16:9、完整可编辑 PPTX 和可重建源文件。现场汇报在适合分步解释的页加入基本的按点击出现，其他页保持静态；用户要求静态时遵从。根据材料和时长决定页数，不机械固定模板或页数。
+Read the materials and explicit requirements. Confirm the audience, purpose, duration, playback software, output format, language, evidence that must appear, and visual references. Ask only when missing information would materially change the content or deliverable; otherwise use and explain a reversible default. If unspecified, use Chinese, a 16:9 aspect ratio, a fully editable PPTX, and rebuildable source files. For a live presentation, add basic click-to-reveal animations on slides where staged explanation helps; keep other slides static. Follow a request for static slides. Choose the slide count based on the material and duration rather than forcing a template or fixed length.
 
-用户只要提纲、设计或局部修改时遵守该范围。改已有文件先保留副本，只改指定内容及必要的关联页，不重新提取所有原材料。
+If the user asks only for an outline, design, or local edits, stay within that scope. Before editing an existing file, preserve a copy. Change only the requested content and necessary related slides; do not re-extract all source material.
 
-## 根据成品选择工具
+## Choose tools for the deliverable
 
-先读 [工具与运行](references/toolchains.md)，探测当前可用依赖：
+Read [Toolchains and Runtime](references/toolchains.md) and check which dependencies are available:
 
 ```text
 python scripts/doctor.py
 ```
 
-- 默认选择 PptxGenJS 直接创建 PPTX，适合原生文本、表格、数据图与后续编辑。
-- 基本的逐条出现、图片依次显示和流程分步优先使用原生 PPTX 动画；读 [基本动画](references/basic-motion.md)，生成后按明确的内容步骤添加出现或淡入。不能因需要基本动画就改交付为网页、PDF 或多张静态副本。
-- 公式、代码、交互或网页视觉更重要时，可选择 Slidev；交付实际 PPTX/PDF，或用户接受的离线网页。
-- 用户给模板时优先保留模板的母版、字体与内容结构，避免转换造成无谓损失。
-- 不为了流程完整同时运行多个生成引擎。图片式 PPTX 适合固定展示；如果用户要求可编辑，不能将整页图片冒充可编辑成品。说明复杂图形和公式的实际编辑边界。
+- By default, use PptxGenJS to create the PPTX directly; it suits native text, tables, charts, and later editing.
+- For basic item-by-item reveals, sequential images, or staged process explanations, prefer native PPTX animations. Read [Basic Motion](references/basic-motion.md) and add appear or fade effects for deliberate content steps after generating the deck. Do not switch the deliverable to a website, PDF, or multiple static copies just because basic animation is needed.
+- For equations, code, interactivity, or web visuals that matter more, consider Slidev; deliver an actual PPTX/PDF or an offline website the user accepts.
+- If the user provides a template, preserve its master, fonts, and content structure where possible to avoid needless loss during conversion.
+- Do not run multiple generation engines just to complete the process. An image-based PPTX can suit fixed display, but do not present full-slide images as an editable deck when the user asked for editability. Explain actual editing limits for complex shapes and equations.
 
-依赖尽量复用宿主运行时，代码、素材和 QA 放在任务目录，不放在技能目录。缺工具时安装最小的免费依赖到任务或专用环境；遵守宿主权限，不能改全局配置来绕开限制。无需新增 plugin、永久 MCP 服务、浏览器账户或云订阅。
+Reuse the host runtime where possible. Keep code, assets, and QA in the task directory, not in the skill directory. If a tool is missing, install the smallest free dependency into the task or a dedicated environment, subject to host permissions; do not change global configuration to bypass restrictions. No additional plugin, permanent MCP service, browser account, or cloud subscription is needed.
 
-## 从材料到设计
+## From materials to design
 
-1. **建立论证。** 读 [内容与证据](references/story-and-evidence.md)，整理核心问题、讲述顺序、关键图表、结论及局限。给每页一个作用、一句主旨与证据；丰富的解释放入讲稿备注或附录。用户有详细要求时保留覆盖表，避免为了好看漏掉必需内容。
-2. **确定视觉方向。** 读 [视觉设计](references/design.md)，需要选择时参考 [风格方向](references/styles.md)。本技能不限定配色或固定模板，示例只是一个方向。参考来自真实可查看的图或模板，标明其角色。没有参考时按内容选一个合理方向，不能声称已对照标杆。用真实长标题、中文英文混排和最密集的证据页检验方向，再扩展全稿；方向已明确时直接制作。
-3. **制作成品。** 让证据和阅读顺序决定布局，保持全稿统一的字体、颜色、间距和图表语义，按每页职责变化构图。图表用真实数据或原图；原始科研图不能被生成式绘图重画而改变数值。保留引用、图注、单位、误差和必要说明。装饰素材仅在有明确表达作用时使用。
+1. **Build the argument.** Read [Story and Evidence](references/story-and-evidence.md) and organize the central question, narrative order, key figures and tables, conclusions, and limitations. Give every slide a purpose, a one-sentence point, and supporting evidence. Put detailed explanations in speaker notes or an appendix. If the user has detailed requirements, retain a coverage table so required content is not omitted for appearance.
+2. **Set the visual direction.** Read [Design](references/design.md); use [Style Directions](references/styles.md) when a choice is needed. This skill does not require a palette or fixed template; examples show only one possible direction. Use references that can actually be viewed and identify their role. If none are available, choose a reasonable direction for the material and do not claim comparison with a benchmark. Test the direction on realistic long headings, mixed Chinese and English text, and the densest evidence slide before extending it across the deck. If the direction is already clear, proceed directly.
+3. **Create the deliverable.** Let evidence and reading order determine layouts. Keep typography, color, spacing, and chart semantics consistent across the deck while varying composition according to each slide's purpose. Use real data or original charts. Do not redraw original research figures with generative tools in a way that changes values. Preserve citations, captions, units, error values, and necessary explanations. Use decorative assets only when they serve a clear purpose.
 
-## 审查实际输出
+## Review the actual output
 
-用 [质量检查](references/quality.md) 对内容、画面与导出分别检查。动画在最终文件上添加，再做审查。下列脚本只是确定性的辅助，不判断学术真实性或审美，也不替代看图和放映。
+Use [Quality Checks](references/quality.md) to inspect content, visuals, and exports separately. Add animations to the final file, then review it again. The following scripts are deterministic helpers; they do not judge academic truth or aesthetics and do not replace inspecting images and playback.
 
 ```text
 python scripts/audit_pptx.py task/deck.pptx --report task/qa/audit.json
 python scripts/render_pptx.py task/deck.pptx --out-dir task/qa/render-01
 ```
 
-查看每页实际渲染图；同时在缩略图总览检查节奏、风格和重复布局。清楚区分：阻断阅读的缺陷、主要视觉落差和个人偏好。先修缺字、截断、重叠、数据/引用错误，再修构图、层级、图片质量和视觉一致性。无溢出只是底线，不代表美观。
+Inspect the rendered image for every slide. Also review a thumbnail overview for pacing, style, and repeated layouts. Distinguish defects that block reading, major visual gaps, and personal preferences. Fix missing or clipped text, overlap, and data or citation errors first; then improve composition, hierarchy, image quality, and visual consistency. Avoiding overflow is only a baseline, not proof of visual appeal.
 
-修订后重新生成、审查受影响页面；最终审查必须对应最终交付文件。记录 `qa/review.json`，格式见质量参考。需要交付 PPTX 时，可核对证据是否对应当前文件：
+After revisions, regenerate the file and review affected slides. The final review must match the final deliverable. Record results in `qa/review.json` in the format specified by the quality reference. For a PPTX deliverable, you can verify that the evidence matches the current file:
 
 ```text
 python scripts/finalize.py task/deck.pptx --audit task/qa/audit.json --render task/qa/render-01/manifest.json --review task/qa/review.json --report task/qa/final.json
 ```
 
-不能伪造看图记录或修改检查结果来绕过已知缺陷。工具不足时换可行的免费路线；仍不能渲染实际成品时，说明未完成视觉验证，不把仅浏览器预览或 XML 检查写成导出验证通过。已明确接受草稿的用户可以收到带准确限制说明的草稿，不冒称完成。
+Do not fabricate visual inspection records or alter check results to bypass a known defect. If a tool is unavailable, use a feasible free alternative. If the actual deliverable still cannot be rendered, say that visual verification is incomplete; do not claim a browser preview or XML check passed export verification. A user who explicitly accepts a draft may receive one with accurate limitations; do not call it complete.
 
-含动画的成品需要检查实际放映中的初始显示、每次点击、返回和重播；静态 PDF/PNG、XML 节点或演示软件导入成功不能替代放映检查。记录实际检查范围，播放环境不可用时明确说明未验证的部分。
+For an animated deck, inspect the initial state, every click, returning, and replay during actual playback. Static PDF/PNG, XML nodes, or successful import into presentation software do not replace playback checks. Record what was actually checked and clearly state anything not verified because playback was unavailable.
 
-## 交付
+## Delivery
 
-交付请求的最终格式及足够重建/继续修改的源稿和本地素材。通常 PPTX 加源文件即可；PDF、预览总览、附录按用户要求或实际需要提供。QA 与试验文件保留在任务目录，不把它们全部塞给用户。
+Provide the requested final format and enough source files and local assets to rebuild or continue editing. Usually the PPTX and source file are sufficient; provide PDF, thumbnail overview, and appendix as requested or needed. Keep QA and experiment files in the task directory instead of giving the user all of them.
 
-简要说明内容与设计选择、实际可编辑程度、做过的检查及剩余限制。仅有生成成功不能保证“各方面都好”；根据真实成品报告结果，不给没有依据的综合分数或保证。
+Briefly explain content and design choices, actual editability, checks performed, and remaining limitations. A successful generation alone does not guarantee that “everything looks good”; report what the actual deliverable supports and do not give unsupported overall scores or guarantees.

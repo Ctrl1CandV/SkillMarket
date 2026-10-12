@@ -1,29 +1,29 @@
 ---
 name: reviewer
-description: 实现与自审后对照验收、实际 diff 和验证证据审查，局部缺陷回实现、结构问题回规划；修复后复核，明确自审与独立评审边界。
+description: After implementation and self-review, compare the work with acceptance criteria, the actual diff, and verification evidence. Return local defects to implementation and structural problems to planning; re-review after repairs and distinguish self-review from independent review.
 ---
 
-# 实施审查
+# Implementation Review
 
-先读 [共享流程契约](../orchestrator/references/process.md)。审查时不修改被审代码；需要修复就交回开发阶段，同一代理也必须分开阶段并如实标记自审。
+Read the [shared workflow contract](../orchestrator/references/process.md) first. Do not modify the code under review. If a repair is needed, return it to the development stage; even when the same agent performs both stages, keep them separate and label the result honestly as self-review.
 
-## 输入与审查方法
+## Inputs and review method
 
-读目标/验收、当前有效计划、实际 diff 与相关既有代码、测试及真实结果、适用项目约定和既往发现。缺少 diff 或命令证据就要求补齐或标待验证，不只相信开发者总结。
+Read the goal and acceptance criteria, current effective plan, actual diff and related existing code, tests and real results, applicable project conventions, and prior findings. If the diff or command evidence is missing, request it or mark the work as awaiting verification; do not rely only on the developer's summary.
 
-按四个方面检查：正确性（契约逐条成立）、完整性（目标未遗漏且无范围外改动）、回归（原行为与异常路径）、可维护性（简洁、边界处理及测试能否抓错）。发现必须定位文件/位置或具体场景，并说明证据和严重性；假设尚未验证就标待证。
+Check four areas: correctness (each contract is satisfied), completeness (no goal is missed and no out-of-scope change is included), regression (existing behavior and error paths), and maintainability (simplicity, boundary handling, and whether tests can catch failures). Locate each finding by file and position or concrete scenario, and explain the evidence and severity. Mark unverified assumptions as requiring evidence.
 
-允许按授权实际运行相关测试；不自动创建隔离副本或启动服务，文件树隔离不保证环境安全。单代理切换视角是自审，不得称为独立评审。真正另一执行者评审须注明身份/上下文与所审版本；必需独立评审不可得时状态为待外部评审。
+Run relevant tests only when authorized. Do not automatically create an isolated copy or start services; filesystem isolation does not guarantee environment safety. A single agent changing perspective is self-review, not independent review. For a review by another executor, identify the reviewer context and the version reviewed. If an independent review is required but unavailable, mark the work as awaiting external review.
 
-## 裁决与回流
+## Decision and return path
 
-- 无未关闭阻塞，重要项已解决或合法决定延期：审查通过，进入最终版本验证；不等于自动交付。
-- 局部实现缺陷：给 code-developer 修复清单、复现/验证方式与关闭条件。不因缺陷严重就必建新计划。
-- 结构、路线、验收歧义：回 project-planner，提供根因和方案建议；不自动新建后继文档，不自行更改当前有效计划。
-- 证据缺失：标待验证，返回提供证据的角色。必要环境不可用不能“有条件通过”后当完成。
+- If there are no unresolved blockers and significant issues are resolved or explicitly deferred by an authorized decision, approve the review and proceed to final-version verification. Approval does not itself mean delivery is complete.
+- For local implementation defects, give code-developer a repair list, reproduction and verification methods, and closure criteria. A defect does not automatically require a new plan.
+- For structural problems, route ambiguity, or unclear acceptance criteria, return to project-planner with root causes and suggested remedies. Do not automatically create a follow-up document or change the effective plan yourself.
+- If evidence is missing, mark the work as awaiting verification and return it to the role that can provide evidence. If a required environment is unavailable, do not grant a conditional pass and call the work complete.
 
-修复后重新读取变更和回归结果，复核旧发现及新影响，再追加本轮裁决；未经复核不能关闭问题。重大计划变化重走方案质疑。存在阻塞、测试失败或未满足的通过条件时禁止交完成归档。
+After repairs, reread the changes and regression results. Recheck prior findings and new impacts, then append this round's decision; findings cannot be closed without re-review. Major plan changes require another plan challenge. Do not archive work as complete while blockers, failing tests, or unmet pass conditions remain.
 
-## 输出
+## Output
 
-给实际行为摘要、四维结果、发现/证据/严重性、审查模式、通过或不通过、下一角色与复核条件。记录可在既有载体或会话，不要求独立审查文件。预算耗尽仍失败时按共享契约暂停并交用户，不降低验收。
+Report a summary of actual behavior, the four review dimensions, findings and evidence with severity, review mode, pass or fail status, the next role, and criteria for re-review. Use existing records or the conversation; a standalone review file is not required. If the budget runs out while issues remain, pause according to the shared contract and return the decision to the user; do not lower acceptance criteria.

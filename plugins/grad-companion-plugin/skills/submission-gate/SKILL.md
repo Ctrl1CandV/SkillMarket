@@ -1,73 +1,73 @@
 ---
 name: submission-gate
-description: 投稿前机械核对与倒排期：页数/checklist/Limitations/匿名性/related work 位置/LLM 使用披露逐项检查，ICLR/NeurIPS/ICML/ACL 截稿日倒计时与冲突检测，rebuttal 意见分类（ARR 无效批评 H1-H17 与有效弱点 M/T/R/G）。触发词：投稿检查、截稿、deadline、desk reject、页数超了、rebuttal、审稿意见怎么回、投稿前核对。不生成审稿意见，不替你决定投哪里。
+description: Mechanically check submission requirements and build a reverse deadline schedule. Check page limits, checklist, Limitations, anonymity, related-work placement, and LLM-use disclosure; count down to ICLR/NeurIPS/ICML/ACL deadlines and detect conflicts; classify rebuttal comments as invalid criticism (ARR H1–H17) or substantive weakness (M/T/R/G). Does not write reviews or choose a venue for the user.
 license: MIT
 ---
 
-# submission-gate：投稿前机械核对
+# submission-gate: Mechanical Pre-Submission Checks
 
-违规代价是全损（desk reject / rejected without review），而规则是明文可核对的。本 skill 做核对器：**把判定材料摆出来，判定权在人**。
+The cost of a violation can be total (desk reject or rejection without review), and the rules can be checked explicitly. This skill is a checker: **show the material used for a decision; people decide.**
 
-## 边界（不做什么）
+## Boundaries (what it does not do)
 
-- **不生成审稿意见**——AI 审稿有 hivemind effect 且可被操纵，ARR 规定 LLM 生成审稿可致审稿人自己的投稿被 desk reject。本 skill 只服务作者侧
-- **不替用户决定投哪里**——给证据与接收率参照，选择是用户的
-- **不编译 PDF**、不修改稿件（指出问题，改不改用户定）
-- rebuttal 的**写作方法论**是 `academic-writing` skill 的职责（它有 rebuttal 模式）；若可用则引导走它，本 skill 负责其前的**分类与排序**
+- **Does not write reviewer comments.** AI review can cause a hivemind effect and can be manipulated; ARR states that LLM-generated reviews may lead to desk rejection of reviewers' own submissions. This skill is for authors.
+- **Does not choose a venue for the user.** Provide evidence and acceptance-rate references; the user chooses.
+- **Does not compile PDFs or edit the manuscript.** Report issues; the user decides whether to fix them.
+- Rebuttal **writing methods** belong to the academic-writing skill, which has a rebuttal mode. If available, refer the user to it. This skill handles the prior **classification and prioritization** only.
 
-## 路径占位符
+## Path placeholder
 
-`{SKILL_DIR}` 指本 SKILL.md 所在目录的绝对路径，由调用方展开。命令一律加引号。Windows 中文乱码时前置 `PYTHONUTF8=1`。
+`{SKILL_DIR}` is the absolute path to the directory containing this SKILL.md, expanded by the caller. Quote all command paths. On Windows, prefix commands with `PYTHONUTF8=1` if Chinese text is garbled.
 
-## 流程
+## Workflow
 
-### 1. 确定 venue 与规则
+### 1. Identify the venue and rules
 
-从用户参数确定 venue。**先读 `{SKILL_DIR}/references/venues.md`**（规则表 + 逐项核对清单）。venue 不在表里 → 明确说不覆盖、请用户给官方 CFP 链接，不猜规则。
+Use the venue supplied by the user. **Read `{SKILL_DIR}/references/venues.md` first**, including its rules table and itemized checklist. If the venue is not listed, state that it is not covered and ask for an official CFP link; do not guess the rules.
 
-### 2. 截稿日与倒排期
+### 2. Deadline and reverse schedule
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/ddl_fetch.py" --venues "ICLR,ACL,NeurIPS" --json
 ```
 
-- 缓存于 `.grad/cache/ccfddl/`，TTL 7 天，不要更频繁地拉
-- 产出：每个会议各年份的 abstract/full 截稿、倒计时（天）、时区
-- JSON 的 `timelines` 保留每个 track/round；`name` 来自原始 `comment`，缺失时是稳定的 `timeline-N`。顶层 abstract/full 只是兼容首项摘要，不代表完整生命周期，也不得把 comment 猜成 rebuttal 或 camera-ready
-- **倒排期**：对目标 timeline 的 deadline 反推——检查点（T-14d 实验冻结、T-7d 全文成稿、T-3d 逐项核对、T-1d 提交系统试传）。只在数据源实际给出对应窗口时标冲突，缺失信息记 unknown
-- 规则会变：**距截稿 2 周内必须提醒用户回官网复核**当前 CFP
+- Cache under .grad/cache/ccfddl/ with a seven-day TTL; do not fetch more often.
+- Output includes each conference and year's abstract/full-paper deadlines, countdown in days, and timezone.
+- Preserve each track/round in JSON timelines. The name comes from the original comment, or a stable timeline-N fallback when missing. Top-level abstract/full fields are summaries for compatibility with the first item; they do not represent the full lifecycle. Do not guess that a comment describes rebuttal or camera-ready.
+- **Reverse schedule:** Work backward from the target timeline deadline and check T-14 days for experiment freeze, T-7 for complete draft, T-3 for itemized checks, and T-1 for upload test in the submission system. Mark a conflict only when the data source gives the corresponding window; record missing details as unknown.
+- Rules change: **within two weeks of the deadline, remind the user to verify the current CFP on the official site.**
 
-### 3. 逐项机械核对（有稿件时）
+### 3. Mechanical checks (when a manuscript is provided)
 
-用户提供 PDF / LaTeX 源码 / 目录，按 venues.md 的八项清单逐项核对。每项输出三态：
+When the user provides a PDF, LaTeX source, or directory, check each of the eight items in venues.md. Give each item one of three statuses:
 
-- ✅ **已自动核对**（附证据：页数、命中的文本片段）
-- ⚠️ **需人工确认**（说明缺什么、怎么查——如边距需与官方模板 diff）
-- ❌ **违规**（附依据的规则原文）
+- ✅ **Checked automatically** (include evidence, such as page count or matching text).
+- ⚠️ **Needs human confirmation** (state what is missing and how to check it; for example, compare margins with the official template).
+- ❌ **Violation** (include the supporting rule text).
 
-数不了的页数不猜；搜不到的 checklist 说没搜到，不默认存在。文件元数据（PDF author 字段）也是匿名性检查的一部分。
+Do not guess page counts that cannot be computed. If a checklist item is not found, say so; do not assume it exists. PDF metadata, including the author field, is part of the anonymity check.
 
-### 3.5 judge 使用披露与一致性验证（论文用了 LLM-as-judge 时）
+### 3.5. Judge disclosure and agreement verification (when the paper uses an LLM as judge)
 
-Agent 论文几乎必用 judge。逐项核对：
-- ⚠️ **需人工确认**：是否报告了 judge 一致性验证（κ / 一致率 / 与人工的对比协议）。ARR 把「未经验证的 LLM-as-judge」列为方法缺陷首条，没有验证的一致性声明会在 rebuttal 被盯上
-- 验证材料在 run-provenance 侧准备（`judge_agreement.py` + `references/judge-protocol.md`）；本 skill 只核对「有没有报」，算数与判定不在这里
+Agent papers often use a judge. Check each item:
 
+- ⚠️ **Needs human confirmation:** Was judge agreement reported (κ/agreement rate/comparison protocol with human ratings)? ARR lists an unvalidated LLM-as-judge as its first methodological weakness; an unsupported agreement claim may be challenged in rebuttal.
+- Prepare evidence using run-provenance (judge_agreement.py and references/judge-protocol.md). This skill checks only whether it was reported; calculation and judgment are out of scope.
 
-### 4. rebuttal 分类（用户拿到审稿意见时）
+### 4. Classify rebuttal comments (when the user has reviews)
 
-**先读 `{SKILL_DIR}/references/arr-h-list.md`**。逐条审稿意见归为：
+**Read `{SKILL_DIR}/references/arr-h-list.md` first.** Classify each reviewer comment as:
 
-- **可反驳的无效批评**（命中 H1-H17）——引用指南原文要义回应
-- **须实证回应的有效弱点**（命中 M/T/R/G）——给数据/补实验/修改承诺
-- 中性建议——礼貌采纳
+- **Invalid criticism that can be rebutted** (matches H1–H17): respond using the substance of the guideline.
+- **Substantive weakness requiring evidence** (matches M/T/R/G): provide data, add an experiment, or commit to a revision.
+- Neutral suggestion: acknowledge and address it politely.
 
-排序服从「AC 只读每个 thread 前两条」：最强的回应放最前。R5（error bar）与 R1（best-of-N）命中时，若本项目有 run-provenance 登记的 run（`.grad/runs/`），直接引用其 mean±std 表作答。
+Prioritize under the rule “ACs read only the first two comments in each thread”: put the strongest response first. For R5 (error bars) and R1 (best-of-N), if the project has runs registered through run-provenance in .grad/runs/, cite the mean ± std table.
 
-### 5. 投稿策略参照（用户问投哪里时）
+### 5. Venue strategy references (when asked where to submit)
 
-给 venues.md 末尾的接收率数据 + Findings 兜底机制 + reciprocal reviewing 新人豁免，注明「这是参照不是建议」。方向与 venue 的匹配（如 ACL 2026 topic 列表含 AI/LLM Agents）只作为事实陈述。
+Provide the acceptance-rate data at the end of venues.md, the Findings fallback mechanism, and any reciprocal-reviewing exemption for newcomers. State clearly, “This is a reference, not a recommendation.” Describe matches between the topic and venue only as facts (for example, the ACL 2026 topic list includes AI/LLM agents).
 
-## 错误契约
+## Error contract
 
-脚本输出 `{"ok": false, ...}` 时如实转述 error 与 detail。`NETWORK` 失败时说明：缓存里可能还有上次的数据（`.grad/cache/ccfddl/`），可降级读取并标注数据日期。
+When a script returns `{"ok": false, ...}`, relay error and detail accurately. For a `NETWORK` failure, say that the cache at .grad/cache/ccfddl/ may contain previous data and can be used with its date clearly labeled.

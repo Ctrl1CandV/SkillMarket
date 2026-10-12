@@ -1,60 +1,60 @@
 ---
 name: idea-ledger
-description: 选题台账与弯路记录：登记候选研究方向、选入/否决流转（killed 必须给方法级否定理由，环境性失败自动警告）、why-not-selected 排序理由显式化、选题停滞计数提醒。触发词：记个想法、idea 台账、这个方向做过了、选题记录、弯路记录、方向否决、停滞检测。只记录不裁决：杀不杀 idea 由人决定。
+description: A ledger of research ideas and abandoned paths. Record candidate research directions, select or reject them (a killed status requires a method-level reason and environment-related failures trigger a warning), make why-not-selected ranking rationales explicit, and count research-direction stagnation. Trigger phrases include “record an idea,” “idea ledger,” “we tried this direction,” “research-topic record,” “rejected direction,” and “stagnation check.” Record only; people decide whether to kill an idea.
 license: MIT
 ---
 
-# idea-ledger：选题与弯路台账
+# idea-ledger: Research Ideas and Abandoned Paths
 
-半年后回看，「当时为什么没选它」「什么被否证过」比「做成了什么」更稀缺。本 skill 把这类信息变成**只追加的台账**，防重复踩坑。
+Six months later, “why didn't we choose it?” and “what was disproved?” can be more valuable than “what did we accomplish?” This skill records that information in an **append-only ledger** to help avoid repeating dead ends.
 
-## 铁律
+## Non-negotiable rules
 
-- **只记录，不裁决**——某个方向该不该杀是人做的判断；脚本输出永远是记录与计数，不是「放弃吧」
-- `status=killed` 必须给非空 `--reason`（方法级否定：为什么这个想法本身不成立）；换工具、修配置能解决的属于环境问题，不是 kill 理由
-- **防记忆投毒**：「某工具做不到 X」类负面能力断言不写入 text（会被载入后续会话并自我引用）——改记 workaround 或需求
+- **Record, do not decide.** People decide whether a direction should be abandoned. The script only records and counts; it never says “give up.”
+- A record with `status=killed` must have a non-empty `--reason` explaining why the idea itself is methodologically invalid. Switching tools or fixing configuration is an environment issue, not a reason to kill an idea.
+- **Prevent memory poisoning:** Do not store negative capability claims such as “tool X cannot do Y” in `text`; later sessions may load and repeat them as fact. Record a workaround or requirement instead.
 
-## 路径占位符
+## Path placeholder
 
-`{SKILL_DIR}` 指本 SKILL.md 所在目录的绝对路径，由调用方展开；命令一律加引号；Windows 中文乱码时前置 `PYTHONUTF8=1`。
+`{SKILL_DIR}` is the absolute path to the directory containing this SKILL.md, expanded by the caller. Quote all command paths. On Windows, set `PYTHONUTF8=1` first if Chinese text is garbled.
 
-## 数据契约
+## Data contract
 
-`.grad/ideas.jsonl` 只追加，每行：
+`.grad/ideas.jsonl` is append-only, with one record per line:
 
 ```json
-{"idea_id": "i-001", "text": "<一句话>", "status": "candidate",
+{"idea_id": "i-001", "text": "<one-sentence idea>", "status": "candidate",
  "source": null, "why_not_selected": null, "killed_reason": null, "recorded_at": "..."}
 ```
 
-同 idea_id **最后一行为当前状态**（latest-wins）；killed → selected 回切合法（历史保留，翻案也是信息）。执行者不得 freehand 写此文件。
+For the same idea_id, **the last row is the current state** (latest wins). Switching from killed back to selected is valid: history is retained, and a reversal is useful information. Executors must not edit this file by hand.
 
-## 工作流
+## Workflow
 
 ```bash
-# 登记（text 必填；source 给 arXiv id 或一句话；排序理由显式化）
+# Add an idea (text required; source is an arXiv ID or one sentence; state the ranking rationale)
 uv run --no-project "{SKILL_DIR}/scripts/idea_ledger.py" add \
-  --text "<一句话方向>" [--source "<arXiv id 或一句话>"] \
-  [--why-not-selected "<为什么当下没先选它>"] --json
+  --text "<one-sentence direction>" [--source "<arXiv ID or one sentence>"] \
+  [--why-not-selected "<why it was not chosen first>"] --json
 
-# 状态流转（killed 必填 --reason；--note 可写流转备注如换向何处）
+# Change status (reason required for killed; --note can record a transition such as the new direction)
 uv run --no-project "{SKILL_DIR}/scripts/idea_ledger.py" update \
-  --id i-001 --status <candidate|selected|killed> [--reason "<…>"] --json
+  --id i-001 --status <candidate|selected|killed> [--reason "<...>"] --json
 
 uv run --no-project "{SKILL_DIR}/scripts/idea_ledger.py" list [--json]
 ```
 
-- add 对未收敛条目（candidate/selected）文本重复会警告；对「做不到 X」式断言也会警告
-- update killed 时 reason 命中环境性失败模式 → **只警告不阻断**（原话保留在案），是否坚持由人定
+- When `add` detects duplicate text for an unresolved entry (candidate/selected), it warns. It also warns about “cannot do X” capability claims.
+- When a `killed` reason matches an environment-failure pattern, `update` warns but does not block the change. The original wording remains in the record; a person decides whether to uphold the rejection.
 
-### 停滞计数（detect-only，weekly-brief 消费）
+### Stagnation count (detect-only; consumed by weekly-brief)
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/idea_ledger.py" stagnation --repo . --json
 ```
 
-纯计数输出：未收敛条目数、最老 open 周龄、距上次 claim 事件天数、距上次 run 天数、按窗口（默认 3 周）的三档布尔信号。**只列数字不裁决**；weekly-brief 在有信号时把它作为「选题停滞提示」一行放进周报。
+This count-only output reports the number of unresolved entries, the age in weeks of the oldest open item, days since the last claim event, days since the last run, and three boolean signals for a window (three weeks by default). **It reports numbers only and makes no decision.** When there is a signal, weekly-brief includes one “research-direction stagnation” line in the report.
 
-## 错误契约
+## Error contract
 
-脚本输出 `{"ok": false, ...}` 时如实转述 error 与 detail。`NOT_FOUND` 会列出已知 idea_id；`BAD_ARGS` 是输入问题（空 text / killed 缺 reason），修正后重跑；离线全程可用。
+When the script returns `{"ok": false, ...}`, relay `error` and `detail` accurately. `NOT_FOUND` lists known idea IDs. `BAD_ARGS` indicates invalid input (empty text or a killed status without a reason); fix it and rerun. The workflow works offline.

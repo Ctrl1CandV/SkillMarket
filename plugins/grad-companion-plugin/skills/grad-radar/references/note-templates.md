@@ -1,147 +1,147 @@
-# 阅读笔记模板与写作标准（grad-radar·阶段 1）
+# Reading Note Templates and Writing Standards (grad-radar · Stage 1)
 
-三档深度沿用现有记录格式。下面的骨架服务单篇阅读，可按类型改标题、合并或展开章节；完整综述使用 survey-protocol 的导读结构。正式产出不留占位符。
+The three depth levels use the existing record format. These outlines serve single-paper reading and may be renamed, combined, or expanded by paper type. For a complete review, use the guide structure in survey-protocol. Do not leave placeholders in a delivered note.
 
-## 笔记文件头（展示与追溯用；权威在 papers/*.json，不在这里维护阅读状态）
+## Note header (for display and traceability; papers/*.json is authoritative)
 
 ```markdown
 ---
-paper_id: "<主记录 id>"
-arxiv_id: "<基础 id，非 arXiv 资料写 null>"
+paper_id: "<primary record ID>"
+arxiv_id: "<base ID, or null for non-arXiv material>"
 date: YYYY-MM-DD
 mode: <quick|standard|deep>
-basis: <abstract|sections|fulltext|…>
+basis: <abstract|sections|fulltext|...>
 source: <arxiv_html|host_pdf|external_parser|user_text|metadata_only>
-source_version: <vN 或 null>
+source_version: <vN or null>
 ---
 ```
 
-头部字段与 `save-note` 参数一致（脚本以主记录为权威，头部写错以记录为准并在下次更新纠正）。旧 digest（无 paper_id 头部）继续可读：weekly-brief 从 arxiv_id 建立连接；legacy 存在只证明有一份笔记。
+Header fields should match save-note parameters (the script treats the primary record as authoritative; if the header is wrong, follow the record and correct it at the next update). Older digests without a paper_id header remain readable: weekly-brief links them by arxiv_id; a legacy note proves only that a note exists.
 
-## 通用呈现原则
+## General presentation principles
 
-1. 开头先回答「这篇讲什么、值不值得投入」；详细元数据收在简短来源行/文件头。
-2. 正文用连贯短段落；流程、比较、并列条件才用列表/表格。
-3. 原文引用少而准：优先自行解释并链接出处；不整节复制、不靠长引文凑笔记。
-4. 作者主张 / 论文可见证据 / 助手解释，三者可区分（不必每句贴标签，但不得混写）。
-5. **重要数字必须携带必要设置**；没有设置的百分比不得当核心成果摘要。
-6. 关键结论附近放来源指针（章节锚点/物理页）；不把全部引用堆在文末。
-7. 图表只在有助理解时使用；不默认给每篇生成装饰性图示。
-8. 「未覆盖」按实际情况写；不得固定声称「图表未读」而实际已读表格（反之亦然——save-note 的参数就是事实来源）。
-9. 无内容的可选栏目省略；必要但缺证据的栏目明确写缺失原因。
-10. 用户批注区留给用户原话；模型不得代写「我的理解」。
-11. 先读 extraction-guide，保住因果、数字设置、否定与边界，再调整表达。入口可以短，正文按理解需要展开；不把完整例子和论证改成几个标签。
-12. 来源详情与制作记录集中收尾；影响结论的限制和短出处就近放。避免正文反复解释为什么采取某种制作方式。
-13. 交付前把核心提取项与成品对账：定义、机制、结果设置及关键失败条件都有去向。只删重复表述，不把“没有改善”或“只在某设置下成立”压掉；有必要信息未承接时标部分结果。
+1. Start by answering what the paper is about and whether it is worth investing time in. Keep detailed metadata in a short source line or header.
+2. Use coherent short paragraphs for body text; use lists and tables for processes, comparisons, and parallel conditions.
+3. Quote the source sparingly and accurately. Prefer explanation in your own words with source links; do not copy a whole section or use long quotations to pad the note.
+4. Keep author claims, evidence visible in the paper, and assistant explanation distinguishable. They need not be labeled in every sentence, but must not be conflated.
+5. **Important numbers require the settings needed to interpret them.** A percentage without context is not a summary of the main result.
+6. Put source pointers (section anchors or PDF page numbers) near key conclusions; do not place all citations in a pile at the end.
+7. Use figures and tables only when they aid understanding; do not generate a decorative diagram for every paper by default.
+8. Describe “not covered” according to actual reading. Do not always say “figures and tables not read” when a table was reviewed. Conversely, the parameters passed to save-note are the factual record.
+9. Omit optional sections with no content. For a necessary section with missing evidence, state why.
+10. Leave the user-annotation area for the user's own words. The model must not write “my understanding” on the user's behalf.
+11. Read extraction-guide first. Preserve causality, numeric settings, negation, and boundaries before improving expression. The opening may be short, but expand the body as needed for understanding. Do not replace a full example and argument with a few labels.
+12. Put source details and production notes together near the end; place conclusion-affecting limits and short citations near the relevant text. Do not repeatedly explain production choices in the body.
+13. Reconcile core extracted points with the finished note: definitions, mechanisms, result settings, and key failure conditions need a place. Remove repeated wording only; do not erase “no improvement” or “holds only under setting X.” Mark partial results if necessary information was not carried forward.
 
-## quick 卡片模板
-
-```markdown
-# <论文标题>
-
-<一句话：研究问题和核心做法。>
-
-**与你的关系：** <关联当前学习目标的具体理由；背景不足则说明暂定>
-**阅读建议：** <继续标准阅读／精读／收藏／暂缓 + 一句理由>
-**难度提示：** <必要前置知识；没有明显障碍可省>
-**目前的发现：** <实际材料支持的发现，保留重要条件；只读摘要时写明>
-
-依据：<实际来源、版本与范围>。<仅摘要时说明尚未核方法与实验；取过正文则准确写已核部分及缺口>
-```
-
-只有摘要时，「建议先看某章」必须来自已获取的目录；没拿到目录只能建议章节**类型**（「先看方法节」），不能编造 S3、图 2 这类定位。
-
-## standard 笔记模板
+## Quick-assessment card
 
 ```markdown
-# <论文标题>
+# <Paper title>
 
-<2—4 句：研究问题、核心做法、主要发现、与当前目标的关系。>
+<One sentence: research question and central approach.>
 
-阅读建议：<继续什么深度、为什么、路线摘要>
-来源：<明确版本的链接或用户文件>；本文实际依据：<章节／物理页范围>。
+**Why it matters to you:** <Specific connection to the current learning goal; state if the assessment is provisional due to missing background.>
+**Reading recommendation:** <Continue with standard reading / read closely / save for later / defer, with one reason.>
+**Difficulty:** <Necessary prerequisites; omit if there is no notable barrier.>
+**Current finding:** <What the actual material supports, preserving key conditions; say so if only the abstract was read.>
 
-## 1. 先把问题讲明白
-<作者要解决什么，已有做法的主要障碍>
-<仅解释必要的术语与背景，联系用户已掌握的概念>
-
-## 2. 核心内容如何起作用
-<按主类型组织：方法机制／综述分类／理论主线／系统结构／评测协议>
-<解释关键步骤及其联系；需要时讲一张核心图或一个公式>
-
-## 3. 结论靠什么支撑
-<选最有价值的 1—3 条证据；每条写比较对象、必要条件与出处>
-<区分作者的解释与证据直接支持的范围>
-
-## 4. 这篇最值得记住什么
-<可迁移的问题定义、方法思想、理论条件或评测提醒；解释为什么值得记住>
-
-## 5. 局限和仍未理解的地方
-<作者写明的局限+出处>
-<助手认为需继续核验的问题——明确这是分析不是作者结论>
-<缺正文/图表/公式的部分如实说明>
-
-## 6. 接下来怎么读
-<最值得自己看的 1—2 处原文章节/图表、看什么及为什么>
-<有助本次学习时给理解检查题；其他任务给对应下一步，可省略；不自动认证已掌握>
-
-## 证据与覆盖说明
-- 已读取：<实际章节／PDF 物理页／已核对表格与已查看图片>
-- 未覆盖或解析受限：<真实缺口>
-- 来源与版本：<链接、获取时间、版本确认状态>
-- 个人批注：<存在时链接 .user.md>
+Basis: <Actual source, version, and scope>. <If abstract only, state that the method and experiments were not checked; if body text was read, identify the sections checked and remaining gaps.>
 ```
 
-栏目是内容目标不是篇幅配额：理论论文的证据可能是证明主线，综述的价值可能在分类关系——不硬套「提升了多少」。
+“Read chapter X next” must be based on an outline actually retrieved. Without an outline, recommend a **type of section** (“start with the methods section”) instead of inventing a location such as S3 or Figure 2.
 
-## deep 的展开方式
+## Standard reading note
 
-沿用 standard 短首页，在最相关栏目下按需补充：前置知识与本文符号表（只列本次真正用到的）；方法逐步示例／关键公式解释／论证链；核心图表解读（保留设置和限制）；与一篇用户已知工作的局部对照（前提：两边内容都实际可得）；分段阅读安排（「本次先懂 A，下次继续 B」）。较长推导放文末附录段，正文给链接。第一屏仍要易读。
+```markdown
+# <Paper title>
 
-## 保存（用户请求或项目约定需要保存时走脚本）
+<2–4 sentences: research question, central approach, main finding, and relationship to the current goal.>
+
+Reading recommendation: <next depth, why, brief route>
+Source: <link or user file with version identified>; material actually used: <section/PDF page range>.
+
+## 1. Clarify the problem
+<What the authors are solving and the main obstacle in earlier approaches>
+<Only necessary terms and background, connected to concepts the user already knows>
+
+## 2. How the core idea works
+<Organize by primary type: method mechanism / survey taxonomy / theory outline / system architecture / evaluation protocol>
+<Explain key steps and their relationships; explain one central figure or equation when useful>
+
+## 3. What supports the conclusion
+<Select 1–3 valuable pieces of evidence; for each give comparison, necessary conditions, and source>
+<Distinguish the authors' interpretation from the scope directly supported by evidence>
+
+## 4. What is most worth remembering
+<Transferable problem definition, method idea, theoretical condition, or evaluation lesson; explain why it matters>
+
+## 5. Limitations and unresolved questions
+<Limitations stated by the authors, with source pointers>
+<Questions the assistant thinks need further checking—label these as analysis, not the authors' conclusions>
+<Truthfully state sections, figures, or equations unavailable or restricted by parsing>
+
+## 6. What to read next
+<1–2 original sections/figures worth reading personally, what to look for, and why>
+<Add comprehension questions only when useful for this learning task; otherwise give a relevant next step or omit. Do not certify mastery automatically.>
+
+## Evidence and coverage
+- Read: <actual sections/PDF pages, tables checked, and images viewed>
+- Not covered or parsing-limited: <actual gaps>
+- Source and version: <link, retrieval time, and version status>
+- Personal annotations: <link to .user.md if present>
+```
+
+Sections describe content goals, not length quotas. For theory, evidence may be a proof outline; a survey may be valuable for its taxonomy. Do not force “how much did it improve?” into every paper.
+
+## How to expand a deep note
+
+Keep the short opening from standard notes, then expand relevant sections as needed: prerequisites and a symbol table limited to what this reading uses; a step-by-step method example, key formula explanation, or argument chain; interpretation of central figures/tables with settings and limitations; a local comparison with a paper the user already knows (only if material for both papers is available); or a staged reading plan (“understand A this time, continue with B next time”). Put long derivations in an appendix section and link to it from the body. Keep the first screen readable.
+
+## Saving (use scripts when requested or required by project convention)
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" save-note --repo . \
-  --paper <paper_id 或 arXiv id 或标题子串> --note-file <临时笔记文件> \
+  --paper <paper_id-or-arXiv-ID-or-title-fragment> --note-file <temporary-note-file> \
   --mode quick|standard|deep --basis sections \
-  --sections S1,S3 --limitations "图3仅提取到图注,公式(7)乱码" --json
+  --sections S1,S3 --limitations "Figure 3 extracted from caption only; equation (7) garbled" --json
 ```
 
-PDF 路径示例（物理页码是**逗号分隔的整数列表**，HTML 没有物理页码就省略 --pages）：
+For PDFs, physical pages are a **comma-separated list of integers**. Omit --pages for HTML, which has no physical page numbering:
 
 ```bash
 uv run --no-project "{SKILL_DIR}/scripts/reading_record.py" save-note --repo . \
-  --paper <id> --note-file <临时笔记文件> --mode quick --basis sections \
+  --paper <id> --note-file <temporary-note-file> --mode quick --basis sections \
   --pages 3,4,5,6,7,8 --figures "Figure 2" --tables "Table 4" \
-  --limitations "其余图片只有图注,表格未逐格核对" --json
+  --limitations "Other images have captions only; table cells not checked individually" --json
 ```
 
-- `--source-version` 只在版本**实际确认**（confirmed / cache-fallback）时传，值来自获取时脚本报告的版本；未确认（unknown）就省略，脚本记为 null，不继承资料记录中的旧版。
-- 合并笔记时，旧 `note.source_version` 保留主笔记基线（包括未知）；各补充范围的真实版本查看 `note.coverage_sources`，不能用扁平字段声称全篇基于同一版。
-- `--sections/--figures/--tables/--pages` 填**实际核对过的**；空着就是空着，不补成全覆盖。
-- basis=abstract 时 mode 会被自动降级为 quick——这是防冒充，不是 bug；basis=unavailable 不允许交付笔记（用 --record-failure 只登记失败）。
-- basis=metadata 仅有身份，不保存内容笔记；有摘要用 abstract。sections 至少给真实节号或物理页，不能用空范围声称已经选读正文。
-- 冲突时（笔记被人工编辑/merge 过）默认拒绝整体替换——按用户本次意图选 `--merge`（追加，可连续多次）或让用户先处理，**不吞批注**。
-- **任何时候不得把 save-note 描述成「用户读完了」**；读状态只有 set-status 一条路。
+- Pass `--source-version` only when the version is **actually confirmed** (confirmed/cache-fallback); use the version reported at retrieval. Omit it when unconfirmed (unknown); the script records null and does not inherit an old version from the material record.
+- When merging notes, the old `note.source_version` remains the baseline for the primary note, including when unknown. Check actual versions for added sections in `note.coverage_sources`; a flat field cannot claim the whole note uses one version.
+- Fill `--sections/--figures/--tables/--pages` with items actually checked. Leave the list empty when nothing was checked; do not claim full coverage.
+- With `basis=abstract`, `mode` automatically downgrades to quick to prevent misrepresentation. `basis=unavailable` cannot produce a note; use `--record-failure` to record the retrieval failure only.
+- `basis=metadata` means identity information only and cannot save a content note; use abstract when an abstract is available. For `basis=sections`, provide actual section numbers or physical pages; do not claim body reading with an empty range.
+- If a note conflicts because it was manually edited or merged, the script rejects wholesale replacement by default. Follow the current request: use `--merge` to append (repeatable) or ask the user to resolve it first. **Do not swallow annotations.**
+- **Never describe save-note as “the user has finished reading.”** set-status is the only path for reading status.
 
-## 好 / 坏对照（写之前看一眼）
+## Good and bad examples (review before writing)
 
-| 不合格 | 合格方向 |
+| Weak | Better |
 |---|---|
-| 「提出一个创新框架，取得显著提升」 | 说明改了哪个环节、与谁比较、什么设置下什么结果；缺数字就不补数字 |
-| 「这篇很重要，建议精读」 | 「它解释了你正在学的 X 方法依赖的假设；先看定义与核心图，再看实验」 |
-| 「方法比较复杂，需要深度理解」 | 「主要障碍是条件概率与变分下界；先补这两个概念，再读式(3)」 |
-| 「证明该方法普遍优于现有方法」 | 「作者在文中列出的任务与预算下观察到优势；其他场景不能据此判断」 |
-| 模型代写「我的理解是…」进用户批注 | AI 笔记写「辅助解释」；`.user.md` 留给用户原话 |
+| “Introduces an innovative framework and achieves significant improvement.” | State which stage changed, compared with what, and the result under which settings. Do not add missing numbers. |
+| “This paper is important; read it closely.” | “It explains the assumption behind method X that you are learning; start with the definitions and central figure, then read the experiments.” |
+| “The method is complex and requires deep understanding.” | “The main barrier is conditional probability and the variational lower bound; review those concepts before equation (3).” |
+| “Proves the method is generally superior to existing methods.” | “The authors observed an advantage on the tasks and budgets reported in the paper; this does not establish performance in other settings.” |
+| The model writes “my understanding is...” in the user's annotation. | The AI note labels its text “supporting explanation”; .user.md remains for the user's own words. |
 
-## 人工检查（试读后逐项回答，不以字数/标题数/模型自评代替）
+## Human review (answer after a trial read; word count, heading count, and model self-rating are not substitutes)
 
-- 不打开论文，能否说清它研究的问题和关键做法？
-- 打开来源，能否定位笔记里最重要的结论？
-- 基础较弱的读者是否知道先补什么，而不是被更多术语淹没？
-- 综述/方法/理论的重点是否有真实区别（不是同一套骨架换词）？
-- 作者结论、助手解释、未知内容是否混在了一起？
-- 能否据此决定下一步阅读动作？
-- **指标核对三件套：谁的输出、分子、分母**——覆盖/准确率类指标必须写清算的是模型回答还是参考内容，分母是哪一子集（如只在中部主张存在的任务上平均的指标不能与全任务指标横比）。
-- **机制解释检查「保证到哪一层」**——说某部件/约束有效时必须回到原文确认它担保什么、不担保什么（例：类型化算子只保证候选落在合法表示空间，可行性仍取决于生成的评价函数是否正确）；不存在的保证不写。
-- **输出证据 ≠ 内部过程**——基于最终回答的评测（覆盖、一致性、judge 打分）只能说明模型「表达了什么」，不能据此声称模型「想到了/理解了」什么；涉及内部过程的推断必须标注为假设。
+- Without opening the paper, can the reader explain the question and key approach?
+- With the source open, can the reader locate the most important conclusion in the note?
+- Does a less experienced reader know what to learn first, rather than being buried in more terminology?
+- Do surveys, methods, and theories receive meaningfully different treatment rather than one template with substituted words?
+- Are the authors' conclusions, assistant explanations, and unknowns separated?
+- Can the note support a decision about what to read next?
+- **Three-part metric check: whose output, numerator, denominator.** For coverage/accuracy metrics, state whether this scores model responses or reference material and which subset is the denominator. A metric averaged only over tasks where a central claim exists cannot be compared directly with one over all tasks.
+- **Check how far a mechanism actually guarantees.** When saying a component or constraint works, verify what the source guarantees and what it does not. For example, a typed operator may ensure candidates stay in a valid representation space while feasibility still depends on whether the generated evaluation function is correct. Do not claim guarantees absent from the paper.
+- **Output evidence is not evidence of an internal process.** Evaluation of final answers (coverage, consistency, judge ratings) shows what the model “expressed,” not what it “thought” or “understood.” Label claims about internal processes as hypotheses.

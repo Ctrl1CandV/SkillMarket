@@ -1,29 +1,28 @@
-# judge 一致性验证协议（run-provenance）
+# Judge Agreement Validation Protocol (run-provenance)
 
-> `judge_agreement.py` 只负责算（一致率、κ、混淆矩阵）；**本文件负责怎么算得可信**。
-> ARR 把「未经验证的 LLM-as-judge」列为方法缺陷首条——论文里用了 judge 却没验证一致性，
-> 是审稿人一眼就能盯上的方法弱点。κ 多高算「够好」由你下结论，下面只给锚点。
+> `judge_agreement.py` only calculates agreement rate, κ, and the confusion matrix; **this file explains how to make those results trustworthy**.
+> ARR lists an unvalidated LLM-as-judge as its first methodological weakness. Using a judge in a paper without validating agreement is an obvious point for reviewers to challenge. Decide whether κ is high enough for your claim; the ranges below are reference points, not a pass/fail threshold.
 
-## 执行清单（跑一致性实验前逐项确认）
+## Checklist before running an agreement study
 
-- [ ] **抽样量下限**：≥30 个样本才能算 κ；100+ 才有说服力（置信区间才收窄到可引用）。低于 30 就不要在论文里报 κ
-- [ ] **固定条件**：judge 的 temperature=0（或声明值）、prompt 版本、模型版本三元组写进 run 登记（`run_register.py --method "judge=<模型>@temp0"` 这类，模型名从你实际用的 judge 取），换一个就是不同的 judge 要重验
-- [ ] **评分顺序**：A/B 两个候选的呈现顺序固定并记录；如果 judge 看得到选项顺序，**位置偏置检查**要做一轮 A/B 互换重评，两组 κ 都报
-- [ ] **评分对来源**：人工标注至少 1 人、最好 2 人独立打完再和 judge 比；单人标注和 judge 比只能支撑弱结论（说清楚）
-- [ ] **分歧仲裁**：judge 与人工不一致的样本逐条人工复核——系统性分歧（judge 总在某类样本上偏）比随机分歧严重得多，要写进 Limitations
+- [ ] **Minimum sample size:** At least 30 examples are needed to calculate κ; 100+ is more convincing, with a confidence interval narrow enough to cite. Do not report κ in a paper with fewer than 30.
+- [ ] **Fixed conditions:** Record the judge's temperature (0 or the disclosed value), prompt version, and model version together in the run registration. For example: `run_register.py --method "judge=<model>@temp0"`, using the name of the judge actually used. Changing any one means using a different judge that must be revalidated.
+- [ ] **Scoring order:** Fix and record the order in which candidates A and B are shown. If the judge can see the choice order, check position bias by swapping A/B and rerunning one round; report κ for both orders.
+- [ ] **Human labels for comparison:** Have at least one person label the examples, preferably two people independently, then compare with the judge. A single annotator's comparison supports only a weak conclusion; say so.
+- [ ] **Adjudicate disagreements:** Review each example where the judge and humans disagree. Systematic disagreement (the judge is biased on a particular kind of example) is much more serious than random disagreement and belongs in Limitations.
 
-## 锚点（常被引用的解释区间，非验收线）
+## Reference ranges (common interpretations, not acceptance criteria)
 
-| κ 区间 | 常见解释（Landis & Koch 惯例） |
+| κ range | Common interpretation (Landis & Koch convention) |
 |---|---|
-| 0.81–1.00 | almost perfect——可以放心当证据引用 |
-| 0.61–0.80 | substantial——多数 venue 接受，但要报置信区间与分歧分析 |
-| 0.41–0.60 | moderate——审稿人会问为什么不用人工全量；需要额外的稳定性证据（多 judge 取一致子集等） |
-| ≤ 0.40 | 审稿人默认视同未验证 |
+| 0.81–1.00 | Almost perfect — may be cited as evidence with confidence |
+| 0.61–0.80 | Substantial — accepted by many venues, but report confidence intervals and disagreement analysis |
+| 0.41–0.60 | Moderate — reviewers may ask why the full set was not labeled by humans; additional stability evidence is needed (for example, several judges and their consensus subset) |
+| ≤ 0.40 | Reviewers will generally treat it as unvalidated |
 
-这些是**解释惯例不是及格线**：是否够取决于你的 claim 强度（全文主结论依赖 judge → 标准从严）。
+These are **interpretive conventions, not passing thresholds**. Adequacy depends on the strength of the claim; use a stricter standard when the paper's main conclusion depends on the judge.
 
-## 与本插件其他组件的关系
+## Relationship to other plugin components
 
-- 一致性实验本身就是一次评测：用 `run_register.py` 登记（method 记 judge 身份，metrics 记 agreement/κ），claim 绑定走正常双轴流程
-- 投稿前 submission-gate 的核对清单含「用了 judge 是否报告一致性验证」，此文档是对该项的准备材料
+- An agreement study is an evaluation run: register it with `run_register.py` (record judge identity in the method and agreement/κ in metrics), then bind claims through the normal two-axis workflow.
+- The submission-gate checklist asks whether judge agreement was validated when a judge was used. This document is preparation for that check.

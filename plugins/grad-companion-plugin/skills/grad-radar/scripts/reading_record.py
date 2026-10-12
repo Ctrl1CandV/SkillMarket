@@ -1,32 +1,29 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""单篇阅读主记录与笔记保存（grad-radar·阶段 1）。每篇论文一条权威 JSON 记录。
+"""Single-paper master records and note saving (grad-radar, phase 1). One authoritative JSON record per paper.
 
-职责边界（实施方案 §9.7）：本脚本只保存宿主模型**已依据证据完成**的输出——
-它不调用模型、不判断论文质量、不读取用户未指定的目录。身份规范化、去重、
-状态更新、笔记落盘与保护是它的机械职责。
+Scope (implementation plan §9.7): this script only saves output the host model has **already produced from evidence**.
+It does not call a model, judge paper quality, or read directories the user did not specify. Its mechanical responsibilities
+are identity normalization, deduplication, status updates, writing notes, and protecting existing notes.
 
-操作：
-  register        登记/返回论文主记录（同身份幂等；不根据标题擅自合并）
-  show            读一篇（支持 paper_id／arXiv id／标题子串，多义时报候选不猜）
-  list            按状态/类型列出（只读，无写入副作用；history 与批注不算主条目）
-  save-note       保存 AI 主笔记 + 实际来源范围（历史快照、人工改动保护）
-  set-status      记录用户明确表达的阅读状态（必须是用户动作，read 需原话引用）
-  update-context  更新分类/来源资料/阅读深度（不改用户批注与已读时间）
+Commands:
+  register        Register or return a paper record (idempotent by identity; never merge by title alone)
+  show            Show one paper (paper_id, arXiv ID, or title substring; list candidates for ambiguous matches)
+  list            List by status/type (read-only; history and annotations are not master records)
+  save-note       Save an AI note and actual source coverage (history snapshot and human-edit protection)
+  set-status      Record a reading status explicitly stated by the user (a user action; read requires a quote)
+  update-context  Update classification/source metadata/reading depth (preserves user annotations and read time)
 
-铁律：
-- register / save-note **无权**把 reading.status 设为 read/deferred——人的状态只能经
-  set-status 由用户明确表达写入；生成笔记 ≠ 用户读完。
-- 所有写入路径限制在本项目 `.grad/` 内；更新走同目录临时文件原子替换，失败不留假完成。
-- 已有 AI 笔记被外部改动（哈希不符）或旧笔记无哈希记录时，默认拒绝整体替换
-  （CONFLICT），提供 --merge（追加补充段）/ --new-path（独立草稿）出口；`.user.md`
-  批注文件 AI 永不读写覆盖。
-- 读取宽容（缺字段的旧记录照读），写入严格（新记录完整校验）。
+Invariants:
+- register/save-note **cannot** set reading.status to read/deferred. Only set-status can record a user's explicit statement; a generated note does not mean the user finished reading.
+- Restrict all writes to this project's `.grad/`; update via atomic replacement of a temporary file in the same directory so failures do not leave false completion.
+- If an existing AI note was changed externally (hash mismatch) or an old note has no recorded hash, refuse full replacement by default (CONFLICT). Offer --merge to append a supplement or --new-path to save a separate draft. AI never reads/writes/overwrites `.user.md` annotation files.
+- Be tolerant when reading (accept older records with missing fields) and strict when writing (fully validate new records).
 
-输入契约：结构化输入经 --input-file 传 UTF-8 JSON。输出契约：--json 时
-stdout 打印 {"ok": true, "data": ...} 或 {"ok": false, "error": ..., "detail": ...}。
-错误类别：BAD_ARGS / NOT_FOUND / AMBIGUOUS_IDENTITY / CONFLICT / SOURCE_UNAVAILABLE /
+Input contract: pass structured UTF-8 JSON through --input-file. With --json, stdout prints
+{"ok": true, "data": ...} or {"ok": false, "error": ..., "detail": ...}.
+Error categories: BAD_ARGS / NOT_FOUND / AMBIGUOUS_IDENTITY / CONFLICT / SOURCE_UNAVAILABLE /
 WRITE_FAILED。
 """
 
@@ -50,11 +47,11 @@ DIFFICULTY_VALUES = {"accessible", "needs_background", "challenging", "unknown"}
 PAPER_TYPE_VALUES = {"method", "survey", "theory", "system", "evaluation", "other"}
 MODE_VALUES = {"quick", "standard", "deep"}
 STATUS_VALUES = {"unread", "reading", "read", "deferred"}
-# 实际来源能力枚举（§5.3）——不再是「只能 arxiv_html／mineru」
+# Actual source-capability enum (§5.3); not limited to arxiv_html/mineru.
 PARSER_VALUES = {"arxiv_html", "host_pdf", "external_parser", "user_text", "metadata_only"}
 BASIS_VALUES = {"metadata", "abstract", "sections", "fulltext", "unavailable"}
 VERSION_STATUS_VALUES = {"confirmed", "cache-fallback", "unknown", "legacy"}
-USER_STATUS_VALUES = {"reading", "read", "deferred"}  # set-status 可设（unread 由 register 默认）
+USER_STATUS_VALUES = {"reading", "read", "deferred"}  # set-status values; register defaults to unread
 ARXIV_NEW_RE = re.compile(r"^\d{4}\.\d{4,5}$")
 ARXIV_OLD_RE = re.compile(r"^[a-z][a-z-]*(?:\.[a-z]{2})?/\d{7}$")
 SAFE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
@@ -73,67 +70,68 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-# ---------- 身份（§9.2） ----------
+# ---------- Identity (§9.2) ----------
 
 def normalize_arxiv(raw: str) -> str:
-    """arXiv 基础 ID：去 arxiv: 前缀与版本号（版本是材料版本，不进身份）。"""
+    """Return the arXiv base ID without the arxiv: prefix or version suffix; material version is not identity."""
     s = str(raw).strip().lower().removeprefix("arxiv:")
     s = re.sub(r"v\d+$", "", s)
     if ARXIV_NEW_RE.match(s) or ARXIV_OLD_RE.match(s):
         return s
-    die("BAD_ARGS", f"arxiv_id 不是合法 arXiv 基础 ID：{raw!r}")
+    die("BAD_ARGS", f"arxiv_id is not a valid arXiv base ID: {raw!r}")
     raise AssertionError
 
 
 def normalize_doi(raw: str) -> str:
-    """DOI：只规范大小写与去掉展示 URL 前缀；**仅接受实际核实的 DOI，不猜不造**。"""
+    """Normalize DOI case and remove display-URL prefixes only; **accept verified DOIs only, never guess or invent one**."""
     s = str(raw).strip()
     s = re.sub(r"^https?://(dx\.)?doi\.org/", "", s, flags=re.I)
     s = re.sub(r"^doi\s*:", "", s, flags=re.I).strip()
     if not s or " " in s or not re.search(r"10\.\d{4,9}/\S+", s):
-        die("BAD_ARGS", f"doi 不是可核实的 DOI（需含 10.xxxx/ 后缀，不做猜测补全）：{raw!r}")
+        die("BAD_ARGS", f"doi is not a verifiable DOI (must contain a 10.xxxx/ suffix; no guessed completion): {raw!r}")
     return s.lower()
 
 
 def normalize_file_sha(raw: str) -> str:
     s = str(raw).strip().lower()
     if not re.fullmatch(r"[0-9a-f]{64}", s):
-        die("BAD_ARGS", f"file_sha256 必须是 64 位十六进制内容哈希：{raw!r}")
+        die("BAD_ARGS", f"file_sha256 must be a 64-character hexadecimal content hash: {raw!r}")
     return s
 
 
 def derive_paper_id(identifiers: dict) -> str:
-    """稳定主键：arxiv 优先（基础 ID），其次 DOI/内容哈希（截断哈希做文件名，全值存 identifiers）。"""
+    """Stable key: prefer arXiv base ID, then DOI/content hash (truncate hash for filename; store full value in identifiers)."""
     if identifiers.get("arxiv_id"):
         return "arxiv-" + normalize_arxiv(identifiers["arxiv_id"]).replace("/", "_")
     if identifiers.get("doi"):
         return "doi-" + sha256_text(normalize_doi(identifiers["doi"]))[:16]
     if identifiers.get("file_sha256"):
         return "sha-" + normalize_file_sha(identifiers["file_sha256"])[:16]
-    die("BAD_ARGS", "identifiers 至少要有一个可核实身份（arxiv_id / doi / file_sha256）；"
-                    "仅凭标题不能建立主记录——请补链接、DOI 或文件哈希（标题检索与人工确认另走）")
+    die("BAD_ARGS", "identifiers must contain at least one verifiable identity (arxiv_id / doi / file_sha256). "
+                    "A title alone cannot create a master record; provide a link, DOI, or file hash. "
+                    "Title search and human confirmation are separate.")
     raise AssertionError
 
 
-# ---------- 路径护栏（§9.6 第 8 条） ----------
+# ---------- Path guard (§9.6, rule 8) ----------
 
 def grad_root(repo: Path) -> Path:
     grad = (repo / ".grad").resolve()
     if not grad.is_relative_to(repo.resolve()):
-        die("BAD_ARGS", f".grad 解析越出项目：{grad}")
+        die("BAD_ARGS", f".grad resolves outside the project: {grad}")
     return grad
 
 
 def resolve_under_grad(grad: Path, rel_or_abs: str, error_hint: str = "") -> Path:
-    """把 note.path 之类解析到 .grad/ 内；逃逸即 BAD_ARGS。"""
+    """Resolve note.path and similar paths inside .grad/; reject path traversal."""
     p = Path(rel_or_abs)
     full = (grad / p) if not p.is_absolute() else p
     try:
         resolved = full.resolve()
     except OSError as exc:
-        die("BAD_ARGS", f"路径无法解析：{rel_or_abs}（{exc}）")
+        die("BAD_ARGS", f"Could not resolve path: {rel_or_abs} ({exc})")
     if not resolved.is_relative_to(grad):
-        die("BAD_ARGS", f"写入路径必须位于项目 .grad/ 内：{rel_or_abs}{('；' + error_hint) if error_hint else ''}")
+        die("BAD_ARGS", f"Write path must be inside the project .grad/: {rel_or_abs}{('; ' + error_hint) if error_hint else ''}")
     return resolved
 
 
@@ -147,18 +145,18 @@ def atomic_write(path: Path, content: str) -> None:
         temp.unlink(missing_ok=True)
 
 
-# ---------- 记录读写（§9.3：读宽容、写严格） ----------
+# ---------- Record I/O (§9.3: tolerant reads, strict writes) ----------
 
 def papers_dir(grad: Path) -> Path:
     return grad / "radar" / "papers"
 
 
 def record_path(grad: Path, paper_id: str, *, strict: bool = True) -> Path | None:
-    """paper_id → 记录文件路径。读路径（strict=False）对非安全键返回 None 走标题检索。"""
+    """Map paper_id to a record path; with strict=False, unsafe keys return None for title-search fallback."""
     if not SAFE_ID_RE.match(paper_id) or "/" in paper_id or "\\" in paper_id:
         if not strict:
             return None
-        die("BAD_ARGS", f"paper_id 不是文件名安全的记录键：{paper_id!r}")
+        die("BAD_ARGS", f"paper_id is not a filename-safe record key: {paper_id!r}")
     return papers_dir(grad) / f"{paper_id}.json"
 
 
@@ -169,7 +167,7 @@ def load_record(grad: Path, paper_id: str) -> dict | None:
     try:
         data = json.loads(f.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        die("BAD_RECORD", f"{f} 不可解析：{exc}")
+        die("BAD_RECORD", f"Could not parse {f}: {exc}")
     return data if isinstance(data, dict) else None
 
 
@@ -179,18 +177,18 @@ def save_record(grad: Path, record: dict) -> None:
     try:
         atomic_write(f, json.dumps(record, ensure_ascii=False, indent=2) + "\n")
     except OSError as exc:
-        die("WRITE_FAILED", f"主记录写入失败（不返回成功）：{exc}")
+        die("WRITE_FAILED", f"Failed to write master record (not reporting success): {exc}")
 
 
 def iter_records(grad: Path) -> list[dict]:
-    """扫描 papers/（首期小量 JSON 直扫；忽略 tmp/隐藏文件）。"""
+    """Scan papers/ (direct scan of the initially small JSON set; ignore tmp/hidden files)."""
     out = []
     d = papers_dir(grad)
     for f in sorted(d.glob("*.json")) if d.is_dir() else []:
         try:
             data = json.loads(f.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
-            continue  # 坏记录跳过列表（单条损坏不拖垮台账视图），show 按 id 读时会报错
+            continue  # Skip a malformed row in list view; show by ID reports its error.
         if isinstance(data, dict) and data.get("paper_id"):
             out.append(data)
     return out
@@ -201,14 +199,14 @@ def validate_enum(value: object, allowed: set[str], field: str, errors: list[str
     if value is None and optional:
         return
     if not isinstance(value, str) or value not in allowed:
-        errors.append(f"{field} 必须是 {'/'.join(sorted(allowed))} 之一，收到 {value!r}")
+        errors.append(f"{field} must be one of {'/'.join(sorted(allowed))}; got {value!r}")
 
 
 def validate_classification(cls: object, errors: list[str]) -> None:
     if cls is None:
         return
     if not isinstance(cls, dict):
-        errors.append("classification 必须是对象")
+        errors.append("classification must be an object")
         return
     validate_enum(cls.get("importance"), IMPORTANCE_VALUES, "classification.importance", errors)
     validate_enum(cls.get("difficulty"), DIFFICULTY_VALUES, "classification.difficulty", errors)
@@ -216,20 +214,20 @@ def validate_classification(cls: object, errors: list[str]) -> None:
     for reason in ("importance_reason", "difficulty_reason", "type_reason"):
         value = cls.get(reason)
         if value is not None and (not isinstance(value, str) or not value.strip()):
-            errors.append(f"classification.{reason} 必须是非空字符串（每维度附一句独立理由）")
+            errors.append(f"classification.{reason} must be a non-empty string (include a separate reason for each dimension)")
     if not isinstance(cls.get("provisional"), bool):
-        errors.append("classification.provisional 必须是布尔（仅摘要判读时为 true）")
+        errors.append("classification.provisional must be a boolean (true only for abstract-based assessment)")
 
 
 def validate_note_fields(note: dict, errors: list[str]) -> None:
-    """save-note 组装的 note 段严格校验（写侧统一门槛）。"""
+    """Strictly validate the note section assembled by save-note (shared write gate)."""
     validate_enum(note.get("basis"), BASIS_VALUES, "note.basis", errors)
     sv = note.get("source_version")
     if sv is not None and (not isinstance(sv, str) or not re.fullmatch(r"v\d+", sv)):
-        errors.append("note.source_version 必须是 vN 形式或 null")
+        errors.append("note.source_version must use vN format or be null")
     for field in ("sections", "pages", "figures_viewed", "tables_checked", "limitations"):
         if not isinstance(note.get(field), list):
-            errors.append(f"note.{field} 必须是数组")
+            errors.append(f"note.{field} must be an array")
 
 
 # ---------- register ----------
@@ -238,35 +236,36 @@ def cmd_register(args: argparse.Namespace) -> None:
     repo = Path(args.repo).resolve()
     grad = grad_root(repo)
     if not args.input_file:
-        die("BAD_ARGS", "register 需要 --input-file（UTF-8 JSON），避免在 shell 里拼接长 JSON")
+        die("BAD_ARGS", "register requires --input-file (UTF-8 JSON); avoid building long JSON in the shell")
     try:
         payload = json.loads(Path(args.input_file).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        die("BAD_ARGS", f"--input-file 读取/解析失败：{exc}")
+        die("BAD_ARGS", f"Could not read/parse --input-file: {exc}")
     if not isinstance(payload, dict):
-        die("BAD_ARGS", "输入根节点必须是 JSON 对象")
+        die("BAD_ARGS", "Input root must be a JSON object")
 
     identifiers = payload.get("identifiers") or {}
     if not isinstance(identifiers, dict):
-        die("BAD_ARGS", "identifiers 必须是对象")
+        die("BAD_ARGS", "identifiers must be an object")
     arxiv_id = normalize_arxiv(identifiers["arxiv_id"]) if identifiers.get("arxiv_id") else None
     doi = normalize_doi(identifiers["doi"]) if identifiers.get("doi") else None
     file_sha = normalize_file_sha(identifiers["file_sha256"]) if identifiers.get("file_sha256") else None
     if not (arxiv_id or doi or file_sha):
         die("AMBIGUOUS_IDENTITY",
-            "缺少可核实身份（arxiv_id / doi / file_sha256 至少其一）；标题只用于检索与人工确认，"
-            "不足以建立主条目。请补链接/DOI/文件，已确定的标题信息在会话中保留")
+            "Missing verifiable identity (provide at least one of arxiv_id / doi / file_sha256). "
+            "A title is for search and human confirmation only and cannot create a master record. "
+            "Provide a link/DOI/file; retain any confirmed title information in the session.")
     title = str(payload.get("title") or "").strip()
     if not title:
-        die("BAD_ARGS", "title 不能为空（仅身份字段无标题的记录不得伪造内容笔记）")
+        die("BAD_ARGS", "title cannot be empty (do not fabricate a content note for an identity-only record)")
 
     paper_id = derive_paper_id({"arxiv_id": arxiv_id, "doi": doi, "file_sha256": file_sha})
 
-    # 去重：按身份匹配既有记录；同标题不同身份只给候选提示，不自动合并（R03）
+    # Deduplicate by identity; same title with different identity yields candidates, never an automatic merge (R03).
     warnings: list[str] = []
     existing = load_record(grad, paper_id)
     if existing is not None:
-        warnings.append(f"同身份主记录已存在：{paper_id}（幂等复用，双入口共享一条主条目）")
+        warnings.append(f"A master record with this identity already exists: {paper_id} (reused idempotently by both entry points)")
     if existing is None:
         for rec in iter_records(grad):
             ident = rec.get("identifiers") or {}
@@ -275,16 +274,16 @@ def cmd_register(args: argparse.Namespace) -> None:
                 or ((file_sha and normalize_file_sha(ident["file_sha256"]) == file_sha) if ident.get("file_sha256") else False)
             if match:
                 existing = rec
-                warnings.append(f"按身份字段命中既有主记录 {rec['paper_id']}（两个入口同篇论文，复用同一主条目）")
+                warnings.append(f"Identity fields matched existing master record {rec['paper_id']} (both entry points share one paper record)")
                 break
             if title and str(rec.get("title", "")).strip().casefold() == title.casefold():
-                warnings.append(f"存在同名记录 {rec['paper_id']}（标题不作为自动合并依据；"
-                                "确认同一论文时通过 update-context 补充共同身份字段）")
+                warnings.append(f"A record with the same title exists: {rec['paper_id']} (title is not an auto-merge key; "
+                                "if this is the same paper, use update-context to add a shared identity field)")
         if existing is not None and arxiv_id:
-            paper_id = str(existing["paper_id"])  # 命中既有条目：以它的稳定主键为准
+            paper_id = str(existing["paper_id"])  # Use the stable key of the matched record.
 
     if existing is not None:
-        # 幂等返回：不覆盖旧进度、不清空分类；只补缺的身份字段并更新 source 资料引用
+        # Idempotent return: preserve progress and classification; only fill missing identity fields and update source references.
         changed = False
         ident = existing.setdefault("identifiers", {})
         for key, value in (("arxiv_id", arxiv_id), ("doi", doi), ("file_sha256", file_sha)):
@@ -299,7 +298,7 @@ def cmd_register(args: argparse.Namespace) -> None:
             save_record(grad, existing)
         data = {"paper_id": existing["paper_id"], "created": False, "record": existing,
                 "warnings": warnings}
-        _emit(data, args.json, f"已有主记录 {existing['paper_id']}（幂等返回，旧阅读状态保持）")
+        _emit(data, args.json, f"Master record already exists: {existing['paper_id']} (returned idempotently; reading status preserved)")
         return
 
     source_errors: list[str] = []
@@ -322,19 +321,19 @@ def cmd_register(args: argparse.Namespace) -> None:
     errors: list[str] = []
     validate_classification(record["classification"], errors)
     if source_errors:
-        die("BAD_ARGS", "source 校验失败（未写入）：" + "；".join(source_errors))
+        die("BAD_ARGS", "Source validation failed (not written): " + "; ".join(source_errors))
     if errors:
-        die("BAD_ARGS", "classification 校验失败（未写入）：" + "；".join(errors))
-    # legacy digest 复用：旧路径笔记能按 arXiv 基础 ID 确认身份时，主笔记入口指过去（§9.1）
+        die("BAD_ARGS", "Classification validation failed (not written): " + "; ".join(errors))
+    # Reuse legacy digest: when an old-path note can be identified by arXiv base ID, point the master note entry to it (§9.1).
     if arxiv_id and record["note"]["path"] is None:
         legacy = grad / "radar" / "digest" / f"{arxiv_id.replace('/', '_')}.md"
         if legacy.is_file():
             record["note"]["path"] = str(legacy.relative_to(grad)).replace("\\", "/")
-            warnings.append(f"发现旧 digest（legacy）：{record['note']['path']}；"
-                            "只证明有一份笔记，不证明全文读取范围、不证明用户已读")
+            warnings.append(f"Found legacy digest: {record['note']['path']}; "
+                            "it proves only that a note exists, not full-text coverage or that the user read it")
     save_record(grad, record)
     data = {"paper_id": paper_id, "created": True, "record": record, "warnings": warnings}
-    _emit(data, args.json, f"已登记主记录 {paper_id}")
+    _emit(data, args.json, f"Registered master record: {paper_id}")
 
 
 def _validated_source(source: object, errors: list[str]) -> dict:
@@ -349,7 +348,7 @@ def _validated_source(source: object, errors: list[str]) -> dict:
     version = source.get("version")
     if version is not None:
         if not isinstance(version, str) or not re.fullmatch(r"v\d+", version.strip()):
-            errors.append("source.version 必须是 vN 形式或 null")
+            errors.append("source.version must use vN format or be null")
         else:
             out["version"] = version.strip()
     vs = source.get("version_status")
@@ -361,14 +360,14 @@ def _validated_source(source: object, errors: list[str]) -> dict:
         validate_enum(parser, PARSER_VALUES, "source.parser", errors)
         out["parser"] = parser
     if out["version"] and out["version_status"] == "unknown":
-        errors.append("给了版本号但 version_status=unknown——两者矛盾：显式版本应为 confirmed")
+        errors.append("A version was supplied but version_status=unknown; explicit versions must be confirmed")
     return out
 
 
 def _default_classification(cls: object) -> dict:
-    base = {"importance": "unknown", "importance_reason": "尚未判断",
-            "difficulty": "unknown", "difficulty_reason": "尚未判断",
-            "paper_type": "other", "type_reason": "尚未判断", "provisional": True}
+    base = {"importance": "unknown", "importance_reason": "Not yet assessed",
+            "difficulty": "unknown", "difficulty_reason": "Not yet assessed",
+            "paper_type": "other", "type_reason": "Not yet assessed", "provisional": True}
     if isinstance(cls, dict):
         base.update({k: v for k, v in cls.items() if k in base})
     return base
@@ -378,40 +377,40 @@ SOURCE_FIELDS = ("url", "local_path", "version", "version_status", "parser", "pa
 
 
 def _update_source(record: dict, source: dict, warnings: list[str]) -> None:
-    """REV-04：字段级更新语义——省略 = 保留旧值，显式给值（含 null）= 覆盖/清空。
+    """REV-04: field-level updates—omitted means keep; an explicit value (including null) replaces/clears.
 
-    默认值只用于新建记录（register 走 _validated_source 初始化的那条路）；
-    这里先按键合并出完整 source，再对完整结果做校验与一致性检查。
+    Defaults are for new records only (register initializes through _validated_source).
+    Merge supplied keys into the complete source first, then validate the result.
     """
     if not isinstance(source, dict) or not source:
-        die("BAD_ARGS", "source 更新必须是非空对象（要改哪个字段给哪个，未给的保持原样）")
+        die("BAD_ARGS", "source update must be a non-empty object (supply changed fields; omitted fields stay unchanged)")
     unknown = [k for k in source if k not in SOURCE_FIELDS]
     if unknown:
-        die("BAD_ARGS", f"未知 source 字段 {unknown}；可更新字段：{'、'.join(SOURCE_FIELDS)}")
+        die("BAD_ARGS", f"Unknown source fields {unknown}; updatable fields: {', '.join(SOURCE_FIELDS)}")
     merged = {**(record.get("source") or {})}
     for key in source:
         merged[key] = source[key]
     errors: list[str] = []
     validated = _validated_source(merged, errors)
     if errors:
-        die("BAD_ARGS", "source 合并后校验失败（未写入）：" + "；".join(errors))
+        die("BAD_ARGS", "Merged source failed validation (not written): " + "; ".join(errors))
     old_version = (record.get("source") or {}).get("version")
     record["source"] = validated
     if old_version and validated.get("version") and old_version != validated["version"]:
-        warnings.append(f"资料版本更新：{old_version} → {validated['version']}；"
-                        "用户读过旧版不等于读过新版，阅读历史与笔记 source_version 保持不动")
+        warnings.append(f"Source version updated: {old_version} → {validated['version']}; "
+                        "reading the old version does not mean the new version was read; reading history and note source_version are unchanged")
     elif old_version and not validated.get("version"):
-        warnings.append(f"版本已从 {old_version} 清为未确认（version_status={validated['version_status']}）："
-                        "后续笔记不得再继承旧版本号，按新来源实际情况重新确认")
+        warnings.append(f"Version {old_version} was cleared as unconfirmed (version_status={validated['version_status']}); "
+                        "future notes must not inherit it and should confirm the version from the actual source")
 
 
-# ---------- 定位（show/update 共用） ----------
+# ---------- Lookup (shared by show/update) ----------
 
 def locate_record(grad: Path, query: str) -> dict:
-    """按 paper_id / arXiv id(可带版本) / 标题子串唯一定位；多义报候选（§5.1）。"""
+    """Resolve uniquely by paper_id, arXiv ID (optional version), or title substring; return candidates if ambiguous (§5.1)."""
     s = query.strip()
     if not s:
-        die("BAD_ARGS", "定位查询不能为空")
+        die("BAD_ARGS", "Lookup query cannot be empty")
     direct = load_record(grad, s)
     if direct:
         return direct
@@ -428,10 +427,10 @@ def locate_record(grad: Path, query: str) -> dict:
     if len(hits) == 1:
         return hits[0]
     if len(hits) > 1:
-        die("AMBIGUOUS_IDENTITY", "查询命中多条记录，列出候选让用户确认，不猜：" +
+        die("AMBIGUOUS_IDENTITY", "Query matched multiple records; choose from these candidates (no guessing): " +
             "；".join(f"{r['paper_id']}（{str(r.get('title', ''))[:30]}）" for r in hits[:6]),
             candidates=[r["paper_id"] for r in hits[:6]])
-    die("NOT_FOUND", f"没有匹配 {query!r} 的论文记录；先用 /grad:radar 阅读入口或直接 register 登记")
+        die("NOT_FOUND", f"No paper record matches {query!r}; use the /grad:radar reading entry point or register it directly")
     raise AssertionError
 
 
@@ -457,7 +456,7 @@ def cmd_show(args: argparse.Namespace) -> None:
 
 def cmd_list(args: argparse.Namespace) -> None:
     grad = grad_root(Path(args.repo).resolve())
-    records = iter_records(grad)  # papers/*.json 即全部主条目；digest/history/user.md 天然不在内
+    records = iter_records(grad)  # papers/*.json are master records; digest/history/user.md are excluded.
     if args.status:
         records = [r for r in records if (r.get("reading") or {}).get("status") == args.status]
     if args.type:
@@ -473,7 +472,7 @@ def cmd_list(args: argparse.Namespace) -> None:
     if args.json:
         print(json.dumps({"ok": True, "data": {"count": len(items), "items": items}}, ensure_ascii=False))
         return
-    print(f"{len(items)} 条主记录")
+    print(f"{len(items)} master records")
     for item in items:
         print(f"  {item['paper_id']:<28} {str(item['title'])[:38]:<40}"
               f" status={item['status']} mode={item['mode']} type={item['paper_type']}")
@@ -491,26 +490,26 @@ def cmd_save_note(args: argparse.Namespace) -> None:
     try:
         content = Path(args.note_file).read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError) as exc:
-        die("SOURCE_UNAVAILABLE", f"笔记正文文件不可读：{args.note_file}：{exc}")
+        die("SOURCE_UNAVAILABLE", f"Note body file is unreadable: {args.note_file}: {exc}")
     if not content.strip():
-        die("BAD_ARGS", "笔记正文为空；不保存空笔记冒充产出")
+        die("BAD_ARGS", "Note body is empty; do not save an empty note as a deliverable")
 
     errors: list[str] = []
     validate_enum(args.mode, MODE_VALUES, "--mode", errors)
     validate_enum(args.basis, BASIS_VALUES, "--basis", errors)
     if errors:
-        die("BAD_ARGS", "；".join(errors))
+        die("BAD_ARGS", "; ".join(errors))
     if args.source_version and not re.fullmatch(r"v\d+", args.source_version):
-        die("BAD_ARGS", f"--source-version 必须是 vN：{args.source_version!r}")
-    # REV-06：unavailable 没有任何可读来源，不构成任何一档完成交付（含 quick 卡片），
-    # 也不能覆盖既有有效笔记。获取失败用 --record-failure 单独落一条失败记录（写进
-    # record.note.limitations + 保留原笔记/mode 不动），而不是伪装成笔记。
+        die("BAD_ARGS", f"--source-version must use vN format: {args.source_version!r}")
+    # REV-06: unavailable means no readable source, so no depth (including quick) can be delivered;
+    # it also cannot overwrite a valid note. Use --record-failure to log retrieval failure in
+    # record.note.limitations while preserving the existing note/mode, not as a substitute note.
     if args.basis == "unavailable":
         if not args.record_failure:
-            die("BAD_ARGS", "basis=unavailable 不是完成交付：没有可读来源时不能保存任何档笔记（含 quick）。"
-                            "记录获取失败请改用 --record-failure（保留原笔记不动，只登记失败与待补材料）；"
-                            "有可用摘要/正文再按实际 basis 重新保存")
-        # 只登记失败信息，绝不写笔记正文、绝不改 reading.mode
+            die("BAD_ARGS", "basis=unavailable is not a completed deliverable: no note, including quick, can be saved without a readable source. "
+                            "Use --record-failure to log retrieval failure (preserve the existing note and record only the failure/missing materials); "
+                            "save again using the actual basis when an abstract/body is available.")
+        # Record failure only; never write note body or change reading.mode.
         existing_note = record.get("note") or {}
         reasons = [s.strip() for s in args.record_failure.split(";") if s.strip()]
         merged_lim = list(dict.fromkeys(list(existing_note.get("limitations") or []) + reasons))
@@ -521,15 +520,15 @@ def cmd_save_note(args: argparse.Namespace) -> None:
                "note_mode_unchanged": (record.get("reading") or {}).get("mode"),
                "existing_note_preserved": bool(existing_note.get("path"))},
               args.json,
-              f"已登记获取失败：{reasons}；原笔记与阅读深度保持不变")
+              f"Recorded retrieval failure: {reasons}; existing note and reading depth are unchanged")
         return
     if args.basis == "metadata":
-        die("SOURCE_UNAVAILABLE", "仅有身份/标题不能保存内容笔记；只登记原文入口。"
-                                 "取得可靠摘要后使用 basis=abstract")
-    # 只有摘要时不能保存成 standard/deep 冒充完成（§5.3）
+        die("SOURCE_UNAVAILABLE", "Identity/title alone cannot support a content note; register only the source entry. "
+                                 "Use basis=abstract after obtaining a reliable abstract.")
+    # An abstract alone cannot be saved as a completed standard/deep note (§5.3).
     if args.basis == "abstract" and args.mode in ("standard", "deep"):
-        warnings_mode = [f"--basis={args.basis} 只支持 quick 交付；"
-                         "standard/deep 请求实际未完成，mode 已按实际材料降级为 quick（如实说明原因）"]
+        warnings_mode = [f"--basis={args.basis} supports quick delivery only; "
+                         "the requested standard/deep note was not completed and mode was downgraded to quick to match available material"]
         args.mode = "quick"
     else:
         warnings_mode = []
@@ -541,13 +540,13 @@ def cmd_save_note(args: argparse.Namespace) -> None:
     else:
         target = grad / "radar" / "digest" / f"{record['paper_id']}.md"
     if not str(target).endswith(".md"):
-        die("BAD_ARGS", "笔记必须是 .md 文件")
+        die("BAD_ARGS", "Note must be a .md file")
     if target.name.endswith(".user.md"):
-        die("BAD_ARGS", "save-note 不能写 .user.md——用户批注文件由用户维护，AI 不覆盖")
+        die("BAD_ARGS", "save-note cannot write .user.md; the user maintains annotation files and AI must not overwrite them")
 
-    # 先把所有 note 字段解析并校验（任何坏参数都在落盘前挡下，不留半成品）
+    # Parse and validate every note field before writing so invalid arguments cannot leave partial output.
     note_fields: dict = {
-        # 省略表示本次材料版本未确认；资料记录的旧版本不能替代本次确认。
+        # Omitted means the material version for this run is unconfirmed; an old source-record version is not a substitute.
         "source_version": args.source_version or None,
         "basis": args.basis,
         "sections": [s.strip() for s in args.sections.split(",") if s.strip()],
@@ -558,10 +557,10 @@ def cmd_save_note(args: argparse.Namespace) -> None:
     }
     pre_errors: list[str] = []
     if args.basis == "sections" and not (note_fields["sections"] or note_fields["pages"]):
-        pre_errors.append("basis=sections 必须提供实际章节或物理页范围")
+        pre_errors.append("basis=sections requires actual section or physical-page coverage")
     validate_note_fields({**note, **note_fields}, pre_errors)
     if pre_errors:
-        die("BAD_ARGS", "note 字段校验失败（未写入任何东西）：" + "；".join(pre_errors))
+        die("BAD_ARGS", "Note field validation failed (nothing written): " + "; ".join(pre_errors))
 
     warnings: list[str] = list(warnings_mode)
     existing_text = target.read_text(encoding="utf-8", errors="replace") if target.is_file() else None
@@ -570,45 +569,45 @@ def cmd_save_note(args: argparse.Namespace) -> None:
     write_mode = "create"
     final_content = content
 
-    # REV-01：--merge 只要目标存在就始终追加，语义不受哈希冲突与否影响；
-    # 一旦主笔记接纳过人工内容（保护标记）或哈希不符，普通保存也必须保守保护。
+    # REV-01: --merge always appends when the target exists, regardless of hash conflicts.
+    # If the master note has accepted human content or its hash differs, ordinary saves also protect it.
     protected = bool(note.get("has_human_content"))
     if args.merge:
         if has_existing:
             write_mode = "merge"
         else:
-            write_mode = "create"  # 无既有内容可追加，等同新建
+            write_mode = "create"  # Nothing exists to append to; create a new note.
     elif has_existing:
         external_edit = stored_sha is None or sha256_text(existing_text) != stored_sha
         if external_edit:
-            # 无哈希（legacy）或被外部编辑：可能有人工改动，默认拒绝整体替换（§9.6 第 5 条）
+            # Missing legacy hash or external edits may indicate human changes; refuse replacement by default (§9.6, rule 5).
             if args.force:
                 write_mode = "replace"
-                warnings.append("笔记被外部修改/无哈希记录，--force 整体替换已把原稿快照进 history；"
-                                "请人工回查被覆盖的改动是否已并入新稿")
+                warnings.append("The note was externally modified or has no recorded hash; --force replaced it after saving a history snapshot. "
+                                "Manually check that overwritten edits are included in the new draft.")
             else:
-                die("CONFLICT", f"主笔记已存在且可能被人工编辑（无哈希或哈希不符）：{target}；"
-                                "不覆盖人工内容。--merge 追加补充段 / --force 快照后替换 / --new-path 另存")
+                die("CONFLICT", f"Master note exists and may have human edits (missing/mismatched hash): {target}; "
+                                "human content will not be overwritten. Use --merge to append, --force to snapshot then replace, or --new-path to save separately.")
         elif protected:
-            # 之前 merge 过（含人工内容），即便本次哈希相等的自动更新也保守：默认追加而非覆盖，
-            # 除非显式 --force 才整体替换（用户确实要求重写）。
+            # After a merge (which may include human content), even a hash-matching automatic update appends by default.
+            # Replace the full note only with explicit --force.
             if args.force:
                 write_mode = "replace"
             else:
                 write_mode = "merge"
-                warnings.append("主笔记此前接纳过人工内容，普通保存改为追加保护旧内容；"
-                                "确需整体重写用 --force（旧稿快照进 history）")
+                warnings.append("The master note previously accepted human content; ordinary saves append to protect it. "
+                                "Use --force for a full rewrite (the old draft is snapshotted to history).")
         else:
-            write_mode = "replace"  # 纯 AI 笔记、哈希一致、无保护标记：正常更新，旧稿快照进 history
+            write_mode = "replace"  # Pure AI note, matching hash, no protection marker: update and snapshot the old note.
     elif protected and not has_existing:
         write_mode = "create"
 
     if write_mode == "merge":
         supplement = (f"\n\n{MERGE_MARKER}\n\n---\n\n"
-                      f"## 补充阅读 · {datetime.now().astimezone():%Y-%m-%d}（本次新增，原有内容保留）\n\n{content}")
+                      f"## Supplementary reading · {datetime.now().astimezone():%Y-%m-%d} (added this time; previous content retained)\n\n{content}")
         final_content = (existing_text or "") + supplement
     elif write_mode == "replace":
-        # 更新前保存历史快照（历史只在内容确实变化时创建，§9.6）
+        # Save a history snapshot before updating; create history only when content actually changes (§9.6).
         if existing_text is not None and sha256_text(existing_text) != sha256_text(final_content):
             rev = 1
             history_dir = grad / "radar" / "digest" / "history" / str(record["paper_id"])
@@ -617,32 +616,32 @@ def cmd_save_note(args: argparse.Namespace) -> None:
             try:
                 atomic_write(history_dir / f"rev-{rev:03d}.md", existing_text)
                 (history_dir / f"rev-{rev:03d}.reason.txt").write_text(
-                    (args.history_reason or "更新前自动快照") + f"\nsaved_at={now_local()}\n", encoding="utf-8")
+                    (args.history_reason or "Automatic pre-update snapshot") + f"\nsaved_at={now_local()}\n", encoding="utf-8")
             except OSError as exc:
-                die("WRITE_FAILED", f"历史快照写入失败，笔记未更新：{exc}")
+                die("WRITE_FAILED", f"Failed to write history snapshot; note was not updated: {exc}")
 
-    # 先确保新笔记落盘成功，再更新主记录指向（§9.6 第 6 条：失败不得登记完成）
+    # Write the new note successfully before updating the master-record pointer (§9.6, rule 6: failed writes are not complete).
     try:
         atomic_write(target, final_content)
     except OSError as exc:
-        die("WRITE_FAILED", f"笔记写入失败，主记录保持原状：{exc}")
+        die("WRITE_FAILED", f"Failed to write note; master record remains unchanged: {exc}")
 
     note["path"] = str(target.relative_to(grad)).replace("\\", "/")
     note["content_sha256"] = sha256_text(final_content)
-    # REV-01：merge 引入补充段即视为接纳过人工/补充内容，置保护标记，后续普通保存继续保守；
-    # 纯 AI 内容整体写入（create/replace）则基线重新干净，解除标记。
+    # REV-01: merge accepts human/supplementary content and sets the protection marker for future saves.
+    # Full create/replace with AI-only content resets the baseline and clears the marker.
     if write_mode == "merge":
         note["has_human_content"] = True
     else:
         note.pop("has_human_content", None)
     note["generated_at"] = now_local()
-    # REV-01：合并笔记的覆盖范围不能只描述最后一段；追加时把本次范围并入既有条目去重
+    # REV-01: merged-note coverage must include every segment; merge and deduplicate the current range.
     if write_mode == "merge":
         note.update(_merge_note_fields(note, note_fields))
     else:
         note.update(note_fields)
         note["coverage_sources"] = [_coverage_source(note_fields)]
-    # mode 归属 reading.mode（§9.3：当前主笔记采用的阅读深度）；只动笔记，不碰人的 status/last_read_at
+    # mode belongs to reading.mode (§9.3, depth of the current master note); change only the note, not human status/read time.
     record.setdefault("reading", {})["mode"] = args.mode
     save_record(grad, record)
     data = {"paper_id": record["paper_id"], "note_path": note["path"], "mode": args.mode,
@@ -650,12 +649,12 @@ def cmd_save_note(args: argparse.Namespace) -> None:
             "reading_status_untouched": (record.get("reading") or {}).get("status"),
             "warnings": warnings}
     _emit(data, args.json,
-          f"笔记已保存：{note['path']}（mode={args.mode}，写入方式={write_mode}）；"
-          f"人的阅读状态保持 {(record.get('reading') or {}).get('status')}——生成笔记不等于读完")
+          f"Note saved: {note['path']} (mode={args.mode}, write={write_mode}); "
+          f"human reading status remains {(record.get('reading') or {}).get('status')} — generating a note does not mean the paper was read")
 
 
 def _merge_note_fields(existing: dict, incoming: dict) -> dict:
-    """合并保存时保留各补充段的版本/范围，不假装只描述最后一段（REV-01）。"""
+    """Preserve each segment's version and coverage in merged saves; do not describe only the last segment (REV-01)."""
     merged = dict(incoming)
     sources = existing.get("coverage_sources")
     if not isinstance(sources, list) or not sources:
@@ -669,9 +668,9 @@ def _merge_note_fields(existing: dict, incoming: dict) -> dict:
     for key in ("sections", "pages", "figures_viewed", "tables_checked", "limitations"):
         seen = list(dict.fromkeys(list(existing.get(key) or []) + list(incoming.get(key) or [])))
         merged[key] = seen
-    # source_version：不同补充段版本不一致时如实标注，不覆盖成单值假象
+    # source_version: report differing supplement versions honestly; do not overwrite them with a false single value.
     merged["source_version"] = existing.get("source_version")
-    # basis：取信息量更高的一档（fulltext>sections>abstract>metadata；unavailable 不提升）
+    # basis: use the most informative level (fulltext > sections > abstract > metadata; unavailable never upgrades).
     rank = {"unavailable": 0, "metadata": 1, "abstract": 2, "sections": 3, "fulltext": 4}
     ob, nb = existing.get("basis"), incoming.get("basis")
     if ob and nb and rank.get(nb, 0) < rank.get(ob, 0):
@@ -680,7 +679,7 @@ def _merge_note_fields(existing: dict, incoming: dict) -> dict:
 
 
 def _coverage_source(fields: dict) -> dict:
-    """保留每段范围对应的真实版本；旧扁平范围继续供旧消费者读取。"""
+    """Preserve each coverage segment's actual version; keep legacy flat coverage for older consumers."""
     return {"source_version": fields.get("source_version"), "basis": fields.get("basis"),
             **{key: list(fields.get(key) or []) for key in
                ("sections", "pages", "figures_viewed", "tables_checked", "limitations")}}
@@ -692,7 +691,7 @@ def _parse_pages(text: str) -> list[int]:
         if not part:
             continue
         if not part.isdigit() or int(part) < 1:
-            die("BAD_ARGS", f"pages 必须是逗号分隔的 ≥1 物理页码整数：{part!r}")
+            die("BAD_ARGS", f"pages must be comma-separated physical page integers >= 1: {part!r}")
         pages.append(int(part))
     return pages
 
@@ -704,14 +703,14 @@ def cmd_set_status(args: argparse.Namespace) -> None:
     record = locate_record(grad, args.paper)
     quote = (args.user_quote or "").strip()
     if not quote:
-        die("BAD_ARGS", "set-status 必须附 --user-quote（用户明确表达阅读状态的原话/转述）；"
-                        "AI 生成笔记、模型建议都不能写成人的阅读状态")
-    # REV-02：last_read_version 记「实际读完的版本」，不能盲取当前资料版本。
-    # 优先级：显式 --read-version > 定位查询里带的版本（如 --paper 2609.90003v1）> null（不猜）。
+        die("BAD_ARGS", "set-status requires --user-quote (the user's explicit statement or paraphrase of reading status); "
+                        "AI-generated notes and model suggestions cannot set human reading status")
+    # REV-02: last_read_version records the version actually read, not the current source version.
+    # Priority: explicit --read-version > version in the lookup (e.g. --paper 2609.90003v1) > null (never guess).
     read_version = None
     if args.read_version:
         if not re.fullmatch(r"v\d+", args.read_version):
-            die("BAD_ARGS", f"--read-version 必须是 vN：{args.read_version!r}")
+            die("BAD_ARGS", f"--read-version must use vN format: {args.read_version!r}")
         read_version = args.read_version
     else:
         qm = re.search(r"(v\d+)$", args.paper.strip())
@@ -723,8 +722,8 @@ def cmd_set_status(args: argparse.Namespace) -> None:
     reading["status_origin"] = "user"
     reading["status_user_quote"] = quote
     if args.status == "read":
-        # 完成阅读按实际读的版本记录（没有依据时留 null，不拿最新资料版本冒充）；
-        # 重读 read→reading 保留上次完成时间与版本（§8.4）
+        # Record the version actually read (null without evidence; never substitute the latest source version).
+        # When resuming read → reading, preserve the previous completion time/version (§8.4).
         reading["last_read_at"] = now_local()
         if read_version:
             reading["last_read_version"] = read_version
@@ -733,8 +732,8 @@ def cmd_set_status(args: argparse.Namespace) -> None:
            "last_read_at": reading.get("last_read_at"),
            "last_read_version": reading.get("last_read_version"),
            "note_generated_at": (record.get("note") or {}).get("generated_at")},
-          args.json, f"阅读状态已记录（user）：{args.status}"
-                     + (f"｜读完版本 {reading.get('last_read_version')}" if args.status == "read" else ""))
+          args.json, f"Reading status recorded (user): {args.status}"
+                     + (f" | completed version {reading.get('last_read_version')}" if args.status == "read" else ""))
 
 
 def cmd_update_context(args: argparse.Namespace) -> None:
@@ -746,30 +745,30 @@ def cmd_update_context(args: argparse.Namespace) -> None:
         try:
             cls = json.loads(Path(args.classification_json).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            die("BAD_ARGS", f"--classification-json 读取/解析失败：{exc}")
+            die("BAD_ARGS", f"Could not read/parse --classification-json: {exc}")
         merged = {**(record.get("classification") or {}), **cls}
         errors: list[str] = []
         validate_classification(merged, errors)
         if errors:
-            die("BAD_ARGS", "classification 校验失败（未写入）：" + "；".join(errors))
+            die("BAD_ARGS", "Classification validation failed (not written): " + "; ".join(errors))
         old_type = (record.get("classification") or {}).get("paper_type")
         record["classification"] = merged
         if args.type_reason:
-            merged["type_reason"] = args.type_reason + "（分类变更说明）"
+            merged["type_reason"] = args.type_reason + " (classification-change explanation)"
         if old_type and merged.get("paper_type") and old_type != merged["paper_type"]:
-            warnings.append(f"主类型变更 {old_type} → {merged['paper_type']}；"
-                            "分类变更必须说明原因（--type-reason 或写在 reason 里）")
+            warnings.append(f"Primary type changed from {old_type} to {merged['paper_type']}; "
+                            "classification changes require a reason (--type-reason or a reason field)")
         changed = True
     if args.source_json:
         try:
             source = json.loads(Path(args.source_json).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            die("BAD_ARGS", f"--source-json 读取/解析失败：{exc}")
+            die("BAD_ARGS", f"Could not read/parse --source-json: {exc}")
         _update_source(record, source, warnings)
         changed = True
     if args.difficulty_point:
         cls = record.setdefault("classification", {})
-        cls["difficulty_reason"] = f"{cls.get('difficulty_reason', '')}｜卡点：{args.difficulty_point}".strip("｜")
+        cls["difficulty_reason"] = f"{cls.get('difficulty_reason', '')} | Difficulty point: {args.difficulty_point}".strip(" |")
         changed = True
     if args.reading_mode:
         mode_errors: list[str] = []
@@ -777,23 +776,23 @@ def cmd_update_context(args: argparse.Namespace) -> None:
         note = record.get("note") or {}
         basis = note.get("basis")
         if not note.get("path") or basis not in {"abstract", "sections", "fulltext"}:
-            mode_errors.append("实际笔记尚无可读依据，不能通过上下文设置交付深度")
+            mode_errors.append("The saved note has no readable basis; context cannot set its delivered depth")
         if args.reading_mode in {"standard", "deep"} and basis not in {"sections", "fulltext"}:
-            mode_errors.append("standard/deep 需要正文依据，不能通过上下文绕过摘要降级")
+            mode_errors.append("standard/deep require body-text evidence; context cannot bypass an abstract-only downgrade")
         depth_rank = {"quick": 0, "standard": 1, "deep": 2}
         old_mode = (record.get("reading") or {}).get("mode")
         if depth_rank.get(args.reading_mode, -1) > depth_rank.get(old_mode, -1):
-            mode_errors.append("升级交付深度需通过 save-note 保存相应讲解，上下文更新不能代替内容")
+            mode_errors.append("Upgrading delivered depth requires saving the corresponding explanation with save-note; context updates cannot replace content")
         if mode_errors:
             die("BAD_ARGS", "；".join(mode_errors))
         record.setdefault("reading", {})["mode"] = args.reading_mode
         changed = True
     if changed:
-        # 本操作只动分类/来源/深度：用户批注文件与 last_read_at 不碰（§9.7）
+        # This operation changes classification/source/depth only; preserve user annotations and last_read_at (§9.7).
         save_record(grad, record)
     _emit({"paper_id": record["paper_id"], "record": record, "warnings": warnings,
            "changed": changed}, args.json,
-          f"已更新 {record['paper_id']} 的阅读上下文（状态与已读时间未动）")
+          f"Updated reading context for {record['paper_id']} (status and read time unchanged)")
 
 
 def _emit(data: dict, as_json: bool, summary: str) -> None:
@@ -804,60 +803,60 @@ def _emit(data: dict, as_json: bool, summary: str) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="单篇阅读主记录：身份、状态与笔记保存（只存不判）")
+    ap = argparse.ArgumentParser(description="Single-paper master records: identity, status, and note saving (store, do not judge)")
     sub = ap.add_subparsers(dest="command", required=True)
 
     def common(cmd: argparse.ArgumentParser, paper: bool = True) -> None:
-        cmd.add_argument("--repo", default=".", help="项目根（.grad/ 所在）")
+        cmd.add_argument("--repo", default=".", help="Project root (contains .grad/)")
         if paper:
-            cmd.add_argument("--paper", required=True, help="paper_id / arXiv id（可带版本）/ 标题子串")
+            cmd.add_argument("--paper", required=True, help="paper_id / arXiv ID (optional version) / title substring")
         cmd.add_argument("--json", action="store_true")
 
-    p = sub.add_parser("register", help="登记/返回主记录（同身份幂等）")
+    p = sub.add_parser("register", help="Register or return a master record (idempotent by identity)")
     p.add_argument("--repo", default=".")
     p.add_argument("--input-file", required=True, help="UTF-8 JSON：identifiers/title/source/classification")
     p.add_argument("--json", action="store_true")
 
-    p = sub.add_parser("show", help="读取一篇记录（无写入副作用）"); common(p)
-    p = sub.add_parser("list", help="按状态/类型列出主记录")
+    p = sub.add_parser("show", help="Show one record (read-only)"); common(p)
+    p = sub.add_parser("list", help="List master records by status/type")
     p.add_argument("--repo", default=".")
     p.add_argument("--status", choices=sorted(STATUS_VALUES), default=None)
     p.add_argument("--type", choices=sorted(PAPER_TYPE_VALUES), default=None)
     p.add_argument("--limit", type=int, default=50)
     p.add_argument("--json", action="store_true")
 
-    p = sub.add_parser("save-note", help="保存 AI 主笔记与已获取来源范围")
+    p = sub.add_parser("save-note", help="Save an AI master note and the source coverage actually retrieved")
     common(p)
-    p.add_argument("--note-file", required=True, help="模型已写好的笔记正文文件（UTF-8）")
+    p.add_argument("--note-file", required=True, help="UTF-8 file containing the note body already written by the model")
     p.add_argument("--mode", required=True, choices=sorted(MODE_VALUES))
     p.add_argument("--basis", required=True, choices=sorted(BASIS_VALUES),
-                   help="实际依据材料：metadata/abstract/sections/fulltext/unavailable")
-    p.add_argument("--source-version", default="", help="本次确认的材料版本（vN）；省略记为未知，不继承资料记录版本")
-    p.add_argument("--sections", default="", help="已读章节，逗号分隔（S1,S3.SS2…）")
-    p.add_argument("--pages", default="", help="PDF 物理页码（从 1 开始），逗号分隔")
-    p.add_argument("--figures", default="", help="已核对图标识；空=没有确认，不补成全覆盖")
-    p.add_argument("--tables", default="", help="已核对表标识")
-    p.add_argument("--limitations", default="", help="未覆盖/解析受限说明，逗号分隔")
-    p.add_argument("--merge", action="store_true", help="与既有笔记冲突时追加补充段而非替换")
-    p.add_argument("--force", action="store_true", help="确认整体替换（旧稿先快照进 history）")
-    p.add_argument("--new-path", default="", help="另存为独立草稿路径（相对 .grad/）")
-    p.add_argument("--history-reason", default="", help="快照原因（默认自动记录模式与时间）")
+                   help="Actual evidence basis: metadata/abstract/sections/fulltext/unavailable")
+    p.add_argument("--source-version", default="", help="Material version confirmed for this note (vN); omitted means unknown, not inherited")
+    p.add_argument("--sections", default="", help="Sections read, comma-separated (S1,S3.SS2...)")
+    p.add_argument("--pages", default="", help="Physical PDF pages, starting at 1, comma-separated")
+    p.add_argument("--figures", default="", help="Figure IDs checked; empty means none confirmed, not full coverage")
+    p.add_argument("--tables", default="", help="Table IDs checked")
+    p.add_argument("--limitations", default="", help="Uncovered/limited-parsing notes, comma-separated")
+    p.add_argument("--merge", action="store_true", help="Append a supplement instead of replacing on note conflict")
+    p.add_argument("--force", action="store_true", help="Confirm full replacement (snapshot the old note to history first)")
+    p.add_argument("--new-path", default="", help="Save as a separate draft path relative to .grad/")
+    p.add_argument("--history-reason", default="", help="Snapshot reason (mode and time are recorded automatically by default)")
     p.add_argument("--record-failure", default="",
-                   help="basis=unavailable 专用：登记获取失败原因与待补材料（分号分隔），不写笔记不改深度")
+                   help="For basis=unavailable: record retrieval failure and missing materials (semicolon-separated); writes no note and changes no depth")
 
-    p = sub.add_parser("set-status", help="记录用户明确表达的阅读状态（唯一能写 read 的入口）")
+    p = sub.add_parser("set-status", help="Record the user's explicit reading status (the only command that can set read)")
     common(p)
     p.add_argument("--status", required=True, choices=sorted(USER_STATUS_VALUES))
-    p.add_argument("--user-quote", required=True, help="用户原话/转述——状态必须是用户动作")
+    p.add_argument("--user-quote", required=True, help="User quote/paraphrase; status must reflect a user action")
     p.add_argument("--read-version", default="",
-                   help="status=read 时实际读完的版本（vN）；不给则用定位查询里的显式版本，都没有记 null，不拿最新资料版本冒充")
+                   help="Version actually read when status=read (vN); otherwise use an explicit version in the lookup or null; never substitute the latest source version")
 
-    p = sub.add_parser("update-context", help="更新分类/来源资料/深度；不动批注与已读时间")
+    p = sub.add_parser("update-context", help="Update classification/source metadata/depth; preserve annotations and read time")
     common(p)
-    p.add_argument("--classification-json", default="", help="UTF-8 JSON 文件：分类字段（含理由）")
-    p.add_argument("--type-reason", default="", help="主类型变更的原因（分类变更必须说明）")
-    p.add_argument("--source-json", default="", help="UTF-8 JSON 文件：来源/版本资料更新")
-    p.add_argument("--difficulty-point", default="", help="用户反馈的具体卡点（附加到 difficulty_reason）")
+    p.add_argument("--classification-json", default="", help="UTF-8 JSON file with classification fields and reasons")
+    p.add_argument("--type-reason", default="", help="Reason for primary type change (required for reclassification)")
+    p.add_argument("--source-json", default="", help="UTF-8 JSON file with source/version metadata updates")
+    p.add_argument("--difficulty-point", default="", help="Specific difficulty reported by the user (appended to difficulty_reason)")
     p.add_argument("--reading-mode", choices=sorted(MODE_VALUES), default=None)
 
     args = ap.parse_args()

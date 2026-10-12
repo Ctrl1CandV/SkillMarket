@@ -1,13 +1,13 @@
-# 跨媒介边界
+# Cross-Media Boundaries
 
-本技能面向 Web；跨媒介可以复用设计判断，不能沿用验收结论。每次输出质量都以对应媒介的当次实测为准。
+This skill focuses on Web. Design judgment can transfer across media, but acceptance results cannot. Quality must be based on measurements for the actual target medium each time.
 
-## 原生 App
+## Native apps
 
-可带走任务、信息层级、真实内容、状态和证据原则；不能直接带走 Web 的 hover、浏览器回退、CSS 断点或桌面侧栏。加载 ios-dev / android-dev 等对应技能；交接平台导航、返回行为、安全区、系统字体缩放、键盘遮挡、触控与权限状态、目标设备。用真实模拟器/设备截图和操作验收后再宣称原生可用。
+Task flow, information hierarchy, real content, states, and evidence principles may transfer. Web hover, browser back behavior, CSS breakpoints, and desktop sidebars do not transfer directly. Load the relevant skill, such as ios-dev or android-dev. Hand off platform navigation and back behavior, safe areas, system font scaling, keyboard overlap, touch, permission states, and target devices. Claim a native app works only after checking real simulator/device screenshots and interactions.
 
-## PDF / DOCX / 幻灯片
+## PDF, DOCX, and slides
 
-Web 阅读页不等于分页文件。交接给 PDF、DOCX、PPTX 等相应技能：读者和阅读目的、实际内容、版式层级、纸张/页幅、字体及嵌入许可、表格和图表、目录/链接、页眉页脚与交付格式。
+A Web reading page is not a paginated document. Hand off to the relevant PDF/DOCX/PPTX skill, with the audience and reading purpose, actual content, layout hierarchy, page size, fonts and embedding permissions, tables/charts, contents/links, headers/footers, and delivery format.
 
-正式 PDF 另检查逐页渲染、分页与孤行、跨页表头、脚注、公式、中文字体嵌入与替换、可搜索文本、阅读顺序及标签（按需求）、打印对比。浏览器打印成功不能证明这些通过。没有实际 PDF 样本时只能提出检查计划，不能诊断“PDF 很糟糕”的具体原因。
+For a formal PDF, also inspect page-by-page rendering, pagination and widows/orphans, repeated table headers, footnotes, equations, Chinese font embedding/substitution, searchable text, reading order and tags when needed, and print output. Successful browser printing does not prove these checks passed. Without an actual PDF sample, provide only a check plan; do not diagnose a specific reason why the “PDF looks terrible.”
