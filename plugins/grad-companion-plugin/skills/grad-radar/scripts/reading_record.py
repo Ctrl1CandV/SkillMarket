@@ -523,8 +523,11 @@ def cmd_save_note(args: argparse.Namespace) -> None:
               args.json,
               f"已登记获取失败：{reasons}；原笔记与阅读深度保持不变")
         return
+    if args.basis == "metadata":
+        die("SOURCE_UNAVAILABLE", "仅有身份/标题不能保存内容笔记；只登记原文入口。"
+                                 "取得可靠摘要后使用 basis=abstract")
     # 只有摘要时不能保存成 standard/deep 冒充完成（§5.3）
-    if args.basis in ("metadata", "abstract") and args.mode in ("standard", "deep"):
+    if args.basis == "abstract" and args.mode in ("standard", "deep"):
         warnings_mode = [f"--basis={args.basis} 只支持 quick 交付；"
                          "standard/deep 请求实际未完成，mode 已按实际材料降级为 quick（如实说明原因）"]
         args.mode = "quick"
@@ -544,7 +547,8 @@ def cmd_save_note(args: argparse.Namespace) -> None:
 
     # 先把所有 note 字段解析并校验（任何坏参数都在落盘前挡下，不留半成品）
     note_fields: dict = {
-        "source_version": args.source_version or (record.get("source") or {}).get("version"),
+        # 省略表示本次材料版本未确认；资料记录的旧版本不能替代本次确认。
+        "source_version": args.source_version or None,
         "basis": args.basis,
         "sections": [s.strip() for s in args.sections.split(",") if s.strip()],
         "pages": _parse_pages(args.pages),
@@ -553,6 +557,8 @@ def cmd_save_note(args: argparse.Namespace) -> None:
         "limitations": [s.strip() for s in args.limitations.split(",") if s.strip()],
     }
     pre_errors: list[str] = []
+    if args.basis == "sections" and not (note_fields["sections"] or note_fields["pages"]):
+        pre_errors.append("basis=sections 必须提供实际章节或物理页范围")
     validate_note_fields({**note, **note_fields}, pre_errors)
     if pre_errors:
         die("BAD_ARGS", "note 字段校验失败（未写入任何东西）：" + "；".join(pre_errors))
@@ -635,6 +641,7 @@ def cmd_save_note(args: argparse.Namespace) -> None:
         note.update(_merge_note_fields(note, note_fields))
     else:
         note.update(note_fields)
+        note["coverage_sources"] = [_coverage_source(note_fields)]
     # mode 归属 reading.mode（§9.3：当前主笔记采用的阅读深度）；只动笔记，不碰人的 status/last_read_at
     record.setdefault("reading", {})["mode"] = args.mode
     save_record(grad, record)
@@ -650,20 +657,33 @@ def cmd_save_note(args: argparse.Namespace) -> None:
 def _merge_note_fields(existing: dict, incoming: dict) -> dict:
     """合并保存时保留各补充段的版本/范围，不假装只描述最后一段（REV-01）。"""
     merged = dict(incoming)
+    sources = existing.get("coverage_sources")
+    if not isinstance(sources, list) or not sources:
+        sources = [_coverage_source(existing)]
+    else:
+        sources = list(sources)
+    new_source = _coverage_source(incoming)
+    if new_source not in sources:
+        sources.append(new_source)
+    merged["coverage_sources"] = sources
     for key in ("sections", "pages", "figures_viewed", "tables_checked", "limitations"):
         seen = list(dict.fromkeys(list(existing.get(key) or []) + list(incoming.get(key) or [])))
         merged[key] = seen
     # source_version：不同补充段版本不一致时如实标注，不覆盖成单值假象
-    old_v = existing.get("source_version")
-    new_v = incoming.get("source_version")
-    if old_v and new_v and old_v != new_v:
-        merged["source_version"] = old_v  # 保留主笔记基线版本，差异体现在覆盖说明
+    merged["source_version"] = existing.get("source_version")
     # basis：取信息量更高的一档（fulltext>sections>abstract>metadata；unavailable 不提升）
     rank = {"unavailable": 0, "metadata": 1, "abstract": 2, "sections": 3, "fulltext": 4}
     ob, nb = existing.get("basis"), incoming.get("basis")
     if ob and nb and rank.get(nb, 0) < rank.get(ob, 0):
         merged["basis"] = ob
     return merged
+
+
+def _coverage_source(fields: dict) -> dict:
+    """保留每段范围对应的真实版本；旧扁平范围继续供旧消费者读取。"""
+    return {"source_version": fields.get("source_version"), "basis": fields.get("basis"),
+            **{key: list(fields.get(key) or []) for key in
+               ("sections", "pages", "figures_viewed", "tables_checked", "limitations")}}
 
 
 def _parse_pages(text: str) -> list[int]:
@@ -752,7 +772,20 @@ def cmd_update_context(args: argparse.Namespace) -> None:
         cls["difficulty_reason"] = f"{cls.get('difficulty_reason', '')}｜卡点：{args.difficulty_point}".strip("｜")
         changed = True
     if args.reading_mode:
-        validate_enum(args.reading_mode, MODE_VALUES, "--reading-mode", [])
+        mode_errors: list[str] = []
+        validate_enum(args.reading_mode, MODE_VALUES, "--reading-mode", mode_errors)
+        note = record.get("note") or {}
+        basis = note.get("basis")
+        if not note.get("path") or basis not in {"abstract", "sections", "fulltext"}:
+            mode_errors.append("实际笔记尚无可读依据，不能通过上下文设置交付深度")
+        if args.reading_mode in {"standard", "deep"} and basis not in {"sections", "fulltext"}:
+            mode_errors.append("standard/deep 需要正文依据，不能通过上下文绕过摘要降级")
+        depth_rank = {"quick": 0, "standard": 1, "deep": 2}
+        old_mode = (record.get("reading") or {}).get("mode")
+        if depth_rank.get(args.reading_mode, -1) > depth_rank.get(old_mode, -1):
+            mode_errors.append("升级交付深度需通过 save-note 保存相应讲解，上下文更新不能代替内容")
+        if mode_errors:
+            die("BAD_ARGS", "；".join(mode_errors))
         record.setdefault("reading", {})["mode"] = args.reading_mode
         changed = True
     if changed:
@@ -799,7 +832,7 @@ def main() -> None:
     p.add_argument("--mode", required=True, choices=sorted(MODE_VALUES))
     p.add_argument("--basis", required=True, choices=sorted(BASIS_VALUES),
                    help="实际依据材料：metadata/abstract/sections/fulltext/unavailable")
-    p.add_argument("--source-version", default="", help="本笔记实际基于的材料版本（vN）")
+    p.add_argument("--source-version", default="", help="本次确认的材料版本（vN）；省略记为未知，不继承资料记录版本")
     p.add_argument("--sections", default="", help="已读章节，逗号分隔（S1,S3.SS2…）")
     p.add_argument("--pages", default="", help="PDF 物理页码（从 1 开始），逗号分隔")
     p.add_argument("--figures", default="", help="已核对图标识；空=没有确认，不补成全覆盖")
