@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>订单 · 慢火咖啡</title>
+<style>
+:root{
+  --h: 240;
+  --bg:        oklch(98.4% .004 var(--h));
+  --paper:     #fff;
+  --surface:   oklch(96.6% .007 var(--h));
+  --surface-2: oklch(94.2% .010 var(--h));
+  --line:      oklch(91% .008 var(--h));
+  --line-2:    oklch(85% .012 var(--h));
+  --muted:     oklch(52% .018 var(--h));
+  --ink-2:     oklch(38% .022 var(--h));
+  --ink:       oklch(25% .025 var(--h));
+  --brand:     oklch(44% .07 var(--h));
+  --brand-dk:  oklch(38% .07 var(--h));
+  --brand-soft:oklch(95.5% .012 var(--h));
+  --crema:     oklch(64% .06 60);
+  --warn:      oklch(52% .07 70);
+  --warn-soft: oklch(96.5% .015 75);
+  --danger:    oklch(50% .09 22);
+  --danger-soft: oklch(96.5% .010 22);
+  --ok:        oklch(50% .06 175);
+  --ok-soft:   oklch(96.5% .012 175);
+
+  --sans: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC","Source Han Sans SC",sans-serif;
+  --mono: ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono","Ubuntu Mono",monospace;
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:40px;
+  --r1:6px; --r2:10px;
+  --top: 56px;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);line-break:strict;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+.nw{white-space:nowrap}
+mark{background:oklch(93% .045 85);color:inherit;border-radius:2px;padding:0 1px}
+[hidden]{display:none!important}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- 骨架：顶栏 + 三栏工作区 ---------- */
+.app{display:grid;grid-template-columns:264px minmax(0,1fr) 472px;grid-template-rows:var(--top) minmax(0,1fr);height:100vh;height:100dvh}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:var(--s5);padding:0 var(--s4);background:var(--paper);border-bottom:1px solid var(--line);position:relative;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;width:232px;flex:none;font-size:16px;font-weight:700;letter-spacing:.02em}
+.brand svg{flex:none}
+.brand small{font-size:14px;font-weight:400;color:var(--muted);padding-left:10px;border-left:1px solid var(--line-2);letter-spacing:0}
+.search{flex:1;max-width:540px;display:flex;align-items:center;gap:var(--s2);height:38px;padding:0 6px 0 12px;background:var(--surface);border:1px solid transparent;border-radius:var(--r1)}
+.search:focus-within{background:var(--paper);border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.search svg{flex:none;color:var(--muted)}
+.search input{flex:1;min-width:0;height:100%;border:0;background:transparent;outline:none;font-size:14px}
+.search input::-webkit-search-cancel-button{display:none}
+.search kbd{font:12px/18px var(--mono);color:var(--muted);border:1px solid var(--line-2);border-radius:4px;padding:0 6px;background:var(--paper)}
+.search .x{border:0;background:none;color:var(--muted);height:28px;padding:0 8px;border-radius:4px;font-size:13px}
+.search .x:hover{background:var(--surface-2);color:var(--ink)}
+
+.keys{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.keys kbd{font:11px/16px var(--mono);border:1px solid var(--line-2);border-radius:3px;padding:0 4px;margin-right:2px;background:var(--paper)}
+.side{display:contents}
+.rail{grid-column:1;grid-row:2;overflow:auto;background:var(--surface);border-right:1px solid var(--line);padding:var(--s4) var(--s4) var(--s6);display:flex;flex-direction:column;gap:20px}
+.list{grid-column:2;grid-row:2;overflow:auto;background:var(--paper)}
+.detail{grid-column:3;grid-row:2;overflow:auto;background:var(--paper);border-left:1px solid var(--line)}
+
+/* ---------- 左栏：今天要处理 ---------- */
+.today{display:grid;gap:var(--s2)}
+.eyebrow{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:var(--s2)}
+.eyebrow b{color:var(--ink-2);font-weight:600}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.numbtn{display:grid;align-content:start;gap:2px;text-align:left;padding:12px 12px 10px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r2);min-width:0}
+.numbtn:hover{border-color:var(--line-2)}
+.numbtn .big{font-size:34px;line-height:1.05;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.numbtn .lbl{font-size:14px;font-weight:600;color:var(--ink)}
+.numbtn small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.numbtn.ship .big{color:var(--brand)}
+.numbtn.refund .big{color:var(--danger)}
+.numbtn.zero .big{color:var(--line-2)}
+.numbtn[aria-pressed="true"]{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+
+.nav{display:grid;gap:2px}
+.nav h2{font-size:12px;font-weight:400;color:var(--muted);margin:0 0 var(--s1) 10px}
+.navbtn{display:flex;align-items:center;gap:var(--s2);height:32px;padding:0 10px;border:0;background:transparent;border-radius:var(--r1);text-align:left;color:var(--ink-2)}
+.navbtn:hover{background:var(--surface-2)}
+.navbtn .n{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.navbtn[aria-pressed="true"]{background:var(--paper);color:var(--brand);font-weight:600;box-shadow:0 0 0 1px var(--line)}
+.navbtn[aria-pressed="true"] .n{color:var(--brand)}
+.mk{width:8px;height:8px;border-radius:50%;flex:none;background:var(--muted)}
+.mk.s-refund{background:var(--danger)}
+.mk.s-ship{background:var(--brand)}
+.mk.s-unpaid{background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
+.mk.s-sent{background:var(--ok)}
+.mk.s-done{background:var(--line-2)}
+.mk.s-closed{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.mk.s-todo{background:linear-gradient(90deg,var(--danger) 50%,var(--brand) 50%)}
+
+/* 备货单：像吧台出的小票 */
+.pick{position:relative;background:var(--paper);padding:14px 14px 16px;margin-bottom:8px;border-radius:var(--r1) var(--r1) 0 0}
+.pick::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
+  background:linear-gradient(135deg,var(--paper) 50%,transparent 50%) 0 0/10px 7px repeat-x,
+             linear-gradient(225deg,var(--paper) 50%,transparent 50%) 0 0/10px 7px repeat-x}
+.pick summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:2px var(--s2)}
+.pick summary::-webkit-details-marker{display:none}
+.pick summary h2{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.pick summary h2::before{content:"";width:6px;height:14px;border-radius:2px;background:var(--crema)}
+.pick summary .tot{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick summary p{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.pick .chev{display:none}
+.receipt{list-style:none;margin:12px 0 0;padding:10px 0 0;border-top:1px dashed var(--line-2)}
+.receipt li button{display:grid;grid-template-columns:1fr auto;gap:var(--s3);width:100%;text-align:left;border:0;background:none;padding:5px 4px;margin:0 -4px;width:calc(100% + 8px);border-radius:4px;font-size:13px;line-height:1.4;color:var(--ink-2)}
+.receipt li button:hover{background:var(--surface)}
+.receipt li button[aria-pressed="true"]{background:var(--brand-soft);color:var(--brand)}
+.receipt li span:first-child{word-break:keep-all;overflow-wrap:anywhere}
+.receipt .qty{font:600 13px var(--mono);color:var(--ink)}
+.receipt-foot{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-2);font-size:12px;color:var(--muted)}
+.receipt-foot b{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.pick-empty{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-2);font-size:13px;color:var(--muted)}
+
+/* ---------- 中栏：订单列表 ---------- */
+.list-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:var(--s1) var(--s3);padding:14px var(--s4) 12px}
+.list-head h1{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.list-head h1 .c{font-size:14px;font-weight:400;color:var(--muted);margin-left:6px}
+.qinfo{font-size:13px;color:var(--muted)}
+.linkbtn{border:0;background:none;padding:0;color:var(--brand);font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in oklch,var(--brand) 35%,transparent)}
+.linkbtn:hover{text-decoration-color:var(--brand)}
+
+.grp-h{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--s2);padding:8px var(--s4);background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--ink)}
+.grp-h .n{font-weight:400;color:var(--muted)}
+.grp-h .meta{margin-left:auto;font-weight:400;color:var(--muted);white-space:nowrap}
+.rows{list-style:none;margin:0;padding:0}
+.rows li+li .row{border-top:1px solid var(--line)}
+.row{position:relative;display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:2px var(--s3);width:100%;padding:12px var(--s4);border:0;background:none;text-align:left;align-items:start}
+.row:hover{background:var(--bg)}
+.row[aria-current="true"]{background:var(--brand-soft)}
+.row[aria-current="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand)}
+.row:focus-visible{outline-offset:-2px}
+.when{display:grid;font-size:13px;line-height:1.4;color:var(--muted);padding-top:2px}
+.when b{font-weight:500;color:var(--ink-2)}
+.row.late .when b{color:var(--warn);font-weight:600}
+.main{display:grid;gap:3px;min-width:0}
+.who{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;font-size:15px;font-weight:600;line-height:1.4}
+.who .city{font-size:13px;font-weight:400;color:var(--muted)}
+.what{font-size:13px;line-height:1.55;color:var(--ink-2);word-break:keep-all;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.what .it+.it::before{content:"、";color:var(--muted)}
+.q{display:inline-block;margin-left:4px;padding:0 5px;border-radius:4px;background:var(--surface-2);font:600 12px/18px var(--sans);color:var(--ink);font-variant-numeric:tabular-nums;vertical-align:1px}
+.reason{font-size:13px;color:var(--danger)}
+.say{display:flex;gap:6px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--warn)}
+.say svg{flex:none;margin-top:3px}
+.amt{display:grid;justify-items:end;gap:3px;text-align:right;padding-top:1px}
+.amt b{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.4}
+.amt b.dim{color:var(--muted);font-weight:500}
+.amt .sub{font-size:12px;color:var(--muted)}
+.ono{font:12px/1.4 var(--mono);color:var(--muted);letter-spacing:.01em}
+.amt .mwhen{display:none;font-size:12px;color:var(--muted)}
+
+.empty{padding:var(--s6) var(--s4);display:grid;gap:var(--s2);justify-items:start;max-width:30em}
+.empty b{font-size:16px}
+.empty p{color:var(--muted)}
+.list-foot{padding:var(--s4) var(--s4) var(--s6);display:grid;gap:var(--s3);font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.list-foot .local{font-size:12px}
+
+/* ---------- 右栏：订单详情与处理 ---------- */
+.dbar{display:none}
+.d{padding:20px var(--s5) var(--s6);display:grid;gap:20px}
+.d-head{display:grid;gap:6px}
+.d-l1{display:flex;align-items:center;flex-wrap:wrap;gap:var(--s2) var(--s3)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface-2);color:var(--ink-2)}
+.pill.s-refund{background:var(--danger-soft);color:var(--danger)}
+.pill.s-ship{background:var(--brand-soft);color:var(--brand)}
+.pill.s-sent{background:var(--ok-soft);color:var(--ok)}
+.pill.s-unpaid,.pill.s-done,.pill.s-closed{background:var(--surface-2);color:var(--ink-2)}
+.d-l1 .ono{font-size:13px;color:var(--ink-2)}
+.copy{border:1px solid var(--line);background:var(--paper);border-radius:4px;height:24px;padding:0 8px;font-size:12px;color:var(--muted)}
+.copy:hover{color:var(--ink);border-color:var(--line-2)}
+.d-who{font-size:22px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.d-who span{font-size:15px;font-weight:400;color:var(--ink-2)}
+.d-meta{font-size:13px;color:var(--muted)}
+.d-meta .late{color:var(--warn);font-weight:600}
+
+.flow{list-style:none;margin:6px 0 0;padding:0;display:flex;font-size:12px;color:var(--muted)}
+.flow li{flex:1;display:grid;justify-items:start;gap:4px;position:relative;min-width:0}
+.flow li::before{content:"";width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line-2);background:var(--paper);position:relative;z-index:1}
+.flow li::after{content:"";position:absolute;left:9px;right:0;top:4px;height:1.5px;background:var(--line)}
+.flow li:last-child::after{display:none}
+.flow li.done::before{background:var(--ink-2);box-shadow:none}
+.flow li.done::after{background:var(--ink-2)}
+.flow li.cur{color:var(--ink);font-weight:600}
+.flow li.cur::before{box-shadow:0 0 0 3px var(--brand-soft),inset 0 0 0 2px var(--brand)}
+.flow.refund li.cur{color:var(--danger)}
+.flow.refund li.cur::before{box-shadow:0 0 0 3px var(--danger-soft),inset 0 0 0 2px var(--danger)}
+
+.sec{display:grid;gap:10px}
+.sec h3{font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:baseline;gap:var(--s2)}
+.sec h3 .n{font-weight:400}
+.notice{display:grid;gap:6px;padding:12px 14px;border-radius:var(--r2);background:var(--warn-soft);border:1px solid color-mix(in oklch,var(--warn) 18%,transparent)}
+.notice.refund{background:var(--danger-soft);border-color:color-mix(in oklch,var(--danger) 16%,transparent)}
+.notice .k{font-size:12px;font-weight:600;color:var(--warn)}
+.notice.refund .k{color:var(--danger)}
+.notice .v{font-size:15px;line-height:1.6;color:var(--ink)}
+.checks{list-style:none;margin:2px 0 0;padding:8px 0 0;border-top:1px dashed color-mix(in oklch,var(--ink) 15%,transparent);display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
+.checks li{display:flex;gap:6px}
+.checks li::before{content:"核对";flex:none;font-size:11px;line-height:18px;height:18px;padding:0 5px;border-radius:3px;background:var(--paper);color:var(--warn);font-weight:600;margin-top:1px}
+
+.items{width:100%;border-collapse:collapse;font-size:14px}
+.items td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.items tr:first-child td{border-top:1px solid var(--line)}
+.items .nm{padding-right:var(--s3);line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}
+.items .pr{text-align:right;white-space:nowrap;color:var(--muted);font-size:13px;padding-right:var(--s4);font-variant-numeric:tabular-nums}
+.items .sm{text-align:right;white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums;width:72px}
+.items .ck{width:30px}
+.items input[type=checkbox]{width:16px;height:16px;margin:3px 0 0;accent-color:var(--brand)}
+.items tr.off .nm,.items tr.off .sm{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line-2)}
+.totals{display:flex;justify-content:flex-end;align-items:baseline;flex-wrap:wrap;gap:4px 18px;font-size:13px;color:var(--muted)}
+.totals b{font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.totals .paid{color:var(--ink)}
+.totals .paid b{font-size:18px;font-weight:700;color:var(--ink)}
+
+.act{display:grid;gap:14px;padding:16px;border-radius:var(--r2);background:var(--surface)}
+.act > h3{font-size:15px;font-weight:700;color:var(--ink)}
+.fields{display:grid;grid-template-columns:132px minmax(0,1fr);gap:var(--s3)}
+.field{display:grid;gap:5px;font-size:13px;color:var(--ink-2)}
+.field input,.field select,.field textarea{width:100%;height:40px;padding:0 10px;border:1px solid var(--line-2);border-radius:var(--r1);background:var(--paper);color:var(--ink);font-size:15px}
+.field textarea{height:auto;min-height:72px;padding:8px 10px;line-height:1.6;resize:vertical;font-size:14px}
+.field input.mono{font-family:var(--mono);letter-spacing:.03em}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.field.bad input,.field.bad textarea{border-color:var(--danger)}
+.field.bad input:focus,.field.bad textarea:focus{box-shadow:0 0 0 3px var(--danger-soft)}
+.err{font-size:13px;color:var(--danger)}
+.btns{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3)}
+.btn{height:40px;padding:0 18px;border-radius:var(--r1);border:1px solid var(--line-2);background:var(--paper);font-weight:600;font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-dk);border-color:var(--brand-dk)}
+.btn.primary:disabled{background:var(--line-2);border-color:var(--line-2);cursor:not-allowed}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--danger);padding:0 10px}
+.btn.quiet:hover{background:var(--danger-soft)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.hint{font-size:12px;color:var(--muted)}
+.amtline{display:flex;align-items:center;flex-wrap:wrap;gap:var(--s2) var(--s3)}
+.amtline label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600}
+.amtline .money{display:flex;align-items:center;height:40px;border:1px solid var(--line-2);border-radius:var(--r1);background:var(--paper);padding:0 0 0 10px}
+.amtline .money:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.amtline .money.bad{border-color:var(--danger)}
+.amtline input{width:84px;height:100%;border:0;outline:none;background:transparent;font:600 16px var(--sans);font-variant-numeric:tabular-nums;padding:0 8px 0 4px}
+.reject{display:grid;gap:10px;padding-top:12px;border-top:1px solid var(--line)}
+.record{display:grid;gap:4px;padding:14px 16px;border-radius:var(--r2);background:var(--surface);font-size:14px}
+.record .k{font-size:12px;color:var(--muted)}
+.record .mono{font-size:15px;letter-spacing:.02em}
+.record .line{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap}
+.d-empty{padding:var(--s6) var(--s5);color:var(--muted);display:grid;gap:6px}
+.d-empty b{color:var(--ink);font-size:15px}
+
+/* ---------- 提示条 ---------- */
+.toast{position:fixed;left:0;right:0;margin-inline:auto;width:max-content;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateY(20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:var(--s3);max-width:calc(100vw - 32px);padding:10px 10px 10px 16px;border-radius:var(--r2);background:var(--ink);color:#fff;font-size:14px;box-shadow:0 8px 24px oklch(20% .03 var(--h) / .22);transition:opacity .18s,transform .18s;z-index:50}
+.toast.on{opacity:1;transform:none;pointer-events:auto}
+.toast.bad{background:var(--danger)}
+.toast button{flex:none;white-space:nowrap;border:0;background:oklch(100% 0 0 / .14);color:#fff;height:30px;padding:0 12px;border-radius:var(--r1);font-weight:600}
+.toast button:hover{background:oklch(100% 0 0 / .24)}
+
+/* ---------- 中等宽度：左栏收到列表上方 ---------- */
+@media (max-width:1179px){
+  .app{grid-template-columns:minmax(0,1fr) 440px}
+  .side{display:block;grid-column:1;grid-row:2;overflow:auto;background:var(--paper)}
+  .rail{overflow:visible;border-right:0;border-bottom:1px solid var(--line);padding:14px var(--s4) 18px;gap:12px}
+  .list{overflow:visible}
+  .detail{grid-column:2}
+  .brand{width:auto}
+  .keys{display:none}
+  .nums{max-width:520px}
+  .nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--s4));padding:2px var(--s4)}
+  .nav::-webkit-scrollbar{display:none}
+  .nav h2{display:none}
+  .navbtn{flex:none;height:32px;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:0 12px}
+  .navbtn .n{margin-left:2px}
+  .navbtn[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--brand);border-color:var(--brand)}
+  .pick{margin-bottom:7px}
+  .app.searching .rail{display:none}
+  .pick:not([open]){padding-bottom:10px}
+  .pick .chev{display:inline-block;transition:transform .15s;color:var(--muted)}
+  .pick[open] .chev{transform:rotate(180deg)}
+}
+
+/* ---------- 手机：列表与详情分两步 ---------- */
+@media (max-width:759px){
+  :root{--top:56px}
+  .app{display:block;height:auto}
+  .topbar{position:sticky;top:0;gap:var(--s3);padding:0 var(--s3) 0 var(--s4);height:var(--top)}
+  .brand{gap:8px;font-size:15px}
+  .brand small{display:none}
+  .search{max-width:none;height:38px}
+  .search kbd{display:none}
+  .side{overflow:visible}
+  .rail{padding:14px var(--s4) 16px}
+  .numbtn .big{font-size:30px}
+  .grp-h{top:var(--top)}
+  .list-head{padding:14px var(--s4) 10px}
+  .row{grid-template-columns:minmax(0,1fr) auto;padding:12px var(--s4)}
+  .row .when{display:none}
+  .amt .ono{display:none}
+  .amt .ono.hit{display:block}
+  .amt .mwhen{display:block}
+  .row.late .amt .mwhen{color:var(--warn);font-weight:600}
+  .detail{position:fixed;inset:0;z-index:30;border:0;transform:translateX(100%);visibility:hidden;transition:transform .22s ease,visibility 0s .22s;overscroll-behavior:contain}
+  .app.show-detail .detail{transform:none;visibility:visible;transition:transform .22s ease}
+  .dbar{display:flex;align-items:center;gap:var(--s2);position:sticky;top:0;z-index:3;height:52px;padding:0 var(--s3);background:var(--paper);border-bottom:1px solid var(--line)}
+  .dbar button{display:flex;align-items:center;gap:4px;border:0;background:none;height:40px;padding:0 8px;font-size:15px;color:var(--brand);font-weight:600}
+  .dbar .pos{margin-left:auto;font-size:13px;color:var(--muted);padding-right:6px}
+  .d{padding:16px var(--s4) calc(var(--s6) + env(safe-area-inset-bottom))}
+  .d-who{font-size:20px}
+  .fields{grid-template-columns:1fr}
+  .btns .btn{flex:1 1 auto}
+  .btns .btn.quiet{flex:0 0 auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="7" ry="10" transform="rotate(32 12 12)" fill="var(--crema)"/><path d="M15.6 4.6c-2.9 2.3-1.3 5.4-3.6 7.6-2.2 2.1-4.6 1.9-5.4 4.9" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+      <span>慢火咖啡</span><small>订单管理</small>
+    </div>
+    <label class="search" role="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+      <span class="vh">搜索订单</span>
+      <input id="q" type="search" placeholder="订单号、买家、城市、商品或运单号" autocomplete="off" spellcheck="false">
+      <kbd title="按 / 键开始搜索">/</kbd>
+      <button class="x" id="qx" type="button" hidden>清除</button>
+    </label>
+    <p class="keys" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> 切换订单　<kbd>Esc</kbd> 清除搜索</p>
+  </header>
+
+  <div class="side" id="side">
+    <aside class="rail" id="rail" aria-label="今天要处理"></aside>
+    <section class="list" id="list" aria-label="订单列表"></section>
+  </div>
+
+  <section class="detail" id="detail" aria-label="订单详情"></section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DATA = {"说明":"小店“慢火咖啡”最近 4 天的订单（示例数据，买家信息已脱敏）。今天是 2026-10-15。","orders":[{"order_no":"KF2610151333","created_at":"2026-10-15 21:30","customer":"王*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"手冲壶 细口 600ml","price":199,"qty":2},{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":553,"shipping_fee":0,"paid":553,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610151062","created_at":"2026-10-15 18:24","customer":"吴*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1}],"subtotal":88,"shipping_fee":8,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610151173","created_at":"2026-10-15 16:11","customer":"朱*","city":"南京 鼓楼区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"退款中","tracking_no":null,"note":"买家申请退款：收到时滤杯有裂纹"},{"order_no":"KF2610151111","created_at":"2026-10-15 13:54","customer":"刘*","city":"武汉 洪山区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":291,"shipping_fee":0,"paid":291,"status":"已发货","tracking_no":"SF871429624561","note":null},{"order_no":"KF2610151074","created_at":"2026-10-15 10:37","customer":"陈*","city":"成都 武侯区","items":[{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":273,"shipping_fee":0,"paid":273,"status":"已完成","tracking_no":"SF247659959154","note":null},{"order_no":"KF2610151222","created_at":"2026-10-15 09:59","customer":"刘*","city":"北京 海淀区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":2}],"subtotal":384,"shipping_fee":0,"paid":384,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610151888","created_at":"2026-10-15 09:43","customer":"黄*","city":"西安 雁塔区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610141370","created_at":"2026-10-14 21:41","customer":"胡*","city":"北京 海淀区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":19,"shipping_fee":8,"paid":27,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610141851","created_at":"2026-10-14 21:38","customer":"吴*","city":"武汉 洪山区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":2},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":302,"shipping_fee":0,"paid":302,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610141777","created_at":"2026-10-14 21:33","customer":"李*","city":"南京 鼓楼区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"已发货","tracking_no":"SF844050200750","note":null},{"order_no":"KF2610141185","created_at":"2026-10-14 19:52","customer":"朱*","city":"苏州 工业园区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2},{"item":"手冲壶 细口 600ml","price":199,"qty":1}],"subtotal":343,"shipping_fee":0,"paid":343,"status":"待发货","tracking_no":null,"note":"买家留言：送朋友的，不要放发票"},{"order_no":"KF2610141740","created_at":"2026-10-14 17:06","customer":"胡*","city":"杭州 西湖区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":306,"shipping_fee":0,"paid":306,"status":"已完成","tracking_no":"SF359541867099","note":null},{"order_no":"KF2610141296","created_at":"2026-10-14 13:07","customer":"胡*","city":"北京 海淀区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":59,"shipping_fee":8,"paid":67,"status":"待发货","tracking_no":null,"note":"买家留言：送朋友的，不要放发票"},{"order_no":"KF2610141703","created_at":"2026-10-14 12:24","customer":"李*","city":"广州 天河区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"已发货","tracking_no":"SF570604353825","note":null},{"order_no":"KF2610141666","created_at":"2026-10-14 11:36","customer":"黄*","city":"西安 雁塔区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":203,"shipping_fee":0,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610141814","created_at":"2026-10-14 10:22","customer":"杨*","city":"上海 浦东新区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"已完成","tracking_no":"SF935722445643","note":null},{"order_no":"KF2610141025","created_at":"2026-10-14 09:13","customer":"陈*","city":"苏州 工业园区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已发货","tracking_no":"SF909373431185","note":null},{"order_no":"KF2610141148","created_at":"2026-10-14 08:46","customer":"吴*","city":"广州 天河区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":91,"shipping_fee":8,"paid":99,"status":"已发货","tracking_no":"SF366866617035","note":null},{"order_no":"KF2610131555","created_at":"2026-10-13 21:19","customer":"徐*","city":"西安 雁塔区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610131407","created_at":"2026-10-13 21:09","customer":"周*","city":"上海 浦东新区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已发货","tracking_no":"SF959618935378","note":null},{"order_no":"KF2610131592","created_at":"2026-10-13 16:31","customer":"吴*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1},{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":423,"shipping_fee":0,"paid":423,"status":"已发货","tracking_no":"SF895297559471","note":null},{"order_no":"KF2610131444","created_at":"2026-10-13 08:51","customer":"吴*","city":"杭州 西湖区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":287,"shipping_fee":0,"paid":287,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610121481","created_at":"2026-10-12 18:25","customer":"徐*","city":"南京 鼓楼区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":2}],"subtotal":230,"shipping_fee":0,"paid":230,"status":"已完成","tracking_no":"SF156347209183","note":null},{"order_no":"KF2610121136","created_at":"2026-10-12 17:57","customer":"刘*","city":"深圳 南山区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610121518","created_at":"2026-10-12 12:13","customer":"周*","city":"北京 海淀区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"手冲壶 细口 600ml","price":199,"qty":2}],"subtotal":486,"shipping_fee":0,"paid":486,"status":"已发货","tracking_no":"SF166047156434","note":null},{"order_no":"KF2610121037","created_at":"2026-10-12 09:46","customer":"李*","city":"成都 武侯区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":2},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":2}],"subtotal":294,"shipping_fee":0,"paid":294,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610121259","created_at":"2026-10-12 09:36","customer":"李*","city":"上海 浦东新区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":19,"shipping_fee":8,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610121099","created_at":"2026-10-12 08:53","customer":"徐*","city":"杭州 西湖区","items":[{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":1},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":397,"shipping_fee":0,"paid":397,"status":"退款中","tracking_no":null,"note":"买家申请退款：收到时滤杯有裂纹"},{"order_no":"KF2610121000","created_at":"2026-10-12 08:44","customer":"朱*","city":"上海 浦东新区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已完成","tracking_no":"SF583345511130","note":null},{"order_no":"KF2610121629","created_at":"2026-10-12 08:26","customer":"王*","city":"广州 天河区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":2},{"item":"手冲壶 细口 600ml","price":199,"qty":1}],"subtotal":471,"shipping_fee":0,"paid":0,"status":"待付款","tracking_no":null,"note":null}]};
+const TODAY = '2026-10-15';               // 数据说明里的“今天”
+const KEY = 'manhuo-orders:records:v1';   // 本机处理记录
+const COURIERS = ['顺丰速运','中通快递','圆通速递','韵达快递','申通快递','邮政 EMS','京东快递'];
+
+const GROUPS = [
+  {s:'退款中',   title:'退款申请',  cls:'s-refund', asc:true},
+  {s:'待发货',   title:'待发货',    cls:'s-ship',   asc:true},
+  {s:'待付款',   title:'待付款',    cls:'s-unpaid'},
+  {s:'已发货',   title:'已发货',    cls:'s-sent'},
+  {s:'已退款',   title:'已退款',    cls:'s-closed'},
+  {s:'退款已拒绝', title:'退款已拒绝', cls:'s-closed'},
+  {s:'已完成',   title:'已完成',    cls:'s-done'},
+];
+const GMAP = Object.fromEntries(GROUPS.map(g => [g.s, g]));
+const FILTERS = {
+  todo: {title:'待处理', statuses:['退款中','待发货']},
+  all:  {title:'全部订单', statuses:null},
+};
+GROUPS.forEach(g => FILTERS[g.s] = {title:g.title, statuses:[g.s]});
+
+/* ---------- 数据 ---------- */
+let records = {};
+try { records = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { records = {}; }
+function saveRecords() {
+  try { localStorage.setItem(KEY, JSON.stringify(records)); return true; }
+  catch (e) { toast('没能保存到这台电脑的浏览器，刷新页面后这次处理会丢失', null, true); return false; }
+}
+function all() { return DATA.orders.map(o => Object.assign({}, o, records[o.order_no] || {})); }
+function byNo(no) { return all().find(o => o.order_no === no); }
+
+const st = { filter:'todo', q:'', item:null, sel:null, rejectOpen:false, drafts:{}, refund:{} };
+const app = document.getElementById('app');
+const elRail = document.getElementById('rail'), elList = document.getElementById('list'), elDetail = document.getElementById('detail');
+const elQ = document.getElementById('q'), elQx = document.getElementById('qx');
+const mqPhone = matchMedia('(max-width: 759px)'), mqWide = matchMedia('(min-width: 1180px)');
+
+/* ---------- 工具 ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const yuan = n => '¥' + Number(n).toLocaleString('zh-CN', {maximumFractionDigits:2});
+const due = o => o.subtotal + o.shipping_fee;
+const pcs = o => o.items.reduce((a, i) => a + i.qty, 0);
+const dayDiff = d => Math.round((Date.parse(TODAY) - Date.parse(d)) / 864e5);
+const md = d => `${+d.slice(5,7)}月${+d.slice(8,10)}日`;
+function dayLabel(dt) { const d = dt.slice(0,10), n = dayDiff(d); return n === 0 ? '今天' : n === 1 ? '昨天' : md(d); }
+const hm = dt => dt.slice(11,16);
+const WEEK = '日一二三四五六';
+function nowText() { const d = new Date(), p = n => String(n).padStart(2,'0'); return `${d.getMonth()+1}月${d.getDate()}日 ${p(d.getHours())}:${p(d.getMinutes())}`; }
+const shortName = n => n.replace(/^手冲咖啡豆 · /, '');
+const noteText = n => String(n || '').replace(/^(买家留言|买家申请退款)：/, '');
+const isLate = o => o.status === '待发货' && dayDiff(o.created_at.slice(0,10)) >= 2;
+
+function tokens() { return st.q.trim().toLowerCase().split(/\s+/).filter(Boolean); }
+function hay(o) { return [o.order_no, o.customer, o.city, o.note, o.tracking_no, o.courier, ...o.items.map(i => i.item)].filter(Boolean).join(' ').toLowerCase(); }
+function matches(o, toks) { const h = hay(o), h2 = h.replace(/\s+/g,''); return toks.every(t => h.includes(t) || h2.includes(t)); }
+function hl(text, toks = tokens()) {
+  text = String(text ?? '');
+  if (!toks.length) return esc(text);
+  const low = text.toLowerCase(), marks = new Array(text.length).fill(false);
+  toks.forEach(t => { let i = low.indexOf(t); while (i > -1 && t) { for (let k = i; k < i + t.length; k++) marks[k] = true; i = low.indexOf(t, i + t.length); } });
+  let out = '', open = false;
+  for (let i = 0; i < text.length; i++) {
+    if (marks[i] && !open) { out += '<mark>'; open = true; }
+    if (!marks[i] && open) { out += '</mark>'; open = false; }
+    out += esc(text[i]);
+  }
+  return out + (open ? '</mark>' : '');
+}
+function checks(o) {
+  const out = [], note = o.note || '', names = o.items.map(i => i.item).join(' ');
+  if (/研磨|磨成/.test(note) && !/咖啡豆/.test(names)) out.push('这单没有咖啡豆，留言却要求研磨豆子。');
+  if (/滤杯/.test(note) && !/滤杯/.test(names)) out.push('退款理由说滤杯有裂纹，但这单没有买滤杯。');
+  if (o.status === '退款中' && /收到/.test(note) && !o.tracking_no) out.push('买家说已经收到货，但这单没有运单号记录。');
+  return out;
+}
+
+/* ---------- 列表计算 ---------- */
+function compute() {
+  const os = all(), toks = tokens(), searching = toks.length > 0;
+  const f = searching ? {title:'搜索结果', statuses:null} : FILTERS[st.filter];
+  const inFilter = os.filter(o => !f.statuses || f.statuses.includes(o.status));
+  const itemOk = o => !st.item || o.items.some(i => i.item === st.item);
+  const shown = inFilter.filter(o => (searching || itemOk(o)) && (!searching || matches(o, toks)));
+  const statuses = f.statuses || GROUPS.map(g => g.s);
+  const groups = statuses.map(s => {
+    const g = GMAP[s];
+    const rows = shown.filter(o => o.status === s).sort((a, b) => g.asc ? a.created_at.localeCompare(b.created_at) : b.created_at.localeCompare(a.created_at));
+    return {...g, rows, total: os.filter(o => o.status === s).length};
+  });
+  const flat = groups.flatMap(g => g.rows);
+  return {os, toks, f, groups, flat, searching};
+}
+
+/* ---------- 左栏 ---------- */
+function renderRail() {
+  const os = all(), count = s => os.filter(o => o.status === s).length;
+  const ship = os.filter(o => o.status === '待发货').sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const refund = os.filter(o => o.status === '退款中');
+  const wd = WEEK[new Date(TODAY + 'T00:00:00Z').getUTCDay()];
+  const pressed = f => String(st.filter === f && !st.item && !tokens().length);
+  const others = ['todo','待付款','已发货','已退款','退款已拒绝','已完成','all'].filter(f => f === 'todo' || f === 'all' || count(f) > 0);
+  const navCount = f => f === 'todo' ? count('退款中') + count('待发货') : f === 'all' ? os.length : count(f);
+  const navLabel = f => f === 'todo' ? '待处理' : f === 'all' ? '全部订单' : FILTERS[f].title;
+  const navMk = f => f === 'todo' ? 's-todo' : f === 'all' ? '' : GMAP[f].cls;
+
+  const tally = new Map();
+  ship.forEach(o => o.items.forEach(i => tally.set(i.item, (tally.get(i.item) || 0) + i.qty)));
+  const lines = [...tally].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh'));
+  const totalPcs = lines.reduce((a, l) => a + l[1], 0);
+  const wasOpen = elRail.querySelector('details.pick')?.open;
+  const open = wasOpen ?? mqWide.matches;
+
+  elRail.innerHTML = `
+    <div class="today">
+      <p class="eyebrow"><b>${md(TODAY)} 周${wd}</b><span>今天要处理</span></p>
+      <div class="nums">
+        <button class="numbtn ship ${ship.length ? '' : 'zero'}" data-f="待发货" aria-pressed="${pressed('待发货')}">
+          <span class="big">${ship.length}</span><span class="lbl">单待发货</span>
+          <small>${ship.length ? `最早 ${dayLabel(ship[0].created_at)}` : '都发完了'}</small>
+        </button>
+        <button class="numbtn refund ${refund.length ? '' : 'zero'}" data-f="退款中" aria-pressed="${pressed('退款中')}">
+          <span class="big">${refund.length}</span><span class="lbl">笔退款申请</span>
+          <small>${refund.length ? `共 ${yuan(refund.reduce((a, o) => a + o.paid, 0))}` : '没有待审的'}</small>
+        </button>
+      </div>
+    </div>
+    <nav class="nav" aria-label="按状态看订单">
+      <h2>订单</h2>
+      ${others.map(f => `<button class="navbtn" data-f="${f}" aria-pressed="${pressed(f)}"><span class="mk ${navMk(f)}"></span>${navLabel(f)}<span class="n">${navCount(f)}</span></button>`).join('')}
+    </nav>
+    <details class="pick" ${open ? 'open' : ''}>
+      <summary>
+        <h2>备货单 <span class="chev" aria-hidden="true">▾</span></h2><span class="tot">${ship.length} 单 · ${totalPcs} 件</span>
+        <p>待发货订单里的商品合计，点一项看是哪几单</p>
+      </summary>
+      ${lines.length ? `<ul class="receipt">${lines.map(([n, q]) => `<li><button data-item="${esc(n)}" title="${esc(n)}" aria-pressed="${String(st.item === n)}"><span>${esc(shortName(n))}</span><span class="qty">×${q}</span></button></li>`).join('')}</ul>
+      <div class="receipt-foot"><span>共 ${lines.length} 种</span><b>${totalPcs} 件</b></div>` : `<p class="pick-empty">待发货的订单都发完了。</p>`}
+    </details>`;
+}
+
+/* ---------- 中栏 ---------- */
+function itemHTML(name, qty) {
+  const k = name.lastIndexOf(' ');
+  const head = k > 0 ? name.slice(0, k + 1) : '', tail = k > 0 ? name.slice(k + 1) : name;
+  return `<span class="it">${hl(head)}<span class="nw">${hl(tail)}${qty > 1 ? `<span class="q">×${qty}</span>` : ''}</span></span>`;
+}
+function rowHTML(o, toks) {
+  const late = isLate(o), sel = st.sel === o.order_no;
+  const ono = o.order_no, onoHit = toks.some(t => ono.toLowerCase().includes(t));
+  let second;
+  if (o.status === '退款中') second = `<span class="reason">${hl(noteText(o.note))}</span>`;
+  else second = `<span class="what">${o.items.map(i => itemHTML(shortName(i.item), i.qty)).join('')}</span>`;
+  const say = o.note && o.status !== '退款中' && /待发货|待付款/.test(o.status)
+    ? `<span class="say"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>${hl(noteText(o.note))}</span></span>` : '';
+  let amt, sub = '';
+  if (o.status === '待付款') { amt = `<b class="dim">${yuan(due(o))}</b>`; sub = `<span class="sub">未付款</span>`; }
+  else amt = `<b>${yuan(o.paid)}</b>`;
+  if (o.status === '已退款') sub = `<span class="sub">退 ${yuan(o.refund_amount)}</span>`;
+  const trackHit = o.tracking_no && toks.some(t => o.tracking_no.toLowerCase().includes(t));
+  return `<li><button class="row${late ? ' late' : ''}" data-id="${ono}" aria-current="${sel}">
+      <span class="when"><b>${dayLabel(o.created_at)}</b><span class="num">${hm(o.created_at)}</span></span>
+      <span class="main">
+        <span class="who">${hl(o.customer)}<span class="city">${hl(o.city)}</span></span>
+        ${second}${say}
+        ${trackHit ? `<span class="ono">运单 ${hl(o.tracking_no)}</span>` : ''}
+      </span>
+      <span class="amt">${amt}${sub}<span class="ono${onoHit ? ' hit' : ''}">${hl(ono)}</span><span class="mwhen">${dayLabel(o.created_at)} ${hm(o.created_at)}</span></span>
+    </button></li>`;
+}
+function groupMeta(g, os) {
+  const rows = g.rows;
+  if (g.s === '退款中') return `共 ${yuan(rows.reduce((a, o) => a + o.paid, 0))}`;
+  if (g.s === '待发货') return '先下单的排在前面';
+  if (g.s === '待付款') return `待收 ${yuan(rows.reduce((a, o) => a + due(o), 0))}`;
+  return '新的在前';
+}
+function renderList() {
+  const {os, toks, f, groups, flat, searching} = compute();
+  const shownGroups = groups.filter(g => g.rows.length);
+  let head = `<div class="list-head"><h1>${esc(f.title)}<span class="c">${flat.length} 单</span></h1>`;
+  if (searching) head += `<p class="qinfo">在全部 ${os.length} 单里搜“${esc(st.q.trim())}” · <button class="linkbtn" data-act="clear">清除搜索</button></p>`;
+  else if (st.item) head += `<p class="qinfo">含“${esc(shortName(st.item))}”的订单 · <button class="linkbtn" data-act="clear">看全部待发货</button></p>`;
+  head += `</div>`;
+
+  let body = '';
+  if (!flat.length) {
+    if (searching) {
+      body = `<div class="empty"><b>没有找到“${esc(st.q.trim())}”</b>
+        <p>可以只输订单号后四位，或换成买家姓氏、城市、商品名、运单号。</p>
+        <p><button class="linkbtn" data-act="clear">清除搜索</button></p></div>`;
+    } else {
+      const msg = {todo:['今天的发货和退款都处理完了','新订单付款后会出现在这里。'], '待发货':['待发货的订单都发完了','已经发出的在“已发货”里。'], '退款中':['没有待审的退款申请','处理过的退款在“已退款”和“退款已拒绝”里。']}[st.filter] || ['这个状态下没有订单',''];
+      body = `<div class="empty"><b>${msg[0]}</b><p>${msg[1]}</p><p><button class="linkbtn" data-f="all">看全部订单</button></p></div>`;
+    }
+  } else {
+    body = shownGroups.map(g => `<section>
+        <h2 class="grp-h"><span class="mk ${g.cls}"></span>${g.title}<span class="n">${g.rows.length} 单</span><span class="meta">${groupMeta(g, os)}</span></h2>
+        <ul class="rows">${g.rows.map(o => rowHTML(o, toks)).join('')}</ul></section>`).join('');
+  }
+  let foot = '';
+  if (st.filter === 'todo' && !searching && !st.item) {
+    const rest = GROUPS.filter(g => !FILTERS.todo.statuses.includes(g.s)).map(g => [g.title, os.filter(o => o.status === g.s).length]).filter(x => x[1]);
+    foot += `<p>不在这里的：${rest.map(([t, n]) => `${t} ${n} 单`).join('、')} · <button class="linkbtn" data-f="all">看全部订单</button></p>`;
+  }
+  const hasRec = Object.keys(records).length;
+  foot += `<p class="local">发货、退款的处理记录保存在这台电脑的浏览器里。${hasRec ? ` <button class="linkbtn" data-act="wipe">${st.wipeArmed ? '再点一次确认清除' : `清除本机记录（${hasRec} 条）`}</button>` : ''}</p>`;
+  elList.innerHTML = head + body + `<div class="list-foot">${foot}</div>`;
+  return flat;
+}
+
+/* ---------- 右栏 ---------- */
+function flowHTML(o) {
+  const refundish = ['退款中','已退款','退款已拒绝'].includes(o.status);
+  const steps = refundish ? ['下单','付款','申请退款', o.status === '退款已拒绝' ? '已拒绝' : '退款'] : ['下单','付款','发货','完成'];
+  const curIdx = {'待付款':1,'待发货':2,'已发货':3,'已完成':4,'退款中':2,'已退款':4,'退款已拒绝':4}[o.status];
+  return `<ol class="flow ${refundish ? 'refund' : ''}" aria-label="订单进度">${steps.map((s, i) => `<li class="${i < curIdx ? 'done' : i === curIdx ? 'cur' : ''}">${s}</li>`).join('')}</ol>`;
+}
+function itemsTable(o, pickable) {
+  const r = st.refund[o.order_no];
+  const rows = o.items.map((i, k) => {
+    const on = !pickable || r.items[k];
+    return `<tr class="${on ? '' : 'off'}">
+      ${pickable ? `<td class="ck"><input type="checkbox" data-pick="${k}" ${on ? 'checked' : ''} aria-label="退 ${esc(i.item)}"></td>` : ''}
+      <td class="nm">${esc(i.item)}</td><td class="pr">${yuan(i.price)} × ${i.qty}</td><td class="sm">${yuan(i.price * i.qty)}</td></tr>`;
+  }).join('');
+  const shipRow = pickable && o.shipping_fee > 0 ? `<tr class="${r.ship ? '' : 'off'}"><td class="ck"><input type="checkbox" data-pick="ship" ${r.ship ? 'checked' : ''} aria-label="退运费"></td><td class="nm">运费</td><td class="pr"></td><td class="sm">${yuan(o.shipping_fee)}</td></tr>` : '';
+  return `<table class="items">${rows}${shipRow}</table>`;
+}
+function totalsHTML(o) {
+  const ship = o.shipping_fee ? yuan(o.shipping_fee) : '包邮';
+  const paid = o.status === '待付款' ? `<span class="paid">应付 <b>${yuan(due(o))}</b></span>` : `<span class="paid">实付 <b>${yuan(o.paid)}</b></span>`;
+  return `<div class="totals"><span>商品 <b>${yuan(o.subtotal)}</b></span><span>运费 <b>${ship}</b></span>${paid}</div>`;
+}
+function refundSum(o) {
+  const r = st.refund[o.order_no];
+  return o.items.reduce((a, i, k) => a + (r.items[k] ? i.price * i.qty : 0), 0) + (r.ship ? o.shipping_fee : 0);
+}
+function renderDetail(focusSel) {
+  const o = st.sel && byNo(st.sel);
+  const {flat} = compute();
+  const pos = o ? flat.findIndex(x => x.order_no === o.order_no) : -1;
+  const bar = `<div class="dbar"><button data-act="back" aria-label="返回订单列表"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg>订单列表</button>${pos > -1 ? `<span class="pos">${pos + 1} / ${flat.length}</span>` : ''}</div>`;
+  if (!o) {
+    elDetail.innerHTML = bar + `<div class="d-empty"><b>没有选中的订单</b><p>在左边列表里点一单，就能在这里看商品、发货或处理退款。</p></div>`;
+    return;
+  }
+  const g = GMAP[o.status], ck = checks(o), d = o.created_at.slice(0,10), days = dayDiff(d);
+  const waited = o.status === '待发货' && days >= 1 ? ` · <span class="${days >= 2 ? 'late' : ''}">已等 ${days} 天</span>` : '';
+  let h = `<div class="d">
+    <header class="d-head">
+      <div class="d-l1"><span class="pill ${g.cls}">${g.title}</span><span class="ono">${esc(o.order_no)}</span><button class="copy" data-copy="${esc(o.order_no)}">复制订单号</button></div>
+      <h2 class="d-who">${esc(o.customer)}<span>${esc(o.city)}</span></h2>
+      <p class="d-meta">${dayLabel(o.created_at) === '今天' ? '今天' : md(d)} ${hm(o.created_at)} 下单 · ${pcs(o)} 件商品${waited}</p>
+      ${flowHTML(o)}
+    </header>`;
+
+  if (o.note) {
+    const isRefundNote = /^买家申请退款/.test(o.note);
+    h += `<div class="notice ${isRefundNote ? 'refund' : ''}"><span class="k">${isRefundNote ? '退款理由' : '买家留言'}</span><p class="v">${esc(noteText(o.note))}</p>
+      ${ck.length ? `<ul class="checks">${ck.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}</div>`;
+  }
+
+  if (o.status === '退款中') {
+    if (!st.refund[o.order_no]) st.refund[o.order_no] = {items:o.items.map(() => true), ship:o.shipping_fee > 0, amount:null, reason:''};
+    const r = st.refund[o.order_no], sum = refundSum(o), amount = r.amount ?? sum;
+    h += `<section class="act" aria-labelledby="act-h">
+      <h3 id="act-h">处理退款</h3>
+      <div class="sec"><h3>勾选要退的商品 <span class="n">实付 ${yuan(o.paid)}</span></h3>${itemsTable(o, true)}</div>
+      <div class="amtline"><label for="ramt">退款金额</label><span class="money" id="rmoney">¥<input id="ramt" inputmode="decimal" value="${amount}" aria-describedby="rhint"></span><span class="hint" id="rhint">最多 ${yuan(o.paid)}，可以手动改</span></div>
+      <p class="err" id="rerr" hidden></p>
+      <div class="btns"><button class="btn primary" data-act="refund" id="rbtn">同意退款 ${yuan(amount)}</button><button class="btn quiet" data-act="reject-open" ${st.rejectOpen ? 'hidden' : ''}>拒绝退款…</button></div>
+      <p class="hint">这里记下处理结果；钱款请在收款平台上退回买家。</p>
+      <div class="reject" ${st.rejectOpen ? '' : 'hidden'}>
+        <label class="field" id="rjf">拒绝理由<textarea id="rjr" placeholder="例如：订单里没有滤杯，请补充照片后再申请">${esc(r.reason)}</textarea></label>
+        <p class="err" id="rjerr" hidden></p>
+        <div class="btns"><button class="btn danger" data-act="reject">确认拒绝</button><button class="btn" data-act="reject-cancel">取消</button></div>
+      </div>
+    </section>`;
+  } else {
+    h += `<section class="sec"><h3>商品 <span class="n">${o.items.length} 种 ${pcs(o)} 件</span></h3>${itemsTable(o, false)}${totalsHTML(o)}</section>`;
+  }
+
+  if (o.status === '待发货') {
+    const dr = st.drafts[o.order_no] || {courier: COURIERS[0], no: ''};
+    h += `<section class="act" aria-labelledby="act-h">
+      <h3 id="act-h">发货</h3>
+      <div class="fields">
+        <label class="field">快递公司<select id="sc">${COURIERS.map(c => `<option ${c === dr.courier ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
+        <label class="field" id="snf">运单号<input id="sn" class="mono" value="${esc(dr.no)}" placeholder="例如 SF1234567890" autocomplete="off" spellcheck="false" aria-describedby="serr"></label>
+      </div>
+      <p class="err" id="serr" hidden></p>
+      <div class="btns"><button class="btn primary" data-act="ship">确认发货</button><span class="hint">发货后自动跳到下一单待发货</span></div>
+    </section>`;
+  } else if (o.status === '待付款') {
+    h += `<div class="record"><span class="k">还不用处理</span><span>买家还没付款，付款后会出现在待发货里。</span></div>`;
+  } else if (o.status === '已发货' || o.status === '已完成') {
+    h += `<div class="record"><span class="k">${o.courier ? esc(o.courier) + ' · ' : ''}运单号</span>
+      <div class="line"><span class="mono">${hl(o.tracking_no)}</span><button class="copy" data-copy="${esc(o.tracking_no)}">复制</button></div>
+      ${o.shipped_at ? `<span class="hint">${esc(o.shipped_at)} 在本页记为发货</span>` : ''}</div>`;
+  } else if (o.status === '已退款') {
+    h += `<div class="record"><span class="k">已同意退款</span><span><b>${yuan(o.refund_amount)}</b>${o.refund_items?.length ? ` · ${esc(o.refund_items.join('、'))}` : ''}</span><span class="hint">${esc(o.refunded_at)} 在本页记录</span></div>`;
+  } else if (o.status === '退款已拒绝') {
+    h += `<div class="record"><span class="k">已拒绝退款</span><span>${esc(o.reject_reason)}</span><span class="hint">${esc(o.rejected_at)} 在本页记录</span></div>`;
+  }
+  if (records[o.order_no]) h += `<p class="hint"><button class="linkbtn" data-act="revert">撤回本页对这单的处理</button>，恢复成“${esc(DATA.orders.find(x => x.order_no === o.order_no).status)}”</p>`;
+  h += `</div>`;
+  elDetail.innerHTML = bar + h;
+  if (o.status === '退款中') syncRefund(o);
+}
+
+/* ---------- 交互 ---------- */
+function render(opts = {}) {
+  app.classList.toggle('searching', tokens().length > 0);
+  renderRail();
+  const flat = renderList();
+  if (!mqPhone.matches && (!st.sel || !flat.some(o => o.order_no === st.sel))) {
+    if (!opts.keepSel) st.sel = flat[0]?.order_no || null;
+    markSel();
+  }
+  renderDetail();
+}
+function markSel() { elList.querySelectorAll('.row').forEach(b => b.setAttribute('aria-current', String(b.dataset.id === st.sel))); }
+function select(id, {focus = false, open = false} = {}) {
+  if (st.sel !== id) st.rejectOpen = false;
+  st.sel = id; markSel(); renderDetail();
+  elDetail.scrollTop = 0;
+  const row = elList.querySelector(`.row[data-id="${id}"]`);
+  if (row) { row.scrollIntoView({block:'nearest'}); if (focus) row.focus({preventScroll:true}); }
+  if (open && mqPhone.matches) openPhoneDetail();
+}
+function openPhoneDetail() {
+  if (!app.classList.contains('show-detail')) { app.classList.add('show-detail'); history.pushState({detail:1}, ''); }
+  document.documentElement.style.overflow = 'hidden';
+  setTimeout(() => elDetail.querySelector('.dbar button')?.focus({preventScroll:true}), 30);
+}
+function closePhoneDetail(fromUI) {
+  if (!app.classList.contains('show-detail')) return;
+  app.classList.remove('show-detail'); document.documentElement.style.overflow = '';
+  if (fromUI && history.state && history.state.detail) history.back();
+  const row = elList.querySelector(`.row[data-id="${st.sel}"]`); if (row) { row.scrollIntoView({block:'center'}); row.focus({preventScroll:true}); }
+}
+addEventListener('popstate', () => closePhoneDetail(false));
+
+function setFilter(f) { st.filter = f; st.item = null; st.wipeArmed = false; clearQ(); render(); elList.scrollTop = 0; document.getElementById('side').scrollTop = 0; }
+function clearQ() { st.q = ''; elQ.value = ''; syncQ(); }
+function syncQ() { elQx.hidden = !elQ.value; document.querySelector('.search kbd').hidden = !!elQ.value; }
+function setQuery(v) { st.q = v; elQ.value = v; syncQ(); render(); }
+
+let toastTimer;
+function toast(msg, undo, bad) {
+  const t = document.getElementById('toast');
+  t.className = 'toast on' + (bad ? ' bad' : '');
+  t.innerHTML = `<span>${esc(msg)}</span>${undo ? '<button type="button">撤销</button>' : ''}`;
+  if (undo) t.querySelector('button').onclick = () => { undo(); t.className = 'toast'; };
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast', undo ? 7000 : 3200);
+}
+function commit(no, rec, msg, nextPick) {
+  const prev = records[no];
+  const before = compute().flat.map(o => o.order_no);
+  records[no] = rec;
+  if (!rec) delete records[no];
+  saveRecords();
+  st.rejectOpen = false; delete st.refund[no]; delete st.drafts[no];
+  if (nextPick) {
+    const os = all(), idx = before.indexOf(no);
+    const next = before.slice(idx + 1).concat(before.slice(0, idx)).map(n => os.find(o => o.order_no === n)).find(o => o && o.status === '待发货');
+    st.sel = next ? next.order_no : no;
+    if (!next && mqPhone.matches) closePhoneDetail(true);
+  }
+  render({keepSel:true});
+  markSel();
+  const row = elList.querySelector(`.row[data-id="${st.sel}"]`); if (row) row.scrollIntoView({block:'nearest'});
+  elDetail.scrollTop = 0;
+  if (msg) toast(msg, () => {
+    if (prev) records[no] = prev; else delete records[no];
+    saveRecords(); st.sel = no; render({keepSel:true}); markSel();
+  });
+}
+
+function doShip(o) {
+  const courier = document.getElementById('sc').value;
+  const no = document.getElementById('sn').value.replace(/\s+/g, '').toUpperCase();
+  const fail = m => { const e = document.getElementById('serr'); e.textContent = m; e.hidden = false; document.getElementById('snf').classList.add('bad'); document.getElementById('sn').focus(); };
+  if (!no) return fail('请先填运单号。');
+  if (!/^[A-Z0-9]{8,24}$/.test(no)) return fail('运单号只含字母和数字，长度 8 到 24 位。');
+  const dup = all().find(x => x.tracking_no === no && x.order_no !== o.order_no);
+  if (dup) return fail(`这个运单号已经用在 ${dup.order_no}（${dup.customer}，${dup.city}）。`);
+  commit(o.order_no, {status:'已发货', tracking_no:no, courier, shipped_at:nowText()}, `${o.customer}（${o.city}）的订单已发货`, true);
+}
+function syncRefund(o) {
+  const r = st.refund[o.order_no], sum = refundSum(o);
+  const input = document.getElementById('ramt'); if (!input) return;
+  if (r.amount == null) input.value = sum;
+  const v = Number(input.value), ok = input.value.trim() !== '' && v > 0 && v <= o.paid && /^\d+(\.\d{1,2})?$/.test(input.value.trim());
+  const btn = document.getElementById('rbtn'), err = document.getElementById('rerr');
+  btn.disabled = !ok; btn.textContent = ok ? `同意退款 ${yuan(v)}` : '同意退款';
+  document.getElementById('rmoney').classList.toggle('bad', !ok);
+  err.hidden = ok; err.textContent = ok ? '' : (v > o.paid ? `不能超过实付 ${yuan(o.paid)}。` : '请填一个大于 0 的金额，最多两位小数。');
+}
+function doRefund(o) {
+  const r = st.refund[o.order_no], v = Number(document.getElementById('ramt').value);
+  const names = o.items.filter((i, k) => r.items[k]).map(i => i.item);
+  if (r.ship && o.shipping_fee) names.push('运费');
+  commit(o.order_no, {status:'已退款', refund_amount:v, refund_items:names, refunded_at:nowText()}, `已记为同意退款 ${yuan(v)}`, false);
+}
+function doReject(o) {
+  const reason = document.getElementById('rjr').value.trim();
+  if (!reason) { const e = document.getElementById('rjerr'); e.textContent = '写一句拒绝理由，方便之后回复买家。'; e.hidden = false; document.getElementById('rjf').classList.add('bad'); document.getElementById('rjr').focus(); return; }
+  commit(o.order_no, {status:'退款已拒绝', reject_reason:reason, rejected_at:nowText()}, '已记为拒绝退款', false);
+}
+async function copyText(text, btn) {
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch (e2) {} ta.remove();
+  }
+  toast(ok ? `已复制 ${text}` : '没能复制，请手动选中', null, !ok);
+}
+
+elRail.addEventListener('click', e => {
+  const f = e.target.closest('[data-f]'); if (f) return setFilter(f.dataset.f);
+  const it = e.target.closest('[data-item]');
+  if (it) { const n = it.dataset.item; st.item = st.item === n ? null : n; st.filter = '待发货'; clearQ(); render(); elList.scrollTop = 0; if (mqPhone.matches || !mqWide.matches) document.querySelector('.list-head')?.scrollIntoView({block:'start'}); }
+});
+elList.addEventListener('click', e => {
+  const row = e.target.closest('.row'); if (row) return select(row.dataset.id, {open:true});
+  const f = e.target.closest('[data-f]'); if (f) return setFilter(f.dataset.f);
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  if (a.dataset.act === 'clear') { st.item = null; setQuery(''); }
+  if (a.dataset.act === 'wipe') {
+    if (!st.wipeArmed) { st.wipeArmed = true; renderList(); markSel(); return; }
+    records = {}; saveRecords(); st.wipeArmed = false; render(); toast('已清除本机处理记录');
+  }
+});
+elDetail.addEventListener('click', e => {
+  const o = st.sel && byNo(st.sel);
+  const c = e.target.closest('[data-copy]'); if (c) return copyText(c.dataset.copy, c);
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const act = a.dataset.act;
+  if (act === 'back') return closePhoneDetail(true);
+  if (!o) return;
+  if (act === 'ship') doShip(o);
+  if (act === 'refund') doRefund(o);
+  if (act === 'reject-open') { st.rejectOpen = true; renderDetail(); document.getElementById('rjr')?.focus(); }
+  if (act === 'reject-cancel') { st.rejectOpen = false; renderDetail(); }
+  if (act === 'reject') doReject(o);
+  if (act === 'revert') commit(o.order_no, null, `已恢复成“${DATA.orders.find(x => x.order_no === o.order_no).status}”`, false);
+});
+elDetail.addEventListener('input', e => {
+  const o = st.sel && byNo(st.sel); if (!o) return;
+  if (e.target.id === 'sn' || e.target.id === 'sc') {
+    st.drafts[o.order_no] = {courier: document.getElementById('sc').value, no: document.getElementById('sn').value};
+    if (e.target.id === 'sn') { document.getElementById('serr').hidden = true; document.getElementById('snf').classList.remove('bad'); }
+  }
+  if (e.target.id === 'ramt') { st.refund[o.order_no].amount = e.target.value; syncRefund(o); }
+  if (e.target.id === 'rjr') { st.refund[o.order_no].reason = e.target.value; document.getElementById('rjerr').hidden = true; document.getElementById('rjf').classList.remove('bad'); }
+});
+elDetail.addEventListener('change', e => {
+  const o = st.sel && byNo(st.sel); if (!o || !e.target.dataset.pick) return;
+  const r = st.refund[o.order_no], k = e.target.dataset.pick;
+  if (k === 'ship') r.ship = e.target.checked; else r.items[+k] = e.target.checked;
+  r.amount = null;
+  e.target.closest('tr').classList.toggle('off', !e.target.checked);
+  syncRefund(o);
+});
+elDetail.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id === 'sn') { e.preventDefault(); const o = byNo(st.sel); if (o) doShip(o); }
+});
+
+elQ.addEventListener('input', () => { st.q = elQ.value; st.item = null; syncQ(); render(); elList.scrollTop = 0; });
+elQx.addEventListener('click', () => { setQuery(''); elQ.focus(); });
+
+addEventListener('keydown', e => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
+  if (e.key === '/' && !typing) { e.preventDefault(); elQ.focus(); elQ.select(); return; }
+  if (e.key === 'Escape') {
+    if (document.activeElement === elQ) { if (elQ.value) setQuery(''); else elQ.blur(); return; }
+    if (app.classList.contains('show-detail')) return closePhoneDetail(true);
+  }
+  if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (['ArrowDown','ArrowUp','j','k'].includes(e.key)) {
+    const flat = compute().flat; if (!flat.length) return;
+    e.preventDefault();
+    let i = flat.findIndex(o => o.order_no === st.sel);
+    i = (e.key === 'ArrowDown' || e.key === 'j') ? Math.min(flat.length - 1, i + 1) : Math.max(0, i - 1);
+    select(flat[i].order_no, {focus:true});
+  }
+});
+mqPhone.addEventListener('change', () => { if (!mqPhone.matches) { app.classList.remove('show-detail'); document.documentElement.style.overflow = ''; } render(); });
+
+function setPlaceholder() { elQ.placeholder = mqPhone.matches ? '订单号、买家、商品…' : '订单号、买家、城市、商品或运单号'; }
+mqPhone.addEventListener('change', setPlaceholder); setPlaceholder();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>启明计算实验室 · 2027 招新</title>
+<style>
+:root {
+  --paper: #f6f4ee;
+  --surface: #fffdf8;
+  --line: #dcd6c8;
+  --line-soft: #e8e3d7;
+  --ink: #1f2226;
+  --ink-2: #4e535a;
+  --ink-3: #767a80;
+  --accent: #a8361f;
+  --accent-soft: #f3e3dc;
+  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Noto Serif SC", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans Mono", monospace;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 20px; --s5: 32px; --s6: 56px;
+  --r: 4px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.8 var(--sans);
+  line-break: strict;
+  text-autospace: normal;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 700; text-wrap: balance; margin: 0; }
+p { margin: 0; text-wrap: pretty; }
+.nw { white-space: nowrap; }
+.num { font-variant-numeric: tabular-nums; }
+.mail { overflow-wrap: anywhere; }
+
+.wrap { max-width: 68rem; margin: 0 auto; padding-inline: 24px; }
+
+/* ---------- 页头 ---------- */
+.masthead { border-bottom: 1px solid var(--line); background: var(--surface); }
+.topline {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2) var(--s4);
+  padding-block: var(--s3); font-size: 13px; color: var(--ink-3);
+  border-bottom: 1px solid var(--line-soft);
+}
+.topline b { color: var(--ink-2); font-weight: 600; }
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: var(--s5) var(--s6);
+  padding-block: var(--s6) var(--s5);
+  align-items: start;
+}
+.kicker { font-size: 14px; color: var(--accent); font-weight: 600; letter-spacing: .04em; margin-bottom: var(--s3); }
+.hero h1 { font-size: clamp(30px, 4.4vw, 44px); line-height: 1.3; letter-spacing: -.01em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.lede { margin-top: var(--s4); font-size: 17px; color: var(--ink-2); max-width: 36em; }
+.cta { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s5); align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: 10px 18px; border-radius: var(--r); font: 600 15px/1.4 var(--sans);
+  text-decoration: none; cursor: pointer; border: 1px solid var(--accent);
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #8f2c18; }
+.btn-ghost { background: transparent; color: var(--accent); }
+.btn-ghost:hover { background: var(--accent-soft); }
+.btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.copied { font-size: 13px; color: var(--ink-3); min-height: 1.4em; }
+
+/* 关键日期卡 */
+.dates { border: 1px solid var(--line); border-radius: var(--r); background: var(--paper); }
+.dates h2 { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink-3); padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line-soft); letter-spacing: .04em; }
+.dates ol { list-style: none; margin: 0; padding: 0; }
+.dates li { display: grid; grid-template-columns: 5.2rem 1fr; gap: var(--s3); padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line-soft); }
+.dates li:last-child { border-bottom: 0; }
+.dates .d { font: 600 15px/1.6 var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+.dates li.key .d { color: var(--accent); }
+.dates .what { font-weight: 600; font-size: 15px; line-height: 1.6; }
+.dates .sub { text-wrap: pretty; font-size: 13px; color: var(--ink-2); line-height: 1.6; margin-top: 2px; }
+
+/* 名额条 */
+.quota { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line-soft); }
+.quota > div { padding: var(--s4) 0; display: flex; gap: var(--s4); align-items: baseline; }
+.quota > div + div { border-left: 1px solid var(--line-soft); padding-left: var(--s5); }
+.quota .n { font: 700 40px/1 var(--serif); color: var(--accent); font-variant-numeric: tabular-nums; }
+.quota .n small { font-size: 16px; margin-left: 2px; color: var(--ink); }
+.quota .t { font-weight: 600; font-size: 16px; }
+.quota .t span { display: block; font-weight: 400; font-size: 14px; color: var(--ink-2); }
+
+/* ---------- 正文分段 ---------- */
+main { padding-block: var(--s5) var(--s6); }
+section { padding-block: var(--s6) 0; scroll-margin-top: var(--s4); }
+.sec-head { display: grid; grid-template-columns: 3rem 1fr; gap: var(--s3); align-items: baseline; margin-bottom: var(--s5); padding-bottom: var(--s3); border-bottom: 2px solid var(--ink); }
+.sec-head .no { font: 600 14px var(--mono); color: var(--accent); }
+.sec-head h2 { font-size: 26px; line-height: 1.4; }
+
+/* 要求 */
+.req { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); }
+.req h3 { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--ink-3); margin-bottom: var(--s3); }
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s3); }
+.checks li { position: relative; padding-left: 28px; }
+.checks li::before { content: ""; position: absolute; left: 0; top: .42em; width: 16px; height: 16px; border: 1.5px solid var(--ink); border-radius: 3px; }
+.checks.plus li::before { border-style: dashed; border-color: var(--ink-3); }
+.note-big { border-left: 3px solid var(--accent); padding: var(--s1) 0 var(--s1) var(--s4); }
+.note-big strong { display: block; font-family: var(--serif); font-size: 21px; line-height: 1.5; margin-bottom: var(--s2); }
+.note-big p { color: var(--ink-2); font-size: 15px; }
+
+/* 申请 */
+.apply { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.letter { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); font-size: 15px; }
+.letter .row { display: grid; grid-template-columns: 4em 1fr; gap: var(--s3); padding: var(--s2) var(--s4); border-bottom: 1px solid var(--line-soft); }
+.letter .row .k { color: var(--ink-3); font-size: 14px; }
+.letter .row .v { min-width: 0; }
+.attach { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 3px; padding: 0 8px; font-size: 14px; background: var(--paper); }
+.letter .body { padding: var(--s4); }
+.letter .body p + p { margin-top: var(--s2); }
+.ph { display: block; border: 1px dashed var(--line); border-radius: 3px; padding: var(--s3); margin-top: var(--s3); color: var(--ink-2); background: repeating-linear-gradient(transparent 0 27px, var(--line-soft) 27px 28px); }
+.ph b { color: var(--ink); }
+.count { display: block; text-align: right; font: 13px var(--mono); color: var(--accent); margin-top: var(--s2); }
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.steps li { counter-increment: s; position: relative; padding: 0 0 var(--s5) 3rem; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font: 600 14px/1 var(--mono); background: var(--paper); }
+.steps li::after { content: ""; position: absolute; left: calc(1rem - 1px); top: 2.2rem; bottom: .3rem; border-left: 1.5px dotted var(--ink-3); }
+.steps li:last-child { padding-bottom: 0; }
+.steps li:last-child::after { display: none; }
+.steps h3 { font-family: var(--sans); font-size: 17px; font-weight: 600; line-height: 2rem; }
+.steps p { color: var(--ink-2); font-size: 15px; margin-top: var(--s1); }
+.steps .when { font: 600 13px var(--mono); color: var(--accent); }
+
+/* 研究方向 */
+.dirs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.dirs li { padding: var(--s4) var(--s4) var(--s4) 0; }
+.dirs li + li { border-left: 1px solid var(--line); padding-left: var(--s4); }
+.dirs .no { font: 600 13px var(--mono); color: var(--accent); }
+.dirs h3 { font-size: 20px; line-height: 1.5; margin-top: var(--s2); }
+.after-note { margin-top: var(--s4); color: var(--ink-2); font-size: 15px; }
+
+/* 条件 */
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fact { padding: var(--s4) var(--s4) var(--s4) 0; }
+.fact + .fact { border-left: 1px solid var(--line); padding-left: var(--s4); }
+.fact .big { font: 700 30px/1.2 var(--serif); font-variant-numeric: tabular-nums; }
+.fact .big small { font-size: 16px; font-weight: 700; }
+.fact p { color: var(--ink-2); font-size: 15px; margin-top: var(--s2); }
+.facts.second { border-top: 0; grid-template-columns: minmax(0,1fr) minmax(0,2fr); }
+
+.outcome { margin-top: var(--s5); display: grid; grid-template-columns: 22rem 1fr; gap: var(--s5); align-items: center; }
+.outcome h3 { font-size: 20px; line-height: 1.5; }
+.outcome .src { font-size: 14px; color: var(--ink-3); margin-top: var(--s1); }
+.people { display: flex; gap: 6px; flex-wrap: wrap; }
+.person { width: 44px; height: 56px; position: relative; }
+.person svg { width: 100%; height: 100%; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin-top: var(--s3); font-size: 14px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+
+/* FAQ */
+.faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5) var(--s6); }
+.faq dt { font-weight: 600; font-size: 17px; }
+.faq dd { margin: var(--s2) 0 0; color: var(--ink-2); }
+
+/* 页脚 */
+.contact { margin-top: var(--s6); background: var(--ink); color: #eae6dc; }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); padding-block: var(--s5) var(--s6); }
+.contact h2 { font-size: 22px; line-height: 1.5; color: #fff; }
+.contact h3 { font: 600 13px var(--sans); color: #a7a399; letter-spacing: .04em; margin-bottom: var(--s2); }
+.contact p { font-size: 15px; }
+.contact a { color: #ffb9a6; }
+.contact .about { color: #c9c4b8; font-size: 14px; margin-top: var(--s3); }
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding-block: var(--s5) var(--s4); }
+  .req, .dirs, .facts, .facts.second { grid-template-columns: 1fr; }
+  .dirs li, .dirs li + li { border-left: 0; padding: var(--s4) 0; border-bottom: 1px solid var(--line-soft); }
+  .fact, .fact + .fact { border-left: 0; padding: var(--s4) 0; border-bottom: 1px solid var(--line-soft); }
+  .fact:last-child { border-bottom: 0; }
+  .apply, .faq { grid-template-columns: 1fr; gap: var(--s5); }
+  .outcome { grid-template-columns: 1fr; gap: var(--s3); }
+  .contact .wrap { grid-template-columns: 1fr; gap: var(--s4); }
+}
+@media (max-width: 520px) {
+  .wrap { padding-inline: 16px; }
+  .topline { font-size: 12px; }
+  .hero h1 { font-size: 28px; }
+  .lede { font-size: 16px; }
+  .quota { grid-template-columns: 1fr; }
+  .quota > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--line-soft); }
+  .quota > div { padding: var(--s3) 0; }
+  .quota .n { font-size: 34px; min-width: 2.2rem; }
+  section { padding-top: var(--s5); }
+  .sec-head { grid-template-columns: 2.2rem 1fr; margin-bottom: var(--s4); }
+  .sec-head h2 { font-size: 22px; }
+  .btn { flex: 1 1 auto; justify-content: center; }
+  .letter .row { padding: var(--s2) var(--s3); grid-template-columns: 3.2em 1fr; }
+  .letter .body { padding: var(--s3); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="topline">
+      <span><b>启明计算实验室</b> · 城北理工大学信息学院</span>
+      <span>联系邮箱 <a class="mail" href="mailto:qiming-lab@example.com">qiming-lab@example.com</a></span>
+    </div>
+
+    <div class="hero">
+      <div>
+        <p class="kicker">2027 招新 · 大模型与智能体方向</p>
+        <h1>启明计算实验室招收 <em class="nw">2027 级硕士</em>和<em class="nw">本科科研实习生</em></h1>
+        <p class="lede">我们做大模型智能体的规划与工具使用、科研文献检索与阅读辅助、智能体评测三个方向。会 Python、读过一篇大模型论文、能读英文文献，就可以申请；不要求发表过论文。</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#apply">看申请方式</a>
+          <button class="btn btn-ghost" type="button" id="copy">复制申请邮箱</button>
+          <span class="copied" id="copied" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <aside class="dates" aria-label="关键日期">
+        <h2>关键日期 · 2026 年</h2>
+        <ol>
+          <li>
+            <span class="d">11.01</span>
+            <div>
+              <div class="what">开放日 <span class="nw num">14:00–16:00</span></div>
+              <div class="sub">信息楼 B 区 512，直接来聊，不用预约。去年曾改到 10 月，今年仍在 11 月。</div>
+            </div>
+          </li>
+          <li class="key">
+            <span class="d">11.15</span>
+            <div>
+              <div class="what">申请截止</div>
+              <div class="sub">邮件附简历和 300 字以内的论文理解</div>
+            </div>
+          </li>
+          <li>
+            <span class="d">两周内</span>
+            <div>
+              <div class="what">通知结果</div>
+              <div class="sub">截止后两周内通知</div>
+            </div>
+          </li>
+        </ol>
+      </aside>
+    </div>
+
+    <div class="quota">
+      <div>
+        <span class="n">3<small>名</small></span>
+        <span class="t">2027 级硕士<span>推免生、统考生都可以</span></span>
+      </div>
+      <div>
+        <span class="n">4<small>名</small></span>
+        <span class="t">本科生科研实习<span>大三及以上</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="req" aria-labelledby="req-h">
+    <div class="sec-head"><span class="no">01</span><h2 id="req-h">申请要求：三条基础，没有论文门槛</h2></div>
+    <div class="req">
+      <div>
+        <h3>需要满足</h3>
+        <ul class="checks">
+          <li>熟悉 Python</li>
+          <li>读过至少一篇大模型相关的论文</li>
+          <li>能读英文文献</li>
+        </ul>
+      </div>
+      <div>
+        <h3>加分项</h3>
+        <ul class="checks plus">
+          <li>有开源贡献</li>
+          <li>有比赛经历</li>
+        </ul>
+      </div>
+      <div class="note-big">
+        <strong>不要求论文发表经历</strong>
+        <p>没发过论文也可以申请，不要因为这个就不敢投。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="apply" aria-labelledby="apply-h">
+    <div class="sec-head"><span class="no">02</span><h2 id="apply-h">怎么申请：发一封邮件，<span class="nw">11 月 15 日</span>截止</h2></div>
+    <div class="apply">
+      <div class="letter" aria-label="申请邮件应包含的内容">
+        <div class="row"><span class="k">收件人</span><span class="v"><a class="mail" href="mailto:qiming-lab@example.com">qiming-lab@example.com</a></span></div>
+        <div class="row"><span class="k">附件</span><span class="v"><span class="attach"><svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M8.5 4v6a2.5 2.5 0 0 1-5 0V3a1.6 1.6 0 0 1 3.2 0v6.5a.7.7 0 0 1-1.4 0V4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>你的简历</span></span></div>
+        <div class="body">
+          <p>正文写一段对某一篇论文的理解：</p>
+          <span class="ph"><b>任何你读过的论文都可以。</b>写你读懂了什么、怎么看它。</span>
+          <span class="count">≤ 300 字</span>
+        </div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <h3>发送申请邮件</h3>
+          <p>简历 + 300 字以内的论文理解，发到 <a class="mail" href="mailto:qiming-lab@example.com">qiming-lab@example.com</a>。</p>
+          <p class="when">截止 2026-11-15</p>
+        </li>
+        <li>
+          <h3>初筛</h3>
+          <p>我们阅读材料，筛选进入面谈的同学。</p>
+        </li>
+        <li>
+          <h3>30 分钟线上面谈</h3>
+          <p>通过初筛的同学会收到面谈安排。</p>
+        </li>
+        <li>
+          <h3>通知结果</h3>
+          <p>截止后两周内通知。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="dirs" aria-labelledby="dirs-h">
+    <div class="sec-head"><span class="no">03</span><h2 id="dirs-h">研究方向：三选一，入组后还能调</h2></div>
+    <ol class="dirs">
+      <li><span class="no">方向一</span><h3>大模型智能体的规划与工具使用</h3></li>
+      <li><span class="no">方向二</span><h3>面向科研文献的检索与阅读辅助</h3></li>
+      <li><span class="no">方向三</span><h3>智能体评测方法</h3></li>
+    </ol>
+    <p class="after-note">按自己的兴趣选择，入组后也可以调整。</p>
+  </section>
+
+  <section id="offer" aria-labelledby="offer-h">
+    <div class="sec-head"><span class="no">04</span><h2 id="offer-h">加入后：算力、补助和每两周一次的一对一</h2></div>
+    <div class="facts">
+      <div class="fact">
+        <div class="big num">8 <small>张 A100</small></div>
+        <p>实验室共享服务器</p>
+      </div>
+      <div class="fact">
+        <div class="big num">200 <small>元 / 月</small></div>
+        <p>每人的 API 额度</p>
+      </div>
+      <div class="fact">
+        <div class="big num">1500 <small>元 / 月</small></div>
+        <p>硕士助研津贴，在学校标准之外额外发放</p>
+      </div>
+    </div>
+    <div class="facts second">
+      <div class="fact">
+        <div class="big">每周二 <small class="num">19:00</small></div>
+        <p>组会</p>
+      </div>
+      <div class="fact">
+        <div class="big">每两周 <small>一次</small></div>
+        <p>和周老师一对一讨论，导师指导多，不放养</p>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <div>
+        <h3>毕业去向：<span class="nw">4 人去工业界</span>，<span class="nw">2 人读博</span></h3>
+        <p class="src">近三年实验室毕业的 6 名硕士</p>
+      </div>
+      <div>
+        <div class="people" role="img" aria-label="6 名毕业硕士中，4 名去了工业界，2 名继续读博">
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="10" fill="#a8361f"/><path d="M4 56c0-12 8-20 18-20s18 8 18 20z" fill="#a8361f"/></svg></span>
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="10" fill="#a8361f"/><path d="M4 56c0-12 8-20 18-20s18 8 18 20z" fill="#a8361f"/></svg></span>
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="10" fill="#a8361f"/><path d="M4 56c0-12 8-20 18-20s18 8 18 20z" fill="#a8361f"/></svg></span>
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="10" fill="#a8361f"/><path d="M4 56c0-12 8-20 18-20s18 8 18 20z" fill="#a8361f"/></svg></span>
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="9" fill="none" stroke="#1f2226" stroke-width="2"/><path d="M5 55c0-11 8-19 17-19s17 8 17 19z" fill="none" stroke="#1f2226" stroke-width="2"/></svg></span>
+          <span class="person"><svg viewBox="0 0 44 56"><circle cx="22" cy="14" r="9" fill="none" stroke="#1f2226" stroke-width="2"/><path d="M5 55c0-11 8-19 17-19s17 8 17 19z" fill="none" stroke="#1f2226" stroke-width="2"/></svg></span>
+        </div>
+        <div class="legend">
+          <span><i style="background:#a8361f"></i>工业界 4 名：大模型、搜索相关岗位</span>
+          <span><i style="border:2px solid #1f2226"></i>继续读博 2 名</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-h">
+    <div class="sec-head"><span class="no">05</span><h2 id="faq-h">常见问题</h2></div>
+    <dl class="faq">
+      <div>
+        <dt>跨专业可以申请吗？</dt>
+        <dd>可以，但入组后需要补一些数学基础。</dd>
+      </div>
+      <div>
+        <dt>本科实习可以远程吗？</dt>
+        <dd>可以远程，但每周需要线下来实验室一次。</dd>
+      </div>
+      <div>
+        <dt>没有发过论文可以吗？</dt>
+        <dd>可以，我们不要求论文发表经历。</dd>
+      </div>
+    </dl>
+  </section>
+
+</main>
+
+<footer class="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <div>
+      <h2 id="contact-h">有问题都可以发邮件</h2>
+      <p class="about">启明计算实验室隶属城北理工大学信息学院，负责人周砚副教授，一直专注大模型相关研究。</p>
+    </div>
+    <div>
+      <h3>联系人</h3>
+      <p>林舟（博士生，实验室秘书）<br><a class="mail" href="mailto:qiming-lab@example.com">qiming-lab@example.com</a></p>
+    </div>
+    <div>
+      <h3>实验室地址</h3>
+      <p>信息楼 B 区 512</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy');
+  var out = document.getElementById('copied');
+  var addr = 'qiming-lab@example.com';
+  btn.addEventListener('click', function () {
+    function done(ok) { out.textContent = ok ? '已复制：' + addr : '请手动复制：' + addr; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(addr).then(function () { done(true); }, function () { done(false); });
+    } else { done(false); }
+  });
+})();
+</script>
+</body>
+</html>

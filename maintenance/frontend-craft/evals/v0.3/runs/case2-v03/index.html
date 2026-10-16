@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReAct 导读：让语言模型边想边做</title>
+<meta name="description" content="ReAct: Synergizing Reasoning and Acting in Language Models（ICLR 2023）中文导读：问题、方法、实验与局限。">
+<style>
+:root {
+  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  --latin-serif: Charter, "Iowan Old Style", Georgia, "Noto Serif", "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Cascadia Mono", "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+
+  --bg: #f7f5f0;
+  --surface: #fffefb;
+  --ink: #1f2328;
+  --ink-2: #555b63;
+  --ink-3: #7a8089;
+  --rule: #e2ddd2;
+  --rule-2: #cfc8b9;
+  --accent: #1d5d8c;
+  --accent-soft: #e5eef5;
+  --env: #8a5a12;
+  --env-soft: #f6eedf;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 20px; --s5: 32px; --s6: 56px;
+  --r1: 4px; --r2: 8px;
+  --body: 17px;
+  --note-w: 13rem;
+  --col-gap: 3rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17191c;
+    --surface: #1f2226;
+    --ink: #e6e3dc;
+    --ink-2: #b2b0aa;
+    --ink-3: #8e8c87;
+    --rule: #33373c;
+    --rule-2: #464a50;
+    --accent: #7db4dd;
+    --accent-soft: #1f3343;
+    --env: #e0b56d;
+    --env-soft: #3a2f1e;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--body)/1.85 var(--sans);
+  line-break: strict;
+  overflow-wrap: break-word;
+  text-autospace: normal;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+code {
+  font-family: var(--mono);
+  font-size: .86em;
+  background: var(--accent-soft);
+  color: var(--ink);
+  padding: .08em .35em;
+  border-radius: var(--r1);
+  white-space: nowrap;
+}
+.nw { white-space: nowrap; }
+.url { overflow-wrap: anywhere; word-break: break-all; }
+
+/* ---------- 页面骨架 ---------- */
+.page {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(0, 37rem) minmax(var(--note-w), 1fr);
+  column-gap: var(--col-gap);
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.toc-side { grid-column: 1; }
+article { grid-column: 2; min-width: 0; padding-block: var(--s6) 96px; }
+
+/* ---------- 目录 ---------- */
+.toc-side nav {
+  position: sticky;
+  top: 0;
+  padding-top: calc(var(--s6) + 6px);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.toc-label {
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--ink-3);
+  margin: 0 0 var(--s3);
+}
+.toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc a {
+  display: flex;
+  gap: .6em;
+  padding: 5px 0 5px 12px;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.toc a .n { color: var(--ink-3); min-width: 1.2em; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { border-left-color: var(--accent); color: var(--ink); font-weight: 600; }
+.toc a.on .n { color: var(--accent); }
+
+.toc-inline { display: none; }
+
+/* ---------- 页头 ---------- */
+.kicker {
+  margin: 0 0 var(--s3);
+  font-size: 13px;
+  letter-spacing: .12em;
+  color: var(--accent);
+  font-weight: 600;
+}
+h1 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+.paper {
+  margin: var(--s4) 0 0;
+  padding: var(--s3) 0 0;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.paper .en {
+  font-family: var(--latin-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 2px;
+}
+.paper .venue { display: flex; flex-wrap: wrap; gap: 0 1.2em; margin-top: 4px; }
+.fit {
+  margin: var(--s4) 0 0;
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r2);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  display: flex; flex-wrap: wrap; gap: 4px 1.4em;
+}
+.fit b { color: var(--ink); font-weight: 600; }
+
+.lede {
+  margin: var(--s5) 0 0;
+  font-size: 18.5px;
+  line-height: 1.85;
+}
+
+/* ---------- 正文 ---------- */
+section { scroll-margin-top: var(--s4); }
+h2 {
+  margin: var(--s6) 0 var(--s4);
+  font-size: 26px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+  display: flex; align-items: baseline; gap: .55em;
+}
+h2 .n {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  width: 1.75em; height: 1.75em;
+  display: inline-grid; place-items: center;
+  flex: none;
+  transform: translateY(-3px);
+  line-height: 1;
+}
+h3 { font-size: 18px; line-height: 1.5; margin: 0 0 var(--s2); font-weight: 700; text-wrap: balance; }
+p { margin: 0 0 1em; text-wrap: pretty; }
+strong { font-weight: 600; }
+.term { color: var(--ink-3); font-size: .9em; }
+
+/* 页边注 */
+.lede-note { margin-top: calc(var(--s5) + .45em); }
+.note {
+  float: right;
+  clear: right;
+  width: var(--note-w);
+  margin-right: calc(-1 * (var(--note-w) + var(--col-gap)));
+  margin-top: .35em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  border-top: 2px solid var(--accent);
+  padding-top: var(--s2);
+}
+.note .tag { display: block; font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 2px; }
+.note a { color: inherit; }
+
+/* ---------- 签名：一条轨迹的三种内容 ---------- */
+.trace {
+  margin: var(--s4) 0 var(--s5);
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+.trace > li {
+  display: grid;
+  grid-template-columns: 8.2rem minmax(0, 1fr);
+  gap: var(--s4);
+  padding: var(--s4) var(--s4);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  position: relative;
+}
+.trace > li + li { border-top: 0; }
+.trace > li:first-child { border-radius: var(--r2) var(--r2) 0 0; }
+.trace > li:last-child { border-radius: 0 0 var(--r2) var(--r2); }
+.trace > li.env {
+  background: var(--env-soft);
+  border-style: dashed;
+  border-color: var(--rule-2);
+}
+.trace > li.env { border-top: 1px dashed var(--rule-2); }
+.trace .who { display: flex; flex-direction: column; gap: 4px; }
+.trace .kw {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--accent);
+}
+.trace .env .kw { color: var(--env); }
+.trace .zh { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.trace .src {
+  align-self: start;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 4px;
+}
+.trace .env .src { background: transparent; border: 1px dashed var(--env); color: var(--env); }
+.trace p { margin: 0; font-size: 16px; line-height: 1.75; }
+.trace .acts { margin: var(--s2) 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.6; }
+.trace .acts li { display: flex; gap: .7em; align-items: baseline; flex-wrap: wrap; }
+.trace .acts code { min-width: 8.6em; display: inline-block; }
+.trace-loop {
+  margin: calc(-1 * var(--s5) + var(--s2)) 0 var(--s5);
+  font-size: 13px;
+  color: var(--ink-3);
+  display: flex; align-items: center; gap: .5em;
+  padding-left: var(--s4);
+}
+.trace-loop svg { flex: none; }
+
+/* 图 1 占位说明（不复制原图） */
+.figref {
+  margin: var(--s5) 0;
+  padding: var(--s4);
+  border-left: 3px solid var(--rule-2);
+  background: var(--surface);
+  border-radius: 0 var(--r2) var(--r2) 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.figref .cap { display: block; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.figref p { margin: 0; }
+.figref p + p { margin-top: var(--s2); }
+
+/* 对照表 */
+.table-wrap { margin: var(--s4) 0 var(--s5); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.6; }
+caption { text-align: start; font-size: 14px; color: var(--ink-2); padding-bottom: var(--s2); }
+th, td { text-align: start; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+thead th { font-size: 13px; font-weight: 600; color: var(--ink-2); border-bottom: 1.5px solid var(--ink-3); white-space: nowrap; }
+tbody th { font-weight: 700; white-space: nowrap; }
+td.mark { white-space: nowrap; }
+.yes, .no { display: inline-flex; align-items: center; gap: .4em; }
+.yes::before, .no::before { content: ""; width: .7em; height: .7em; border-radius: 50%; flex: none; }
+.yes::before { background: var(--accent); }
+.no { color: var(--ink-3); }
+.no::before { border: 1.5px solid var(--ink-3); }
+tr.hl { background: var(--accent-soft); }
+tr.hl th { color: var(--accent); }
+
+/* 实验：任务 */
+.tasks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: var(--s3);
+  margin: var(--s3) 0 var(--s5);
+}
+.task-group {
+  border-top: 2px solid var(--ink);
+  padding-top: var(--s3);
+}
+.task-group h3 { font-size: 16px; margin-bottom: var(--s1); }
+.task-group .how { font-size: 14px; color: var(--ink-2); margin: 0 0 var(--s2); line-height: 1.6; }
+.task-group dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 1em; font-size: 15px; line-height: 1.6; }
+.task-group dt { font-weight: 700; }
+.task-group dd { margin: 0; color: var(--ink-2); }
+
+/* 实验：三个结果 */
+.findings { list-style: none; margin: var(--s4) 0 0; padding: 0; counter-reset: f; }
+.findings > li {
+  counter-increment: f;
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: var(--s5);
+}
+.findings > li::before {
+  content: counter(f);
+  position: absolute; left: 0; top: .05em;
+  font-size: 28px; line-height: 1; font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.findings h3 { margin-bottom: var(--s2); }
+.findings p:last-child { margin-bottom: 0; }
+
+.stats {
+  display: flex; flex-wrap: wrap;
+  gap: var(--s3) var(--s5);
+  margin: var(--s2) 0 var(--s4);
+  padding: var(--s4) 0;
+  border-block: 1px solid var(--rule);
+}
+.stat { display: flex; align-items: baseline; gap: .6em; }
+.stat .v { font-size: 44px; line-height: 1; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.stat .v small { font-size: 18px; font-weight: 600; margin-left: 2px; }
+.stat .k { font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+.stat .k b { display: block; color: var(--ink); font-size: 16px; font-weight: 700; }
+.stats .cap { flex-basis: 100%; font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.6; }
+
+/* 局限 */
+.limits { margin: 0 0 1em; padding-left: 1.3em; }
+.limits li { margin-bottom: .4em; }
+.limits li::marker { color: var(--ink-3); }
+.next { display: grid; gap: var(--s3); margin: var(--s4) 0 0; }
+.next-item { padding: var(--s3) var(--s4); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r2); }
+.next-item h3 { margin: 0 0 2px; font-size: 16px; display: flex; flex-wrap: wrap; gap: 0 .6em; align-items: baseline; }
+.next-item h3 a { font-size: 13px; font-weight: 400; }
+.next-item p { margin: 0; font-size: 15.5px; line-height: 1.75; }
+
+/* 自测 */
+.quiz { list-style: none; margin: var(--s4) 0 0; padding: 0; counter-reset: q; display: grid; gap: var(--s3); }
+.quiz li {
+  counter-increment: q;
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  gap: 0 var(--s3);
+  padding: var(--s4) var(--s4) var(--s4) var(--s3);
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r2);
+  background: var(--surface);
+}
+.quiz li::before {
+  content: "Q" counter(q);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+  padding-top: .3em;
+  text-align: center;
+}
+.quiz .q { margin: 0; font-weight: 600; line-height: 1.7; }
+.quiz .back { margin: 4px 0 0; font-size: 13px; color: var(--ink-3); }
+
+/* 参考来源 */
+.refs { margin: var(--s3) 0 0; padding-left: 1.6em; font-size: 14.5px; line-height: 1.65; color: var(--ink-2); }
+.refs li { margin-bottom: var(--s3); padding-left: .2em; }
+.refs li::marker { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.refs .t { font-family: var(--latin-serif); font-style: italic; color: var(--ink); }
+.refs a { display: block; font-family: var(--mono); font-size: 13px; }
+.refs li:target { background: var(--accent-soft); outline: 6px solid var(--accent-soft); border-radius: 2px; }
+sup.cite { font-size: .7em; line-height: 0; margin-left: 1px; }
+sup.cite a { text-decoration: none; font-family: var(--mono); }
+
+/* ---------- 中等宽度：目录收到正文上方，页边注保留 ---------- */
+@media (max-width: 1180px) {
+  .page { grid-template-columns: minmax(0, 37rem) var(--note-w); justify-content: center; padding: 0 1.5rem; }
+  .toc-side { display: none; }
+  article { grid-column: 1; }
+  .toc-inline { display: block; }
+}
+
+/* ---------- 窄屏：单栏，页边注回到正文里 ---------- */
+@media (max-width: 860px) {
+  :root { --body: 16.5px; }
+  .page { display: block; padding: 0 max(18px, env(safe-area-inset-left)) 0 max(18px, env(safe-area-inset-right)); }
+  article { padding-block: 32px 72px; }
+  h1 { font-size: 30px; }
+  h1 .sub { display: block; }
+  .lede-note { display: none; }
+  .lede { font-size: 17.5px; margin-top: var(--s4); }
+  h2 { font-size: 22px; margin-top: 44px; }
+  .note {
+    float: none; width: auto; margin: var(--s3) 0 var(--s4);
+    border-top: 0; border-left: 2px solid var(--accent);
+    padding: 2px 0 2px var(--s3);
+  }
+  .trace > li { grid-template-columns: 1fr; gap: var(--s2); padding: var(--s3) var(--s4) var(--s4); }
+  .trace .who { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 4px .7em; }
+  .trace .src { margin-top: 0; }
+  .trace p { font-size: 15.5px; }
+  .trace .acts code { min-width: 0; }
+  .trace .acts li { gap: 0 .6em; }
+  .findings > li { padding-left: 0; }
+  .findings > li::before { position: static; float: left; font-size: 22px; line-height: 27px; margin-right: .55em; }
+  .stat .v { font-size: 38px; }
+  .quiz li { padding: var(--s3) var(--s3) var(--s3) var(--s2); }
+
+  /* 对照表：每种方式一行，风险放到下一行 */
+  table, thead, tbody, tr, th, td { display: block; }
+  thead tr, tbody tr { display: grid; grid-template-columns: 6.2em 1fr 1fr; column-gap: 8px; }
+  th, td { padding: 0; border: 0; }
+  thead tr { padding: 0 10px 6px; border-bottom: 1.5px solid var(--ink-3); }
+  thead th.risk { display: none; }
+  tbody tr { padding: 10px; border-bottom: 1px solid var(--rule); row-gap: 2px; }
+  td.risk { grid-column: 1 / -1; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+}
+
+/* 正文上方的折叠目录（中等宽度和手机） */
+.toc-inline {
+  margin: var(--s4) 0 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--r2);
+  background: var(--surface);
+  font-size: 15px;
+}
+.toc-inline summary {
+  cursor: pointer;
+  padding: 10px var(--s4);
+  font-weight: 600;
+  list-style: none;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.toc-inline summary::-webkit-details-marker { display: none; }
+.toc-inline summary::after { content: "展开"; font-size: 13px; font-weight: 400; color: var(--accent); }
+.toc-inline[open] summary::after { content: "收起"; }
+.toc-inline summary span { font-weight: 400; color: var(--ink-3); font-size: 13px; margin-left: .5em; }
+.toc-inline .toc { padding: 0 var(--s4) var(--s3); }
+.toc-inline .toc a { padding-block: 7px; }
+
+@media print {
+  .toc-side, .toc-inline { display: none; }
+  .page { display: block; }
+  .note { float: none; width: auto; margin: 0 0 1em; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <aside class="toc-side" aria-label="目录">
+    <nav>
+      <p class="toc-label">目录</p>
+      <div class="toc" data-toc></div>
+    </nav>
+  </aside>
+
+  <article>
+    <header>
+      <p class="kicker">论文导读</p>
+      <h1><span>ReAct 导读：</span><span class="sub">让语言模型边想边做</span></h1>
+
+      <div class="paper">
+        <span class="en">ReAct: Synergizing Reasoning and Acting in Language Models</span>
+        Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao
+        <span class="venue">
+          <span>ICLR 2023</span>
+          <a href="https://arxiv.org/abs/2210.03629">arXiv 2210.03629</a>
+          <a href="https://react-lm.github.io">项目主页与代码</a>
+        </span>
+      </div>
+
+      <p class="fit"><span><b>适合</b>　读过 Chain-of-Thought、想了解 Agent 基本工作方式的同学</span><span class="nw"><b>阅读</b>　约 15 分钟</span></p>
+
+      <details class="toc-inline">
+        <summary>目录<span>4 节 · 自测 · 参考来源</span></summary>
+        <div class="toc" data-toc></div>
+      </details>
+    </header>
+
+    <aside class="note lede-note"><span class="tag">参考来源 3</span>Chain-of-Thought 原论文：Wei et al.，<a href="https://arxiv.org/abs/2201.11903" class="nw">arXiv 2201.11903</a></aside>
+    <p class="lede">
+      在 ReAct 之前，大语言模型的两种能力基本是分开研究的：一边是推理，比如 Chain-of-Thought（CoT）让模型先写出中间步骤再给答案；另一边是行动，比如让模型生成动作计划、在环境里一步步操作。ReAct 的想法很直接：让模型交替写“想法”和“动作”，想法帮助它制定、跟踪和修改计划，动作让它从外部取得新信息。这篇导读按“问题—方法—实验—局限”的顺序梳理全文，重点放在方法和实验设计上。
+    </p>
+
+    <section id="s1" data-title="这篇论文想解决什么" data-n="一">
+      <h2><span class="n">一</span>这篇论文想解决什么</h2>
+      <p>只做推理的模型有一个老问题：它所有的判断都来自自己的参数，遇到需要事实的问题时，推理链看起来通顺，却可能建立在一个记错的事实上，而且错误会沿着链条一路传下去。论文把这类问题称为<strong>幻觉</strong><span class="term">（hallucination）</span>和<strong>错误传播</strong><span class="term">（error propagation）</span>。</p>
+      <p>只做行动的模型则相反。它能调用搜索、能在环境里操作，但没有显式的推理过程，很难把大目标拆成小目标，也很难在某一步失败后意识到需要换一种做法。</p>
+      <p>作者的判断是：人在完成任务时本来就是边想边做的，想的内容决定下一步做什么，做的结果又反过来修正想法。如果让模型也按这种方式工作，两种能力应该可以互相补足。</p>
+    </section>
+
+    <section id="s2" data-title="ReAct 怎么做" data-n="二">
+      <h2><span class="n">二</span>ReAct 怎么做</h2>
+      <p>ReAct 不训练新模型，核心是一种提示方式。提示里放一两个人工写好的解题轨迹，模型照着格式往下生成。每条轨迹由三种内容交替组成：</p>
+
+      <ol class="trace" aria-label="一条轨迹的三种内容">
+        <li>
+          <div class="who"><span class="kw">Thought</span><span class="zh">想法</span><span class="src">模型生成</span></div>
+          <p>用自然语言写下当前的判断，比如“我需要先查出这个人出生在哪一年”。想法不改变外部环境。</p>
+        </li>
+        <li>
+          <div class="who"><span class="kw">Action</span><span class="zh">动作</span><span class="src">模型生成</span></div>
+          <div>
+            <p>调用一个外部接口。在问答任务里，作者只给了三个动作：</p>
+            <ul class="acts">
+              <li><code>search[实体]</code><span>搜索维基百科页面</span></li>
+              <li><code>lookup[字符串]</code><span>在当前页面里找关键词</span></li>
+              <li><code>finish[答案]</code><span>给出最终答案</span></li>
+            </ul>
+          </div>
+        </li>
+        <li class="env">
+          <div class="who"><span class="kw">Observation</span><span class="zh">观察</span><span class="src">环境填入</span></div>
+          <p>外部接口返回的结果，由环境填入，<strong>不由模型生成</strong>。</p>
+        </li>
+      </ol>
+      <p class="trace-loop">
+        <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><path d="M15 2v4a4 4 0 0 1-4 4H3m0 0 3-3M3 10l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        模型读到 Observation，再写下一个 Thought 或 Action
+      </p>
+
+      <p>这样，模型每一步都能看到真实返回的信息，再决定下一步。对知识类任务，想法和动作通常一一交替；对需要很多步操作的决策类任务，想法只在需要的时候出现，比如拆分目标或者发现计划走不通的时候。</p>
+
+      <div class="figref" role="note">
+        <span class="cap">图 1（原文 Figure 1）请对照原文阅读</span>
+        <p>同一道 HotpotQA 问题在 Standard、CoT、Act-only、ReAct 四种提示方式下的解题轨迹，以及 ALFWorld 中 Act-only 与 ReAct 的对比。导读没有复制原图，建议对照<a href="https://arxiv.org/abs/2210.03629">原文</a>阅读。</p>
+      </div>
+
+      <p>下表概括了这四种方式的区别：</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">方式</th><th scope="col">显式推理</th><th scope="col">调用外部信息</th><th scope="col" class="risk">主要风险</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Standard</th><td class="mark"><span class="no">无</span></td><td class="mark"><span class="no">无</span></td><td class="risk">直接给答案，无法检查过程</td></tr>
+            <tr><th scope="row">CoT</th><td class="mark"><span class="yes">有</span></td><td class="mark"><span class="no">无</span></td><td class="risk">推理通顺但事实可能是编的</td></tr>
+            <tr><th scope="row">Act-only</th><td class="mark"><span class="no">无</span></td><td class="mark"><span class="yes">有</span></td><td class="risk">能查资料，但不会拆解目标和纠错</td></tr>
+            <tr class="hl"><th scope="row">ReAct</th><td class="mark"><span class="yes">有</span></td><td class="mark"><span class="yes">有</span></td><td class="risk">轨迹更长，搜索结果不好时可能原地打转</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="s3" data-title="实验看什么" data-n="三">
+      <h2><span class="n">三</span>实验看什么</h2>
+      <p>论文在两类任务上测试 ReAct。</p>
+      <div class="tasks">
+        <div class="task-group">
+          <h3>知识密集型推理</h3>
+          <p class="how">模型只能通过上面三个动作访问维基百科</p>
+          <dl>
+            <dt>HotpotQA</dt><dd>多跳问答</dd>
+            <dt>FEVER</dt><dd>事实核查</dd>
+          </dl>
+        </div>
+        <div class="task-group">
+          <h3>交互式决策</h3>
+          <p class="how">在模拟环境里一步步操作</p>
+          <dl>
+            <dt>ALFWorld</dt><dd>文字版的家务环境</dd>
+            <dt>WebShop</dt><dd>模拟的网上购物</dd>
+          </dl>
+        </div>
+      </div>
+
+      <p>读实验部分时，建议关注三个结果。</p>
+      <ol class="findings">
+        <li>
+          <h3><span class="nw">查维基百科减少了幻觉，</span><span class="nw">但和 CoT 结合更好</span></h3>
+          <p>在 HotpotQA 和 FEVER 上，ReAct 通过查维基百科，明显减少了 CoT 中常见的幻觉和错误传播，生成的轨迹也更容易被人读懂和检查。但只用 ReAct 并不总是最好的，论文把 ReAct 和 CoT 结合起来，按条件在两者之间切换，效果更好。这说明内部知识和外部检索各有长处。</p>
+        </li>
+        <li>
+          <h3>一两个示例，胜过大量训练的方法</h3>
+          <div class="stats" role="group" aria-label="ReAct 在决策任务上的成功率提升">
+            <div class="stat"><span class="v">+34</span><span class="k"><b>ALFWorld</b>个百分点</span></div>
+            <div class="stat"><span class="v">+10</span><span class="k"><b>WebShop</b>个百分点</span></div>
+            <p class="cap">成功率的绝对提升，对比对象是模仿学习和强化学习方法</p>
+          </div>
+          <p>在 ALFWorld 和 WebShop 上，ReAct 只用一到两个示例，成功率就比模仿学习和强化学习方法分别高出 34 和 10 个百分点（绝对值）。这是论文里最醒目的数字，注意它比较的是<strong>提示方法</strong>和<strong>需要大量训练数据的方法</strong>。</p>
+        </li>
+        <li>
+          <h3>失败多来自搜索无果和原地循环</h3>
+          <p>论文做了错误分析。ReAct 的失败有不少来自搜索没有返回有用信息，以及模型反复生成相同的想法和动作、陷入循环。读这部分可以帮助理解后来的工作为什么要加入反思或记忆。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="s4" data-title="局限与延伸阅读" data-n="四">
+      <h2><span class="n">四</span>局限与延伸阅读</h2>
+      <p>ReAct 的局限主要有三点：</p>
+      <ul class="limits">
+        <li>依赖人工写的示例，示例的质量和风格会影响结果；</li>
+        <li>轨迹较长，复杂任务容易超出上下文长度；</li>
+        <li>动作空间是人为设计的，换一个任务就要重新定义。</li>
+      </ul>
+      <p>作者还尝试用 ReAct 轨迹微调较小的模型，这部分可以作为选读。</p>
+      <p>读完 ReAct，可以接着读两篇工作：</p>
+      <div class="next">
+        <div class="next-item">
+          <h3>Reflexion<a href="https://arxiv.org/abs/2303.11366">arXiv 2303.11366</a></h3>
+          <p>让模型在失败后写下反思、存进记忆再重试，直接回应了上面提到的“原地打转”问题。</p>
+        </div>
+        <div class="next-item">
+          <h3>Toolformer<a href="https://arxiv.org/abs/2302.04761">arXiv 2302.04761</a></h3>
+          <p>让模型自己学会在什么时候调用什么工具，而不是靠提示示例。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" data-title="自测" data-n="?">
+      <h2><span class="n">?</span>自测</h2>
+      <ol class="quiz">
+        <li><div><p class="q">Thought、Action、Observation 三者中，哪一个不是模型生成的？为什么这一点重要？</p><p class="back">回看 <a href="#s2">二、ReAct 怎么做</a></p></div></li>
+        <li><div><p class="q">为什么在 HotpotQA 上单独使用 ReAct 不一定比 CoT 好？</p><p class="back">回看 <a href="#s3">三、实验看什么</a> 第 1 个结果</p></div></li>
+        <li><div><p class="q">34 和 10 个百分点是和哪类方法比较得出的？</p><p class="back">回看 <a href="#s3">三、实验看什么</a> 第 2 个结果</p></div></li>
+      </ol>
+    </section>
+
+    <section id="refs" data-title="参考来源" data-n="›">
+      <h2><span class="n">›</span>参考来源</h2>
+      <ol class="refs">
+        <li id="ref1">Yao et al. <span class="t">ReAct: Synergizing Reasoning and Acting in Language Models.</span> <a class="url" href="https://arxiv.org/abs/2210.03629">https://arxiv.org/abs/2210.03629</a></li>
+        <li id="ref2">ReAct 项目主页与代码 <a class="url" href="https://react-lm.github.io">https://react-lm.github.io</a></li>
+        <li id="ref3">Wei et al. <span class="t">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.</span> <a class="url" href="https://arxiv.org/abs/2201.11903">https://arxiv.org/abs/2201.11903</a></li>
+        <li id="ref4">Shinn et al. <span class="t">Reflexion: Language Agents with Verbal Reinforcement Learning.</span> <a class="url" href="https://arxiv.org/abs/2303.11366">https://arxiv.org/abs/2303.11366</a></li>
+        <li id="ref5">Schick et al. <span class="t">Toolformer: Language Models Can Teach Themselves to Use Tools.</span> <a class="url" href="https://arxiv.org/abs/2302.04761">https://arxiv.org/abs/2302.04761</a></li>
+      </ol>
+    </section>
+  </article>
+
+</div>
+
+<script>
+(function () {
+  var sections = Array.prototype.slice.call(document.querySelectorAll('article section[id]'));
+  var lists = document.querySelectorAll('[data-toc]');
+  var links = [];
+  lists.forEach(function (box) {
+    var ol = document.createElement('ol');
+    sections.forEach(function (s) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + s.id;
+      a.innerHTML = '<span class="n">' + s.dataset.n + '</span><span>' + s.dataset.title + '</span>';
+      li.appendChild(a); ol.appendChild(li); links.push(a);
+    });
+    box.appendChild(ol);
+  });
+  document.querySelectorAll('.toc-inline .toc a').forEach(function (a) {
+    a.addEventListener('click', function () { a.closest('details').open = false; });
+  });
+  var current = null;
+  function mark(id) {
+    if (id === current) return; current = id;
+    links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + id); });
+  }
+  window.addEventListener('scroll', function () {
+    var y = window.innerHeight * 0.3, pick = null;
+    sections.forEach(function (s) { if (s.getBoundingClientRect().top <= y) pick = s.id; });
+    mark(pick);
+  }, { passive: true });
+  window.dispatchEvent(new Event('scroll'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>慢火咖啡 · 订单</title>
+<style>
+:root {
+  --bg: oklch(97.4% 0.009 75);
+  --paper: oklch(99.4% 0.004 80);
+  --surface: oklch(95% 0.014 70);
+  --line: oklch(90% 0.016 65);
+  --line-2: oklch(82% 0.022 60);
+  --muted: oklch(49% 0.028 55);
+  --ink: oklch(25% 0.022 50);
+
+  --roast: oklch(29% 0.042 48);
+  --roast-2: oklch(34.5% 0.048 50);
+  --roast-3: oklch(41% 0.055 52);
+  --roast-line: oklch(40% 0.04 50);
+  --cream: oklch(95.5% 0.02 80);
+  --cream-2: oklch(80% 0.03 72);
+
+  --caramel: oklch(77% 0.135 70);
+  --caramel-ink: oklch(49% 0.12 58);
+  --caramel-soft: oklch(95.5% 0.035 82);
+  --red: oklch(52% 0.17 27);
+  --red-soft: oklch(95.5% 0.025 25);
+  --blue: oklch(50% 0.085 240);
+  --green: oklch(52% 0.085 152);
+  --grey: oklch(60% 0.015 60);
+
+  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Noto Serif SC", SimSun, serif;
+  --mono: "SF Mono", ui-monospace, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 40px;
+  --r1: 6px; --r2: 10px;
+  --side-w: 264px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font: 14px/1.5 var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  line-break: strict;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--caramel-ink); outline-offset: 2px; }
+.num, .no, .money { font-variant-numeric: tabular-nums; }
+.nowrap { white-space: nowrap; }
+mark { background: oklch(90% 0.09 90); color: inherit; border-radius: 2px; padding: 0 1px; }
+[hidden] { display: none !important; }
+
+/* ---------- 骨架 ---------- */
+.app {
+  display: grid;
+  height: 100dvh;
+  grid-template-columns: var(--side-w) minmax(360px, 430px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "top top top" "ov list detail";
+}
+.top { grid-area: top; }
+.side { display: contents; }
+.ov { grid-area: ov; overflow: auto; }
+.list-pane { grid-area: list; overflow: auto; }
+.detail-pane { grid-area: detail; overflow: auto; }
+
+/* ---------- 顶栏 ---------- */
+.top {
+  display: grid;
+  grid-template-columns: var(--side-w) minmax(0, 1fr) auto;
+  align-items: center;
+  background: var(--roast);
+  color: var(--cream);
+  border-bottom: 1px solid var(--roast-line);
+  min-height: 60px;
+}
+.brand { display: flex; align-items: baseline; gap: var(--s2); padding: 0 var(--s5); margin: 0; font-weight: 400; }
+.brand .name { font-family: var(--serif); font-size: 21px; letter-spacing: .04em; }
+.brand .sub { font-size: 13px; color: var(--cream-2); }
+.search {
+  display: flex; align-items: center; gap: var(--s2);
+  max-width: 560px; margin: 0 var(--s4);
+  background: var(--cream); color: var(--ink);
+  border-radius: var(--r1); padding: 0 var(--s3); height: 38px;
+}
+.search svg { flex: none; color: var(--muted); }
+.search input { flex: 1; min-width: 0; border: 0; background: transparent; height: 100%; outline: none; font-size: 14px; }
+.search input::placeholder { color: oklch(56% 0.02 60); }
+.search input::-webkit-search-cancel-button { display: none; }
+.search kbd, .search .clear {
+  flex: none; font: 12px/1 var(--mono); color: var(--muted);
+  border: 1px solid var(--line-2); border-radius: 4px; padding: 3px 6px; background: transparent;
+}
+.search .clear { font-family: var(--sans); border: 0; padding: 4px 6px; }
+.search:focus-within { box-shadow: 0 0 0 2px var(--caramel); }
+.today-line { padding: 0 var(--s5); color: var(--cream-2); font-size: 13px; white-space: nowrap; }
+.today-line b { color: var(--cream); font-weight: 400; }
+
+/* ---------- 今日概览（深色侧栏） ---------- */
+.ov {
+  background: var(--roast);
+  color: var(--cream);
+  padding: var(--s4) var(--s4) var(--s5);
+  display: flex; flex-direction: column; gap: var(--s5);
+}
+.ov-btn {
+  display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit;
+  border-radius: var(--r1);
+}
+.ov-btn[aria-pressed="true"] { background: var(--roast-3); box-shadow: inset 3px 0 0 var(--caramel); }
+.ov-btn:not([aria-pressed="true"]):hover { background: var(--roast-2); }
+
+.todo-block { display: flex; flex-direction: column; gap: var(--s2); }
+.todo-head { padding: var(--s2) var(--s3); display: flex; align-items: baseline; justify-content: space-between; }
+.todo-head .t { font-size: 15px; font-weight: 700; }
+.todo-head .c { color: var(--cream-2); font-size: 13px; }
+.todo-head .c b { color: var(--cream); font-size: 15px; }
+.tiles { display: grid; gap: var(--s2); }
+.tile {
+  display: grid; grid-template-columns: auto 1fr; column-gap: var(--s3); align-items: baseline;
+  padding: var(--s3) var(--s3) var(--s3) var(--s4);
+  background: var(--roast-2);
+}
+.tile .n { font-size: 32px; line-height: 1.1; font-weight: 700; color: var(--caramel); font-variant-numeric: tabular-nums; grid-row: span 2; }
+.tile.refund .n { color: oklch(76% 0.12 30); }
+.tile .t { font-size: 15px; font-weight: 700; }
+.tile .s { font-size: 12.5px; color: var(--cream-2); }
+.tile.zero .n { color: var(--cream-2); }
+
+.others { display: flex; flex-direction: column; gap: 2px; }
+.others .cap, .pick .cap { font-size: 12px; color: var(--cream-2); padding: 0 var(--s3) var(--s1); letter-spacing: .02em; }
+.others .ov-btn { display: flex; justify-content: space-between; align-items: baseline; padding: 6px var(--s3); font-size: 14px; }
+.others .ov-btn .c { color: var(--cream-2); font-variant-numeric: tabular-nums; }
+
+.pick { border-top: 1px solid var(--roast-line); padding-top: var(--s4); }
+.pick summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; padding: 0 var(--s3) var(--s2); }
+.pick summary::-webkit-details-marker { display: none; }
+.pick summary .t { font-size: 14px; font-weight: 700; }
+.pick summary .c { font-size: 12.5px; color: var(--cream-2); }
+.pick ul { list-style: none; margin: 0; padding: 0 var(--s3); display: flex; flex-direction: column; }
+.pick li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s3); padding: 5px 0; border-bottom: 1px dashed var(--roast-line); font-size: 13px; color: var(--cream); }
+.pick li:last-child { border-bottom: 0; }
+.pick li .q { font-variant-numeric: tabular-nums; color: var(--caramel); font-weight: 700; }
+.pick .empty { font-size: 13px; color: var(--cream-2); padding: 0 var(--s3); margin: 0; }
+.notice { margin: auto 0 0; padding: 0 var(--s3); font-size: 12px; line-height: 1.6; color: var(--cream-2); }
+
+/* ---------- 列表 ---------- */
+.list-pane { background: var(--paper); border-right: 1px solid var(--line); }
+.list-head {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap;
+  padding: var(--s4) var(--s4) var(--s3);
+  background: var(--paper); border-bottom: 1px solid var(--line);
+}
+.list-head h2 { margin: 0; font-size: 17px; }
+.list-head .meta { color: var(--muted); font-size: 13px; }
+.list-head .clear-q { margin-left: auto; border: 0; background: none; color: var(--caramel-ink); font-size: 13px; padding: 0; }
+.group-h {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: var(--s4) var(--s4) var(--s2);
+  font-size: 12.5px; color: var(--muted); font-weight: 700;
+}
+.group-h .gc { font-weight: 400; }
+.group-h.refund { color: var(--red); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row {
+  display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; column-gap: var(--s2); row-gap: 2px;
+  width: 100%; text-align: left; border: 0; background: transparent;
+  padding: 10px var(--s4) 11px var(--s3);
+  border-top: 1px solid var(--line);
+  align-items: baseline;
+}
+.rows li:first-child .row { border-top-color: transparent; }
+.row:hover { background: oklch(97.2% 0.012 75); }
+.row[aria-current="true"] { background: var(--caramel-soft); box-shadow: inset 3px 0 0 var(--caramel-ink); }
+.row .mk { grid-row: 1; align-self: center; }
+.row .r1 { grid-column: 2; display: flex; align-items: baseline; gap: var(--s2); min-width: 0; }
+.row .amt { grid-column: 3; grid-row: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+.row .r2 { grid-column: 2 / 4; display: flex; align-items: baseline; gap: var(--s3); min-width: 0; color: var(--muted); font-size: 13px; }
+.row .items { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .items .q { color: var(--ink); font-weight: 700; }
+.row .when { flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row .wait { color: var(--caramel-ink); font-weight: 700; }
+.row .r3 { grid-column: 2 / 4; font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.no { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: -.01em; white-space: nowrap; }
+.no b { color: var(--ink); font-weight: 700; }
+.row .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; font-size: 14.5px; }
+.row .who .city { color: var(--muted); font-size: 13px; }
+.tag { display: inline-block; font-size: 12px; line-height: 1.5; padding: 0 6px; border-radius: 4px; white-space: nowrap; flex: none; }
+.tag.note { background: var(--caramel-soft); color: var(--caramel-ink); border: 1px solid oklch(88% 0.06 80); margin-right: 6px; }
+.tag.reason { background: var(--red-soft); color: var(--red); border: 1px solid oklch(88% 0.05 25); margin-right: 6px; }
+.st { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; white-space: nowrap; flex: none; }
+
+/* 状态标记：颜色 + 形状 */
+.mk { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.mk.s-待发货 { background: var(--caramel-ink); }
+.mk.s-待付款 { border: 1.5px solid var(--grey); }
+.mk.s-已发货 { background: linear-gradient(90deg, var(--blue) 50%, transparent 50%); border: 1.5px solid var(--blue); }
+.mk.s-已完成 { background: var(--green); width: 9px; height: 9px; }
+.mk.s-退款中 { background: var(--red); border-radius: 2px; transform: rotate(45deg); width: 9px; height: 9px; }
+.mk.s-已退款 { border: 1.5px solid var(--grey); border-radius: 2px; transform: rotate(45deg); width: 9px; height: 9px; }
+
+.empty-state { padding: var(--s6) var(--s5); text-align: center; color: var(--muted); }
+.empty-state h3 { margin: 0 0 var(--s2); font-size: 16px; color: var(--ink); }
+.empty-state p { margin: 0 0 var(--s4); font-size: 13px; }
+
+/* ---------- 详情（小票） ---------- */
+.detail-pane { background: var(--bg); }
+.detail { max-width: 600px; padding: var(--s5) var(--s5) var(--s6); display: flex; flex-direction: column; gap: var(--s4); }
+.back { display: none; }
+.d-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--s1); }
+.d-head .line1 { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.d-no { font-family: var(--mono); font-size: 22px; letter-spacing: -.01em; color: var(--muted); margin: 0; font-weight: 400; }
+.d-no b { color: var(--ink); }
+.d-head .who { font-size: 15px; }
+.d-head .who .city { color: var(--muted); }
+.d-head .meta { color: var(--muted); font-size: 13px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 8px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--surface); }
+.chip.s-待发货 { background: var(--caramel-soft); color: var(--caramel-ink); }
+.chip.s-退款中 { background: var(--red-soft); color: var(--red); }
+.chip.s-已发货 { color: var(--blue); }
+.chip.s-已完成 { color: var(--green); }
+
+.callout { border-radius: var(--r1); padding: var(--s3) var(--s4); font-size: 14.5px; line-height: 1.6; }
+.callout .lb { display: block; font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.callout.note { background: var(--caramel-soft); border: 1px solid oklch(88% 0.06 80); }
+.callout.note .lb { color: var(--caramel-ink); }
+.callout.reason { background: var(--red-soft); border: 1px solid oklch(87% 0.05 25); }
+.callout.reason .lb { color: var(--red); }
+.callout.info { background: var(--surface); }
+.callout.info .lb { color: var(--muted); }
+
+/* 进度 */
+.track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+.track li { position: relative; padding-top: 18px; font-size: 13px; min-width: 0; }
+.track li::before { content: ""; position: absolute; top: 4px; left: 0; width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--line-2); background: var(--paper); z-index: 1; }
+.track li::after { content: ""; position: absolute; top: 9px; left: 12px; right: 4px; height: 1.5px; background: var(--line); }
+.track li:last-child::after { display: none; }
+.track li.done::before { background: var(--roast-3); border-color: var(--roast-3); }
+.track li.done::after { background: var(--roast-3); }
+.track li.now::before { border-color: var(--caramel-ink); border-width: 2px; box-shadow: 0 0 0 3px var(--caramel-soft); }
+.track li.alert::before { background: var(--red); border-color: var(--red); border-radius: 2px; transform: rotate(45deg); width: 9px; height: 9px; }
+.track li.off::before { background: var(--grey); border-color: var(--grey); border-radius: 2px; transform: rotate(45deg); width: 9px; height: 9px; }
+.track .k { font-weight: 700; display: block; }
+.track .v { color: var(--muted); display: block; font-size: 12.5px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.track li.alert .k { color: var(--red); }
+
+.receipt {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r1);
+  padding: var(--s4) var(--s4) var(--s3);
+}
+.receipt h3 { margin: 0 0 var(--s2); font-size: 12.5px; color: var(--muted); font-weight: 700; display: flex; justify-content: space-between; }
+.receipt h3 span { font-weight: 400; }
+.rc-items { list-style: none; margin: 0; padding: 0; }
+.rc-items li { display: grid; grid-template-columns: minmax(0, 1fr) auto 5.5em; gap: var(--s3); padding: 7px 0; align-items: baseline; }
+.rc-items .nm { font-size: 14.5px; }
+.rc-items .px { color: var(--muted); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rc-items .px b { color: var(--ink); }
+.rc-items .lt { text-align: right; font-variant-numeric: tabular-nums; }
+.rc-sum { border-top: 1px dashed var(--line-2); margin-top: var(--s2); padding-top: var(--s2); display: grid; grid-template-columns: 1fr auto; row-gap: 4px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rc-sum dt, .rc-sum dd { margin: 0; }
+.rc-sum dd { text-align: right; }
+.rc-sum .total { color: var(--ink); font-size: 15px; font-weight: 700; padding-top: 4px; }
+.rc-sum .refunded { color: var(--red); font-weight: 700; }
+.rc-ship { border-top: 1px dashed var(--line-2); margin-top: var(--s3); padding-top: var(--s2); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; }
+.rc-ship .tn { font-family: var(--mono); color: var(--ink); }
+
+/* 操作区 */
+.act { background: var(--paper); border: 1px solid var(--line-2); border-radius: var(--r2); padding: var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+.act.primary-act { border-color: oklch(80% 0.07 70); box-shadow: 0 1px 0 oklch(90% 0.03 70); }
+.act h3 { margin: 0; font-size: 16px; }
+.act .sub { margin: -6px 0 0; color: var(--muted); font-size: 13px; }
+.fields { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.fld { display: flex; flex-direction: column; gap: var(--s1); font-size: 12.5px; color: var(--muted); }
+.fld.grow { flex: 1 1 14rem; }
+.fld input, .fld select, .fld textarea {
+  height: 40px; border: 1px solid var(--line-2); border-radius: var(--r1); background: #fff; padding: 0 var(--s3); font-size: 15px; color: var(--ink);
+}
+.fld textarea { height: auto; min-height: 72px; padding: var(--s2) var(--s3); resize: vertical; line-height: 1.6; font-size: 14px; }
+.fld input.tn-in { font-family: var(--mono); letter-spacing: .02em; text-transform: uppercase; }
+.fld input[aria-invalid="true"] { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+.money-in { position: relative; display: flex; align-items: center; }
+.money-in span { position: absolute; left: var(--s3); color: var(--muted); font-size: 15px; }
+.money-in input { padding-left: 26px; width: 9em; font-variant-numeric: tabular-nums; }
+.err { margin: 0; color: var(--red); font-size: 13px; }
+.btns { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); }
+.btn { height: 40px; padding: 0 var(--s4); border-radius: var(--r1); border: 1px solid var(--line-2); background: #fff; font-size: 14.5px; font-weight: 700; white-space: nowrap; }
+.btn:hover { background: var(--surface); }
+.btn.primary { background: var(--roast); border-color: var(--roast); color: var(--cream); }
+.btn.primary:hover { background: var(--roast-3); }
+.btn.danger { background: #fff; border-color: oklch(80% 0.07 27); color: var(--red); }
+.btn.danger:hover { background: var(--red-soft); }
+.btn.link { border: 0; background: none; color: var(--muted); padding: 0; height: auto; font-weight: 400; text-decoration: underline; text-underline-offset: 3px; }
+.btn.link:hover { color: var(--ink); background: none; }
+.hint { color: var(--muted); font-size: 12.5px; }
+.secondary-act { display: flex; flex-direction: column; gap: var(--s3); border-top: 1px dashed var(--line-2); padding-top: var(--s3); }
+.log { list-style: none; margin: 0; padding: 0; font-size: 13px; color: var(--muted); }
+.log li { padding: 2px 0; }
+.log b { color: var(--ink); font-weight: 400; }
+
+.d-empty { padding: var(--s6) var(--s5); color: var(--muted); }
+.d-empty h2 { font-size: 17px; color: var(--ink); margin: 0 0 var(--s2); }
+
+/* ---------- 提示条 ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: var(--s4);
+  background: var(--roast); color: var(--cream); border-radius: var(--r2);
+  padding: 10px var(--s3) 10px var(--s4); font-size: 14px; max-width: calc(100vw - 32px);
+  box-shadow: 0 8px 24px oklch(20% 0.03 50 / .28);
+  z-index: 50;
+}
+.toast button { border: 0; background: var(--roast-3); color: var(--cream); border-radius: var(--r1); padding: 4px 12px; font-weight: 700; }
+
+/* ---------- 中等宽度：概览移到列表上方 ---------- */
+@media (max-width: 1099px) {
+  .app { grid-template-columns: minmax(330px, 400px) minmax(0, 1fr); grid-template-areas: "top top" "side detail"; }
+  .top { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .side { display: block; grid-area: side; overflow: auto; background: var(--paper); border-right: 1px solid var(--line); }
+  .ov, .list-pane { overflow: visible; }
+  .list-pane { border-right: 0; }
+  .ov { gap: var(--s4); padding: var(--s3) var(--s4) var(--s4); }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tile { padding: var(--s2) var(--s3); column-gap: var(--s2); }
+  .tile .n { font-size: 26px; }
+  .others { flex-direction: row; flex-wrap: wrap; gap: var(--s2); }
+  .others .cap { display: none; }
+  .others .ov-btn { flex: none; width: auto; gap: var(--s2); border: 1px solid var(--roast-line); border-radius: 999px; padding: 4px 12px; }
+  .others .ov-btn[aria-pressed="true"] { box-shadow: none; border-color: var(--caramel); }
+  .pick { padding-top: var(--s3); }
+  .pick summary { padding: 0 var(--s1); }
+  .pick summary .t::after { content: " ▾"; color: var(--cream-2); font-weight: 400; }
+  .pick[open] summary .t::after { content: " ▴"; }
+  .pick ul { padding: var(--s2) var(--s1) 0; }
+  .notice { padding: 0 var(--s1); }
+  .today-line .new { display: none; }
+}
+
+/* ---------- 手机：列表与详情分两步 ---------- */
+@media (max-width: 759px) {
+  .app { display: block; height: auto; }
+  .top { grid-template-columns: 1fr auto; grid-template-areas: "brand date" "search search"; row-gap: var(--s2); padding: var(--s3) var(--s4) var(--s3); }
+  .top .brand { grid-area: brand; } .top .today-line { grid-area: date; } .top .search { grid-area: search; }
+  .brand { padding: 0; }
+  .brand .name { font-size: 19px; }
+  .today-line { padding: 0; text-align: right; }
+  .search { margin: 0; max-width: none; height: 42px; }
+  .search kbd { display: none; }
+  .top { border-bottom: 0; }
+  .side { display: block; overflow: visible; border-right: 0; }
+  .ov { padding-top: var(--s2); }
+  .list-head { position: static; padding: var(--s4) var(--s4) var(--s3); }
+  .row { padding: 12px var(--s4) 13px var(--s3); }
+  .detail-pane {
+    position: fixed; inset: 0; z-index: 20;
+    transform: translateX(100%); visibility: hidden;
+    transition: transform .22s ease, visibility 0s linear .22s;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .app.show-detail .detail-pane { transform: none; visibility: visible; transition: transform .22s ease; }
+  .detail { padding: 0 var(--s4) var(--s6); gap: var(--s4); }
+  .back {
+    display: flex; align-items: center; gap: var(--s2);
+    position: sticky; top: 0; z-index: 3;
+    margin: 0 calc(-1 * var(--s4)); padding: 0 var(--s4); height: 48px;
+    background: var(--bg); border: 0; border-bottom: 1px solid var(--line); width: calc(100% + 2 * var(--s4));
+    font-size: 15px; color: var(--ink); text-align: left;
+  }
+  .d-no { font-size: 19px; }
+  .track li { font-size: 12.5px; }
+  .track .v { font-size: 12px; }
+  .rc-items li { grid-template-columns: minmax(0, 1fr) 4.8em; row-gap: 0; }
+  .rc-items .nm { grid-column: 1; }
+  .rc-items .px { grid-column: 1; grid-row: 2; }
+  .rc-items .lt { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+  .btns .btn { flex: 1 1 auto; }
+  .btns .hint { flex-basis: 100%; }
+  body.lock { overflow: hidden; }
+}
+@media (min-width: 760px) {
+  .toast { left: var(--s4); transform: none; max-width: min(520px, calc(100vw - 32px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detail-pane, .app.show-detail .detail-pane { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <h1 class="brand"><span class="name">慢火咖啡</span><span class="sub">订单后台</span></h1>
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.6 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="订单号后四位、买家、城市、商品或运单号" aria-label="搜索订单">
+      <kbd id="kbd" title="按 / 开始搜索">/</kbd>
+      <button class="clear" id="qClear" type="button" hidden>清空</button>
+    </label>
+    <div class="today-line"><b>10月15日 周四</b><span class="new" id="newToday"></span></div>
+  </header>
+
+  <div class="side">
+    <aside class="ov" aria-label="今日概览">
+      <div class="todo-block">
+        <button class="ov-btn todo-head" data-view="todo" aria-pressed="true">
+          <span class="t">今天要处理</span><span class="c"><b id="cTodo">0</b> 单</span>
+        </button>
+        <div class="tiles">
+          <button class="ov-btn tile ship" data-view="待发货" aria-pressed="false">
+            <span class="n" id="cShip">0</span><span class="t">待发货</span><span class="s" id="sShip"></span>
+          </button>
+          <button class="ov-btn tile refund" data-view="退款中" aria-pressed="false">
+            <span class="n" id="cRefund">0</span><span class="t">退款申请</span><span class="s" id="sRefund"></span>
+          </button>
+        </div>
+      </div>
+      <nav class="others" aria-label="其他订单">
+        <div class="cap">其他订单</div>
+        <button class="ov-btn" data-view="待付款" aria-pressed="false"><span>待付款</span><span class="c" id="c待付款">0</span></button>
+        <button class="ov-btn" data-view="已发货" aria-pressed="false"><span>已发货</span><span class="c" id="c已发货">0</span></button>
+        <button class="ov-btn" data-view="已完成" aria-pressed="false"><span>已完成</span><span class="c" id="c已完成">0</span></button>
+        <button class="ov-btn" data-view="已退款" aria-pressed="false" hidden id="vRefunded"><span>已退款</span><span class="c" id="c已退款">0</span></button>
+        <button class="ov-btn" data-view="all" aria-pressed="false"><span>全部订单</span><span class="c" id="cAll">0</span></button>
+      </nav>
+      <details class="pick" id="pick" open>
+        <summary><span class="t">待发货要备的货</span><span class="c" id="pickC"></span></summary>
+        <ul id="pickList"></ul>
+      </details>
+      <p class="notice">示例数据，买家信息已脱敏。发货和退款只记在这个页面里，刷新后还原。</p>
+    </aside>
+
+    <main class="list-pane" aria-label="订单列表">
+      <div class="list-head">
+        <h2 id="listTitle">今天要处理</h2><span class="meta" id="listMeta"></span>
+        <button class="clear-q" id="listClear" type="button" hidden>清空搜索</button>
+      </div>
+      <div id="list"></div>
+    </main>
+  </div>
+
+  <section class="detail-pane" id="detailPane" aria-label="订单详情"></section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const DATA = {"说明":"小店“慢火咖啡”最近 4 天的订单（示例数据，买家信息已脱敏）。今天是 2026-10-15。","orders":[{"order_no":"KF2610151333","created_at":"2026-10-15 21:30","customer":"王*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"手冲壶 细口 600ml","price":199,"qty":2},{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":553,"shipping_fee":0,"paid":553,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610151062","created_at":"2026-10-15 18:24","customer":"吴*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1}],"subtotal":88,"shipping_fee":8,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610151173","created_at":"2026-10-15 16:11","customer":"朱*","city":"南京 鼓楼区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"退款中","tracking_no":null,"note":"买家申请退款：收到时滤杯有裂纹"},{"order_no":"KF2610151111","created_at":"2026-10-15 13:54","customer":"刘*","city":"武汉 洪山区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":291,"shipping_fee":0,"paid":291,"status":"已发货","tracking_no":"SF871429624561","note":null},{"order_no":"KF2610151074","created_at":"2026-10-15 10:37","customer":"陈*","city":"成都 武侯区","items":[{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":273,"shipping_fee":0,"paid":273,"status":"已完成","tracking_no":"SF247659959154","note":null},{"order_no":"KF2610151222","created_at":"2026-10-15 09:59","customer":"刘*","city":"北京 海淀区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":2}],"subtotal":384,"shipping_fee":0,"paid":384,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610151888","created_at":"2026-10-15 09:43","customer":"黄*","city":"西安 雁塔区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610141370","created_at":"2026-10-14 21:41","customer":"胡*","city":"北京 海淀区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":19,"shipping_fee":8,"paid":27,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610141851","created_at":"2026-10-14 21:38","customer":"吴*","city":"武汉 洪山区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":2},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":302,"shipping_fee":0,"paid":302,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610141777","created_at":"2026-10-14 21:33","customer":"李*","city":"南京 鼓楼区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"已发货","tracking_no":"SF844050200750","note":null},{"order_no":"KF2610141185","created_at":"2026-10-14 19:52","customer":"朱*","city":"苏州 工业园区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2},{"item":"手冲壶 细口 600ml","price":199,"qty":1}],"subtotal":343,"shipping_fee":0,"paid":343,"status":"待发货","tracking_no":null,"note":"买家留言：送朋友的，不要放发票"},{"order_no":"KF2610141740","created_at":"2026-10-14 17:06","customer":"胡*","city":"杭州 西湖区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":306,"shipping_fee":0,"paid":306,"status":"已完成","tracking_no":"SF359541867099","note":null},{"order_no":"KF2610141296","created_at":"2026-10-14 13:07","customer":"胡*","city":"北京 海淀区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":59,"shipping_fee":8,"paid":67,"status":"待发货","tracking_no":null,"note":"买家留言：送朋友的，不要放发票"},{"order_no":"KF2610141703","created_at":"2026-10-14 12:24","customer":"李*","city":"广州 天河区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"已发货","tracking_no":"SF570604353825","note":null},{"order_no":"KF2610141666","created_at":"2026-10-14 11:36","customer":"黄*","city":"西安 雁塔区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1},{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":2}],"subtotal":203,"shipping_fee":0,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610141814","created_at":"2026-10-14 10:22","customer":"杨*","city":"上海 浦东新区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"已完成","tracking_no":"SF935722445643","note":null},{"order_no":"KF2610141025","created_at":"2026-10-14 09:13","customer":"陈*","city":"苏州 工业园区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已发货","tracking_no":"SF909373431185","note":null},{"order_no":"KF2610141148","created_at":"2026-10-14 08:46","customer":"吴*","city":"广州 天河区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":91,"shipping_fee":8,"paid":99,"status":"已发货","tracking_no":"SF366866617035","note":null},{"order_no":"KF2610131555","created_at":"2026-10-13 21:19","customer":"徐*","city":"西安 雁塔区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1}],"subtotal":96,"shipping_fee":8,"paid":104,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610131407","created_at":"2026-10-13 21:09","customer":"周*","city":"上海 浦东新区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已发货","tracking_no":"SF959618935378","note":null},{"order_no":"KF2610131592","created_at":"2026-10-13 16:31","customer":"吴*","city":"成都 武侯区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1},{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":1}],"subtotal":423,"shipping_fee":0,"paid":423,"status":"已发货","tracking_no":"SF895297559471","note":null},{"order_no":"KF2610131444","created_at":"2026-10-13 08:51","customer":"吴*","city":"杭州 西湖区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1},{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":287,"shipping_fee":0,"paid":287,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610121481","created_at":"2026-10-12 18:25","customer":"徐*","city":"南京 鼓楼区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":2},{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":2}],"subtotal":230,"shipping_fee":0,"paid":230,"status":"已完成","tracking_no":"SF156347209183","note":null},{"order_no":"KF2610121136","created_at":"2026-10-12 17:57","customer":"刘*","city":"深圳 南山区","items":[{"item":"冷萃咖啡液 330ml × 6","price":72,"qty":1}],"subtotal":72,"shipping_fee":8,"paid":80,"status":"待发货","tracking_no":null,"note":"买家留言：麻烦豆子研磨成手冲粗细"},{"order_no":"KF2610121518","created_at":"2026-10-12 12:13","customer":"周*","city":"北京 海淀区","items":[{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":1},{"item":"手冲壶 细口 600ml","price":199,"qty":2}],"subtotal":486,"shipping_fee":0,"paid":486,"status":"已发货","tracking_no":"SF166047156434","note":null},{"order_no":"KF2610121037","created_at":"2026-10-12 09:46","customer":"李*","city":"成都 武侯区","items":[{"item":"挂耳咖啡 混合装 20 包","price":59,"qty":2},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":2}],"subtotal":294,"shipping_fee":0,"paid":294,"status":"待发货","tracking_no":null,"note":null},{"order_no":"KF2610121259","created_at":"2026-10-12 09:36","customer":"李*","city":"上海 浦东新区","items":[{"item":"咖啡滤纸 100 张","price":19,"qty":1}],"subtotal":19,"shipping_fee":8,"paid":0,"status":"待付款","tracking_no":null,"note":null},{"order_no":"KF2610121099","created_at":"2026-10-12 08:53","customer":"徐*","city":"杭州 西湖区","items":[{"item":"V60 陶瓷滤杯 01 号","price":129,"qty":1},{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":397,"shipping_fee":0,"paid":397,"status":"退款中","tracking_no":null,"note":"买家申请退款：收到时滤杯有裂纹"},{"order_no":"KF2610121000","created_at":"2026-10-12 08:44","customer":"朱*","city":"上海 浦东新区","items":[{"item":"磨豆机 手摇 锥刀","price":268,"qty":1}],"subtotal":268,"shipping_fee":0,"paid":268,"status":"已完成","tracking_no":"SF583345511130","note":null},{"order_no":"KF2610121629","created_at":"2026-10-12 08:26","customer":"王*","city":"广州 天河区","items":[{"item":"手冲咖啡豆 · 云南保山小粒 500g","price":96,"qty":1},{"item":"手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g","price":88,"qty":2},{"item":"手冲壶 细口 600ml","price":199,"qty":1}],"subtotal":471,"shipping_fee":0,"paid":0,"status":"待付款","tracking_no":null,"note":null}]};
+
+/* ---------- 基础 ---------- */
+const TODAY = new Date(2026, 9, 15);
+const WEEK = '日一二三四五六';
+const CARRIERS = ['顺丰速运', '中通快递', '圆通速递', '韵达快递', '京东物流', '邮政 EMS'];
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => '¥' + (Number.isInteger(n) ? n : n.toFixed(2));
+const parseDT = s => { const [d, t = '00:00'] = s.split(' '); const [y, m, dd] = d.split('-').map(Number); const [h, mi] = t.split(':').map(Number); return new Date(y, m - 1, dd, h, mi); };
+const ageDays = s => { const d = parseDT(s); return Math.round((TODAY - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); };
+const md = d => `${d.getMonth() + 1}月${d.getDate()}日`;
+const dayWord = s => { const a = ageDays(s); return a === 0 ? '今天' : a === 1 ? '昨天' : md(parseDT(s)); };
+const dayHeader = key => { const d = parseDT(key); const a = ageDays(key); const base = `${md(d)} 周${WEEK[d.getDay()]}`; return a === 0 ? `今天 · ${base}` : a === 1 ? `昨天 · ${base}` : base; };
+const when = s => `${dayWord(s)} ${s.slice(11)}`;
+const pieces = o => o.items.reduce((a, i) => a + i.qty, 0);
+const isNarrow = () => matchMedia('(max-width: 759px)').matches;
+const nowStamp = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+
+const orders = DATA.orders.map(o => ({
+  ...o,
+  carrier: o.tracking_no ? (/^SF/i.test(o.tracking_no) ? '顺丰速运' : '') : null,
+  refunded: 0,
+  log: []
+}));
+const byNo = no => orders.find(o => o.order_no === no);
+
+function splitNote(note) {
+  if (!note) return null;
+  const m = note.match(/^(买家留言|买家申请退款)：(.*)$/);
+  if (!m) return { kind: 'note', label: '备注', text: note };
+  return m[1] === '买家留言' ? { kind: 'note', label: '买家留言', short: '留言', text: m[2] } : { kind: 'reason', label: '退款原因', short: '退款原因', text: m[2] };
+}
+
+/* ---------- 视图 ---------- */
+const VIEWS = {
+  todo:   { title: '今天要处理', match: o => o.status === '退款中' || o.status === '待发货', order: 'asc', group: 'status' },
+  待发货: { title: '待发货', match: o => o.status === '待发货', order: 'asc', group: 'date' },
+  退款中: { title: '退款申请', match: o => o.status === '退款中', order: 'asc', group: 'date' },
+  待付款: { title: '待付款', match: o => o.status === '待付款', order: 'asc', group: 'date' },
+  已发货: { title: '已发货', match: o => o.status === '已发货', order: 'desc', group: 'date' },
+  已完成: { title: '已完成', match: o => o.status === '已完成', order: 'desc', group: 'date' },
+  已退款: { title: '已退款', match: o => o.status === '已退款', order: 'desc', group: 'date' },
+  all:    { title: '全部订单', match: () => true, order: 'desc', group: 'date', mixed: true }
+};
+const state = { view: 'todo', q: '', sel: null, drafts: {}, panel: null };
+
+function tokens(q) { return q.trim().toLowerCase().split(/\s+/).filter(Boolean); }
+function hay(o) {
+  return [o.order_no, o.customer, o.city, o.status, o.tracking_no || '', o.note || '', ...o.items.map(i => i.item)].join(' ').toLowerCase();
+}
+function hl(text, toks) {
+  let s = esc(text);
+  if (!toks.length) return s;
+  const pat = toks.map(t => esc(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  return s.replace(new RegExp(`(${pat})`, 'gi'), '<mark>$1</mark>');
+}
+const cmp = dir => (a, b) => (a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : a.order_no.localeCompare(b.order_no)) * (dir === 'asc' ? 1 : -1);
+
+function computeList() {
+  const toks = tokens(state.q);
+  if (toks.length) {
+    const arr = orders.filter(o => { const h = hay(o); return toks.every(t => h.includes(t)); }).sort(cmp('desc'));
+    return { groups: groupByDate(arr), flat: arr, mixed: true, toks, search: true, group: 'date' };
+  }
+  const v = VIEWS[state.view];
+  const arr = orders.filter(v.match).sort(cmp(v.order));
+  let groups;
+  if (v.group === 'status') {
+    groups = [
+      { key: 'refund', title: '退款申请', cls: 'refund', items: arr.filter(o => o.status === '退款中') },
+      { key: 'ship', title: '待发货 · 先下单的排在前面', cls: '', items: arr.filter(o => o.status === '待发货') }
+    ].filter(g => g.items.length);
+  } else groups = groupByDate(arr);
+  return { groups, flat: groups.flatMap(g => g.items), mixed: !!v.mixed, toks: [], search: false, group: v.group };
+}
+function groupByDate(arr) {
+  const out = [];
+  for (const o of arr) {
+    const k = o.created_at.slice(0, 10);
+    let g = out[out.length - 1];
+    if (!g || g.key !== k) { g = { key: k, title: dayHeader(k), items: [] }; out.push(g); }
+    g.items.push(o);
+  }
+  return out;
+}
+
+/* ---------- 概览 ---------- */
+function renderOverview() {
+  const count = s => orders.filter(o => o.status === s).length;
+  const ship = orders.filter(o => o.status === '待发货');
+  const refund = orders.filter(o => o.status === '退款中');
+  $('#cTodo').textContent = ship.length + refund.length;
+  $('#cShip').textContent = ship.length;
+  $('#cRefund').textContent = refund.length;
+  $('.tile.ship').classList.toggle('zero', !ship.length);
+  $('.tile.refund').classList.toggle('zero', !refund.length);
+  const oldest = ship.reduce((m, o) => Math.max(m, ageDays(o.created_at)), -1);
+  $('#sShip').textContent = !ship.length ? '都发完了' : oldest >= 2 ? `最久的已等 ${oldest} 天` : oldest === 1 ? '最早是昨天下的单' : '都是今天下的单';
+  $('#sRefund').textContent = refund.length ? `涉及 ${money(refund.reduce((a, o) => a + o.paid, 0))}` : '没有待处理的申请';
+  for (const s of ['待付款', '已发货', '已完成', '已退款']) $('#c' + s).textContent = count(s);
+  $('#vRefunded').hidden = !count('已退款');
+  $('#cAll').textContent = orders.length;
+  $('#newToday').textContent = ` · 今天新订单 ${orders.filter(o => ageDays(o.created_at) === 0).length} 单`;
+
+  const pick = new Map();
+  for (const o of ship) for (const i of o.items) pick.set(i.item, (pick.get(i.item) || 0) + i.qty);
+  const rows = [...pick].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh'));
+  const total = rows.reduce((a, r) => a + r[1], 0);
+  $('#pickC').textContent = total ? `${ship.length} 单 · ${total} 件` : '';
+  $('#pickList').innerHTML = rows.length
+    ? rows.map(([n, q]) => `<li><span>${esc(n)}</span><span class="q">×${q}</span></li>`).join('')
+    : '<li class="empty">没有要发的货</li>';
+
+  const active = state.q ? null : state.view;
+  document.querySelectorAll('.ov [data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === active)));
+}
+
+/* ---------- 列表 ---------- */
+let current = { flat: [] };
+function rowHTML(o, L) {
+  const t = L.toks;
+  const age = ageDays(o.created_at);
+  const waiting = ['待发货', '退款中', '待付款'].includes(o.status) && age >= 2;
+  const note = splitNote(o.note);
+  const timeTxt = L.group === 'date' ? o.created_at.slice(11) : (waiting ? '' : when(o.created_at));
+  const whenHTML = waiting ? `${timeTxt ? timeTxt + ' · ' : ''}<span class="wait">已等 ${age} 天</span>` : timeTxt;
+  const items = o.items.map(i => `${hl(i.item, t)}${i.qty > 1 ? ` <span class="q">${i.qty} 件</span>` : ''}`).join('，');
+  const no = o.order_no;
+  const noHTML = t.length ? `<span class="no">${hl(no, t)}</span>` : `<span class="no">${esc(no.slice(0, -4))}<b>${esc(no.slice(-4))}</b></span>`;
+  const status = L.mixed ? `<span class="st">${esc(o.status)}</span>` : '';
+  const amount = o.status === '待付款' ? `<span class="amt" title="应付">${money(o.subtotal + o.shipping_fee)}</span>` : `<span class="amt">${money(o.paid)}</span>`;
+  return `<li><button class="row" type="button" data-no="${no}" aria-current="${o.order_no === state.sel}">
+    <span class="mk s-${o.status}" title="${o.status}"></span>
+    <span class="r1">${noHTML}<span class="who">${hl(o.customer, t)} <span class="city">${hl(o.city, t)}</span></span></span>
+    ${amount}
+    <span class="r2"><span class="items">${items}</span>${status}<span class="when">${whenHTML}</span></span>
+    ${note ? `<span class="r3"><span class="tag ${note.kind}">${note.short || note.label}</span>${hl(note.text, t)}</span>` : ''}
+    ${o.tracking_no && L.search ? `<span class="r3 no">${o.carrier ? esc(o.carrier) + ' ' : ''}${hl(o.tracking_no, t)}</span>` : ''}
+  </button></li>`;
+}
+function renderList() {
+  const L = computeList();
+  current = L;
+  const v = VIEWS[state.view];
+  const title = L.search ? `搜索“${state.q.trim()}”` : v.title;
+  $('#listTitle').textContent = title;
+  $('#listMeta').textContent = L.search ? `全部订单中找到 ${L.flat.length} 单` : `${L.flat.length} 单${v.order === 'asc' ? ' · 先下单的在前' : ' · 新的在前'}`;
+  if (state.view === 'todo' && !L.search) $('#listMeta').textContent = `${L.flat.length} 单`;
+  $('#listClear').hidden = !L.search;
+
+  if (!L.flat.length) {
+    $('#list').innerHTML = L.search
+      ? `<div class="empty-state"><h3>没有找到相关订单</h3><p>可以搜订单号（后四位就行）、买家、城市、商品名或运单号。多个词用空格隔开。</p><button class="btn" type="button" data-act="clear-q">清空搜索</button></div>`
+      : emptyFor(state.view);
+    return L;
+  }
+  $('#list').innerHTML = L.groups.map(g => `
+    <div class="group-h ${g.cls || ''}"><span>${esc(g.title)}</span><span class="gc">${g.items.length} 单</span></div>
+    <ul class="rows">${g.items.map(o => rowHTML(o, L)).join('')}</ul>`).join('');
+  return L;
+}
+function emptyFor(view) {
+  const map = {
+    todo: ['今天要处理的都处理完了', '待发货和退款申请都清空了。'],
+    待发货: ['待发货的都发完了', '新订单付款后会出现在这里。'],
+    退款中: ['没有待处理的退款申请', ''],
+    待付款: ['没有等待付款的订单', ''],
+    已退款: ['还没有退款的订单', '']
+  };
+  const [h, p] = map[view] || ['这里还没有订单', ''];
+  return `<div class="empty-state"><h3>${h}</h3>${p ? `<p>${p}</p>` : ''}${view !== 'all' ? '<button class="btn" type="button" data-view-go="all">看全部订单</button>' : ''}</div>`;
+}
+
+/* ---------- 详情 ---------- */
+function trackHTML(o) {
+  const steps = [
+    { k: '下单', v: when(o.created_at), done: true },
+    { k: '付款', v: o.paid > 0 ? money(o.paid) : '等买家付款', done: o.paid > 0 },
+    { k: '发货', v: o.tracking_no ? (o.carrier || '已发货') : '未发货', done: !!o.tracking_no }
+  ];
+  if (o.status === '退款中') steps.push({ k: '退款申请', v: '等你处理', cls: 'alert' });
+  else if (o.status === '已退款') steps.push({ k: '已退款', v: money(o.refunded), cls: 'off' });
+  else steps.push({ k: '完成', v: o.status === '已完成' ? '已完成' : '', done: o.status === '已完成' });
+  let nowSet = false;
+  return `<ol class="track">${steps.map(s => {
+    let cls = s.cls || (s.done ? 'done' : '');
+    if (!s.cls && !s.done && !nowSet && o.status !== '已退款' && o.status !== '退款中') { cls = 'now'; nowSet = true; }
+    return `<li class="${cls}"><span class="k">${s.k}</span><span class="v">${esc(s.v || '　')}</span></li>`;
+  }).join('')}</ol>`;
+}
+function receiptHTML(o) {
+  const due = o.subtotal + o.shipping_fee;
+  return `<section class="receipt" aria-label="商品与金额">
+    <h3>商品<span>${o.items.length} 种 · ${pieces(o)} 件</span></h3>
+    <ul class="rc-items">${o.items.map(i => `<li><span class="nm">${esc(i.item)}</span><span class="px">${money(i.price)} × <b>${i.qty}</b></span><span class="lt">${money(i.price * i.qty)}</span></li>`).join('')}</ul>
+    <dl class="rc-sum">
+      <dt>商品合计</dt><dd>${money(o.subtotal)}</dd>
+      <dt>运费</dt><dd>${o.shipping_fee ? money(o.shipping_fee) : '包邮'}</dd>
+      ${o.status === '待付款'
+        ? `<dt class="total">应付（未付款）</dt><dd class="total">${money(due)}</dd>`
+        : `<dt class="total">实付</dt><dd class="total">${money(o.paid)}</dd>`}
+      ${o.refunded ? `<dt class="refunded">已退款</dt><dd class="refunded">−${money(o.refunded)}</dd>` : ''}
+    </dl>
+    ${o.tracking_no ? `<div class="rc-ship"><span>${esc(o.carrier || '运单号')}</span><span class="tn">${esc(o.tracking_no)}</span></div>` : ''}
+  </section>`;
+}
+function nextInList(no) {
+  const f = current.flat; const i = f.findIndex(o => o.order_no === no);
+  if (i < 0) return null;
+  return f[i + 1] || f[i - 1] || null;
+}
+function shipForm(o) {
+  const d = state.drafts[o.order_no] || { carrier: '顺丰速运', tn: '', err: '' };
+  const nxt = nextInList(o.order_no);
+  return `<section class="act primary-act" aria-labelledby="actH">
+    <h3 id="actH">发货</h3>
+    <div class="fields">
+      <label class="fld"><span>快递公司</span>
+        <select id="carrier">${CARRIERS.map(c => `<option${c === d.carrier ? ' selected' : ''}>${c}</option>`).join('')}</select></label>
+      <label class="fld grow"><span>运单号</span>
+        <input id="tn" class="tn-in" autocomplete="off" spellcheck="false" value="${esc(d.tn)}" placeholder="${d.carrier === '顺丰速运' ? 'SF 加 12 位数字' : '快递面单上的单号'}" aria-invalid="${!!d.err}" aria-describedby="tnErr"></label>
+    </div>
+    <p class="err" id="tnErr" ${d.err ? '' : 'hidden'}>${esc(d.err)}</p>
+    <div class="btns"><button class="btn primary" type="button" data-act="ship">确认发货</button>
+      <span class="hint">${nxt && nxt.status === '待发货' ? `发货后自动打开下一单（${esc(nxt.order_no.slice(-4))} ${esc(nxt.customer)}）` : '回车也可以确认'}</span></div>
+  </section>`;
+}
+function refundForm(o, mode) {
+  const d = state.drafts[o.order_no] || {};
+  const amt = d.amt ?? String(o.paid);
+  if (mode === 'request') {
+    return `<section class="act primary-act" aria-labelledby="actH">
+      <h3 id="actH">处理退款申请</h3>
+      <p class="sub">买家实付 ${money(o.paid)}，默认全额退回，也可以改成部分退款。</p>
+      <div class="fields">
+        <label class="fld"><span>退款金额</span><span class="money-in"><span>¥</span><input id="ramt" inputmode="decimal" value="${esc(amt)}" aria-describedby="rErr"></span></label>
+      </div>
+      <p class="err" id="rErr" ${d.rerr ? '' : 'hidden'}>${esc(d.rerr || '')}</p>
+      <div class="btns">
+        <button class="btn primary" type="button" data-act="refund" id="refundBtn">同意退款 ${esc(fmtAmt(amt))}</button>
+        <button class="btn" type="button" data-act="reject-open" ${state.panel === 'reject' ? 'hidden' : ''}>拒绝申请…</button>
+      </div>
+      <div class="secondary-act" ${state.panel === 'reject' ? '' : 'hidden'}>
+        <label class="fld"><span>拒绝理由</span><textarea id="rreason" placeholder="写明为什么不同意退款">${esc(d.reason || '')}</textarea></label>
+        <p class="err" id="jErr" ${d.jerr ? '' : 'hidden'}>${esc(d.jerr || '')}</p>
+        <div class="btns"><button class="btn danger" type="button" data-act="reject">确认拒绝</button><button class="btn link" type="button" data-act="panel-close">取消</button></div>
+      </div>
+    </section>`;
+  }
+  // 商家主动退款
+  if (state.panel !== 'self-refund') return `<div><button class="btn link" type="button" data-act="self-refund-open">给买家退款…</button></div>`;
+  return `<section class="act" aria-labelledby="actH2">
+    <h3 id="actH2">给买家退款</h3>
+    <p class="sub">买家实付 ${money(o.paid)}。退款后订单记为已退款。</p>
+    <div class="fields">
+      <label class="fld"><span>退款金额</span><span class="money-in"><span>¥</span><input id="ramt" inputmode="decimal" value="${esc(amt)}" aria-describedby="rErr"></span></label>
+      <label class="fld grow"><span>原因（选填）</span><input id="rnote" value="${esc(d.rnote || '')}" placeholder="比如缺货、和买家协商"></label>
+    </div>
+    <p class="err" id="rErr" ${d.rerr ? '' : 'hidden'}>${esc(d.rerr || '')}</p>
+    <div class="btns"><button class="btn primary" type="button" data-act="refund" id="refundBtn">确认退款 ${esc(fmtAmt(amt))}</button><button class="btn link" type="button" data-act="panel-close">取消</button></div>
+  </section>`;
+}
+function fmtAmt(v) { const n = Number(v); return Number.isFinite(n) && n > 0 ? money(Math.round(n * 100) / 100) : ''; }
+
+let shownNo = null;
+function renderDetail() {
+  const pane = $('#detailPane');
+  const o = state.sel && byNo(state.sel);
+  if (shownNo !== state.sel) { pane.scrollTop = 0; shownNo = state.sel; }
+  if (!o) {
+    const todo = orders.filter(VIEWS.todo.match).length;
+    pane.innerHTML = `<div class="d-empty"><h2>${current.flat.length ? '选一张订单看详情' : current.search ? '没有匹配的订单' : todo ? '这里没有订单' : '今天要处理的都处理完了'}</h2><p>${current.flat.length ? '用 ↑ ↓ 在列表里移动，按 / 搜索。' : ''}</p></div>`;
+    return;
+  }
+  const note = splitNote(o.note);
+  const age = ageDays(o.created_at);
+  let action = '';
+  if (o.status === '待发货') action = shipForm(o) + refundForm(o, 'self');
+  else if (o.status === '退款中') action = refundForm(o, 'request');
+  else if (o.status === '待付款') action = `<div class="callout info"><span class="lb">等买家付款</span>应付 ${money(o.subtotal + o.shipping_fee)}，${age === 0 ? '今天下的单' : `已经等了 ${age} 天`}。付款后会进入待发货。</div>`;
+  else if (o.status === '已发货' || o.status === '已完成') action = refundForm(o, 'self');
+
+  const log = o.log.length ? `<ul class="log">${o.log.map(l => `<li>${esc(l.t)} <b>${esc(l.text)}</b></li>`).join('')}</ul>` : '';
+  const noteHTML = note
+    ? `<div class="callout ${note.kind}"><span class="lb">${note.label}</span>${esc(note.text)}</div>` : '';
+  const ord = o.order_no;
+  pane.innerHTML = `<article class="detail">
+    <button class="back" type="button" data-act="back">← 返回列表</button>
+    <header class="d-head">
+      <div class="line1"><span class="chip s-${o.status}"><span class="mk s-${o.status}"></span>${o.status}${o.status === '已退款' ? ' ' + money(o.refunded) : ''}</span>
+        ${['待发货', '退款中'].includes(o.status) && age >= 2 ? `<span class="hint">下单后已等 ${age} 天</span>` : ''}</div>
+      <h2 class="d-no">${esc(ord.slice(0, -4))}<b>${esc(ord.slice(-4))}</b></h2>
+      <div class="who">${esc(o.customer)} <span class="city">· ${esc(o.city)}</span></div>
+    </header>
+    ${trackHTML(o)}
+    ${noteHTML}
+    ${receiptHTML(o)}
+    ${action}
+    ${log}
+  </article>`;
+}
+
+/* ---------- 渲染与选择 ---------- */
+function render(opts = {}) {
+  renderOverview();
+  const L = renderList();
+  if (!opts.keepSel || !L.flat.some(o => o.order_no === state.sel)) {
+    if (!L.flat.some(o => o.order_no === state.sel)) state.sel = isNarrow() ? null : (L.flat[0] && L.flat[0].order_no) || null;
+  }
+  markSelected();
+  renderDetail();
+}
+function markSelected() {
+  document.querySelectorAll('.row').forEach(r => r.setAttribute('aria-current', String(r.dataset.no === state.sel)));
+}
+function select(no, { open = true, scroll = false, focus = false } = {}) {
+  if (state.sel !== no) state.panel = null;
+  state.sel = no;
+  markSelected();
+  renderDetail();
+  $('#detailPane').scrollTop = 0;
+  const row = document.querySelector(`.row[data-no="${no}"]`);
+  if (row && scroll) row.scrollIntoView({ block: 'nearest' });
+  if (row && focus) row.focus({ preventScroll: !scroll });
+  if (isNarrow() && open) openDetail();
+}
+function openDetail() { $('#app').classList.add('show-detail'); document.body.classList.add('lock'); $('#detailPane').scrollTop = 0; setTimeout(() => { const b = $('.back'); b && b.focus({ preventScroll: true }); }, 30); }
+function closeDetail() {
+  $('#app').classList.remove('show-detail'); document.body.classList.remove('lock');
+  const row = document.querySelector(`.row[data-no="${state.sel}"]`); row && row.focus({ preventScroll: false });
+}
+function setView(v) {
+  state.view = v; state.q = ''; $('#q').value = ''; syncSearchUI();
+  state.sel = null; state.panel = null;
+  render();
+  $('.list-pane').scrollTop = 0;
+  if (isNarrow()) $('.list-head').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+/* ---------- 操作 ---------- */
+function draft(no) { return (state.drafts[no] ||= { carrier: '顺丰速运', tn: '', err: '' }); }
+function validateTN(carrier, raw, selfNo) {
+  const tn = raw.replace(/\s+/g, '').toUpperCase();
+  if (!tn) return [tn, '请填写运单号。'];
+  if (carrier === '顺丰速运' && !/^SF\d{12,13}$/.test(tn)) return [tn, '顺丰运单号是 SF 加 12 位数字，请对照面单再看一下。'];
+  if (carrier !== '顺丰速运' && !/^[A-Z0-9]{8,20}$/.test(tn)) return [tn, '运单号应为 8–20 位字母或数字。'];
+  const dup = orders.find(o => o.order_no !== selfNo && o.tracking_no && o.tracking_no.toUpperCase() === tn);
+  if (dup) return [tn, `这个运单号已经用在订单 ${dup.order_no}（${dup.customer}）上了。`];
+  return [tn, ''];
+}
+function doShip(o) {
+  const d = draft(o.order_no);
+  d.carrier = $('#carrier').value; d.tn = $('#tn').value;
+  const [tn, err] = validateTN(d.carrier, d.tn, o.order_no);
+  if (err) { d.err = err; renderDetail(); const i = $('#tn'); i.focus(); i.select(); return; }
+  const nxt = nextInList(o.order_no);
+  const prev = { status: o.status, tracking_no: o.tracking_no, carrier: o.carrier, log: [...o.log] };
+  o.status = '已发货'; o.tracking_no = tn; o.carrier = d.carrier;
+  o.log.push({ t: `今天 ${nowStamp()}`, text: `发货：${d.carrier} ${tn}` });
+  delete state.drafts[o.order_no];
+  state.sel = nxt ? nxt.order_no : null; state.panel = null;
+  render({ keepSel: true });
+  if (state.sel) { const r = document.querySelector(`.row[data-no="${state.sel}"]`); r && r.scrollIntoView({ block: 'nearest' }); }
+  if (!state.sel && isNarrow()) closeDetail();
+  else if (state.sel && !isNarrow()) setTimeout(() => { const i = $('#tn'); i && i.focus(); }, 0);
+  toast(`${o.order_no.slice(-4)} ${o.customer} 已发货 · ${d.carrier} ${tn}`, () => {
+    Object.assign(o, prev); state.drafts[o.order_no] = { carrier: prev.carrier || d.carrier, tn, err: '' };
+    state.sel = o.order_no; render({ keepSel: true }); select(o.order_no, { scroll: true });
+    toast(`已撤销 ${o.order_no.slice(-4)} 的发货`);
+  });
+}
+function doRefund(o) {
+  const d = draft(o.order_no);
+  const raw = $('#ramt').value.trim(); d.amt = raw;
+  const n = Number(raw);
+  let err = '';
+  if (!raw || !Number.isFinite(n) || n <= 0) err = '请填写大于 0 的退款金额。';
+  else if (n > o.paid) err = `退款金额不能超过实付 ${money(o.paid)}。`;
+  else if (!/^\d+(\.\d{1,2})?$/.test(raw)) err = '金额最多保留两位小数。';
+  if (err) { d.rerr = err; renderDetail(); const i = $('#ramt'); i.focus(); i.select(); return; }
+  const amt = Math.round(n * 100) / 100;
+  const rn = $('#rnote') ? $('#rnote').value.trim() : '';
+  const wasRequest = o.status === '退款中';
+  const nxt = nextInList(o.order_no);
+  o.status = '已退款'; o.refunded = amt;
+  o.log.push({ t: `今天 ${nowStamp()}`, text: `${wasRequest ? '同意退款申请' : '退款'} ${money(amt)}${amt < o.paid ? '（部分）' : ''}${rn ? '：' + rn : ''}` });
+  delete state.drafts[o.order_no]; state.panel = null;
+  if (wasRequest || state.view !== 'all') state.sel = nxt ? nxt.order_no : null;
+  render({ keepSel: true });
+  if (!state.sel && isNarrow()) closeDetail();
+  toast(`已给 ${o.customer} 退款 ${money(amt)}（${o.order_no.slice(-4)}）`);
+}
+function doReject(o) {
+  const d = draft(o.order_no);
+  d.reason = $('#rreason').value.trim();
+  if (!d.reason) { d.jerr = '请写上拒绝理由。'; renderDetail(); $('#rreason').focus(); return; }
+  const back = o.tracking_no ? '已发货' : '待发货';
+  const nxt = nextInList(o.order_no);
+  o.status = back;
+  o.log.push({ t: `今天 ${nowStamp()}`, text: `拒绝退款申请：${d.reason}` });
+  delete state.drafts[o.order_no]; state.panel = null;
+  state.sel = o.order_no;
+  render({ keepSel: true });
+  toast(`已拒绝 ${o.order_no.slice(-4)} 的退款申请，订单回到${back}`);
+}
+
+let toastTimer;
+function toast(msg, undo) {
+  const t = $('#toast');
+  t.innerHTML = `<span>${esc(msg)}</span>${undo ? '<button type="button">撤销</button>' : ''}`;
+  t.hidden = false;
+  if (undo) t.querySelector('button').onclick = () => { t.hidden = true; undo(); };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, undo ? 7000 : 4000);
+}
+
+/* ---------- 事件 ---------- */
+function syncSearchUI() { const has = !!$('#q').value; $('#qClear').hidden = !has; $('#kbd').hidden = has; }
+$('#q').addEventListener('input', e => { state.q = e.target.value; syncSearchUI(); state.panel = null; render(); $('.list-pane').scrollTop = 0; });
+function clearQ() { $('#q').value = ''; state.q = ''; syncSearchUI(); render(); }
+$('#qClear').addEventListener('click', () => { clearQ(); $('#q').focus(); });
+$('#listClear').addEventListener('click', clearQ);
+
+document.querySelector('.ov').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
+$('#list').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if (r) return select(r.dataset.no);
+  if (e.target.closest('[data-act="clear-q"]')) clearQ();
+  const go = e.target.closest('[data-view-go]'); if (go) setView(go.dataset.viewGo);
+});
+$('#detailPane').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const o = byNo(state.sel); const act = b.dataset.act;
+  if (act === 'back') return closeDetail();
+  if (!o) return;
+  if (act === 'ship') doShip(o);
+  else if (act === 'refund') doRefund(o);
+  else if (act === 'reject-open') { state.panel = 'reject'; renderDetail(); $('#rreason').focus(); }
+  else if (act === 'self-refund-open') { state.panel = 'self-refund'; renderDetail(); $('#ramt').focus(); }
+  else if (act === 'panel-close') { state.panel = null; renderDetail(); }
+  else if (act === 'reject') doReject(o);
+});
+$('#detailPane').addEventListener('input', e => {
+  const o = byNo(state.sel); if (!o) return;
+  const d = draft(o.order_no);
+  if (e.target.id === 'tn') { d.tn = e.target.value; if (d.err) { d.err = ''; e.target.setAttribute('aria-invalid', 'false'); $('#tnErr').hidden = true; } }
+  if (e.target.id === 'ramt') { d.amt = e.target.value; d.rerr = ''; $('#rErr').hidden = true; $('#refundBtn').textContent = ($('#refundBtn').textContent.startsWith('同意') ? '同意退款 ' : '确认退款 ') + fmtAmt(e.target.value); }
+  if (e.target.id === 'rreason') { d.reason = e.target.value; if (d.jerr) { d.jerr = ''; $('#jErr').hidden = true; } }
+  if (e.target.id === 'rnote') d.rnote = e.target.value;
+});
+$('#detailPane').addEventListener('change', e => {
+  if (e.target.id !== 'carrier') return;
+  const d = draft(state.sel); d.carrier = e.target.value; d.err = '';
+  $('#tn').placeholder = d.carrier === '顺丰速运' ? 'SF 加 12 位数字' : '快递面单上的单号';
+  $('#tnErr').hidden = true; $('#tn').setAttribute('aria-invalid', 'false');
+});
+$('#detailPane').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || e.isComposing) return;
+  const o = byNo(state.sel); if (!o) return;
+  if (e.target.id === 'tn') { e.preventDefault(); doShip(o); }
+  else if (e.target.id === 'ramt' || e.target.id === 'rnote') { e.preventDefault(); doRefund(o); }
+});
+document.addEventListener('keydown', e => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if (e.key === '/' && !typing) { e.preventDefault(); if (isNarrow()) closeDetail(); $('#q').focus(); $('#q').select(); return; }
+  if (e.key === 'Escape') {
+    if ($('#app').classList.contains('show-detail')) return closeDetail();
+    if (state.panel) { state.panel = null; renderDetail(); return; }
+    if (document.activeElement === $('#q') && $('#q').value) return clearQ();
+    if (typing) document.activeElement.blur();
+    return;
+  }
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !typing && !isNarrow()) {
+    const f = current.flat; if (!f.length) return;
+    e.preventDefault();
+    let i = f.findIndex(o => o.order_no === state.sel);
+    i = e.key === 'ArrowDown' ? Math.min(f.length - 1, i + 1) : Math.max(0, i - 1);
+    select(f[i].order_no, { scroll: true, focus: true, open: false });
+  }
+});
+$('#q').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' && current.flat.length) { e.preventDefault(); select(state.sel || current.flat[0].order_no, { scroll: true, focus: true, open: false }); }
+  if (e.key === 'Enter' && current.flat.length === 1) { select(current.flat[0].order_no); }
+});
+matchMedia('(max-width: 759px)').addEventListener('change', () => { $('#app').classList.remove('show-detail'); document.body.classList.remove('lock'); render({ keepSel: true }); });
+matchMedia('(max-width: 1099px)').addEventListener('change', setPickOpen);
+function setPickOpen() { $('#pick').open = !matchMedia('(max-width: 1099px)').matches; }
+
+setPickOpen();
+render();
+</script>
+</body>
+</html>

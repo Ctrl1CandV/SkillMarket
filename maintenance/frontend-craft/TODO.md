@@ -1,10 +1,9 @@
 # frontend-craft 待办
 
-当前版本 0.2.0（布局优先 + 视觉完成度，见 [reports/frontend-craft-0.2.md](reports/frontend-craft-0.2.md)）。
+当前版本 0.3.3（运行文件见 main 的 `frontend-craft/`）。0.3 的评测过程与结果见 [reports/frontend-craft-0.3-eval.md](reports/frontend-craft-0.3-eval.md)，0.2.0 的完整副本在 [archive/v0.2.0-2026-10-03/](archive/v0.2.0-2026-10-03/)。
 
-- [ ] 布局优先对照实验：同一 brief 比较"冻结版原样运行"与"布局优先附加指令"，任务与审美两条验收线分开判定；输入、判定与放弃条件见 [reports/frontend-layout-strategy.md](reports/frontend-layout-strategy.md)。
-- [ ] 两个页面样例（晚间电台、街角植物志）的完整视觉验收：真实看图评审、键盘走查、200% 缩放、reduce 动效模拟；检查记录见 [evals/v0.2/](evals/v0.2/)。
-- [ ] 中文排版样张机制：为标题/正文/混排/数字建立真实字体样张比较，再落入 visual-style 指令。
-- [ ] 补充真实素材选择路径的实践：候选试放、按最终尺寸检查裁切与窄屏焦点。
-
-背景：ResearchWorkbench 是用户不满意的负面案例（普通、丑），不是应模仿的风格；oil-ui 展示效果是正面参考。旧小样（[evals/](evals/) 下 workbench/reading）保留为功能回归与负面参照，不能视为审美达标。
+- [ ] Opus 上的开销仍高于无技能组约 50%，目标是 +20% 以内。可以考虑把最常用的规则直接放进 SKILL.md，减少按需读取的参考数量。
+- [ ] 盲评样本只有作者一人。找几位不同背景的人做同样的盲评（盲评页在 `evals/v0.3/gallery/` 的脚本可以重新生成），把结果并入报告。
+- [ ] `text-autospace` 在 Chrome 上的支持状态，资料之间有冲突，需要查看当前的 MDN 兼容表后确认。
+- [ ] 留出案例只用过一次（订单后台）。之后真实使用中遇到的新页面，可以作为新的留出案例。
+- [ ] 外部模型（GPT、GLM 等）的效果：`evals/v0.3/inputs/external-prompt-case1.md` 可以直接在对方的工具中使用，结果只作参考。

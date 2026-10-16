@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>启明计算实验室 2027 招新</title>
+<meta name="description" content="城北理工大学信息学院启明计算实验室 2027 招新：硕士 3 名、本科生科研实习 4 名，申请截止时间 2026 年 11 月 15 日。">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F5F2EB;
+  --band:#ECE8DE;
+  --ink:#1C2330;
+  --ink-2:#4D5666;
+  --rule:#CFC8B8;
+  --accent:#1F5A70;
+  --accent-hover:#184A5D;
+  --tint:#E1EBE9;
+  --serif:"Source Han Serif SC","思源宋体","Noto Serif SC","Noto Serif CJK SC","Songti SC",STSong,SimSun,serif;
+  --sans:"Source Han Sans SC","思源黑体","Noto Sans SC","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:24px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.8 var(--sans);overflow-wrap:break-word}
+a{color:var(--accent);text-underline-offset:.2em}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px}
+p{margin:0 0 1em}
+p:last-child{margin-bottom:0}
+h1,h2,h3{font-family:var(--serif);font-weight:700;margin:0}
+ul,ol{margin:0;padding:0}
+.wrap{max-width:1080px;margin-inline:auto;padding-inline:clamp(18px,4vw,40px)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* header */
+.top{border-bottom:1px solid var(--rule)}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:60px}
+.brand{font-family:var(--serif);font-weight:700;color:var(--ink);text-decoration:none}
+.top-link{display:inline-flex;align-items:center;min-height:44px;font-weight:700;text-decoration:none}
+
+/* hero */
+.hero{display:grid;gap:40px;padding-block:clamp(44px,7vw,92px)}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center;gap:64px}}
+.eyebrow{margin:0 0 18px;font-size:14px;font-weight:700;color:var(--accent)}
+h1{font-size:clamp(40px,6.4vw,72px);line-height:1.15}
+h1 .sub{display:block;margin-top:.14em;font-size:.6em;color:var(--accent)}
+.lead{margin:24px 0 0;font-size:clamp(17px,2vw,19px);color:var(--ink-2);max-width:30em}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 22px;border:1.5px solid var(--ink);border-radius:4px;color:var(--ink);font-weight:700;text-decoration:none}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
+
+.deadline{background:var(--accent);color:#fff;border-radius:6px;padding:clamp(24px,4vw,40px)}
+.deadline .lbl{font-size:14px;font-weight:700}
+.dl-big{margin:12px 0 4px;font-family:var(--serif);font-weight:700;font-size:clamp(60px,9vw,96px);line-height:1;font-variant-numeric:tabular-nums}
+.dl-date{margin:0 0 6px;font-size:18px;font-weight:700}
+.dl-note{margin:0;font-size:15px}
+.quota{margin:26px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.4);display:grid;gap:12px}
+.quota div{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.quota dt{font-size:16px}
+.quota dd{margin:0;font-family:var(--serif);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+
+/* sections */
+.sec{border-top:1px solid var(--rule);padding-block:clamp(56px,8vw,96px)}
+.sec.band{background:var(--band)}
+.grid{display:grid;gap:28px}
+@media (min-width:880px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);gap:72px}}
+.kicker{margin:0 0 12px;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--accent);font-variant-numeric:tabular-nums}
+h2{font-size:clamp(28px,4vw,38px);line-height:1.3}
+h3{font-size:20px;line-height:1.4}
+.sec-body > p,.measure{max-width:36em}
+h3.sub{margin:44px 0 14px;font-size:19px}
+.sec-body > h3.sub:first-child{margin-top:0}
+
+/* advantages */
+.adv{list-style:none;margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;border-top:1px solid var(--rule)}
+.adv li{display:flex;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);font-weight:700}
+.adv li span{font-family:var(--serif);font-size:15px;color:var(--accent);font-variant-numeric:tabular-nums}
+@media (min-width:640px){.adv{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* directions */
+.dirs{list-style:none;margin-top:28px}
+.dirs li{display:grid;gap:4px;padding:22px 0;border-top:1px solid var(--rule)}
+.dirs li:last-child{border-bottom:1px solid var(--rule)}
+.dir-no{font-size:14px;font-weight:700;color:var(--accent)}
+.dirs h3{font-size:clamp(21px,2.6vw,26px)}
+@media (min-width:640px){.dirs li{grid-template-columns:110px minmax(0,1fr);align-items:baseline;gap:16px}}
+
+/* roles table */
+.roles{width:100%;border-collapse:collapse;margin-top:28px;font-size:16px}
+.roles th,.roles td{text-align:left;vertical-align:top;padding:16px 16px 16px 0;border-bottom:1px solid var(--rule)}
+.roles thead th{font-size:14px;font-weight:700;color:var(--ink-2);border-bottom:2px solid var(--ink)}
+.roles tbody th{font-family:var(--serif);font-weight:700;font-size:19px}
+.roles .num{font-family:var(--serif);font-weight:700;font-size:24px;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:639px){
+  .roles thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .roles,.roles tbody,.roles tr,.roles th,.roles td{display:block;width:100%}
+  .roles tr{padding:18px 0;border-bottom:1px solid var(--rule)}
+  .roles th,.roles td{border:0;padding:2px 0}
+  .roles td::before{content:attr(data-label);display:block;font-size:13px;color:var(--ink-2)}
+}
+
+/* requirements */
+.checks{list-style:none;margin-top:4px;display:grid;gap:10px}
+.checks li{position:relative;padding-left:24px}
+.checks li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;background:var(--accent)}
+.checks .opt span{font-weight:700;color:var(--accent);margin-right:.5em}
+.callout{margin-top:28px;max-width:36em;padding:18px 22px;background:var(--tint);border-left:4px solid var(--accent);border-radius:0 4px 4px 0}
+.callout strong{color:var(--accent)}
+
+/* support stats */
+.stats{display:grid;gap:8px;margin-top:8px}
+@media (min-width:720px){.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}}
+.stat{padding:24px 0 8px;border-top:2px solid var(--ink)}
+.stat-num{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(48px,6vw,64px);line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat-num span{font-size:.36em;margin-left:.22em}
+.stat-name{margin:14px 0 4px;font-weight:700;font-size:18px}
+.stat-note{margin:0;font-size:15px;color:var(--ink-2)}
+
+/* rhythm */
+.rhythm{list-style:none;margin-top:28px;padding-left:28px;border-left:2px solid var(--accent)}
+.rhythm li{position:relative;padding-bottom:24px}
+.rhythm li:last-child{padding-bottom:0}
+.rhythm li::before{content:"";position:absolute;left:-38px;top:.5em;width:14px;height:14px;border-radius:50%;background:var(--accent)}
+.rhythm .when{display:block;font-family:var(--serif);font-weight:700;font-size:20px}
+.rhythm .what{color:var(--ink-2)}
+.rest{margin-top:24px}
+
+/* outcomes */
+.cells{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 22px}
+.cell{width:44px;height:44px;border:2px solid var(--accent);border-radius:4px}
+.cell.on{background:var(--accent)}
+.legend{list-style:none;display:grid;gap:12px}
+.legend li{display:flex;align-items:baseline;gap:12px}
+.legend strong{flex:none;min-width:3em;font-family:var(--serif);font-size:22px;color:var(--accent);font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:14px;height:14px;border:2px solid var(--accent);border-radius:2px;transform:translateY(2px)}
+.sw.on{background:var(--accent)}
+
+/* application */
+.steps{list-style:none;margin-top:28px;counter-reset:step}
+.steps li{counter-increment:step;display:grid;gap:4px;padding:20px 0;border-top:1px solid var(--rule)}
+.steps li:last-child{border-bottom:1px solid var(--rule)}
+.steps li::before{content:counter(step,decimal-leading-zero);font-family:var(--serif);font-weight:700;font-size:15px;color:var(--accent);font-variant-numeric:tabular-nums}
+.steps h3{font-size:19px}
+.steps p{margin:0;max-width:36em}
+@media (min-width:640px){.steps li{grid-template-columns:90px minmax(0,1fr);align-items:baseline;gap:8px 16px}.steps li::before{grid-row:1 / span 2}}
+.dstrip{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;margin-top:32px;padding:20px 22px;background:var(--tint);border-radius:6px}
+.dstrip .lbl{display:block;font-size:14px;color:var(--ink-2)}
+.dstrip strong{font-family:var(--serif);font-size:24px;color:var(--accent)}
+.openday{margin-top:44px;padding-top:24px;border-top:1px solid var(--rule)}
+.openday p{max-width:36em}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* faq */
+.qa{padding:18px 0;border-top:1px solid var(--rule)}
+.qa:last-child{border-bottom:1px solid var(--rule)}
+.qa h3{font-size:18px;margin-bottom:6px}
+.qa h3::before{content:"Q";margin-right:.6em;color:var(--accent);font-family:var(--serif)}
+.qa p{margin:0;color:var(--ink-2);padding-left:1.6em;position:relative}
+.qa p::before{content:"A";position:absolute;left:0;top:0;color:var(--accent);font-family:var(--serif);font-weight:700}
+
+/* footer */
+.foot{background:var(--accent);color:#fff;padding-block:clamp(48px,7vw,80px)}
+.foot a{color:#fff}
+.foot a:focus-visible{outline-color:#fff}
+.reminder{font-family:var(--serif);font-weight:700;font-size:clamp(22px,3.4vw,30px);line-height:1.4}
+.contact{display:grid;gap:24px;margin-top:36px}
+@media (min-width:720px){.contact{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.contact .k{margin:0 0 4px;font-size:14px;font-weight:700}
+.contact p{margin:0}
+.foot-small{margin-top:48px;padding-top:20px;border-top:1px solid rgba(255,255,255,.4);font-size:14px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top">启明计算实验室</a>
+    <a class="top-link" href="#apply">申请方式</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">招新通知（重要）· 城北理工大学信息学院</p>
+      <h1>启明计算实验室<span class="sub">2027 招新</span></h1>
+      <p class="lead">实验室专注大模型相关研究。欢迎对大模型、智能体感兴趣的同学加入，一起做有意思的研究。</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#apply">查看申请方式</a>
+        <a class="btn" href="mailto:qiming-lab@example.com">发邮件咨询</a>
+      </div>
+    </div>
+
+    <aside class="deadline" aria-labelledby="dl-label">
+      <p class="lbl" id="dl-label">申请截止时间</p>
+      <p class="dl-big" aria-hidden="true">11.15</p>
+      <p class="dl-date">2026 年 11 月 15 日</p>
+      <p class="dl-note">结果在截止后两周内通知</p>
+      <dl class="quota">
+        <div><dt>2027 级硕士</dt><dd>3 名</dd></div>
+        <div><dt>本科生科研实习</dt><dd>4 名</dd></div>
+      </dl>
+    </aside>
+  </div>
+
+  <section class="sec" id="about">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">01</p>
+        <h2>关于我们</h2>
+      </div>
+      <div class="sec-body">
+        <p>启明计算实验室隶属于城北理工大学信息学院，负责人是周砚副教授。实验室成立以来一直专注于大模型相关研究。</p>
+        <p>我们非常欢迎对大模型、智能体感兴趣的同学加入，一起做有意思的研究！实验室氛围好，师兄师姐都很 nice，欢迎大家加入。</p>
+        <h3 class="sub">我们的优势</h3>
+        <ul class="adv">
+          <li><span>01</span>研究方向前沿</li>
+          <li><span>02</span>算力充足</li>
+          <li><span>03</span>导师指导多</li>
+          <li><span>04</span>氛围轻松</li>
+          <li><span>05</span>出路好</li>
+          <li><span>06</span>有补助</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="directions">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">02</p>
+        <h2>研究方向</h2>
+      </div>
+      <div class="sec-body">
+        <p>三个方向，同学们可以根据自己的兴趣选择。入组后也可以调整。</p>
+        <ol class="dirs">
+          <li><span class="dir-no">方向一</span><h3>大模型智能体的规划与工具使用</h3></li>
+          <li><span class="dir-no">方向二</span><h3>面向科研文献的检索与阅读辅助</h3></li>
+          <li><span class="dir-no">方向三</span><h3>智能体评测方法</h3></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="who">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">03</p>
+        <h2>招收对象与名额</h2>
+      </div>
+      <div class="sec-body">
+        <table class="roles">
+          <caption class="sr-only">招收对象与名额</caption>
+          <thead>
+            <tr><th scope="col">类别</th><th scope="col">招收对象</th><th scope="col">名额</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">硕士</th>
+              <td data-label="招收对象">2027 级硕士（推免生和统考生都可以）</td>
+              <td data-label="名额" class="num">3 名</td>
+            </tr>
+            <tr>
+              <th scope="row">本科生科研实习</th>
+              <td data-label="招收对象">大三及以上</td>
+              <td data-label="名额" class="num">4 名</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="sub">申请要求</h3>
+        <ul class="checks">
+          <li>熟悉 Python</li>
+          <li>读过至少一篇大模型相关的论文</li>
+          <li>能读英文文献</li>
+          <li class="opt"><span>加分项</span>有开源贡献或者比赛经历</li>
+        </ul>
+        <p class="callout"><strong>不要求有论文发表经历！</strong>不要因为没发过论文就不敢投。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band" id="support">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">04</p>
+        <h2>条件与支持</h2>
+      </div>
+      <div class="sec-body">
+        <div class="stats">
+          <div class="stat">
+            <p class="stat-num">8<span>张</span></p>
+            <p class="stat-name">A100 算力</p>
+            <p class="stat-note">实验室共享服务器</p>
+          </div>
+          <div class="stat">
+            <p class="stat-num">200<span>元</span></p>
+            <p class="stat-name">API 额度</p>
+            <p class="stat-note">每人每月</p>
+          </div>
+          <div class="stat">
+            <p class="stat-num">1500<span>元</span></p>
+            <p class="stat-name">助研津贴</p>
+            <p class="stat-note">硕士每月，在学校标准之外额外发放</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="training">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">05</p>
+        <h2>培养方式</h2>
+      </div>
+      <div class="sec-body">
+        <ul class="rhythm">
+          <li><span class="when">每周二晚上 19:00</span><span class="what">组会</span></li>
+          <li><span class="when">每人每两周一次</span><span class="what">和周老师一对一讨论</span></li>
+        </ul>
+        <p class="rest">导师指导多，不放养。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="outcomes">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">06</p>
+        <h2>出路</h2>
+      </div>
+      <div class="sec-body">
+        <p>近三年实验室毕业硕士 6 名。</p>
+        <div class="cells" aria-hidden="true">
+          <span class="cell on"></span><span class="cell on"></span><span class="cell on"></span><span class="cell on"></span><span class="cell"></span><span class="cell"></span>
+        </div>
+        <ul class="legend">
+          <li><span class="sw on" aria-hidden="true"></span><span><strong>4 名</strong>去了工业界（大模型、搜索相关岗位）</span></li>
+          <li><span class="sw" aria-hidden="true"></span><span><strong>2 名</strong>继续读博</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="apply">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">07</p>
+        <h2>怎么申请</h2>
+      </div>
+      <div class="sec-body">
+        <ol class="steps">
+          <li>
+            <h3>发邮件</h3>
+            <p>发邮件到 <a href="mailto:qiming-lab@example.com">qiming-lab@example.com</a>，邮件里附上简历，再加一段 300 字以内的文字，写你对某一篇论文的理解（任何你读过的论文都可以）。</p>
+          </li>
+          <li>
+            <h3>初筛</h3>
+            <p>我们会对材料进行初筛。</p>
+          </li>
+          <li>
+            <h3>线上面谈</h3>
+            <p>通过初筛的同学安排 30 分钟线上面谈。</p>
+          </li>
+          <li>
+            <h3>通知结果</h3>
+            <p>最后通知结果，结果在截止后两周内通知。</p>
+          </li>
+        </ol>
+
+        <div class="dstrip">
+          <p><span class="lbl">截止时间</span><strong>2026 年 11 月 15 日</strong></p>
+          <a class="btn btn-primary" href="mailto:qiming-lab@example.com">发邮件申请</a>
+        </div>
+
+        <div class="openday">
+          <h3 class="sub" style="margin-top:0">线下开放日</h3>
+          <p><strong>11 月 1 日 下午 14:00–16:00</strong>，地点在信息楼 B 区 512。可以直接过来聊，不用预约。</p>
+          <p class="small">去年开放日改到了 10 月，今年还是 11 月。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="faq">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">08</p>
+        <h2>常见问题</h2>
+      </div>
+      <div class="sec-body">
+        <div class="qa">
+          <h3>跨专业可以申请吗？</h3>
+          <p>可以，但入组后需要补一些数学基础。</p>
+        </div>
+        <div class="qa">
+          <h3>本科实习可以远程吗？</h3>
+          <p>可以远程，但每周需要线下来实验室一次。</p>
+        </div>
+        <div class="qa">
+          <h3>没有发过论文可以吗？</h3>
+          <p>可以，我们不要求论文发表经历。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <p class="reminder">再次提醒：截止时间 2026 年 11 月 15 日</p>
+    <div class="contact">
+      <div>
+        <p class="k">联系人</p>
+        <p>林舟（博士生，实验室秘书）</p>
+      </div>
+      <div>
+        <p class="k">邮箱</p>
+        <p><a href="mailto:qiming-lab@example.com">qiming-lab@example.com</a></p>
+        <p>有问题都可以发邮件</p>
+      </div>
+      <div>
+        <p class="k">地址</p>
+        <p>信息楼 B 区 512</p>
+        <p>负责人：周砚副教授</p>
+      </div>
+    </div>
+    <p class="foot-small">启明计算实验室 · 城北理工大学信息学院</p>
+  </div>
+</footer>
+
+</body>
+</html>

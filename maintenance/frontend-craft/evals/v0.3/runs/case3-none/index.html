@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>启明计算实验室 · 2027 招新</title>
+<style>
+  :root{
+    --ink:#1b2333;
+    --ink-2:#4a5468;
+    --ink-3:#7a8296;
+    --paper:#f7f5f0;
+    --card:#ffffff;
+    --line:#e4e0d6;
+    --navy:#1d2b4f;
+    --navy-2:#2c3f6e;
+    --amber:#c9822b;
+    --amber-soft:#f6ead8;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC",serif;
+    --sans:"Noto Sans SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--sans);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:24px}
+
+  /* top bar */
+  .bar{position:sticky;top:0;z-index:10;background:rgba(247,245,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px}
+  .brand{font-family:var(--serif);font-weight:700;font-size:17px;letter-spacing:.04em;text-decoration:none;white-space:nowrap}
+  .brand span{color:var(--amber)}
+  .nav{display:flex;gap:22px;font-size:14px;color:var(--ink-2)}
+  .nav a{text-decoration:none}
+  .nav a:hover{color:var(--navy)}
+  .bar .apply{font-size:14px;text-decoration:none;background:var(--navy);color:#fff;padding:7px 14px;border-radius:6px;white-space:nowrap}
+
+  /* hero */
+  .hero{background:var(--navy);color:#eef1f8;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(233,170,90,.38) 0,rgba(233,170,90,.08) 45%,transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;padding-block:72px 64px;position:relative;z-index:1}
+  .eyebrow{font-size:14px;letter-spacing:.12em;color:#c9d2e6;margin:0 0 18px}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:52px;line-height:1.2;margin:0 0 20px;letter-spacing:.02em;color:#fff}
+  .hero h1 em{font-style:normal;color:#f0b465}
+  .hero .lead{font-size:18px;line-height:1.85;color:#d6dcea;margin:0 0 28px;max-width:30em}
+  .hero .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .btn{display:inline-block;background:var(--amber);color:#fff;text-decoration:none;padding:11px 20px;border-radius:7px;font-weight:600}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.35);color:#eef1f8;font-weight:500}
+  .facts{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:8px 24px;align-self:start}
+  .fact{display:grid;grid-template-columns:5.5em 1fr;gap:12px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+  .fact:last-child{border-bottom:0}
+  .fact dt{font-size:13px;color:#aab4cc;padding-top:3px}
+  .fact dd{margin:0;color:#fff;font-size:16px;line-height:1.6}
+  .fact dd b{font-family:var(--serif);font-size:22px;font-weight:700;color:#f0b465;margin-right:2px}
+  .fact dd small{display:block;color:#aab4cc;font-size:13px}
+
+  /* sections */
+  section{padding-block:72px;border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:32px}
+  .sec-no{font-family:var(--serif);color:var(--amber);font-size:15px;font-weight:700;letter-spacing:.08em}
+  h2{font-family:var(--serif);font-size:32px;line-height:1.3;margin:0;font-weight:700;color:var(--navy)}
+  h3{font-size:18px;margin:0 0 8px;font-weight:700;color:var(--ink)}
+  p{margin:0 0 1em}
+  .muted{color:var(--ink-2)}
+  .note{font-size:14px;color:var(--ink-3)}
+
+  /* about */
+  .about{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:start}
+  .about p{font-size:17px;color:var(--ink-2)}
+  .about p strong{color:var(--ink)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+  .tags li{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px}
+  .tags-box h3{font-size:15px;color:var(--ink-3);font-weight:500;margin-bottom:12px}
+  .tags-box p{font-size:14px;margin-top:14px}
+
+  .dirs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  .dir{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;position:relative}
+  .dir .n{font-family:var(--serif);font-size:13px;color:var(--amber);font-weight:700;letter-spacing:.1em;display:block;margin-bottom:10px}
+  .dir h3{font-family:var(--serif);font-size:20px;line-height:1.5;margin:0}
+  .dirs-note{margin-top:16px}
+
+  /* who */
+  .who{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .seat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+  .seat .num{font-family:var(--serif);font-size:56px;line-height:1;color:var(--navy);font-weight:700;white-space:nowrap}
+  .seat .num small{font-size:18px;margin-left:4px;color:var(--ink-2);font-weight:500}
+  .seat p{margin:0;color:var(--ink-2);font-size:15px}
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px}
+  .checks{list-style:none;margin:0;padding:0}
+  .checks li{position:relative;padding:10px 0 10px 30px;border-bottom:1px dashed var(--line)}
+  .checks li:last-child{border-bottom:0}
+  .checks li::before{content:"";position:absolute;left:2px;top:17px;width:14px;height:8px;border-left:2px solid var(--navy);border-bottom:2px solid var(--navy);transform:rotate(-45deg)}
+  .checks.plus li::before{content:"+";border:0;transform:none;top:8px;left:3px;width:auto;height:auto;color:var(--amber);font-weight:700;font-size:18px}
+  .callout{background:var(--amber-soft);border:1px solid #ecd5b2;border-radius:12px;padding:20px 24px;margin-top:16px}
+  .callout strong{color:#8a5414}
+
+  /* offer */
+  .offer{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .offer .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
+  .offer .k{font-size:13px;color:var(--ink-3);letter-spacing:.06em;margin-bottom:6px}
+  .offer .v{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--navy);line-height:1.25;margin-bottom:8px}
+  .offer .v small{font-size:16px;color:var(--ink-2);font-weight:500;margin-left:2px}
+  .offer .item p{margin:0;font-size:15px;color:var(--ink-2)}
+  .offer .wide{grid-column:span 3;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  .bar-out{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:14px 0 10px}
+  .bar-out i{display:block}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;color:var(--ink-2)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:0;background:var(--c)}
+
+  /* apply */
+  .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:s}
+  .steps li{position:relative;padding:0 20px 0 0}
+  .steps li::before{counter-increment:s;content:counter(s);display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+    background:var(--navy);color:#fff;font-family:var(--serif);font-weight:700;margin-bottom:14px;position:relative;z-index:1}
+  .steps li::after{content:"";position:absolute;top:18px;left:36px;right:0;height:1px;background:var(--line)}
+  .steps li:last-child::after{display:none}
+  .steps p{font-size:15px;color:var(--ink-2);margin:0}
+  .mail-box{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px 28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+  .mail-box ul{margin:8px 0 0;padding-left:1.2em;color:var(--ink-2)}
+  .mail-box .addr{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--navy);word-break:break-all}
+
+  .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  .date{border-radius:12px;padding:22px 24px;background:var(--card);border:1px solid var(--line)}
+  .date.key{background:var(--navy);border-color:var(--navy);color:#fff}
+  .date .d{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.3}
+  .date.key .d{color:#f0b465}
+  .date .t{font-size:13px;color:var(--ink-3);margin-bottom:6px;letter-spacing:.06em}
+  .date.key .t,.date.key p{color:#c9d2e6}
+  .date p{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+
+  /* faq */
+  .faq{display:grid;gap:12px}
+  .faq details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 24px}
+  .faq summary{cursor:pointer;list-style:none;padding:18px 0;font-weight:600;display:flex;justify-content:space-between;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";color:var(--amber);font-size:20px;line-height:1}
+  .faq details[open] summary::after{content:"−"}
+  .faq details p{margin:0 0 18px;color:var(--ink-2)}
+
+  /* contact */
+  .contact{background:var(--navy);color:#e6eaf4;border-bottom:0}
+  .contact h2{color:#fff}
+  .contact .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+  .contact .k{font-size:13px;color:#aab4cc;margin-bottom:6px;letter-spacing:.06em}
+  .contact .v{font-size:18px;color:#fff}
+  .contact .v small{display:block;font-size:14px;color:#aab4cc}
+  .contact .final{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.15);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  .contact .final p{margin:0;font-size:17px}
+  .contact .final b{color:#f0b465;font-family:var(--serif)}
+  footer{background:var(--navy);color:#8f9ab3;font-size:13px;padding-block:0 32px}
+
+  @media (max-width:900px){
+    .nav{display:none}
+    .hero .wrap{grid-template-columns:1fr;gap:36px;padding-block:48px}
+    .hero h1{font-size:38px}
+    .about,.who,.req,.offer .wide{grid-template-columns:1fr}
+    .dirs,.offer,.dates,.contact .grid{grid-template-columns:1fr}
+    .offer .wide{grid-column:auto;gap:20px}
+    .steps{grid-template-columns:1fr;gap:20px}
+    .steps li{padding:0 0 0 52px}
+    .steps li::before{position:absolute;left:0;top:-4px;margin:0}
+    .steps li::after{display:none}
+    .mail-box{grid-template-columns:1fr}
+    section{padding-block:52px}
+    h2{font-size:26px}
+  }
+  @media (max-width:480px){
+    .wrap{padding-inline:18px}
+    .hero h1{font-size:32px}
+    .hero .lead{font-size:16px}
+    .facts{padding:4px 18px}
+    .seat{padding:22px}
+    .seat .num{font-size:44px}
+    .panel,.mail-box{padding:22px}
+    .bar .apply{padding:6px 12px}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">启明计算实验室 <span>2027 招新</span></a>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#about">关于我们</a>
+      <a href="#who">招收对象</a>
+      <a href="#offer">培养与资源</a>
+      <a href="#apply">申请方式</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <a class="apply" href="#apply">怎么申请</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">城北理工大学信息学院 · 负责人 周砚副教授</p>
+        <h1>启明计算实验室<br><em>2027 招新</em></h1>
+        <p class="lead">我们专注大模型相关研究：智能体的规划与工具使用、科研文献的检索与阅读辅助、智能体评测方法。对大模型和智能体感兴趣，就欢迎来聊。<strong style="color:#fff">不要求有论文发表经历。</strong></p>
+        <div class="cta">
+          <a class="btn" href="#apply">查看申请方式</a>
+          <a class="btn ghost" href="#openday">11 月 1 日开放日</a>
+        </div>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>招收名额</dt><dd><div><b>3</b> 名 2027 级硕士<small>推免生、统考生均可</small></div><div style="margin-top:8px"><b>4</b> 名本科科研实习<small>大三及以上</small></div></dd></div>
+        <div class="fact"><dt>申请截止</dt><dd><b>2026.11.15</b><small>结果在截止后两周内通知</small></dd></div>
+        <div class="fact"><dt>开放日</dt><dd>11 月 1 日 14:00–16:00<small>信息楼 B 区 512 · 直接来，不用预约</small></dd></div>
+        <div class="fact"><dt>申请邮箱</dt><dd>qiming-lab@example.com<small>有任何问题也可以发这个邮箱</small></dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">01</span><h2>关于我们</h2></div>
+      <div class="about">
+        <div>
+          <p>启明计算实验室隶属于<strong>城北理工大学信息学院</strong>，负责人是<strong>周砚副教授</strong>。实验室成立以来一直专注于大模型相关研究。</p>
+          <p>我们欢迎对大模型、智能体感兴趣的同学加入，一起做有意思的研究。组里氛围轻松，师兄师姐都很好相处。</p>
+        </div>
+        <div class="tags-box">
+          <h3>我们的优势</h3>
+          <ul class="tags">
+            <li>研究方向前沿</li><li>算力充足</li><li>导师指导多</li><li>氛围轻松</li><li>出路好</li><li>有补助</li>
+          </ul>
+          <p class="note">每一条的具体情况见下方 <a href="#offer">培养与资源</a>。</p>
+        </div>
+      </div>
+
+      <div class="dirs">
+        <div class="dir"><span class="n">方向一</span><h3>大模型智能体的规划与工具使用</h3></div>
+        <div class="dir"><span class="n">方向二</span><h3>面向科研文献的检索与阅读辅助</h3></div>
+        <div class="dir"><span class="n">方向三</span><h3>智能体评测方法</h3></div>
+      </div>
+      <p class="dirs-note muted">三个方向可以按自己的兴趣选择，入组后也可以调整。</p>
+    </div>
+  </section>
+
+  <section id="who">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">02</span><h2>招收对象与要求</h2></div>
+      <div class="who">
+        <div class="seat">
+          <div><h3>2027 级硕士</h3><p>推免生和统考生都可以申请</p></div>
+          <div class="num">3<small>名</small></div>
+        </div>
+        <div class="seat">
+          <div><h3>本科生科研实习</h3><p>大三及以上；可远程，但每周需线下来实验室一次</p></div>
+          <div class="num">4<small>名</small></div>
+        </div>
+      </div>
+      <div class="req">
+        <div class="panel">
+          <h3>基本要求</h3>
+          <ul class="checks">
+            <li>熟悉 Python</li>
+            <li>读过至少一篇大模型相关的论文</li>
+            <li>能读英文文献</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>加分项</h3>
+          <ul class="checks plus">
+            <li>有开源贡献</li>
+            <li>有比赛经历</li>
+          </ul>
+          <p class="note" style="margin:14px 0 0">跨专业同学也可以申请，入组后需要补一些数学基础。</p>
+        </div>
+      </div>
+      <div class="callout"><strong>不要求有论文发表经历。</strong>没发过论文不影响申请，请放心投。</div>
+    </div>
+  </section>
+
+  <section id="offer">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">03</span><h2>培养与资源</h2></div>
+      <div class="offer">
+        <div class="item">
+          <div class="k">算力</div>
+          <div class="v">8 × A100</div>
+          <p>实验室共享服务器</p>
+        </div>
+        <div class="item">
+          <div class="k">API 额度</div>
+          <div class="v">200 元<small>/ 人 / 月</small></div>
+          <p>按人发放，每月一份</p>
+        </div>
+        <div class="item">
+          <div class="k">硕士助研津贴</div>
+          <div class="v">1500 元<small>/ 月</small></div>
+          <p>在学校标准之外额外发放</p>
+        </div>
+        <div class="item wide">
+          <div>
+            <div class="k">培养方式</div>
+            <h3>导师指导多，不放养</h3>
+            <ul class="checks">
+              <li>每周二晚上 19:00 组会</li>
+              <li>每人每两周和周老师一对一讨论一次</li>
+            </ul>
+          </div>
+          <div>
+            <div class="k">出路</div>
+            <h3>近三年毕业硕士 6 名</h3>
+            <div class="bar-out" role="img" aria-label="6 名毕业硕士中，4 名去了工业界，2 名继续读博">
+              <i style="flex:4;background:var(--navy)"></i><i style="flex:2;background:var(--amber)"></i>
+            </div>
+            <div class="legend">
+              <span style="--c:var(--navy)">4 名去工业界（大模型、搜索相关岗位）</span>
+              <span style="--c:var(--amber)">2 名继续读博</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apply">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">04</span><h2>怎么申请</h2></div>
+      <ol class="steps">
+        <li><h3>发送申请邮件</h3><p>附简历和一段论文理解，截止 2026 年 11 月 15 日</p></li>
+        <li><h3>初筛</h3><p>我们阅读材料后筛选</p></li>
+        <li><h3>线上面谈</h3><p>通过初筛的同学安排 30 分钟线上面谈</p></li>
+        <li><h3>通知结果</h3><p>截止后两周内通知</p></li>
+      </ol>
+
+      <div class="mail-box">
+        <div>
+          <h3>邮件里需要包含</h3>
+          <ul>
+            <li>简历（附件）</li>
+            <li>一段 300 字以内的文字，写你对某一篇论文的理解，任何你读过的论文都可以</li>
+          </ul>
+        </div>
+        <div>
+          <div class="note">发送至</div>
+          <div class="addr">qiming-lab@example.com</div>
+          <a class="note" href="mailto:qiming-lab@example.com?subject=%E5%90%AF%E6%98%8E%E8%AE%A1%E7%AE%97%E5%AE%9E%E9%AA%8C%E5%AE%A4%202027%20%E6%8B%9B%E6%96%B0%E7%94%B3%E8%AF%B7">用邮件客户端打开</a>
+        </div>
+      </div>
+
+      <div class="dates" id="openday">
+        <div class="date">
+          <div class="t">开放日</div>
+          <div class="d">11 月 1 日<br>14:00–16:00</div>
+          <p>信息楼 B 区 512，直接过来聊，不用预约。今年仍在 11 月举办（去年改到了 10 月）。</p>
+        </div>
+        <div class="date key">
+          <div class="t">申请截止</div>
+          <div class="d">2026 年<br>11 月 15 日</div>
+          <p>请在截止日前把申请邮件发出。</p>
+        </div>
+        <div class="date">
+          <div class="t">结果通知</div>
+          <div class="d">截止后<br>两周内</div>
+          <p>经过初筛和线上面谈后通知最终结果。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">05</span><h2>常见问题</h2></div>
+      <div class="faq">
+        <details open><summary>跨专业可以申请吗？</summary><p>可以，但入组后需要补一些数学基础。</p></details>
+        <details open><summary>本科实习可以远程吗？</summary><p>可以远程，但每周需要线下来实验室一次。</p></details>
+        <details open><summary>没有发过论文可以吗？</summary><p>可以，我们不要求论文发表经历。</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-no">06</span><h2>联系我们</h2></div>
+      <div class="grid">
+        <div><div class="k">联系人</div><div class="v">林舟<small>博士生，实验室秘书</small></div></div>
+        <div><div class="k">邮箱</div><div class="v" style="word-break:break-all">qiming-lab@example.com<small>申请材料和各类问题都发这里</small></div></div>
+        <div><div class="k">实验室地址</div><div class="v">信息楼 B 区 512<small>城北理工大学信息学院</small></div></div>
+      </div>
+      <div class="final">
+        <p>再次提醒：申请截止 <b>2026 年 11 月 15 日</b></p>
+        <a class="btn" href="#apply">查看申请方式</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">启明计算实验室 · 城北理工大学信息学院</div></footer>
+
+</body>
+</html>

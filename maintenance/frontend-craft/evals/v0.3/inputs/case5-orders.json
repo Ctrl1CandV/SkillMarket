@@ -1,0 +1,685 @@
+{
+ "说明": "小店“慢火咖啡”最近 4 天的订单（示例数据，买家信息已脱敏）。今天是 2026-10-15。",
+ "orders": [
+  {
+   "order_no": "KF2610151333",
+   "created_at": "2026-10-15 21:30",
+   "customer": "王*",
+   "city": "成都 武侯区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    },
+    {
+     "item": "手冲壶 细口 600ml",
+     "price": 199,
+     "qty": 2
+    },
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 1
+    }
+   ],
+   "subtotal": 553,
+   "shipping_fee": 0,
+   "paid": 553,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610151062",
+   "created_at": "2026-10-15 18:24",
+   "customer": "吴*",
+   "city": "成都 武侯区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 1
+    }
+   ],
+   "subtotal": 88,
+   "shipping_fee": 8,
+   "paid": 0,
+   "status": "待付款",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610151173",
+   "created_at": "2026-10-15 16:11",
+   "customer": "朱*",
+   "city": "南京 鼓楼区",
+   "items": [
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 1
+    }
+   ],
+   "subtotal": 72,
+   "shipping_fee": 8,
+   "paid": 80,
+   "status": "退款中",
+   "tracking_no": null,
+   "note": "买家申请退款：收到时滤杯有裂纹"
+  },
+  {
+   "order_no": "KF2610151111",
+   "created_at": "2026-10-15 13:54",
+   "customer": "刘*",
+   "city": "武汉 洪山区",
+   "items": [
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 1
+    },
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 1
+    },
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 2
+    }
+   ],
+   "subtotal": 291,
+   "shipping_fee": 0,
+   "paid": 291,
+   "status": "已发货",
+   "tracking_no": "SF871429624561",
+   "note": null
+  },
+  {
+   "order_no": "KF2610151074",
+   "created_at": "2026-10-15 10:37",
+   "customer": "陈*",
+   "city": "成都 武侯区",
+   "items": [
+    {
+     "item": "V60 陶瓷滤杯 01 号",
+     "price": 129,
+     "qty": 1
+    },
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 2
+    }
+   ],
+   "subtotal": 273,
+   "shipping_fee": 0,
+   "paid": 273,
+   "status": "已完成",
+   "tracking_no": "SF247659959154",
+   "note": null
+  },
+  {
+   "order_no": "KF2610151222",
+   "created_at": "2026-10-15 09:59",
+   "customer": "刘*",
+   "city": "北京 海淀区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 1
+    },
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 2
+    },
+    {
+     "item": "V60 陶瓷滤杯 01 号",
+     "price": 129,
+     "qty": 2
+    }
+   ],
+   "subtotal": 384,
+   "shipping_fee": 0,
+   "paid": 384,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610151888",
+   "created_at": "2026-10-15 09:43",
+   "customer": "黄*",
+   "city": "西安 雁塔区",
+   "items": [
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 268,
+   "shipping_fee": 0,
+   "paid": 268,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610141370",
+   "created_at": "2026-10-14 21:41",
+   "customer": "胡*",
+   "city": "北京 海淀区",
+   "items": [
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 1
+    }
+   ],
+   "subtotal": 19,
+   "shipping_fee": 8,
+   "paid": 27,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：麻烦豆子研磨成手冲粗细"
+  },
+  {
+   "order_no": "KF2610141851",
+   "created_at": "2026-10-14 21:38",
+   "customer": "吴*",
+   "city": "武汉 洪山区",
+   "items": [
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 2
+    },
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 1
+    },
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    }
+   ],
+   "subtotal": 302,
+   "shipping_fee": 0,
+   "paid": 302,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610141777",
+   "created_at": "2026-10-14 21:33",
+   "customer": "李*",
+   "city": "南京 鼓楼区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    }
+   ],
+   "subtotal": 96,
+   "shipping_fee": 8,
+   "paid": 104,
+   "status": "已发货",
+   "tracking_no": "SF844050200750",
+   "note": null
+  },
+  {
+   "order_no": "KF2610141185",
+   "created_at": "2026-10-14 19:52",
+   "customer": "朱*",
+   "city": "苏州 工业园区",
+   "items": [
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 2
+    },
+    {
+     "item": "手冲壶 细口 600ml",
+     "price": 199,
+     "qty": 1
+    }
+   ],
+   "subtotal": 343,
+   "shipping_fee": 0,
+   "paid": 343,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：送朋友的，不要放发票"
+  },
+  {
+   "order_no": "KF2610141740",
+   "created_at": "2026-10-14 17:06",
+   "customer": "胡*",
+   "city": "杭州 西湖区",
+   "items": [
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 2
+    },
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 306,
+   "shipping_fee": 0,
+   "paid": 306,
+   "status": "已完成",
+   "tracking_no": "SF359541867099",
+   "note": null
+  },
+  {
+   "order_no": "KF2610141296",
+   "created_at": "2026-10-14 13:07",
+   "customer": "胡*",
+   "city": "北京 海淀区",
+   "items": [
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 1
+    }
+   ],
+   "subtotal": 59,
+   "shipping_fee": 8,
+   "paid": 67,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：送朋友的，不要放发票"
+  },
+  {
+   "order_no": "KF2610141703",
+   "created_at": "2026-10-14 12:24",
+   "customer": "李*",
+   "city": "广州 天河区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    }
+   ],
+   "subtotal": 96,
+   "shipping_fee": 8,
+   "paid": 104,
+   "status": "已发货",
+   "tracking_no": "SF570604353825",
+   "note": null
+  },
+  {
+   "order_no": "KF2610141666",
+   "created_at": "2026-10-14 11:36",
+   "customer": "黄*",
+   "city": "西安 雁塔区",
+   "items": [
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 1
+    },
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 2
+    }
+   ],
+   "subtotal": 203,
+   "shipping_fee": 0,
+   "paid": 0,
+   "status": "待付款",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610141814",
+   "created_at": "2026-10-14 10:22",
+   "customer": "杨*",
+   "city": "上海 浦东新区",
+   "items": [
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 1
+    }
+   ],
+   "subtotal": 72,
+   "shipping_fee": 8,
+   "paid": 80,
+   "status": "已完成",
+   "tracking_no": "SF935722445643",
+   "note": null
+  },
+  {
+   "order_no": "KF2610141025",
+   "created_at": "2026-10-14 09:13",
+   "customer": "陈*",
+   "city": "苏州 工业园区",
+   "items": [
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 268,
+   "shipping_fee": 0,
+   "paid": 268,
+   "status": "已发货",
+   "tracking_no": "SF909373431185",
+   "note": null
+  },
+  {
+   "order_no": "KF2610141148",
+   "created_at": "2026-10-14 08:46",
+   "customer": "吴*",
+   "city": "广州 天河区",
+   "items": [
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 1
+    },
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 1
+    }
+   ],
+   "subtotal": 91,
+   "shipping_fee": 8,
+   "paid": 99,
+   "status": "已发货",
+   "tracking_no": "SF366866617035",
+   "note": null
+  },
+  {
+   "order_no": "KF2610131555",
+   "created_at": "2026-10-13 21:19",
+   "customer": "徐*",
+   "city": "西安 雁塔区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    }
+   ],
+   "subtotal": 96,
+   "shipping_fee": 8,
+   "paid": 104,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：麻烦豆子研磨成手冲粗细"
+  },
+  {
+   "order_no": "KF2610131407",
+   "created_at": "2026-10-13 21:09",
+   "customer": "周*",
+   "city": "上海 浦东新区",
+   "items": [
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 268,
+   "shipping_fee": 0,
+   "paid": 268,
+   "status": "已发货",
+   "tracking_no": "SF959618935378",
+   "note": null
+  },
+  {
+   "order_no": "KF2610131592",
+   "created_at": "2026-10-13 16:31",
+   "customer": "吴*",
+   "city": "成都 武侯区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    },
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    },
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 1
+    }
+   ],
+   "subtotal": 423,
+   "shipping_fee": 0,
+   "paid": 423,
+   "status": "已发货",
+   "tracking_no": "SF895297559471",
+   "note": null
+  },
+  {
+   "order_no": "KF2610131444",
+   "created_at": "2026-10-13 08:51",
+   "customer": "吴*",
+   "city": "杭州 西湖区",
+   "items": [
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    },
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 1
+    }
+   ],
+   "subtotal": 287,
+   "shipping_fee": 0,
+   "paid": 287,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：麻烦豆子研磨成手冲粗细"
+  },
+  {
+   "order_no": "KF2610121481",
+   "created_at": "2026-10-12 18:25",
+   "customer": "徐*",
+   "city": "南京 鼓楼区",
+   "items": [
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 2
+    },
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 2
+    }
+   ],
+   "subtotal": 230,
+   "shipping_fee": 0,
+   "paid": 230,
+   "status": "已完成",
+   "tracking_no": "SF156347209183",
+   "note": null
+  },
+  {
+   "order_no": "KF2610121136",
+   "created_at": "2026-10-12 17:57",
+   "customer": "刘*",
+   "city": "深圳 南山区",
+   "items": [
+    {
+     "item": "冷萃咖啡液 330ml × 6",
+     "price": 72,
+     "qty": 1
+    }
+   ],
+   "subtotal": 72,
+   "shipping_fee": 8,
+   "paid": 80,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": "买家留言：麻烦豆子研磨成手冲粗细"
+  },
+  {
+   "order_no": "KF2610121518",
+   "created_at": "2026-10-12 12:13",
+   "customer": "周*",
+   "city": "北京 海淀区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 1
+    },
+    {
+     "item": "手冲壶 细口 600ml",
+     "price": 199,
+     "qty": 2
+    }
+   ],
+   "subtotal": 486,
+   "shipping_fee": 0,
+   "paid": 486,
+   "status": "已发货",
+   "tracking_no": "SF166047156434",
+   "note": null
+  },
+  {
+   "order_no": "KF2610121037",
+   "created_at": "2026-10-12 09:46",
+   "customer": "李*",
+   "city": "成都 武侯区",
+   "items": [
+    {
+     "item": "挂耳咖啡 混合装 20 包",
+     "price": 59,
+     "qty": 2
+    },
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 2
+    }
+   ],
+   "subtotal": 294,
+   "shipping_fee": 0,
+   "paid": 294,
+   "status": "待发货",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610121259",
+   "created_at": "2026-10-12 09:36",
+   "customer": "李*",
+   "city": "上海 浦东新区",
+   "items": [
+    {
+     "item": "咖啡滤纸 100 张",
+     "price": 19,
+     "qty": 1
+    }
+   ],
+   "subtotal": 19,
+   "shipping_fee": 8,
+   "paid": 0,
+   "status": "待付款",
+   "tracking_no": null,
+   "note": null
+  },
+  {
+   "order_no": "KF2610121099",
+   "created_at": "2026-10-12 08:53",
+   "customer": "徐*",
+   "city": "杭州 西湖区",
+   "items": [
+    {
+     "item": "V60 陶瓷滤杯 01 号",
+     "price": 129,
+     "qty": 1
+    },
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 397,
+   "shipping_fee": 0,
+   "paid": 397,
+   "status": "退款中",
+   "tracking_no": null,
+   "note": "买家申请退款：收到时滤杯有裂纹"
+  },
+  {
+   "order_no": "KF2610121000",
+   "created_at": "2026-10-12 08:44",
+   "customer": "朱*",
+   "city": "上海 浦东新区",
+   "items": [
+    {
+     "item": "磨豆机 手摇 锥刀",
+     "price": 268,
+     "qty": 1
+    }
+   ],
+   "subtotal": 268,
+   "shipping_fee": 0,
+   "paid": 268,
+   "status": "已完成",
+   "tracking_no": "SF583345511130",
+   "note": null
+  },
+  {
+   "order_no": "KF2610121629",
+   "created_at": "2026-10-12 08:26",
+   "customer": "王*",
+   "city": "广州 天河区",
+   "items": [
+    {
+     "item": "手冲咖啡豆 · 云南保山小粒 500g",
+     "price": 96,
+     "qty": 1
+    },
+    {
+     "item": "手冲咖啡豆 · 埃塞俄比亚耶加雪菲 250g",
+     "price": 88,
+     "qty": 2
+    },
+    {
+     "item": "手冲壶 细口 600ml",
+     "price": 199,
+     "qty": 1
+    }
+   ],
+   "subtotal": 471,
+   "shipping_fee": 0,
+   "paid": 0,
+   "status": "待付款",
+   "tracking_no": null,
+   "note": null
+  }
+ ]
+}

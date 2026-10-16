@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 论文阅读清单</title>
+<style>
+:root{
+  --bg:#f5f2ea;
+  --surface:#fbf9f4;
+  --tint:#eee9dd;
+  --ink:#1d1f22;
+  --ink-2:#44474c;
+  --muted:#686660;
+  --line:#ddd7c9;
+  --line-strong:#c9c1ae;
+  --accent:#a3401f;
+  --accent-tint:#f3e3d9;
+  --done:#3f6450;
+  --todo:#8b877d;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --serif:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+  --mono:"DejaVu Sans Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:6px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:20px;--s5:32px;--s6:56px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16181b;--surface:#1c1f23;--tint:#24282d;--ink:#ebe8e1;--ink-2:#c4c1ba;--muted:#9b988f;
+    --line:#2f3338;--line-strong:#454a51;--accent:#e58a68;--accent-tint:#3a2620;--done:#8fbea2;--todo:#8a877f;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);font-variant-numeric:tabular-nums}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+
+/* ---------- header ---------- */
+.top{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--line)}
+.eyebrow{margin:0 0 var(--s2);font-size:13px;color:var(--muted);letter-spacing:.06em}
+h1{margin:0;font:700 34px/1.25 var(--serif);letter-spacing:.01em}
+.overview{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--s4) var(--s5);margin-top:var(--s4)}
+.overview p{margin:0;max-width:40em;color:var(--ink-2)}
+.tally{min-width:300px;flex:0 1 380px}
+.tally-nums{display:flex;gap:var(--s4);margin-bottom:var(--s2);font-size:13px;color:var(--muted)}
+.tally-nums b{display:block;font:700 26px/1.1 var(--sans);color:var(--ink)}
+.tally-nums .is-reading b{color:var(--accent)}
+.tally-nums .is-done b{color:var(--done)}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--line)}
+.bar i{display:block;height:100%}
+.bar .b-done{background:var(--done)}
+.bar .b-reading{background:var(--accent)}
+.bar .b-todo{background:transparent}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:252px minmax(0,1fr);gap:var(--s6);padding:var(--s5) 0 var(--s6)}
+.filters{position:sticky;top:var(--s4);align-self:start;display:flex;flex-direction:column;gap:var(--s5)}
+.f-title{margin:0 0 var(--s2);font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+
+.search{position:relative}
+.search input{width:100%;height:42px;padding:0 36px 0 12px;border:1px solid var(--line-strong);border-radius:var(--r);background:var(--surface)}
+.search input::placeholder{color:var(--muted)}
+.search input:focus-visible{outline-offset:0;border-color:var(--accent)}
+.search input:not(:placeholder-shown)+kbd{display:none}
+.search kbd{position:absolute;right:10px;top:11px;font:12px/18px var(--mono);color:var(--muted);border:1px solid var(--line-strong);border-radius:4px;padding:0 5px}
+
+.opts{list-style:none;margin:0;padding:0}
+.opt{display:flex;align-items:center;gap:var(--s2);width:100%;min-height:38px;padding:6px 10px;border:0;border-radius:var(--r);background:none;text-align:left;cursor:pointer;color:var(--ink-2)}
+.opt:hover{background:var(--tint)}
+.opt[aria-pressed="true"]{background:var(--accent-tint);color:var(--ink)}
+.opt[aria-pressed="true"] .opt-name{font-weight:700}
+.opt-name{flex:1}
+.opt-count{font-size:13px;color:var(--muted)}
+.opt .glyph{flex:none}
+
+.topic .opt{flex-wrap:wrap;row-gap:4px;padding-block:8px}
+.topic .bar{flex-basis:100%;height:4px;margin-left:0}
+
+.sortrow{display:flex;flex-direction:column;gap:var(--s3)}
+.sortrow select{width:100%;height:40px;padding:0 10px;border:1px solid var(--line-strong);border-radius:var(--r);background:var(--surface)}
+.check{display:flex;align-items:center;gap:var(--s2);min-height:32px;cursor:pointer;color:var(--ink-2)}
+.check input{width:18px;height:18px;accent-color:var(--accent);margin:0}
+
+/* ---------- results ---------- */
+.resultbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3);min-height:40px;padding-bottom:var(--s3);border-bottom:1px solid var(--ink)}
+.resultbar .count{font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 6px 0 10px;border:1px solid var(--line-strong);border-radius:14px;background:var(--surface);font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip span[aria-hidden]{color:var(--muted);font-size:15px;line-height:1}
+.linkbtn{border:0;background:none;padding:4px 2px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+
+.group{margin-top:var(--s5)}
+.group-head{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:var(--s1)}
+.group-head h2{margin:0;font:700 20px/1.3 var(--serif)}
+.group-head .n{font-size:14px;color:var(--muted)}
+.group-head .hint{margin-left:auto;font-size:13px;color:var(--muted)}
+
+.list{list-style:none;margin:0;padding:0}
+.paper{display:grid;grid-template-columns:22px minmax(0,1fr) 150px;gap:0 var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--line)}
+.paper .glyph{margin-top:5px}
+.title{margin:0;font:700 18px/1.4 var(--serif);letter-spacing:.005em}
+.title a{text-decoration:none}
+.title a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.paper.is-done .title{color:var(--ink-2)}
+.byline{margin:var(--s1) 0 0;font-size:13.5px;color:var(--muted)}
+.byline .venue{color:var(--ink-2)}
+.byline .venue.unknown{color:var(--muted);font-style:normal;border-bottom:1px dotted var(--muted)}
+.abs{margin:var(--s2) 0 0;font-size:14px;line-height:1.6;color:var(--ink-2);max-width:68ch}
+.note{max-width:68ch;margin:var(--s3) 0 0;padding:8px 12px;border-left:3px solid var(--line-strong);background:var(--tint);border-radius:0 var(--r) var(--r) 0;font-size:14px;line-height:1.65;color:var(--ink)}
+.paper.is-reading .note{border-left-color:var(--accent)}
+.note-label{display:block;font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:2px}
+
+.side{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2);padding-top:3px;font-size:13px;color:var(--muted)}
+.state{font-weight:700;font-size:13px}
+.is-reading .state{color:var(--accent)}
+.is-done .state{color:var(--done)}
+.is-todo .state{color:var(--ink-2)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{padding:1px 8px;border-radius:10px;background:var(--tint);color:var(--ink-2);font-size:12.5px;border:0;cursor:pointer}
+.tag:hover{background:var(--accent-tint)}
+.tag.on{background:var(--accent-tint);color:var(--accent);font-weight:700}
+.arxiv{font:12.5px/1.4 var(--mono);color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.arxiv:hover{color:var(--accent);border-color:var(--accent)}
+
+.glyph{width:16px;height:16px;display:block}
+.g-todo circle{fill:none;stroke:var(--todo);stroke-width:1.6}
+.g-reading .ring{fill:none;stroke:var(--accent);stroke-width:1.6}
+.g-reading .half{fill:var(--accent)}
+.g-done circle{fill:var(--done)}
+.g-done path{fill:none;stroke:var(--surface);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.g-all circle{fill:none;stroke:var(--muted);stroke-width:1.6;stroke-dasharray:2.4 2.2}
+
+.empty{margin-top:var(--s5);padding:var(--s5) var(--s4);border:1px dashed var(--line-strong);border-radius:var(--r);text-align:center;color:var(--ink-2)}
+.empty p{margin:0 0 var(--s3)}
+
+footer{border-top:1px solid var(--line);padding:var(--s4) 0 var(--s5);font-size:13px;color:var(--muted)}
+footer p{margin:0;max-width:60em}
+
+/* ---------- narrow ---------- */
+@media (max-width:860px){
+  .wrap{padding:0 18px}
+  .top{padding:var(--s5) 0 var(--s4)}
+  h1{font-size:27px}
+  .tally{min-width:0;flex:1 1 100%}
+  .shell{grid-template-columns:1fr;gap:var(--s4);padding-top:var(--s4)}
+  .filters{position:static;gap:var(--s3)}
+  .filters .f-title{margin-bottom:6px}
+  .sort-title{display:none}
+  .topic .opt-count .full{display:none}
+  .search kbd{display:none}
+  .opts.row{display:flex;flex-wrap:wrap;gap:6px}
+  .opts.row li{flex:none}
+  .opts.row .opt{width:auto;min-height:36px;padding:4px 10px;gap:6px;border:1px solid var(--line);background:var(--surface)}
+  .opts.row .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint)}
+  #statusOpts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+  #statusOpts .opt{width:100%;justify-content:center;gap:4px;padding:4px 6px}
+  #statusOpts .opt-name{flex:none}
+  .topic .opt{flex-wrap:nowrap}
+  .topic .bar{display:none}
+  .sortrow{flex-direction:row;align-items:center;flex-wrap:wrap}
+  .sortrow select{width:auto;flex:1 1 160px}
+  .paper{grid-template-columns:18px minmax(0,1fr);gap:0 var(--s3)}
+  .side{grid-column:2;flex-direction:row;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3);padding-top:var(--s3)}
+  .side .added{order:3}
+  .group-head .hint{display:none}
+  .title{font-size:17px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .opt,.chip,.tag{transition:background-color .12s,border-color .12s}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">AGENT 方向 · 我的阅读清单</p>
+    <h1>下一篇读什么</h1>
+    <div class="overview">
+      <p id="lede">按方向筛选、看读到了哪里。在读的放在最前面，接着是还没开始的，已读的收在最后。</p>
+      <div class="tally" id="tally" aria-label="阅读进度"></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="shell">
+  <aside class="filters" aria-label="筛选">
+    <div class="search">
+      <label class="f-title" for="q">搜索</label>
+      <div style="position:relative">
+        <input id="q" type="search" placeholder="题名、作者、笔记…" autocomplete="off">
+        <kbd aria-hidden="true">/</kbd>
+      </div>
+    </div>
+    <section>
+      <h2 class="f-title" id="h-status">阅读状态</h2>
+      <ul class="opts row" id="statusOpts" aria-labelledby="h-status"></ul>
+    </section>
+    <section class="topic">
+      <h2 class="f-title" id="h-topic">方向</h2>
+      <ul class="opts row" id="topicOpts" aria-labelledby="h-topic"></ul>
+    </section>
+    <section>
+      <h2 class="f-title sort-title"><label for="sort">排列</label></h2>
+      <div class="sortrow">
+        <select id="sort">
+          <option value="added">最近加入在前</option>
+          <option value="year-desc">发表年份：新到旧</option>
+          <option value="year-asc">发表年份：旧到新</option>
+        </select>
+        <label class="check"><input type="checkbox" id="group" checked> 按阅读状态分组</label>
+      </div>
+    </section>
+  </aside>
+
+  <main id="main">
+    <div class="resultbar" id="resultbar" aria-live="polite"></div>
+    <div id="results"></div>
+  </main>
+</div></div>
+
+<footer>
+  <div class="wrap"><p id="source"></p></div>
+</footer>
+
+<script>
+const DATA = {"说明":"论文标题、作者、年份、摘要首句、arXiv 链接来自 arXiv API（2026-10-14 获取）；venue 为 null 表示未确认正式发表处；topics、my_status、my_note、added_on 是用户自己的阅读记录。","papers":[{"arxiv_id":"2201.11903","url":"https://arxiv.org/abs/2201.11903","title":"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models","authors":["Jason Wei","Xuezhi Wang","Dale Schuurmans","Maarten Bosma","Brian Ichter","Fei Xia","Ed Chi","Quoc Le","Denny Zhou"],"year":2022,"venue":"NeurIPS 2022","topics":["推理"],"abstract_first_sentence":"We explore how generating a chain of thought -- a series of intermediate reasoning steps -- significantly improves the ability of large language models to perform complex reasoning.","my_status":"已读","my_note":"提示里给几步推理示例就能明显提升算术题，基线必读。","added_on":"2026-09-08"},{"arxiv_id":"2210.03629","url":"https://arxiv.org/abs/2210.03629","title":"ReAct: Synergizing Reasoning and Acting in Language Models","authors":["Shunyu Yao","Jeffrey Zhao","Dian Yu","Nan Du","Izhak Shafran","Karthik Narasimhan","Yuan Cao"],"year":2022,"venue":"ICLR 2023","topics":["推理","工具"],"abstract_first_sentence":"While large language models (LLMs) have demonstrated impressive capabilities across tasks in language understanding and interactive decision making, their abilities for reasoning (e.g.","my_status":"已读","my_note":"推理和行动交替进行；HotpotQA 上靠维基 API 减少幻觉。","added_on":"2026-09-10"},{"arxiv_id":"2302.04761","url":"https://arxiv.org/abs/2302.04761","title":"Toolformer: Language Models Can Teach Themselves to Use Tools","authors":["Timo Schick","Jane Dwivedi-Yu","Roberto Dessì","Roberta Raileanu","Maria Lomeli","Luke Zettlemoyer","Nicola Cancedda","Thomas Scialom"],"year":2023,"venue":"NeurIPS 2023","topics":["工具"],"abstract_first_sentence":"Language models (LMs) exhibit remarkable abilities to solve new tasks from just a few examples or textual instructions, especially at scale.","my_status":"未读","my_note":null,"added_on":"2026-09-15"},{"arxiv_id":"2303.11366","url":"https://arxiv.org/abs/2303.11366","title":"Reflexion: Language Agents with Verbal Reinforcement Learning","authors":["Noah Shinn","Federico Cassano","Edward Berman","Ashwin Gopinath","Karthik Narasimhan","Shunyu Yao"],"year":2023,"venue":"NeurIPS 2023","topics":["推理","记忆"],"abstract_first_sentence":"Large language models (LLMs) have been increasingly used to interact with external environments (e.g., games, compilers, APIs) as goal-driven agents.","my_status":"在读","my_note":"读到第 4 节，反思文本存进记忆再重试，想对比 Self-Refine。","added_on":"2026-09-18"},{"arxiv_id":"2303.17651","url":"https://arxiv.org/abs/2303.17651","title":"Self-Refine: Iterative Refinement with Self-Feedback","authors":["Aman Madaan","Niket Tandon","Prakhar Gupta","Skyler Hallinan","Luyu Gao","Sarah Wiegreffe","Uri Alon","Nouha Dziri","Shrimai Prabhumoye","Yiming Yang","Shashank Gupta","Bodhisattwa Prasad Majumder","Katherine Hermann","Sean Welleck","Amir Yazdanbakhsh","Peter Clark"],"year":2023,"venue":"NeurIPS 2023","topics":["推理"],"abstract_first_sentence":"Like humans, large language models (LLMs) do not always generate the best output on their first try.","my_status":"已读","my_note":"同一模型生成、反馈、改写三步循环，不需要额外训练。","added_on":"2026-09-20"},{"arxiv_id":"2304.03442","url":"https://arxiv.org/abs/2304.03442","title":"Generative Agents: Interactive Simulacra of Human Behavior","authors":["Joon Sung Park","Joseph C. O'Brien","Carrie J. Cai","Meredith Ringel Morris","Percy Liang","Michael S. Bernstein"],"year":2023,"venue":"UIST 2023","topics":["记忆"],"abstract_first_sentence":"Believable proxies of human behavior can empower interactive applications ranging from immersive environments to rehearsal spaces for interpersonal communication to prototyping tools.","my_status":"未读","my_note":null,"added_on":"2026-09-22"},{"arxiv_id":"2305.10601","url":"https://arxiv.org/abs/2305.10601","title":"Tree of Thoughts: Deliberate Problem Solving with Large Language Models","authors":["Shunyu Yao","Dian Yu","Jeffrey Zhao","Izhak Shafran","Thomas L. Griffiths","Yuan Cao","Karthik Narasimhan"],"year":2023,"venue":"NeurIPS 2023","topics":["推理"],"abstract_first_sentence":"Language models are increasingly being deployed for general problem solving across a wide range of tasks, but are still confined to token-level, left-to-right decision-making processes during inference.","my_status":"未读","my_note":null,"added_on":"2026-09-25"},{"arxiv_id":"2305.16291","url":"https://arxiv.org/abs/2305.16291","title":"Voyager: An Open-Ended Embodied Agent with Large Language Models","authors":["Guanzhi Wang","Yuqi Xie","Yunfan Jiang","Ajay Mandlekar","Chaowei Xiao","Yuke Zhu","Linxi Fan","Anima Anandkumar"],"year":2023,"venue":null,"topics":["具身","工具"],"abstract_first_sentence":"We introduce Voyager, the first LLM-powered embodied lifelong learning agent in Minecraft that continuously explores the world, acquires diverse skills, and makes novel discoveries without human intervention.","my_status":"未读","my_note":null,"added_on":"2026-09-27"},{"arxiv_id":"2308.03688","url":"https://arxiv.org/abs/2308.03688","title":"AgentBench: Evaluating LLMs as Agents","authors":["Xiao Liu","Hao Yu","Hanchen Zhang","Yifan Xu","Xuanyu Lei","Hanyu Lai","Yu Gu","Hangliang Ding","Kaiwen Men","Kejuan Yang","Shudan Zhang","Xiang Deng","Aohan Zeng","Zhengxiao Du","Chenhui Zhang","Sheng Shen","Tianjun Zhang","Yu Su","Huan Sun","Minlie Huang","Yuxiao Dong","Jie Tang"],"year":2023,"venue":"ICLR 2024","topics":["评测"],"abstract_first_sentence":"The potential of Large Language Model (LLM) as agents has been widely acknowledged recently.","my_status":"未读","my_note":null,"added_on":"2026-10-02"},{"arxiv_id":"2308.11432","url":"https://arxiv.org/abs/2308.11432","title":"A Survey on Large Language Model based Autonomous Agents","authors":["Lei Wang","Chen Ma","Xueyang Feng","Zeyu Zhang","Hao Yang","Jingsen Zhang","Zhiyuan Chen","Jiakai Tang","Xu Chen","Yankai Lin","Wayne Xin Zhao","Zhewei Wei","Ji-Rong Wen"],"year":2023,"venue":"Frontiers of Computer Science 2024","topics":["综述"],"abstract_first_sentence":"Autonomous agents have long been a prominent research focus in both academic and industry communities.","my_status":"在读","my_note":"按“构建—应用—评测”三部分组织，先读构建部分。","added_on":"2026-10-05"},{"arxiv_id":"2310.06770","url":"https://arxiv.org/abs/2310.06770","title":"SWE-bench: Can Language Models Resolve Real-World GitHub Issues?","authors":["Carlos E. Jimenez","John Yang","Alexander Wettig","Shunyu Yao","Kexin Pei","Ofir Press","Karthik Narasimhan"],"year":2023,"venue":"ICLR 2024","topics":["评测"],"abstract_first_sentence":"Language models have outpaced our ability to evaluate them effectively, but for their future development it is essential to study the frontier of their capabilities.","my_status":"未读","my_note":null,"added_on":"2026-10-08"},{"arxiv_id":"2310.08560","url":"https://arxiv.org/abs/2310.08560","title":"MemGPT: Towards LLMs as Operating Systems","authors":["Charles Packer","Sarah Wooders","Kevin Lin","Vivian Fang","Shishir G. Patil","Ion Stoica","Joseph E. Gonzalez"],"year":2023,"venue":null,"topics":["记忆"],"abstract_first_sentence":"Large language models (LLMs) have revolutionized AI, but are constrained by limited context windows, hindering their utility in tasks like extended conversations and document analysis.","my_status":"在读","my_note":"把上下文当内存分层管理，读到 2.3。","added_on":"2026-10-11"}]};
+
+const STATUS = [
+  {key:'在读', cls:'reading', hint:'从上次停下的地方接着读'},
+  {key:'未读', cls:'todo', hint:'还没开始，从这里挑下一篇'},
+  {key:'已读', cls:'done', hint:'读完的，留着回查'}
+];
+const TOPIC_ORDER = ['推理','工具','记忆','具身','评测','综述'];
+const papers = DATA.papers;
+const state = {q:'', status:'all', topic:'all', sort:'added', group:true};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clsOf = st => (STATUS.find(s => s.key === st) || STATUS[1]).cls;
+
+function glyph(cls){
+  if (cls === 'done') return '<svg class="glyph g-done" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5"/><path d="M4.6 8.3l2.2 2.2 4.4-4.6"/></svg>';
+  if (cls === 'reading') return '<svg class="glyph g-reading" viewBox="0 0 16 16" aria-hidden="true"><circle class="ring" cx="8" cy="8" r="6.8"/><path class="half" d="M8 1.2a6.8 6.8 0 0 1 0 13.6z"/></svg>';
+  if (cls === 'all') return '<svg class="glyph g-all" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8"/></svg>';
+  return '<svg class="glyph g-todo" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8"/></svg>';
+}
+function bar(list){
+  const n = list.length || 1;
+  const c = k => list.filter(p => p.my_status === k).length;
+  return `<span class="bar" aria-hidden="true"><i class="b-done" style="width:${c('已读')/n*100}%"></i><i class="b-reading" style="width:${c('在读')/n*100}%"></i></span>`;
+}
+const countBy = (list, st) => list.filter(p => p.my_status === st).length;
+
+/* ---------- static parts ---------- */
+function renderTally(){
+  const d = countBy(papers,'已读'), r = countBy(papers,'在读'), t = countBy(papers,'未读');
+  $('#tally').innerHTML = `
+    <div class="tally-nums">
+      <span class="is-done"><b>${d}</b>已读</span>
+      <span class="is-reading"><b>${r}</b>在读</span>
+      <span><b>${t}</b>未读</span>
+      <span><b>${papers.length}</b>篇合计</span>
+    </div>${bar(papers)}`;
+  $('#source').textContent = '数据说明：' + DATA['说明'];
+}
+
+function renderFilters(){
+  const sOpts = [{key:'all', label:'全部', cls:'all', n:papers.length}]
+    .concat(STATUS.map(s => ({key:s.key, label:s.key, cls:s.cls, n:countBy(papers, s.key)})));
+  $('#statusOpts').innerHTML = sOpts.map(o => `<li><button type="button" class="opt" data-status="${o.key}" aria-pressed="${state.status===o.key}">
+    ${glyph(o.cls)}<span class="opt-name">${o.label}</span><span class="opt-count">${o.n}</span></button></li>`).join('');
+
+  const topics = TOPIC_ORDER.filter(t => papers.some(p => p.topics.includes(t)))
+    .concat([...new Set(papers.flatMap(p => p.topics))].filter(t => !TOPIC_ORDER.includes(t)));
+  const tAll = `<li><button type="button" class="opt" data-topic="all" aria-pressed="${state.topic==='all'}"><span class="opt-name">全部方向</span><span class="opt-count">${papers.length}</span></button></li>`;
+  $('#topicOpts').innerHTML = tAll + topics.map(t => {
+    const list = papers.filter(p => p.topics.includes(t));
+    const done = countBy(list,'已读');
+    return `<li><button type="button" class="opt" data-topic="${esc(t)}" aria-pressed="${state.topic===t}"
+      aria-label="${esc(t)}，共 ${list.length} 篇，已读 ${done} 篇，在读 ${countBy(list,'在读')} 篇">
+      <span class="opt-name">${esc(t)}</span><span class="opt-count">${done}/${list.length}<span class="full"> 已读</span></span>${bar(list)}</button></li>`;
+  }).join('');
+}
+
+/* ---------- list ---------- */
+function matches(p){
+  if (state.status !== 'all' && p.my_status !== state.status) return false;
+  if (state.topic !== 'all' && !p.topics.includes(state.topic)) return false;
+  const q = state.q.trim().toLowerCase();
+  if (!q) return true;
+  const hay = [p.title, p.authors.join(' '), p.my_note || '', p.abstract_first_sentence, p.arxiv_id, p.venue || '', p.topics.join(' ')].join(' ').toLowerCase();
+  return q.split(/\s+/).every(w => hay.includes(w));
+}
+function sorter(a, b){
+  if (state.sort === 'year-desc') return b.year - a.year || b.added_on.localeCompare(a.added_on);
+  if (state.sort === 'year-asc') return a.year - b.year || a.added_on.localeCompare(b.added_on);
+  return b.added_on.localeCompare(a.added_on);
+}
+function authors(list){
+  if (list.length <= 3) return list.map(esc).join(', ');
+  return list.slice(0,3).map(esc).join(', ') + ` 等 ${list.length} 人`;
+}
+function addedLabel(d){
+  const [y,m,day] = d.split('-').map(Number);
+  return `${m} 月 ${day} 日加入`;
+}
+function paperHTML(p){
+  const cls = clsOf(p.my_status);
+  const venue = p.venue
+    ? `<span class="venue">${esc(p.venue)}</span>`
+    : `<span class="venue unknown" title="还没确认正式发表处">发表处未确认</span>`;
+  const note = p.my_note
+    ? `<p class="note"><span class="note-label">${p.my_status === '在读' ? '读到哪儿' : '我的记录'}</span>${esc(p.my_note)}</p>` : '';
+  const tags = p.topics.map(t => `<button type="button" class="tag${state.topic===t?' on':''}" data-topic="${esc(t)}" aria-label="只看${esc(t)}方向">${esc(t)}</button>`).join('');
+  return `<li class="paper is-${cls}">
+    ${glyph(cls)}
+    <div class="body">
+      <h3 class="title" lang="en"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a></h3>
+      <p class="byline"><span lang="en">${authors(p.authors)}</span> · ${p.year} · ${venue}</p>
+      <p class="abs" lang="en">${esc(p.abstract_first_sentence)}${/[.?!]$/.test(p.abstract_first_sentence.trim())?'':'<span title="arXiv 摘要首句在此截断" aria-label="（原文截断）"> …</span>'}</p>
+      ${note}
+    </div>
+    <div class="side">
+      <span class="state">${esc(p.my_status)}</span>
+      <span class="tags">${tags}</span>
+      <a class="arxiv" href="${esc(p.url)}" target="_blank" rel="noopener" aria-label="在 arXiv 打开 ${esc(p.arxiv_id)}">arXiv ${esc(p.arxiv_id)}</a>
+      <span class="added">${addedLabel(p.added_on)}</span>
+    </div>
+  </li>`;
+}
+
+function renderList(){
+  const hits = papers.filter(matches).sort(sorter);
+  const active = [];
+  if (state.status !== 'all') active.push({k:'status', label:'状态：' + state.status});
+  if (state.topic !== 'all') active.push({k:'topic', label:'方向：' + state.topic});
+  if (state.q.trim()) active.push({k:'q', label:'搜索：“' + state.q.trim() + '”'});
+
+  $('#resultbar').innerHTML =
+    `<span><span class="count">${hits.length}</span> / ${papers.length} 篇</span>` +
+    active.map(a => `<button type="button" class="chip" data-clear="${a.k}" aria-label="移除条件 ${esc(a.label)}">${esc(a.label)}<span aria-hidden="true">×</span></button>`).join('') +
+    (active.length > 1 ? `<button type="button" class="linkbtn" data-clear="all">清除全部</button>` : '');
+
+  const box = $('#results');
+  if (!hits.length){
+    box.innerHTML = `<div class="empty"><p>没有符合这些条件的论文。</p>
+      <p style="font-size:14px;color:var(--muted)">${active.map(a => esc(a.label)).join('，')}</p>
+      <button type="button" class="linkbtn" data-clear="all">清除筛选，看全部 ${papers.length} 篇</button></div>`;
+    return;
+  }
+  if (state.group){
+    box.innerHTML = STATUS.map(s => {
+      const g = hits.filter(p => p.my_status === s.key);
+      if (!g.length) return '';
+      return `<section class="group" aria-labelledby="g-${s.cls}">
+        <div class="group-head"><h2 id="g-${s.cls}">${s.key}</h2><span class="n">${g.length} 篇</span><span class="hint">${s.hint}</span></div>
+        <ul class="list">${g.map(paperHTML).join('')}</ul></section>`;
+    }).join('');
+  } else {
+    box.innerHTML = `<ul class="list" style="margin-top:4px">${hits.map(paperHTML).join('')}</ul>`;
+  }
+}
+
+function render(){ renderFilters(); renderList(); }
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-status],[data-topic],[data-clear]');
+  if (!t) return;
+  if (t.dataset.status) state.status = t.dataset.status;
+  else if (t.dataset.topic) state.topic = (state.topic === t.dataset.topic && t.dataset.topic !== 'all' && t.classList.contains('opt')) ? 'all' : t.dataset.topic;
+  else {
+    const k = t.dataset.clear;
+    if (k === 'all' || k === 'status') state.status = 'all';
+    if (k === 'all' || k === 'topic') state.topic = 'all';
+    if (k === 'all' || k === 'q') { state.q = ''; $('#q').value = ''; }
+  }
+  const focusKey = t.dataset.status ? `[data-status="${t.dataset.status}"]` : (t.classList.contains('opt') ? `.opt[data-topic="${t.dataset.topic}"]` : null);
+  render();
+  if (focusKey){ const el = document.querySelector(focusKey); if (el) el.focus(); }
+  else if (t.dataset.clear) $('#q').focus();
+});
+$('#q').addEventListener('input', e => { state.q = e.target.value; renderList(); });
+$('#sort').addEventListener('change', e => { state.sort = e.target.value; renderList(); });
+$('#group').addEventListener('change', e => { state.group = e.target.checked; renderList(); });
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); $('#q').focus(); }
+  if (e.key === 'Escape' && document.activeElement === $('#q') && state.q) { state.q = ''; $('#q').value = ''; renderList(); }
+});
+
+renderTally();
+render();
+</script>
+</body>
+</html>

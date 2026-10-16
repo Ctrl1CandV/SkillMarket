@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent 论文清单</title>
+<style>
+:root{
+  --sans: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Noto Serif SC", SimSun, serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+  --bg:#f5f3ee; --surface:#fffefb; --line:#e2ddd2; --line-strong:#cfc8ba;
+  --text:#22211d; --muted:#6a655b; --faint:#8f897d;
+  --accent:#2d4f8e; --accent-soft:#e8edf6;
+  --read:#4f6d58; --reading:#b06f12; --unread:#7d776b;
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:20px; --s5:32px;
+  --r1:4px; --r2:8px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 var(--sans);line-break:strict}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- 顶栏 ---------- */
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding:var(--s3) var(--s4);display:flex;align-items:center;gap:var(--s4)}
+.top h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.top .tally{color:var(--muted);font-size:13px;white-space:nowrap}
+.tally b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.search{margin-left:auto;position:relative;flex:0 1 320px}
+.search input{width:100%;height:34px;padding:0 34px 0 var(--s3);border:1px solid var(--line-strong);border-radius:var(--r1);background:var(--surface)}
+.search input::placeholder{color:var(--faint)}
+.search kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font:12px var(--mono);color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:0 5px;background:var(--bg)}
+
+/* ---------- 工作区 ---------- */
+.app{max-width:1280px;margin:0 auto;padding:var(--s4);display:grid;grid-template-columns:210px minmax(0,1fr) 380px;gap:var(--s4);align-items:start}
+
+/* 侧栏：方向与状态 */
+.side{position:sticky;top:76px;display:flex;flex-direction:column;gap:var(--s4)}
+.side h2,.list-head h2{margin:0 0 var(--s2);font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.topics{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.topic{width:100%;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:var(--s2);row-gap:3px;align-items:center;text-align:left;padding:7px var(--s2);border:0;border-radius:var(--r1);background:none;cursor:pointer}
+.topic:hover{background:#ece8df}
+.topic[aria-pressed="true"]{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.topic .name{font-weight:600}
+.topic .n{font:12px var(--mono);color:var(--muted)}
+.topic .left{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.dots{display:flex;flex-wrap:wrap;gap:3px;grid-column:1/-1}
+.status-seg{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line-strong);border-radius:var(--r1);overflow:hidden;background:var(--surface)}
+.status-seg button{border:0;border-left:1px solid var(--line);background:none;padding:6px 0;cursor:pointer;font-size:13px;white-space:nowrap}
+.status-seg button:first-child{border-left:0}
+.status-seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.legend{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.legend span{display:flex;align-items:center;gap:6px}
+.source{font-size:12px;color:var(--faint);line-height:1.6}
+
+/* 状态记号：实心=已读，半实心=在读，空心=未读 */
+.mk{--c:var(--unread);display:inline-block;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--c);flex:none;vertical-align:middle}
+.mk.read{--c:var(--read);background:var(--c)}
+.mk.reading{--c:var(--reading);background:linear-gradient(90deg,var(--c) 50%,transparent 50%)}
+.mk.lg{width:12px;height:12px;border-width:2px}
+.dots .mk{width:8px;height:8px;border-width:1.25px}
+
+/* 列表 */
+.list-head{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:var(--s2)}
+.list-head .count{color:var(--muted);font-size:13px}
+.list-head .count b{color:var(--text);font-variant-numeric:tabular-nums}
+.list-head .clear{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font-size:13px;text-decoration:underline;text-underline-offset:2px}
+.sort{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sort select{border:1px solid var(--line-strong);border-radius:var(--r1);background:var(--surface);padding:3px 6px;font-size:13px}
+.group{margin-top:var(--s4)}
+.group:first-of-type{margin-top:0}
+.group h3{display:flex;align-items:center;gap:var(--s2);margin:0 0 var(--s1);padding:0 var(--s3) var(--s1);font-size:13px;font-weight:600;border-bottom:1px solid var(--line)}
+.group h3 .hint{font-weight:400;color:var(--muted)}
+.rows{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r2)}
+.row{border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row-btn{width:100%;display:grid;grid-template-columns:14px minmax(0,1fr) auto;column-gap:var(--s3);row-gap:2px;align-items:baseline;padding:10px var(--s3);border:0;background:none;text-align:left;cursor:pointer}
+.row-btn:hover{background:#faf8f3}
+.row.sel>.row-btn{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.row:first-child.sel>.row-btn{border-radius:var(--r2) var(--r2) 0 0}
+.row-btn .mk{align-self:center;grid-row:1}
+.t{font-size:14.5px;line-height:1.4;color:var(--text);overflow-wrap:anywhere}
+.t strong{font-weight:700}
+.t .rest{color:#45423b}
+.meta{grid-column:2;font-size:12.5px;color:var(--muted)}
+.meta .y{font-variant-numeric:tabular-nums}
+.meta .unk{color:var(--faint)}
+.tags{grid-column:3;grid-row:1;display:flex;gap:4px;justify-content:flex-end}
+.tag{font-size:12px;padding:0 6px;border-radius:3px;background:#eeeae1;color:#4d4940;white-space:nowrap;line-height:20px}
+.note-line{grid-column:2/-1;font:13px/1.6 var(--serif);color:#4a463e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inline-detail{display:none}
+.meta .mtags{display:none}
+
+.empty{background:var(--surface);border:1px dashed var(--line-strong);border-radius:var(--r2);padding:var(--s5) var(--s4);text-align:center;color:var(--muted)}
+.empty p{margin:0 0 var(--s3)}
+.empty button{border:1px solid var(--accent);color:var(--accent);background:none;border-radius:var(--r1);padding:5px 14px;cursor:pointer}
+
+/* 详情 */
+.detail{position:sticky;top:76px;max-height:calc(100dvh - 96px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);padding:var(--s4)}
+.d-status{display:flex;align-items:center;gap:var(--s2);font-size:13px;font-weight:600}
+.d-status .added{margin-left:auto;font-weight:400;color:var(--muted);font-size:12px}
+.d-title{margin:var(--s3) 0 var(--s2);font-size:18px;line-height:1.35;font-weight:700;text-wrap:balance;overflow-wrap:anywhere}
+.d-pub{color:var(--muted);font-size:13px;margin:0 0 var(--s3)}
+.d-pub .unk{color:var(--faint)}
+.d-authors{font-size:13px;margin:0 0 var(--s4)}
+.d-authors details summary{cursor:pointer;color:var(--accent);margin-top:2px;width:max-content}
+.d-authors .all{margin-top:var(--s1);color:#45423b}
+.note{margin:0 0 var(--s4);padding:var(--s3) var(--s3) var(--s3) var(--s4);border-left:3px solid var(--reading);background:#fbf6ec;font:15px/1.75 var(--serif)}
+.note.read{border-color:var(--read);background:#f1f5f1}
+.note .lbl{display:block;font:600 12px var(--sans);color:var(--muted);margin-bottom:2px}
+.note button.ref{font:inherit;border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sec{margin:0 0 var(--s4)}
+.sec h4{margin:0 0 var(--s1);font-size:12px;font-weight:600;color:var(--muted)}
+.abs{margin:0;font-size:13.5px;line-height:1.6;color:#36342e}
+.rel{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.rel button{display:flex;align-items:baseline;gap:var(--s2);width:100%;text-align:left;border:0;background:none;padding:3px 0;cursor:pointer;font-size:13px}
+.rel button:hover .rn{text-decoration:underline}
+.rel .mk{align-self:center}
+.rel .rn{font-weight:600;white-space:nowrap}
+.rel .who{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.d-foot{display:flex;align-items:center;gap:var(--s3);padding-top:var(--s3);border-top:1px solid var(--line)}
+.d-foot .id{font:12.5px var(--mono);color:var(--muted)}
+.d-foot a{margin-left:auto;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--accent);border-radius:var(--r1);padding:4px 12px}
+.d-foot a:hover{background:var(--accent);color:#fff}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1080px){
+  .app{grid-template-columns:190px minmax(0,1fr)}
+  .detail{display:none}
+  .row.sel .inline-detail{display:block;padding:0 var(--s3) var(--s3) calc(var(--s3) + 14px + var(--s3));background:var(--accent-soft)}
+  .row.sel .inline-detail .d-status,.row.sel .inline-detail .d-title,.row.sel .inline-detail .d-pub{display:none}
+  .row.sel .note-line{display:none}
+  .row.sel .inline-detail .note{background:var(--surface)}
+}
+@media (max-width: 720px){
+  .top-in{flex-wrap:wrap;gap:var(--s2) var(--s3);padding:var(--s3) 16px}
+  .top .tally{font-size:12.5px}
+  .search{flex:1 1 100%;margin-left:0}
+  .search kbd{display:none}
+  .app{grid-template-columns:minmax(0,1fr);padding:var(--s3) 16px var(--s5);gap:var(--s3)}
+  .side{position:static;gap:var(--s2)}
+  .side h2,.legend,.side .source{display:none}
+  .topics{flex-direction:row;overflow-x:auto;gap:6px;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+  .topics li{flex:none}
+  .topic{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px}
+  .topic[aria-pressed="true"]{box-shadow:none;border-color:var(--accent);background:var(--accent-soft)}
+  .topic .left{display:none}
+  .topic .dots{flex-wrap:nowrap}
+  .topic .n{display:none}
+  .row-btn{grid-template-columns:12px minmax(0,1fr);padding:10px var(--s3)}
+  .tags{display:none}
+  .meta .mtags{display:inline}
+  .note-line{grid-column:2;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .topic[data-topic="全部"] .dots{display:none}
+  .row.sel .inline-detail{padding-left:calc(var(--s3) + 12px + var(--s3))}
+  .list-head{flex-wrap:wrap}
+  .src-mobile{display:block !important}
+}
+.src-mobile{display:none;margin-top:var(--s4)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <h1>Agent 论文清单</h1>
+    <div class="tally" id="tally"></div>
+    <label class="search">
+      <input id="q" type="search" placeholder="搜标题、作者、笔记或 arXiv 编号" autocomplete="off" aria-label="搜索论文">
+      <kbd>/</kbd>
+    </label>
+  </div>
+</header>
+
+<main class="app">
+  <aside class="side" aria-label="筛选">
+    <div>
+      <h2>按方向</h2>
+      <ul class="topics" id="topics"></ul>
+    </div>
+    <div>
+      <h2>按状态</h2>
+      <div class="status-seg" id="statusSeg" role="group" aria-label="按阅读状态筛选"></div>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><i class="mk read"></i>已读</span>
+      <span><i class="mk reading"></i>在读</span>
+      <span><i class="mk"></i>未读</span>
+    </div>
+    <p class="source">标题、作者、年份和摘要首句来自 arXiv（2026-10-14 获取）；方向、状态和笔记是我的阅读记录。</p>
+  </aside>
+
+  <section aria-label="论文列表">
+    <div class="list-head">
+      <h2 class="sr" style="position:absolute;left:-9999px">论文列表</h2>
+      <div class="count" id="count"></div>
+      <label class="sort">排序
+        <select id="sort">
+          <option value="added">最近加入在前</option>
+          <option value="year">发表年份从早到晚</option>
+        </select>
+      </label>
+    </div>
+    <div id="list"></div>
+    <p class="source src-mobile">标题、作者、年份和摘要首句来自 arXiv（2026-10-14 获取）；方向、状态和笔记是我的阅读记录。</p>
+  </section>
+
+  <aside class="detail" id="detail" aria-live="polite" aria-label="论文详情"></aside>
+</main>
+
+<script>
+const DATA = {"papers":[
+{"arxiv_id":"2201.11903","url":"https://arxiv.org/abs/2201.11903","title":"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models","authors":["Jason Wei","Xuezhi Wang","Dale Schuurmans","Maarten Bosma","Brian Ichter","Fei Xia","Ed Chi","Quoc Le","Denny Zhou"],"year":2022,"venue":"NeurIPS 2022","topics":["推理"],"abstract_first_sentence":"We explore how generating a chain of thought -- a series of intermediate reasoning steps -- significantly improves the ability of large language models to perform complex reasoning.","my_status":"已读","my_note":"提示里给几步推理示例就能明显提升算术题，基线必读。","added_on":"2026-09-08"},
+{"arxiv_id":"2210.03629","url":"https://arxiv.org/abs/2210.03629","title":"ReAct: Synergizing Reasoning and Acting in Language Models","authors":["Shunyu Yao","Jeffrey Zhao","Dian Yu","Nan Du","Izhak Shafran","Karthik Narasimhan","Yuan Cao"],"year":2022,"venue":"ICLR 2023","topics":["推理","工具"],"abstract_first_sentence":"While large language models (LLMs) have demonstrated impressive capabilities across tasks in language understanding and interactive decision making, their abilities for reasoning (e.g.","my_status":"已读","my_note":"推理和行动交替进行；HotpotQA 上靠维基 API 减少幻觉。","added_on":"2026-09-10"},
+{"arxiv_id":"2302.04761","url":"https://arxiv.org/abs/2302.04761","title":"Toolformer: Language Models Can Teach Themselves to Use Tools","authors":["Timo Schick","Jane Dwivedi-Yu","Roberto Dessì","Roberta Raileanu","Maria Lomeli","Luke Zettlemoyer","Nicola Cancedda","Thomas Scialom"],"year":2023,"venue":"NeurIPS 2023","topics":["工具"],"abstract_first_sentence":"Language models (LMs) exhibit remarkable abilities to solve new tasks from just a few examples or textual instructions, especially at scale.","my_status":"未读","my_note":null,"added_on":"2026-09-15"},
+{"arxiv_id":"2303.11366","url":"https://arxiv.org/abs/2303.11366","title":"Reflexion: Language Agents with Verbal Reinforcement Learning","authors":["Noah Shinn","Federico Cassano","Edward Berman","Ashwin Gopinath","Karthik Narasimhan","Shunyu Yao"],"year":2023,"venue":"NeurIPS 2023","topics":["推理","记忆"],"abstract_first_sentence":"Large language models (LLMs) have been increasingly used to interact with external environments (e.g., games, compilers, APIs) as goal-driven agents.","my_status":"在读","my_note":"读到第 4 节，反思文本存进记忆再重试，想对比 Self-Refine。","added_on":"2026-09-18"},
+{"arxiv_id":"2303.17651","url":"https://arxiv.org/abs/2303.17651","title":"Self-Refine: Iterative Refinement with Self-Feedback","authors":["Aman Madaan","Niket Tandon","Prakhar Gupta","Skyler Hallinan","Luyu Gao","Sarah Wiegreffe","Uri Alon","Nouha Dziri","Shrimai Prabhumoye","Yiming Yang","Shashank Gupta","Bodhisattwa Prasad Majumder","Katherine Hermann","Sean Welleck","Amir Yazdanbakhsh","Peter Clark"],"year":2023,"venue":"NeurIPS 2023","topics":["推理"],"abstract_first_sentence":"Like humans, large language models (LLMs) do not always generate the best output on their first try.","my_status":"已读","my_note":"同一模型生成、反馈、改写三步循环，不需要额外训练。","added_on":"2026-09-20"},
+{"arxiv_id":"2304.03442","url":"https://arxiv.org/abs/2304.03442","title":"Generative Agents: Interactive Simulacra of Human Behavior","authors":["Joon Sung Park","Joseph C. O'Brien","Carrie J. Cai","Meredith Ringel Morris","Percy Liang","Michael S. Bernstein"],"year":2023,"venue":"UIST 2023","topics":["记忆"],"abstract_first_sentence":"Believable proxies of human behavior can empower interactive applications ranging from immersive environments to rehearsal spaces for interpersonal communication to prototyping tools.","my_status":"未读","my_note":null,"added_on":"2026-09-22"},
+{"arxiv_id":"2305.10601","url":"https://arxiv.org/abs/2305.10601","title":"Tree of Thoughts: Deliberate Problem Solving with Large Language Models","authors":["Shunyu Yao","Dian Yu","Jeffrey Zhao","Izhak Shafran","Thomas L. Griffiths","Yuan Cao","Karthik Narasimhan"],"year":2023,"venue":"NeurIPS 2023","topics":["推理"],"abstract_first_sentence":"Language models are increasingly being deployed for general problem solving across a wide range of tasks, but are still confined to token-level, left-to-right decision-making processes during inference.","my_status":"未读","my_note":null,"added_on":"2026-09-25"},
+{"arxiv_id":"2305.16291","url":"https://arxiv.org/abs/2305.16291","title":"Voyager: An Open-Ended Embodied Agent with Large Language Models","authors":["Guanzhi Wang","Yuqi Xie","Yunfan Jiang","Ajay Mandlekar","Chaowei Xiao","Yuke Zhu","Linxi Fan","Anima Anandkumar"],"year":2023,"venue":null,"topics":["具身","工具"],"abstract_first_sentence":"We introduce Voyager, the first LLM-powered embodied lifelong learning agent in Minecraft that continuously explores the world, acquires diverse skills, and makes novel discoveries without human intervention.","my_status":"未读","my_note":null,"added_on":"2026-09-27"},
+{"arxiv_id":"2308.03688","url":"https://arxiv.org/abs/2308.03688","title":"AgentBench: Evaluating LLMs as Agents","authors":["Xiao Liu","Hao Yu","Hanchen Zhang","Yifan Xu","Xuanyu Lei","Hanyu Lai","Yu Gu","Hangliang Ding","Kaiwen Men","Kejuan Yang","Shudan Zhang","Xiang Deng","Aohan Zeng","Zhengxiao Du","Chenhui Zhang","Sheng Shen","Tianjun Zhang","Yu Su","Huan Sun","Minlie Huang","Yuxiao Dong","Jie Tang"],"year":2023,"venue":"ICLR 2024","topics":["评测"],"abstract_first_sentence":"The potential of Large Language Model (LLM) as agents has been widely acknowledged recently.","my_status":"未读","my_note":null,"added_on":"2026-10-02"},
+{"arxiv_id":"2308.11432","url":"https://arxiv.org/abs/2308.11432","title":"A Survey on Large Language Model based Autonomous Agents","authors":["Lei Wang","Chen Ma","Xueyang Feng","Zeyu Zhang","Hao Yang","Jingsen Zhang","Zhiyuan Chen","Jiakai Tang","Xu Chen","Yankai Lin","Wayne Xin Zhao","Zhewei Wei","Ji-Rong Wen"],"year":2023,"venue":"Frontiers of Computer Science 2024","topics":["综述"],"abstract_first_sentence":"Autonomous agents have long been a prominent research focus in both academic and industry communities.","my_status":"在读","my_note":"按“构建—应用—评测”三部分组织，先读构建部分。","added_on":"2026-10-05"},
+{"arxiv_id":"2310.06770","url":"https://arxiv.org/abs/2310.06770","title":"SWE-bench: Can Language Models Resolve Real-World GitHub Issues?","authors":["Carlos E. Jimenez","John Yang","Alexander Wettig","Shunyu Yao","Kexin Pei","Ofir Press","Karthik Narasimhan"],"year":2023,"venue":"ICLR 2024","topics":["评测"],"abstract_first_sentence":"Language models have outpaced our ability to evaluate them effectively, but for their future development it is essential to study the frontier of their capabilities.","my_status":"未读","my_note":null,"added_on":"2026-10-08"},
+{"arxiv_id":"2310.08560","url":"https://arxiv.org/abs/2310.08560","title":"MemGPT: Towards LLMs as Operating Systems","authors":["Charles Packer","Sarah Wooders","Kevin Lin","Vivian Fang","Shishir G. Patil","Ion Stoica","Joseph E. Gonzalez"],"year":2023,"venue":null,"topics":["记忆"],"abstract_first_sentence":"Large language models (LLMs) have revolutionized AI, but are constrained by limited context windows, hindering their utility in tasks like extended conversations and document analysis.","my_status":"在读","my_note":"把上下文当内存分层管理，读到 2.3。","added_on":"2026-10-11"}
+]};
+
+const P = DATA.papers;
+const STATUS = [
+  {key:"在读", cls:"reading", hint:"接着读"},
+  {key:"未读", cls:"", hint:"从这里挑下一篇"},
+  {key:"已读", cls:"read", hint:""}
+];
+const clsOf = s => (STATUS.find(x=>x.key===s)||{}).cls || "";
+const TOPIC_ORDER = ["推理","工具","记忆","评测","具身","综述"];
+const RANK = {"已读":0,"在读":1,"未读":2};
+
+const short = p => {
+  const i = p.title.indexOf(":");
+  if (i>0) return p.title.slice(0,i);
+  if (p.arxiv_id==="2201.11903") return "Chain-of-Thought";
+  if (p.arxiv_id==="2308.11432") return "Agent 综述";
+  return p.title;
+};
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const surname = n => n.trim().split(/\s+/).pop();
+const authorsShort = a => a.length<=2 ? a.map(surname).join("、") : `${surname(a[0])} 等 ${a.length} 人`;
+const mk = (s, extra="") => `<i class="mk ${clsOf(s)} ${extra}" title="${s}"></i>`;
+const venueHTML = v => v ? esc(v) : `<span class="unk">发表处未确认</span>`;
+
+const state = {topic:"全部", status:"全部", q:"", sort:"added", sel:null};
+
+/* ---------- 方向与状态筛选 ---------- */
+function dotsFor(list){
+  return `<span class="dots" aria-hidden="true">${[...list].sort((a,b)=>RANK[a.my_status]-RANK[b.my_status]).map(p=>mk(p.my_status)).join("")}</span>`;
+}
+function renderTopics(){
+  const topics = ["全部", ...TOPIC_ORDER.filter(t=>P.some(p=>p.topics.includes(t)))];
+  document.getElementById("topics").innerHTML = topics.map(t=>{
+    const list = t==="全部" ? P : P.filter(p=>p.topics.includes(t));
+    const unread = list.filter(p=>p.my_status==="未读").length;
+    const left = unread ? `${unread} 篇未读` : "没有未读";
+    return `<li><button class="topic" data-topic="${t}" aria-pressed="${state.topic===t}" aria-label="${t}，${list.length} 篇，${left}">
+      <span class="name">${t}</span><span class="n">${list.length}</span>${dotsFor(list)}
+    </button></li>`;
+  }).join("");
+}
+function renderStatusSeg(){
+  const opts = ["全部","未读","在读","已读"];
+  document.getElementById("statusSeg").innerHTML = opts.map(s=>{
+    const n = s==="全部" ? P.length : P.filter(p=>p.my_status===s).length;
+    return `<button data-status="${s}" aria-pressed="${state.status===s}">${s} ${n}</button>`;
+  }).join("");
+}
+function renderTally(){
+  const c = s => P.filter(p=>p.my_status===s).length;
+  document.getElementById("tally").innerHTML = `<b>${P.length}</b> 篇 · 已读 <b>${c("已读")}</b> · 在读 <b>${c("在读")}</b> · 未读 <b>${c("未读")}</b>`;
+}
+
+/* ---------- 列表 ---------- */
+function filtered(){
+  const q = state.q.trim().toLowerCase();
+  return P.filter(p=>{
+    if (state.topic!=="全部" && !p.topics.includes(state.topic)) return false;
+    if (state.status!=="全部" && p.my_status!==state.status) return false;
+    if (!q) return true;
+    const hay = [p.title, p.authors.join(" "), p.my_note||"", p.arxiv_id, p.venue||"", p.topics.join(" ")].join(" ").toLowerCase();
+    return hay.includes(q);
+  }).sort((a,b)=> state.sort==="year"
+      ? (a.year-b.year) || a.arxiv_id.localeCompare(b.arxiv_id)
+      : b.added_on.localeCompare(a.added_on));
+}
+function titleHTML(p){
+  const i = p.title.indexOf(":");
+  if (i>0) return `<strong>${esc(p.title.slice(0,i))}</strong><span class="rest">${esc(p.title.slice(i))}</span>`;
+  return `<span>${esc(p.title)}</span>`;
+}
+function renderList(){
+  const list = filtered();
+  const box = document.getElementById("list");
+  const active = state.topic!=="全部" || state.status!=="全部" || state.q.trim();
+  document.getElementById("count").innerHTML =
+    (active ? `筛出 <b>${list.length}</b> / ${P.length} 篇` : `共 <b>${P.length}</b> 篇`) +
+    (active ? ` <button class="clear" data-act="clear">清空筛选</button>` : "");
+  if (!list.length){
+    const why = [state.topic!=="全部"&&`方向“${state.topic}”`, state.status!=="全部"&&`状态“${state.status}”`, state.q.trim()&&`关键词“${esc(state.q.trim())}”`].filter(Boolean).join("、");
+    box.innerHTML = `<div class="empty"><p>${why} 下没有论文。</p><button data-act="clear">清空筛选，看全部 ${P.length} 篇</button></div>`;
+    state.sel = null; renderDetail(); return;
+  }
+  if (!list.some(p=>p.arxiv_id===state.sel)) state.sel = wide() ? list[0].arxiv_id : null;
+  box.innerHTML = STATUS.map(st=>{
+    const items = list.filter(p=>p.my_status===st.key);
+    if (!items.length) return "";
+    return `<section class="group">
+      <h3>${mk(st.key)}${st.key} ${items.length} 篇${st.hint?`<span class="hint">· ${st.hint}</span>`:""}</h3>
+      <ul class="rows">${items.map(rowHTML).join("")}</ul>
+    </section>`;
+  }).join("");
+  renderDetail();
+}
+function rowHTML(p){
+  const sel = p.arxiv_id===state.sel;
+  return `<li class="row${sel?" sel":""}" data-id="${p.arxiv_id}">
+    <button class="row-btn" aria-expanded="${sel}">
+      ${mk(p.my_status)}
+      <span class="t">${titleHTML(p)}</span>
+      <span class="tags">${p.topics.map(t=>`<span class="tag">${t}</span>`).join("")}</span>
+      <span class="meta">${esc(authorsShort(p.authors))} · <span class="y">${p.year}</span> · ${venueHTML(p.venue)}<span class="mtags"> · ${p.topics.join(" / ")}</span></span>
+      ${p.my_note && p.my_status==="在读" ? `<span class="note-line">${esc(p.my_note)}</span>` : ""}
+    </button>
+    ${sel ? `<div class="inline-detail">${detailHTML(p)}</div>` : ""}
+  </li>`;
+}
+
+/* ---------- 详情 ---------- */
+function linkify(note){
+  let html = esc(note);
+  P.forEach(o=>{
+    const s = short(o);
+    if (s.length>3 && html.includes(s)) html = html.split(s).join(`<button class="ref" data-go="${o.arxiv_id}">${s}</button>`);
+  });
+  return html;
+}
+function related(p){
+  return P.filter(o=>o!==p).map(o=>({o, who:o.authors.filter(a=>p.authors.includes(a))})).filter(x=>x.who.length);
+}
+function detailHTML(p){
+  const abs = p.abstract_first_sentence.trim();
+  const absTxt = /[.!?]$/.test(abs) ? abs : abs + " …";
+  const rel = related(p);
+  const more = p.authors.length>3;
+  return `
+    <div class="d-status">${mk(p.my_status,"lg")}${p.my_status}<span class="added">${p.added_on} 加入</span></div>
+    <h2 class="d-title">${esc(p.title)}</h2>
+    <p class="d-pub"><span class="y">${p.year}</span> 年上传 arXiv · ${p.venue ? "发表于 "+esc(p.venue) : `<span class="unk">发表处未确认</span>`}</p>
+    <div class="d-authors">${more
+      ? `${esc(p.authors.slice(0,3).join(", "))} 等<details><summary>全部 ${p.authors.length} 位作者</summary><div class="all">${esc(p.authors.join(", "))}</div></details>`
+      : esc(p.authors.join(", "))}</div>
+    ${p.my_note ? `<p class="note ${clsOf(p.my_status)}"><span class="lbl">我的笔记</span>${linkify(p.my_note)}</p>` : ""}
+    <div class="sec"><h4>摘要首句</h4><p class="abs" lang="en">${esc(absTxt)}</p></div>
+    ${rel.length ? `<div class="sec"><h4>同作者的论文</h4><ul class="rel">${rel.map(({o,who})=>
+      `<li><button data-go="${o.arxiv_id}">${mk(o.my_status)}<span class="rn">${esc(short(o))}</span><span class="who">${esc(who.join("、"))}</span></button></li>`).join("")}</ul></div>` : ""}
+    <div class="d-foot"><span class="id">arXiv:${p.arxiv_id}</span><a href="${p.url}" target="_blank" rel="noopener">在 arXiv 打开</a></div>`;
+}
+function renderDetail(){
+  const el = document.getElementById("detail");
+  const p = P.find(x=>x.arxiv_id===state.sel);
+  el.innerHTML = p ? detailHTML(p) : `<p class="source" style="margin:0">在左侧列表里选一篇论文查看详情。</p>`;
+}
+
+/* ---------- 交互 ---------- */
+const wide = () => matchMedia("(min-width: 1081px)").matches;
+function rerender(){
+  renderTopics(); renderStatusSeg(); renderList();
+  const on = document.querySelector('.topic[aria-pressed="true"]');
+  const reel = document.getElementById("topics");
+  if (on && reel.scrollWidth > reel.clientWidth){
+    const li = on.parentElement;
+    reel.scrollLeft = Math.max(0, li.offsetLeft - reel.offsetLeft - 40);
+  }
+}
+function clearAll(){ state.topic="全部"; state.status="全部"; state.q=""; document.getElementById("q").value=""; rerender(); }
+function select(id, scroll){
+  const visible = filtered().some(p=>p.arxiv_id===id);
+  if (!visible){ state.topic="全部"; state.status="全部"; state.q=""; document.getElementById("q").value=""; }
+  state.sel = (!wide() && state.sel===id && !scroll) ? null : id;
+  rerender();
+  if (scroll){
+    const row = document.querySelector(`.row[data-id="${id}"]`);
+    row && row.scrollIntoView({block:"nearest", behavior:"smooth"});
+  }
+}
+document.addEventListener("click", e=>{
+  const t = e.target.closest("[data-topic],[data-status],[data-act],[data-go],.row-btn");
+  if (!t) return;
+  if (t.dataset.topic){ state.topic = t.dataset.topic; rerender(); }
+  else if (t.dataset.status){ state.status = t.dataset.status; rerender(); }
+  else if (t.dataset.act==="clear"){ clearAll(); }
+  else if (t.dataset.go){ select(t.dataset.go, true); }
+  else { select(t.closest(".row").dataset.id, false); const b=document.querySelector(`.row[data-id="${t.closest(".row").dataset.id}"] .row-btn`); b&&b.focus({preventScroll:true}); }
+});
+document.getElementById("q").addEventListener("input", e=>{ state.q = e.target.value; renderList(); });
+document.getElementById("sort").addEventListener("change", e=>{ state.sort = e.target.value; renderList(); });
+document.addEventListener("keydown", e=>{
+  const inInput = e.target.matches("input,select,textarea");
+  if (e.key==="/" && !inInput){ e.preventDefault(); document.getElementById("q").focus(); return; }
+  if (e.key==="Escape"){
+    if (state.q){ state.q=""; document.getElementById("q").value=""; renderList(); }
+    else if (inInput) e.target.blur();
+    return;
+  }
+  if ((e.key==="ArrowDown"||e.key==="ArrowUp") && !e.target.matches("select")){
+    const ids = [...document.querySelectorAll(".row")].map(r=>r.dataset.id);
+    if (!ids.length) return;
+    e.preventDefault();
+    const i = ids.indexOf(state.sel);
+    const n = i<0 ? 0 : Math.max(0, Math.min(ids.length-1, i + (e.key==="ArrowDown"?1:-1)));
+    state.sel = ids[n]; renderList();
+    const b = document.querySelector(`.row[data-id="${ids[n]}"] .row-btn`);
+    if (b){ b.focus({preventScroll:true}); b.scrollIntoView({block:"nearest"}); }
+  }
+});
+let wasWide = wide();
+addEventListener("resize", ()=>{ if (wide()!==wasWide){ wasWide = wide(); renderList(); } });
+
+renderTally(); rerender();
+</script>
+</body>
+</html>

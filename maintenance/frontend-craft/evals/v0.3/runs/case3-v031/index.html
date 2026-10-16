@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>启明计算实验室 2027 招新</title>
+<meta name="description" content="城北理工大学信息学院启明计算实验室招收 2027 级硕士 3 名、本科科研实习 4 名，研究大模型智能体。2026 年 11 月 15 日截止。">
+<style>
+:root {
+  --h: 268;
+  --bg:        oklch(98.6% 0.005 var(--h));
+  --surface:   oklch(95.6% 0.014 var(--h));
+  --line:      oklch(89% 0.02 var(--h));
+  --muted:     oklch(48% 0.03 var(--h));
+  --ink:       oklch(24% 0.035 var(--h));
+  --brand:     oklch(42% 0.14 var(--h));
+  --brand-soft:oklch(92% 0.04 var(--h));
+  --night:     oklch(24% 0.075 var(--h));
+  --night-2:   oklch(31% 0.08 var(--h));
+  --night-line:oklch(42% 0.07 var(--h));
+  --on-night:  oklch(96% 0.01 var(--h));
+  --on-night-muted: oklch(80% 0.035 var(--h));
+  --star:      oklch(82% 0.14 80);
+  --star-deep: oklch(70% 0.15 65);
+
+  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --r1: 6px;
+  --r2: 12px;
+  --gap-s: 12px;
+  --gap-m: 24px;
+  --gap-l: 48px;
+  --sec: 80px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  line-break: strict;
+  text-autospace: normal;
+  font-variant-numeric: tabular-nums;
+}
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; }
+p, li, dd { text-wrap: pretty; }
+a { color: inherit; }
+.nw { white-space: nowrap; }
+.cl { display: inline-block; }
+.mail { font-family: var(--mono); font-size: .94em; overflow-wrap: anywhere; letter-spacing: -.01em; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 32px; }
+
+/* ---------- 顶部与首屏 ---------- */
+.hero { background: var(--night); color: var(--on-night); }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-m); padding-block: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; text-decoration: none; letter-spacing: .02em; }
+.brand svg { width: 22px; height: 22px; flex: none; }
+.nav { display: flex; gap: 4px; font-size: 14px; }
+.nav a { text-decoration: none; color: var(--on-night-muted); padding: 6px 10px; border-radius: var(--r1); }
+.nav a:hover { color: var(--on-night); background: var(--night-2); }
+.nav a.go { color: var(--night); background: var(--star); font-weight: 600; }
+.nav a.go:hover { background: oklch(88% 0.12 80); }
+
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 56px; align-items: start; padding-block: 40px 72px; }
+.eyebrow { color: var(--on-night-muted); font-size: 15px; }
+h1 { font-size: 56px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin-top: 14px; }
+h1 .yr { color: var(--star); display: block; }
+.lead { margin-top: 20px; font-size: 18px; color: var(--on-night-muted); max-width: 30em; }
+.lead strong { color: var(--on-night); font-weight: 600; }
+
+.quota { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-s); margin-top: 32px; }
+.q { border: 1px solid var(--night-line); border-radius: var(--r2); padding: 16px 18px 18px; background: var(--night-2); }
+.q-top { display: flex; align-items: baseline; gap: 10px; }
+.q-n { font-size: 40px; font-weight: 700; line-height: 1; color: var(--on-night); }
+.q-n small { font-size: 16px; font-weight: 600; margin-left: 2px; }
+.seats { display: inline-flex; gap: 5px; margin-left: auto; align-self: center; }
+.seats i { width: 10px; height: 10px; border-radius: 50%; background: var(--star); display: block; }
+.q-who { font-weight: 600; font-size: 17px; margin-top: 10px; }
+.q-note { font-size: 14px; color: var(--on-night-muted); line-height: 1.65; margin-top: 4px; }
+
+.card { background: var(--bg); color: var(--ink); border-radius: var(--r2); padding: 28px; box-shadow: 0 18px 40px -20px oklch(10% 0.05 var(--h) / .6); }
+.card-label { font-size: 13px; color: var(--muted); letter-spacing: .04em; }
+.card .deadline { font-size: 30px; font-weight: 700; color: var(--brand); line-height: 1.25; margin-top: 4px; }
+.card .sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.card hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+.card p { font-size: 15px; line-height: 1.7; }
+.btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; background: var(--brand); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; padding: 11px 20px; border-radius: var(--r1); }
+.btn:hover { background: oklch(36% 0.14 var(--h)); }
+.btn:focus-visible, .nav a:focus-visible { outline: 3px solid var(--star); outline-offset: 2px; }
+.btn svg { width: 16px; height: 16px; }
+.openday { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 2px; align-items: baseline; }
+.openday .date { font-weight: 700; font-size: 18px; color: var(--ink); }
+.openday p { grid-column: 1 / -1; color: var(--muted); font-size: 14px; }
+.openday p.od-label { grid-column: auto; font-size: 13px; }
+
+/* ---------- 通用分区 ---------- */
+.band { padding-block: var(--sec); }
+.band.alt { background: var(--surface); }
+.sec { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: var(--gap-l); }
+.kicker { font-size: 13px; font-weight: 600; color: var(--brand); letter-spacing: .08em; }
+h2 { font-size: 28px; font-weight: 700; margin-top: 8px; letter-spacing: -.01em; }
+.sec-head p.aside { margin-top: 14px; color: var(--muted); font-size: 15px; }
+h3 { font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: .04em; margin-bottom: 14px; }
+
+/* 研究方向 */
+.dirs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-m); counter-reset: d; }
+.dir { border-top: 3px solid var(--brand); padding-top: 18px; }
+.dir .no { font-family: var(--mono); font-size: 14px; color: var(--brand); font-weight: 600; }
+.dir p { font-size: 20px; font-weight: 600; line-height: 1.5; margin-top: 8px; text-wrap: balance; }
+
+/* 申请条件 */
+.req { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: var(--gap-m); }
+.req-col h3 { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+.mark { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; }
+.mark svg { width: 11px; height: 11px; }
+.mark.must { background: var(--brand); color: #fff; }
+.mark.plus { background: var(--star); color: var(--night); }
+.mark.no { border: 1.5px solid var(--muted); color: var(--muted); }
+.req-col li { padding: 12px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.6; }
+.req-col li:last-child { border-bottom: 1px solid var(--line); }
+.req-col li span { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.qa { margin-top: 32px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r2); padding: 18px 22px; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; }
+.band.alt .qa { background: var(--bg); }
+.qa dt { font-weight: 700; color: var(--brand); font-family: var(--mono); }
+.qa dd { font-size: 16px; }
+.qa dd.a { color: var(--muted); }
+
+/* 资源与培养 */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-m); }
+.stat { background: var(--surface); border-radius: var(--r2); padding: 20px 22px 22px; }
+.stat .v { font-size: 40px; font-weight: 700; line-height: 1.1; color: var(--brand); letter-spacing: -.01em; }
+.stat .v small { font-size: 16px; font-weight: 600; color: var(--ink); margin-left: 4px; letter-spacing: 0; }
+.stat .k { font-weight: 600; margin-top: 10px; }
+.stat .d { font-size: 14px; color: var(--muted); line-height: 1.6; margin-top: 2px; }
+.mentor { margin-top: 40px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) 1.2fr; gap: var(--gap-m); align-items: start; }
+.rhythm { border-left: 3px solid var(--brand); padding-left: 16px; }
+.rhythm .when { font-size: 22px; font-weight: 700; line-height: 1.35; }
+.rhythm .what { color: var(--muted); font-size: 15px; margin-top: 2px; }
+.mentor .say { font-size: 16px; color: var(--ink); background: var(--brand-soft); border-radius: var(--r2); padding: 16px 18px; line-height: 1.7; }
+
+/* 毕业去向 */
+.out { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.grp .tiles { display: flex; gap: 8px; }
+.grp .tiles i { width: 56px; height: 56px; border-radius: var(--r1); display: block; }
+.grp.ind .tiles i { background: var(--brand); }
+.grp.phd .tiles i { background: var(--star); }
+.grp .cap { margin-top: 14px; border-top: 1px solid var(--ink); padding-top: 10px; }
+.grp .cap b { font-size: 22px; }
+.grp .cap span { display: block; font-size: 14px; color: var(--muted); }
+
+/* 怎么申请 */
+.apply { background: var(--night); color: var(--on-night); }
+.apply .kicker { color: var(--star); }
+.apply .sec-head p.aside { color: var(--on-night-muted); }
+.apply-head { max-width: 36em; margin-bottom: 40px; }
+.apply-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+.compose { background: var(--bg); color: var(--ink); border-radius: var(--r2); overflow: hidden; }
+.compose-bar { background: var(--surface); padding: 10px 18px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+.compose-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: block; }
+.field { display: grid; grid-template-columns: 4.5em minmax(0, 1fr); gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line); font-size: 15px; align-items: baseline; }
+.field .fk { color: var(--muted); font-size: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: var(--brand-soft); color: var(--brand); font-weight: 600; font-size: 14px; padding: 2px 10px; border-radius: 99px; }
+.chip svg { width: 13px; height: 13px; }
+.body-area { padding: 16px 18px 20px; }
+.body-area .lim { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--muted); }
+.body-area .lim b { font-family: var(--mono); color: var(--brand); font-weight: 600; font-size: 13px; }
+.body-area p { margin-top: 8px; font-size: 16px; }
+.body-area .lines { margin-top: 14px; display: grid; gap: 9px; }
+.body-area .lines i { display: block; height: 7px; border-radius: 4px; background: var(--surface); }
+.body-area .lines i:nth-child(2) { width: 92%; } .body-area .lines i:nth-child(3) { width: 60%; }
+.compose .btn { margin: 0 18px 20px; }
+
+.steps { counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 7.5em 22px minmax(0, 1fr); column-gap: 14px; position: relative; padding-bottom: 22px; }
+.steps li::before { content: ""; position: absolute; left: calc(7.5em + 14px + 10px); top: 24px; bottom: 0; width: 2px; background: var(--night-line); }
+.steps li:last-child::before { display: none; }
+.steps .t { font-size: 14px; color: var(--on-night-muted); text-align: right; padding-top: 2px; line-height: 1.5; }
+.steps .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--on-night-muted); background: var(--night); margin-top: 2px; }
+.steps li.key .dot { background: var(--star); border-color: var(--star); }
+.steps li.key .t { color: var(--star); font-weight: 600; }
+.steps .s b { font-size: 17px; display: block; line-height: 1.5; }
+.steps .s span { display: block; font-size: 14px; color: var(--on-night-muted); line-height: 1.65; margin-top: 2px; }
+.steps .s em { font-style: normal; font-size: 13px; color: var(--on-night-muted); border: 1px solid var(--night-line); border-radius: 99px; padding: 0 8px; margin-left: 6px; font-weight: 400; vertical-align: 1px; }
+
+.contact { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--night-line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-m); }
+.contact dt { font-size: 13px; color: var(--on-night-muted); letter-spacing: .04em; }
+.contact dd { margin-top: 4px; font-size: 16px; }
+.contact dd span { display: block; font-size: 14px; color: var(--on-night-muted); }
+.contact a { color: var(--star); text-underline-offset: 3px; }
+.foot { padding-block: 24px 32px; color: var(--on-night-muted); font-size: 13px; border-top: 1px solid var(--night-line); margin-top: 56px; }
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; padding-block: 24px 48px; }
+  .sec { grid-template-columns: 1fr; gap: 28px; }
+  .mentor { grid-template-columns: 1fr 1fr; }
+  .mentor .say { grid-column: 1 / -1; }
+  .apply-body { grid-template-columns: 1fr; gap: 40px; }
+  .apply-head { margin-bottom: 28px; }
+  .nav a:not(.go) { display: none; }
+}
+@media (max-width: 640px) {
+  :root { --sec: 56px; }
+  .wrap { padding-inline: 20px; }
+  .topbar { padding-block: 14px; }
+  h1 { font-size: 38px; margin-top: 10px; }
+  .eyebrow { font-size: 14px; }
+  .lead { font-size: 16px; margin-top: 14px; }
+  .quota { margin-top: 22px; gap: 10px; }
+  .q { padding: 14px 14px 16px; }
+  .q-n { font-size: 32px; }
+  .seats { display: none; }
+  .q-who { font-size: 16px; margin-top: 8px; }
+  .card { padding: 22px 20px; }
+  .card .deadline { font-size: 26px; }
+  h2 { font-size: 23px; }
+  .dirs, .req, .stats { grid-template-columns: 1fr; }
+  .dirs { gap: 0; }
+  .dir { display: grid; grid-template-columns: 2.2em 1fr; border-top-width: 1px; border-color: var(--line); padding: 14px 0; }
+  .dir:last-child { border-bottom: 1px solid var(--line); }
+  .dir p { font-size: 17px; margin-top: 0; }
+  .dir .no { padding-top: 2px; }
+  .req { gap: 28px; }
+  .qa { grid-template-columns: 1fr; padding: 16px 18px; }
+  .qa dt + dd { margin-bottom: 0; }
+  .stats { gap: 12px; }
+  .stat { display: grid; grid-template-columns: 7.2em 1fr; column-gap: 12px; align-items: baseline; padding: 16px 18px; }
+  .stat .v { font-size: 30px; grid-row: span 2; }
+  .stat .v small { display: block; margin: 4px 0 0; font-size: 14px; }
+  .stat .k { margin-top: 0; }
+  .mentor { grid-template-columns: 1fr; gap: 18px; margin-top: 28px; }
+  .out { gap: 28px; }
+  .grp .tiles i { width: 44px; height: 44px; }
+  .steps li { grid-template-columns: 22px minmax(0, 1fr); }
+  .steps .t { grid-column: 2; grid-row: 1; text-align: left; padding-top: 0; }
+  .steps .dot { grid-column: 1; grid-row: 1 / span 2; }
+  .steps .s { grid-column: 2; }
+  .steps li::before { left: 10px; }
+  .contact { grid-template-columns: 1fr; gap: 18px; margin-top: 40px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="#top" id="top" aria-label="启明计算实验室">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="oklch(82% 0.14 80)" d="M12 0c.9 7.4 4.6 11.1 12 12-7.4.9-11.1 4.6-12 12-.9-7.4-4.6-11.1-12-12C7.4 11.1 11.1 7.4 12 0Z"/></svg>
+        启明计算实验室
+      </a>
+      <nav class="nav" aria-label="页内导航">
+        <a href="#research">研究方向</a>
+        <a href="#require">申请条件</a>
+        <a href="#support">资源与培养</a>
+        <a href="#outcome">毕业去向</a>
+        <a class="go" href="#apply">怎么申请</a>
+      </nav>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">城北理工大学信息学院 · 负责人 <span class="nw">周砚副教授</span></p>
+        <h1>启明计算实验室<span class="yr">2027 招新</span></h1>
+        <p class="lead">实验室成立以来一直专注大模型相关研究，欢迎对大模型、智能体感兴趣的同学加入。<strong>不要求论文发表经历</strong>，没发过论文也可以投。</p>
+
+        <div class="quota">
+          <div class="q">
+            <div class="q-top"><span class="q-n">3<small>名</small></span><span class="seats" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <p class="q-who">2027 级硕士</p>
+            <p class="q-note">推免生和统考生都可以申请</p>
+          </div>
+          <div class="q">
+            <div class="q-top"><span class="q-n">4<small>名</small></span><span class="seats" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+            <p class="q-who">本科生科研实习</p>
+            <p class="q-note">大三及以上；可以远程，但每周需要线下来实验室一次</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card" aria-label="申请要点">
+        <p class="card-label">申请截止</p>
+        <p class="deadline nw">2026 年 11 月 15 日</p>
+        <p class="sub">结果在截止后两周内通知</p>
+        <hr>
+        <p class="card-label">怎么申请</p>
+        <p style="margin-top:4px">发邮件到 <span class="mail">qiming-lab@example.com</span>，附上简历和一段 <span class="nw">300 字以内</span>的论文理解。</p>
+        <a class="btn" href="mailto:qiming-lab@example.com">写邮件申请
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <hr>
+        <div class="openday">
+          <p class="card-label od-label">开放日</p>
+          <span class="date nw">11 月 1 日 14:00–16:00</span>
+          <p>信息楼 B 区 512，直接过来聊，不用预约</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="band" id="research">
+    <div class="wrap sec">
+      <header class="sec-head">
+        <p class="kicker">研究方向</p>
+        <h2>三个方向，按兴趣选</h2>
+        <p class="aside">入组后也可以调整方向。</p>
+      </header>
+      <ol class="dirs">
+        <li class="dir"><span class="no">01</span><p>大模型智能体的规划与工具使用</p></li>
+        <li class="dir"><span class="no">02</span><p>面向科研文献的检索与阅读辅助</p></li>
+        <li class="dir"><span class="no">03</span><p>智能体评测方法</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band alt" id="require">
+    <div class="wrap sec">
+      <header class="sec-head">
+        <p class="kicker">申请条件</p>
+        <h2>三项基本要求，不看论文发表</h2>
+              </header>
+      <div>
+        <div class="req">
+          <div class="req-col">
+            <h3><span class="mark must"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2 5 8.6l4.6-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>需要</h3>
+            <ul>
+              <li>熟悉 Python</li>
+              <li>读过至少一篇大模型相关的论文</li>
+              <li>能读英文文献</li>
+            </ul>
+          </div>
+          <div class="req-col">
+            <h3><span class="mark plus"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2.5v7M2.5 6h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>加分</h3>
+            <ul>
+              <li>有开源贡献或比赛经历</li>
+            </ul>
+          </div>
+          <div class="req-col">
+            <h3><span class="mark no"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>不要求</h3>
+            <ul>
+              <li>论文发表经历<span>不要因为没发过论文就不敢投</span></li>
+            </ul>
+          </div>
+        </div>
+        <dl class="qa">
+          <dt>问</dt><dd>跨专业可以申请吗？</dd>
+          <dt>答</dt><dd class="a">可以，但入组后需要补一些数学基础。</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="support">
+    <div class="wrap sec">
+      <header class="sec-head">
+        <p class="kicker">资源与培养</p>
+        <h2><span class="cl">共享 8 张 A100，</span><span class="cl">每两周和导师一对一</span></h2>
+      </header>
+      <div>
+        <h3>算力与经费</h3>
+        <div class="stats">
+          <div class="stat">
+            <p class="v">8<small>张 A100</small></p>
+            <p class="k">算力</p>
+            <p class="d">实验室共享服务器</p>
+          </div>
+          <div class="stat">
+            <p class="v">200<small>元 / 月</small></p>
+            <p class="k">API 额度</p>
+            <p class="d">每人每月</p>
+          </div>
+          <div class="stat">
+            <p class="v">1500<small>元 / 月</small></p>
+            <p class="k">硕士助研津贴</p>
+            <p class="d">在学校标准之外额外发放</p>
+          </div>
+        </div>
+
+        <div class="mentor">
+          <div class="rhythm">
+            <p class="when">每周二 <span class="nw">19:00</span></p>
+            <p class="what">组会</p>
+          </div>
+          <div class="rhythm">
+            <p class="when">每两周一次</p>
+            <p class="what">每人和周老师一对一讨论</p>
+          </div>
+          <p class="say">导师指导多，不放养。组里氛围轻松，师兄师姐都很好相处。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="outcome">
+    <div class="wrap sec">
+      <header class="sec-head">
+        <p class="kicker">毕业去向</p>
+        <h2>近三年毕业 6 名硕士</h2>
+      </header>
+      <div class="out" role="img" aria-label="近三年毕业硕士 6 名：4 名去了工业界，2 名继续读博">
+        <div class="grp ind">
+          <div class="tiles" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <p class="cap"><b>4 名</b> 去了工业界<span>大模型、搜索相关岗位</span></p>
+        </div>
+        <div class="grp phd">
+          <div class="tiles" aria-hidden="true"><i></i><i></i></div>
+          <p class="cap"><b>2 名</b> 继续读博<span>&nbsp;</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band apply" id="apply">
+    <div class="wrap">
+        <header class="sec-head apply-head">
+          <p class="kicker">怎么申请</p>
+          <h2><span class="nw">11 月 15 日</span>前，发一封邮件</h2>
+          <p class="aside">初筛通过后安排 30 分钟线上面谈，截止后两周内通知结果。</p>
+        </header>
+        <div class="apply-body">
+          <div class="compose" aria-label="申请邮件需要包含的内容">
+            <div class="compose-bar"><i></i><i></i><i></i><span style="margin-left:6px">申请邮件里要有这些</span></div>
+            <div class="field"><span class="fk">收件人</span><span class="mail">qiming-lab@example.com</span></div>
+            <div class="field"><span class="fk">附件</span><span><span class="chip"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M9.5 4.5 5 9a1.4 1.4 0 0 0 2 2l5-5a2.8 2.8 0 0 0-4-4L3 7a4.2 4.2 0 0 0 6 6l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>简历</span></span></div>
+            <div class="body-area">
+              <div class="lim"><span>正文</span><b>≤ 300 字</b></div>
+              <p>写你对某一篇论文的理解。任何你读过的论文都可以。</p>
+              <div class="lines" aria-hidden="true"><i></i><i></i><i></i></div>
+            </div>
+            <a class="btn" href="mailto:qiming-lab@example.com">打开邮箱写申请
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+
+          <ol class="steps">
+            <li>
+              <span class="t">11 月 1 日<br>14:00–16:00</span><span class="dot"></span>
+              <div class="s"><b>开放日<em>可选</em></b><span>信息楼 B 区 512，直接过来聊，不用预约。今年仍在 11 月（去年改到了 10 月）。</span></div>
+            </li>
+            <li class="key">
+              <span class="t">11 月 15 日</span><span class="dot"></span>
+              <div class="s"><b>申请截止</b></div>
+            </li>
+            <li>
+              <span class="t">截止后</span><span class="dot"></span>
+              <div class="s"><b>初筛</b></div>
+            </li>
+            <li>
+              <span class="t">初筛通过</span><span class="dot"></span>
+              <div class="s"><b>30 分钟线上面谈</b></div>
+            </li>
+            <li>
+              <span class="t">截止后两周内</span><span class="dot"></span>
+              <div class="s"><b>通知结果</b></div>
+            </li>
+          </ol>
+        </div>
+
+      <dl class="contact">
+        <div>
+          <dt>联系人</dt>
+          <dd>林舟<span>博士生，实验室秘书</span></dd>
+        </div>
+        <div>
+          <dt>邮箱</dt>
+          <dd><a class="mail" href="mailto:qiming-lab@example.com">qiming-lab@example.com</a><span>有问题都可以发邮件</span></dd>
+        </div>
+        <div>
+          <dt>实验室地址</dt>
+          <dd>信息楼 B 区 512<span>城北理工大学信息学院 · 负责人周砚副教授</span></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

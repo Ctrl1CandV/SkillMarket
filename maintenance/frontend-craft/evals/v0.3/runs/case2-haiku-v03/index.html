@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReAct 导读：让语言模型边想边做</title>
+<style>
+/* 颜色：纸面与墨色，一个朱红强调色。浅色为默认，深色跟随系统或手动设置。 */
+:root {
+  --bg: #f6f2ea;
+  --surface: #fcfaf5;
+  --ink: #27231f;
+  --muted: #6c645a;
+  --line: #dcd3c4;
+  --accent: #9b3d24;
+  --accent-soft: #f2e4da;
+  --code-bg: #ece6d9;
+  color-scheme: light;
+  --sans: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --serif: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "Noto Serif SC", SimSun, serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Noto Sans Mono CJK SC", monospace;
+  --body-size: 1.0625rem;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1a17;
+    --surface: #25221e;
+    --ink: #e9e3d8;
+    --muted: #a39a8d;
+    --line: #3a352e;
+    --accent: #e6926f;
+    --accent-soft: #3a2a22;
+    --code-bg: #2e2a25;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1c1a17;
+  --surface: #25221e;
+  --ink: #e9e3d8;
+  --muted: #a39a8d;
+  --line: #3a352e;
+  --accent: #e6926f;
+  --accent-soft: #3a2a22;
+  --code-bg: #2e2a25;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--body-size);
+  line-height: 1.9;
+  overflow-wrap: break-word;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+}
+a { color: var(--accent); text-underline-offset: 0.2em; }
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--code-bg);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.page {
+  padding: var(--space-3) 16px 4.5rem;
+  padding-block: 1.5rem 4.5rem;
+}
+
+/* 目录：手机上是可展开的块，电脑上固定在左侧 */
+.toc { margin-bottom: var(--space-3); }
+.toc-toggle {
+  font: inherit;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.toc-toggle::after { content: "展开"; color: var(--muted); font-size: 0.85rem; }
+.toc.open .toc-toggle::after { content: "收起"; }
+.toc-list {
+  display: none;
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+}
+.toc.open .toc-list { display: block; }
+.toc-list a {
+  display: block;
+  padding: 0.55rem 1rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.toc-list a[aria-current="true"] { color: var(--accent); font-weight: 700; }
+
+/* 页头 */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.meta {
+  display: grid;
+  gap: 0.6rem 1.5rem;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+}
+.meta div { display: grid; grid-template-columns: 4.5em 1fr; gap: 0.5rem; }
+.meta dt { font-family: var(--sans); color: var(--muted); font-size: 0.85rem; padding-top: 0.2em; }
+.meta dd { margin: 0; }
+.lead {
+  font-size: 1.12rem;
+  line-height: 1.95;
+  margin: 0 0 var(--space-4);
+}
+
+/* 正文 */
+main section { margin-bottom: var(--space-4); }
+main h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.4;
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 2px solid var(--ink);
+  scroll-margin-top: 1rem;
+  text-wrap: balance;
+}
+main p { margin: 0 0 1.1em; text-align: start; line-height: 1.9; }
+main ul, main ol { padding-left: 1.4em; margin: 0 0 1.2em; }
+main li { margin-bottom: 0.4em; }
+main strong { font-weight: 700; }
+
+/* Thought / Action / Observation 的循环 */
+.loop {
+  margin: var(--space-3) 0 var(--space-2);
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.loop-steps {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.step {
+  position: relative;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.step-tag {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+.step h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--serif);
+}
+.step p { margin: 0; font-size: 0.95rem; line-height: 1.75; }
+.step-obs { border-color: var(--accent); background: var(--accent-soft); }
+.step:not(:last-child)::after {
+  content: "↓";
+  position: absolute;
+  left: 50%;
+  bottom: -1.05rem;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1;
+}
+.loop figcaption {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 1.4rem;
+}
+
+/* 注记 */
+.note {
+  margin: var(--space-2) 0 var(--space-3);
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.note b { color: var(--ink); font-family: var(--sans); font-weight: 700; }
+
+/* 对比表：电脑上是表格，手机上每种方式变成一张小卡片 */
+.table-wrap { margin: var(--space-2) 0 var(--space-3); overflow-x: auto; }
+table.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  line-height: 1.6;
+}
+table.compare caption {
+  caption-side: top;
+  text-align: start;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding-bottom: 0.6rem;
+}
+table.compare th, table.compare td {
+  text-align: start;
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+table.compare thead th {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 2px solid var(--ink);
+}
+table.compare tbody th { font-family: var(--sans); font-weight: 700; white-space: nowrap; }
+table.compare tr.row-react td, table.compare tr.row-react th { color: var(--ink); }
+
+/* 三个结果 */
+ol.findings { list-style: none; counter-reset: f; padding: 0; margin: 0 0 var(--space-3); }
+ol.findings > li {
+  counter-increment: f;
+  position: relative;
+  padding: 0 0 0 1.1rem;
+  margin: 0 0 var(--space-3);
+  border-left: 2px solid var(--line);
+}
+ol.findings > li::before {
+  content: "结果 " counter(f);
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.stat {
+  margin: 0.4rem 0 1.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.stat-figs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+  margin: 0 0 0.4rem;
+  font-family: var(--sans);
+}
+.stat-figs b {
+  font-size: 2.1rem;
+  line-height: 1.1;
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.stat-figs span { font-size: 0.9rem; color: var(--muted); }
+.stat p { margin: 0; font-size: 0.9rem; line-height: 1.7; color: var(--muted); }
+
+/* 自测 */
+ol.quiz > li { margin-bottom: 0.9em; }
+ol.quiz .see {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  margin-left: 0.3em;
+}
+
+/* 参考来源 */
+ol.refs { font-size: 0.9rem; line-height: 1.7; color: var(--muted); }
+ol.refs a { overflow-wrap: anywhere; word-break: break-word; }
+
+footer.end {
+  margin-top: var(--space-4);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* 电脑宽屏：目录在左，正文居中 */
+@media (min-width: 960px) {
+  body { font-size: 1.1rem; }
+  .page {
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, 40rem);
+    column-gap: 5rem;
+    justify-content: center;
+    align-items: start;
+    padding: 4rem 2rem 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .toc {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    position: sticky;
+    top: 2.5rem;
+    margin: 0;
+  }
+  .toc-toggle { display: none; }
+  .toc-list {
+    display: block;
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid var(--line);
+  }
+  .toc-list a { padding: 0.4rem 0 0.4rem 1rem; color: var(--muted); }
+  .toc-list a:hover { color: var(--ink); }
+  .toc-list a[aria-current="true"] { color: var(--accent); font-weight: 700; }
+  .masthead, main, footer.end { grid-column: 2; }
+  .masthead { grid-row: 1; }
+  main { grid-row: 2; }
+  footer.end { grid-row: 3; }
+  h1 { font-size: 2.5rem; }
+  .meta { grid-template-columns: 1fr 1fr; }
+  .loop-steps { grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
+  .step:not(:last-child)::after {
+    content: "→";
+    left: auto;
+    right: -1.2rem;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+  }
+  main h2 { font-size: 1.5rem; }
+  .table-wrap { overflow-x: visible; }
+}
+
+/* 窄屏：对比表改为卡片 */
+@media (max-width: 640px) {
+  table.compare thead { display: none; }
+  table.compare, table.compare tbody, table.compare tr, table.compare th, table.compare td {
+    display: block;
+    width: 100%;
+  }
+  table.compare caption { padding-bottom: 0.4rem; }
+  table.compare tr {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem 0.6rem;
+    margin-bottom: 0.7rem;
+    background: var(--surface);
+  }
+  table.compare td, table.compare tbody th {
+    border: 0;
+    padding: 0.2rem 0;
+  }
+  table.compare tbody th { font-size: 1rem; padding-top: 0.4rem; }
+  table.compare td::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .meta div { grid-template-columns: 4em 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="toc" aria-label="目录">
+    <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list">目录</button>
+    <ol class="toc-list" id="toc-list">
+      <li><a href="#sec-1">一、这篇论文想解决什么</a></li>
+      <li><a href="#sec-2">二、ReAct 怎么做</a></li>
+      <li><a href="#sec-3">三、实验看什么</a></li>
+      <li><a href="#sec-4">四、局限与延伸阅读</a></li>
+      <li><a href="#sec-quiz">自测</a></li>
+      <li><a href="#sec-refs">参考来源</a></li>
+    </ol>
+  </nav>
+
+  <header class="masthead">
+    <p class="eyebrow">论文导读</p>
+    <h1>ReAct 导读：让语言模型边想边做</h1>
+    <dl class="meta">
+      <div><dt>论文</dt><dd>ReAct: Synergizing Reasoning and Acting in Language Models</dd></div>
+      <div><dt>作者</dt><dd>Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao</dd></div>
+      <div><dt>发表</dt><dd>ICLR 2023（arXiv 2210.03629）</dd></div>
+      <div><dt>适合</dt><dd>读过 Chain-of-Thought、想了解 Agent 基本工作方式的同学，预计阅读 15 分钟。</dd></div>
+    </dl>
+    <p class="lead">在 ReAct 之前，大语言模型的两种能力基本是分开研究的：一边是推理，比如 Chain-of-Thought（CoT）让模型先写出中间步骤再给答案；另一边是行动，比如让模型生成动作计划、在环境里一步步操作。ReAct 的想法很直接：让模型交替写“想法”和“动作”，想法帮助它制定、跟踪和修改计划，动作让它从外部取得新信息。这篇导读按“问题—方法—实验—局限”的顺序梳理全文，重点放在方法和实验设计上。</p>
+  </header>
+
+  <main>
+    <section id="sec-1" aria-labelledby="h-sec-1">
+      <h2 id="h-sec-1">一、这篇论文想解决什么</h2>
+      <p>只做推理的模型有一个老问题：它所有的判断都来自自己的参数，遇到需要事实的问题时，推理链看起来通顺，却可能建立在一个记错的事实上，而且错误会沿着链条一路传下去。论文把这类问题称为幻觉（hallucination）和错误传播（error propagation）。</p>
+      <p>只做行动的模型则相反。它能调用搜索、能在环境里操作，但没有显式的推理过程，很难把大目标拆成小目标，也很难在某一步失败后意识到需要换一种做法。</p>
+      <p>作者的判断是：人在完成任务时本来就是边想边做的，想的内容决定下一步做什么，做的结果又反过来修正想法。如果让模型也按这种方式工作，两种能力应该可以互相补足。</p>
+    </section>
+
+    <section id="sec-2" aria-labelledby="h-sec-2">
+      <h2 id="h-sec-2">二、ReAct 怎么做</h2>
+      <p>ReAct 不训练新模型，核心是一种提示方式。提示里放一两个人工写好的解题轨迹，模型照着格式往下生成。每条轨迹由三种内容交替组成：</p>
+
+      <figure class="loop" aria-label="ReAct 轨迹中的三种内容">
+        <ul class="loop-steps">
+          <li class="step">
+            <span class="step-tag">Thought</span>
+            <h3>想法</h3>
+            <p>用自然语言写下当前的判断，比如“我需要先查出这个人出生在哪一年”。想法不改变外部环境。</p>
+          </li>
+          <li class="step">
+            <span class="step-tag">Action</span>
+            <h3>动作</h3>
+            <p>调用一个外部接口。在问答任务里，作者只给了三个动作：<code>search[实体]</code> 搜索维基百科页面，<code>lookup[字符串]</code> 在当前页面里找关键词，<code>finish[答案]</code> 给出最终答案。</p>
+          </li>
+          <li class="step step-obs">
+            <span class="step-tag">Observation</span>
+            <h3>观察</h3>
+            <p>外部接口返回的结果，由环境填入，不由模型生成。</p>
+          </li>
+        </ul>
+        <figcaption>这样，模型每一步都能看到真实返回的信息，再决定下一步。对知识类任务，想法和动作通常一一交替；对需要很多步操作的决策类任务，想法只在需要的时候出现，比如拆分目标或者发现计划走不通的时候。</figcaption>
+      </figure>
+
+      <aside class="note">
+        <b>图 1（原文 Figure 1）</b><br>
+        同一道 HotpotQA 问题在 Standard、CoT、Act-only、ReAct 四种提示方式下的解题轨迹，以及 ALFWorld 中 Act-only 与 ReAct 的对比。导读没有复制原图，建议对照原文阅读。
+      </aside>
+
+      <p>下表概括了这四种方式的区别：</p>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead>
+            <tr><th scope="col">方式</th><th scope="col">显式推理</th><th scope="col">调用外部信息</th><th scope="col">主要风险</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Standard</th><td data-label="显式推理">无</td><td data-label="调用外部信息">无</td><td data-label="主要风险">直接给答案，无法检查过程</td></tr>
+            <tr><th scope="row">CoT</th><td data-label="显式推理">有</td><td data-label="调用外部信息">无</td><td data-label="主要风险">推理通顺但事实可能是编的</td></tr>
+            <tr><th scope="row">Act-only</th><td data-label="显式推理">无</td><td data-label="调用外部信息">有</td><td data-label="主要风险">能查资料，但不会拆解目标和纠错</td></tr>
+            <tr class="row-react"><th scope="row">ReAct</th><td data-label="显式推理">有</td><td data-label="调用外部信息">有</td><td data-label="主要风险">轨迹更长，搜索结果不好时可能原地打转</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="sec-3" aria-labelledby="h-sec-3">
+      <h2 id="h-sec-3">三、实验看什么</h2>
+      <p>论文在两类任务上测试 ReAct。第一类是知识密集型推理：多跳问答 HotpotQA 和事实核查 FEVER，模型只能通过上面三个动作访问维基百科。第二类是交互式决策：ALFWorld 是文字版的家务环境，WebShop 是模拟的网上购物。</p>
+      <p>读实验部分时，建议关注三个结果。</p>
+
+      <ol class="findings">
+        <li>
+          <p>第一，在 HotpotQA 和 FEVER 上，ReAct 通过查维基百科，明显减少了 CoT 中常见的幻觉和错误传播，生成的轨迹也更容易被人读懂和检查。但只用 ReAct 并不总是最好的，论文把 ReAct 和 CoT 结合起来，按条件在两者之间切换，效果更好。这说明内部知识和外部检索各有长处。</p>
+        </li>
+        <li>
+          <p>第二，在 ALFWorld 和 WebShop 上，ReAct 只用一到两个示例，成功率就比模仿学习和强化学习方法分别高出 34 和 10 个百分点（绝对值）。这是论文里最醒目的数字，注意它比较的是提示方法和需要大量训练数据的方法。</p>
+          <div class="stat" role="note">
+            <p class="stat-figs"><b>34</b><span>个百分点</span><b>10</b><span>个百分点</span></p>
+            <p>成功率的绝对值差距，比较对象是模仿学习和强化学习方法。</p>
+          </div>
+        </li>
+        <li>
+          <p>第三，论文做了错误分析。ReAct 的失败有不少来自搜索没有返回有用信息，以及模型反复生成相同的想法和动作、陷入循环。读这部分可以帮助理解后来的工作为什么要加入反思或记忆。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="sec-4" aria-labelledby="h-sec-4">
+      <h2 id="h-sec-4">四、局限与延伸阅读</h2>
+      <p>ReAct 依赖人工写的示例，示例的质量和风格会影响结果；轨迹较长，复杂任务容易超出上下文长度；动作空间也是人为设计的，换一个任务就要重新定义。作者还尝试用 ReAct 轨迹微调较小的模型，这部分可以作为选读。</p>
+      <p>读完 ReAct，可以接着读两篇工作：Reflexion 让模型在失败后写下反思、存进记忆再重试，直接回应了上面提到的“原地打转”问题；Toolformer 则让模型自己学会在什么时候调用什么工具，而不是靠提示示例。</p>
+    </section>
+
+    <section id="sec-quiz" aria-labelledby="h-sec-quiz">
+      <h2 id="h-sec-quiz">自测</h2>
+      <ol class="quiz">
+        <li>Thought、Action、Observation 三者中，哪一个不是模型生成的？为什么这一点重要？<a class="see" href="#sec-2">见第二节</a></li>
+        <li>为什么在 HotpotQA 上单独使用 ReAct 不一定比 CoT 好？<a class="see" href="#sec-3">见第三节</a></li>
+        <li>34 和 10 个百分点是和哪类方法比较得出的？<a class="see" href="#sec-3">见第三节</a></li>
+      </ol>
+    </section>
+
+    <section id="sec-refs" aria-labelledby="h-sec-refs">
+      <h2 id="h-sec-refs">参考来源</h2>
+      <ol class="refs">
+        <li>Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models. <a href="https://arxiv.org/abs/2210.03629">https://arxiv.org/abs/2210.03629</a></li>
+        <li>ReAct 项目主页与代码：<a href="https://react-lm.github.io">https://react-lm.github.io</a></li>
+        <li>Wei et al. Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. <a href="https://arxiv.org/abs/2201.11903">https://arxiv.org/abs/2201.11903</a></li>
+        <li>Shinn et al. Reflexion: Language Agents with Verbal Reinforcement Learning. <a href="https://arxiv.org/abs/2303.11366">https://arxiv.org/abs/2303.11366</a></li>
+        <li>Schick et al. Toolformer: Language Models Can Teach Themselves to Use Tools. <a href="https://arxiv.org/abs/2302.04761">https://arxiv.org/abs/2302.04761</a></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="end">ReAct 导读</footer>
+</div>
+
+<script>
+(function () {
+  var toc = document.querySelector('.toc');
+  var btn = document.querySelector('.toc-toggle');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-list a'));
+  if (btn && toc) {
+    btn.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  // 当前章节高亮（支持 IntersectionObserver 时）
+  if ('IntersectionObserver' in window) {
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && map[e.target.id]) {
+          links.forEach(function (a) { a.removeAttribute('aria-current'); });
+          map[e.target.id].setAttribute('aria-current', 'true');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

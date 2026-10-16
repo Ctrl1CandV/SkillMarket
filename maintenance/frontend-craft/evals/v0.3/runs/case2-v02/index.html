@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReAct 导读：让语言模型边想边做</title>
+<style>
+:root {
+  --bg: #f6f3ec;
+  --surface: #fdfbf6;
+  --ink: #1f1d19;
+  --ink-2: #45413a;
+  --meta: #6a655b;
+  --rule: #ddd5c6;
+  --rule-strong: #c4baa7;
+  --accent: #1d5c56;
+  --accent-ink: #164a45;
+  --accent-soft: #e2ece8;
+  --env: #8a5a1c;
+  --env-soft: #f3e7d3;
+
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sans: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+  --body-size: 18px;
+  --s1: 6px; --s2: 12px; --s3: 20px; --s4: 32px; --s5: 56px; --s6: 88px;
+  --radius: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171a19;
+    --surface: #1e2221;
+    --ink: #e7e3da;
+    --ink-2: #c9c4b8;
+    --meta: #9d978b;
+    --rule: #333836;
+    --rule-strong: #4a504d;
+    --accent: #7cc4b9;
+    --accent-ink: #9fd6cc;
+    --accent-soft: #233532;
+    --env: #e0b071;
+    --env-soft: #3a2f20;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--body-size);
+  line-height: 1.85;
+  font-kerning: normal;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--accent-ink); text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+code {
+  font-family: var(--mono);
+  font-size: 0.84em;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 0.08em 0.36em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ---------- page grid ---------- */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--s5) 32px var(--s6);
+  display: grid;
+  grid-template-columns: 200px minmax(0, 700px);
+  column-gap: 72px;
+  justify-content: center;
+}
+.masthead, .article { grid-column: 2; }
+.toc-wrap { grid-column: 1; grid-row: 2; }
+
+/* ---------- masthead ---------- */
+.masthead { padding-bottom: var(--s4); border-bottom: 1px solid var(--rule); margin-bottom: var(--s4); }
+.kicker {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 var(--s2);
+}
+h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(30px, 4.6vw, 44px);
+  line-height: 1.3;
+  margin: 0 0 var(--s4);
+  letter-spacing: 0.01em;
+}
+h1 .sub { display: block; color: var(--ink-2); font-weight: 400; font-size: 0.62em; margin-top: 0.3em; }
+
+.paper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 4.2em minmax(0, 1fr);
+  column-gap: var(--s3);
+  row-gap: var(--s1);
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.paper dt { color: var(--meta); }
+.paper dd { margin: 0; }
+.paper .en-title { font-family: var(--serif); font-size: 16px; color: var(--ink); font-style: italic; }
+
+/* ---------- TOC ---------- */
+.toc-wrap { position: relative; }
+.toc {
+  position: sticky;
+  top: var(--s4);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.toc summary { display: none; }
+.toc-label {
+  font-size: 12px; letter-spacing: 0.08em; color: var(--meta);
+  margin: 6px 0 var(--s2); font-weight: 700;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--rule); }
+.toc li a {
+  display: block;
+  padding: 7px 0 7px 14px;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.toc li a:hover { color: var(--ink); border-left-color: var(--rule-strong); }
+.toc li a[aria-current="true"] {
+  color: var(--accent-ink);
+  border-left: 3px solid var(--accent);
+  font-weight: 700;
+}
+.toc .num { display: inline-block; min-width: 1.6em; color: var(--meta); }
+.toc a[aria-current="true"] .num { color: var(--accent); }
+.toc-meta { margin-top: var(--s3); font-size: 12.5px; color: var(--meta); line-height: 1.6; }
+
+/* ---------- article ---------- */
+.article p { margin: 0 0 1.05em; }
+.lead {
+  font-size: 1.08em;
+  color: var(--ink);
+  margin-bottom: var(--s4) !important;
+}
+.article section { scroll-margin-top: var(--s4); }
+.article section + section { margin-top: var(--s5); }
+h2 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 1.4;
+  margin: 0 0 var(--s3);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+h2 .no {
+  font-family: var(--serif);
+  color: var(--accent);
+  font-size: 0.92em;
+  flex: none;
+}
+.term { font-family: var(--sans); font-size: 0.9em; color: var(--ink-2); }
+.cite {
+  font-family: var(--sans);
+  font-size: 0.68em;
+  vertical-align: 0.5em;
+  line-height: 0;
+  text-decoration: none;
+  padding: 0 1px;
+}
+
+/* trajectory format */
+.traj {
+  margin: var(--s4) 0;
+  padding: var(--s3) var(--s3) var(--s2);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.traj-head {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--meta);
+  margin: 0 0 var(--s3);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+}
+.traj-head b { color: var(--ink-2); font-weight: 700; margin-right: 4px; }
+.nw { white-space: nowrap; }
+.traj-head .loop { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); }
+.steps { list-style: none; margin: 0; padding: 0; position: relative; }
+.steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  column-gap: var(--s3);
+  padding: var(--s2) 0 var(--s3);
+  border-top: 1px solid var(--rule);
+}
+.steps li:first-child { border-top: 0; padding-top: 0; }
+.step-name { font-family: var(--sans); line-height: 1.4; display: flex; flex-wrap: wrap; align-items: baseline; align-content: flex-start; gap: 2px 8px; }
+.step-name .en { flex-basis: 100%; }
+.step-name .en { display: block; font-weight: 700; font-size: 17px; color: var(--ink); }
+.step-name .zh { font-size: 14px; color: var(--ink-2); }
+.who {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.who.model { color: var(--accent); background: var(--accent-soft); }
+.who.env { color: var(--env); background: var(--env-soft); }
+.step-body { font-size: 0.95em; line-height: 1.8; }
+.step-body p { margin: 0; }
+
+/* figure placeholder */
+.fig-missing {
+  margin: var(--s4) 0;
+  padding: var(--s3);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.fig-missing .tag { font-weight: 700; color: var(--ink); display: block; margin-bottom: 4px; }
+.fig-missing .tag span { font-weight: 400; color: var(--meta); margin-left: 0.4em; }
+.fig-missing p { margin: 0 0 6px !important; }
+
+/* table */
+.table-cap { font-family: var(--sans); font-size: 14px; color: var(--meta); margin: var(--s4) 0 var(--s2) !important; }
+.table-scroll { overflow-x: auto; margin: 0 0 var(--s4); -webkit-overflow-scrolling: touch; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+thead th { font-size: 13px; color: var(--meta); font-weight: 700; border-bottom: 1.5px solid var(--ink-2); white-space: nowrap; }
+tbody th { font-weight: 700; white-space: nowrap; }
+td.yn { white-space: nowrap; color: var(--ink-2); }
+td.yn.yes { color: var(--ink); font-weight: 700; }
+td.yn::before { content: "○"; margin-right: 0.35em; font-weight: 400; color: var(--meta); }
+td.yn.yes::before { content: "●"; color: var(--accent); }
+tr.hl th, tr.hl td { background: var(--accent-soft); }
+tr.hl th { color: var(--accent-ink); }
+.risk { color: var(--ink-2); }
+
+/* experiment findings */
+.findings { list-style: none; margin: var(--s3) 0 0; padding: 0; counter-reset: f; }
+.findings > li {
+  counter-increment: f;
+  position: relative;
+  padding-left: 2.6em;
+  margin-bottom: var(--s4);
+}
+.findings > li::before {
+  content: counter(f);
+  position: absolute; left: 0; top: 0.2em;
+  width: 1.75em; height: 1.75em;
+  display: grid; place-items: center;
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+}
+.findings p { margin: 0; }
+.findings .ord { font-weight: 700; }
+.task-pair { font-family: var(--sans); font-size: 0.86em; color: var(--meta); }
+
+.stat {
+  margin: var(--s3) 0 0;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  column-gap: var(--s4);
+  align-items: end;
+  padding: var(--s3) 0 var(--s2);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+.stat .n { font-family: var(--sans); font-size: 44px; line-height: 1; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat .n small { font-size: 0.42em; font-weight: 700; margin-left: 2px; }
+.stat .l { display: block; font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+.stat .note { font-size: 13px; line-height: 1.6; color: var(--meta); align-self: end; }
+
+/* self test */
+.quiz { margin: 0; padding: 0; list-style: none; counter-reset: q; }
+.quiz li {
+  counter-increment: q;
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr);
+  padding: var(--s3) 0;
+  border-top: 1px solid var(--rule);
+}
+.quiz li:last-child { border-bottom: 1px solid var(--rule); }
+.quiz li::before { content: counter(q) "."; font-family: var(--sans); font-weight: 700; color: var(--accent); }
+.quiz p { margin: 0 !important; }
+.back {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+}
+
+/* references */
+.refs { margin: 0; padding: 0; list-style: none; counter-reset: r; font-family: var(--sans); font-size: 15px; line-height: 1.65; }
+.refs li {
+  counter-increment: r;
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: var(--s4);
+}
+.refs li:target { background: var(--accent-soft); }
+.refs li::before { content: "[" counter(r) "]"; color: var(--meta); font-variant-numeric: tabular-nums; }
+.refs .t { color: var(--ink); }
+.refs a { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; word-break: break-all; }
+
+.endnote {
+  margin-top: var(--s5);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--meta);
+  display: flex; justify-content: space-between; gap: var(--s2); flex-wrap: wrap;
+}
+
+/* mobile TOC jump button */
+.toc-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  text-decoration: none;
+  display: none;
+}
+
+/* ---------- narrow ---------- */
+@media (max-width: 900px) {
+  :root { --body-size: 17px; }
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s4) 20px var(--s5);
+    max-width: 720px;
+  }
+  .masthead, .article, .toc-wrap { grid-column: 1; }
+  .toc-wrap { grid-row: auto; margin-bottom: var(--s4); }
+  .masthead { margin-bottom: var(--s3); padding-bottom: var(--s3); }
+  .toc {
+    position: static;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font-size: 15px;
+  }
+  .toc summary {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 700;
+    list-style: none;
+  }
+  .toc summary::-webkit-details-marker { display: none; }
+  .toc summary::after { content: "展开"; font-weight: 400; font-size: 13px; color: var(--accent); }
+  .toc[open] summary::after { content: "收起"; }
+  .toc[open] summary { border-bottom: 1px solid var(--rule); }
+  .toc .toc-label { display: none; }
+  .toc ol { border-left: 0; padding: 4px 0; }
+  .toc li a { padding: 9px 16px; border-left-width: 3px; }
+  .toc li a[aria-current="true"] { border-left-width: 3px; }
+  .toc-meta { margin: 0; padding: 10px 16px 14px; border-top: 1px solid var(--rule); }
+  .toc-fab.show { display: inline-block; }
+  .article section { scroll-margin-top: var(--s3); }
+  h2 { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  .paper { grid-template-columns: 3.4em minmax(0, 1fr); column-gap: var(--s2); font-size: 14px; }
+  .steps li { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+  .step-name { gap: 4px 10px; }
+  .step-name .en { display: inline; flex-basis: auto; }
+  .who { margin-top: 0; }
+  .traj { padding: 16px 16px 8px; }
+  table { font-size: 14px; }
+  th, td { padding: 9px 8px; }
+  thead th { white-space: normal; }
+  .stat { grid-template-columns: auto auto; row-gap: var(--s2); }
+  .stat .note { grid-column: 1 / -1; }
+  .findings > li { padding-left: 2.3em; }
+}
+</style>
+</head>
+<body>
+<div class="page" id="top">
+
+  <header class="masthead">
+    <p class="kicker">论文导读</p>
+    <h1>ReAct 导读<span class="sub">让语言模型边想边做</span></h1>
+    <dl class="paper">
+      <dt>论文</dt>
+      <dd><span class="en-title">ReAct: Synergizing Reasoning and Acting in Language Models</span></dd>
+      <dt>作者</dt>
+      <dd>Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao</dd>
+      <dt>发表</dt>
+      <dd>ICLR 2023（arXiv <a href="https://arxiv.org/abs/2210.03629">2210.03629</a>）</dd>
+      <dt>适合</dt>
+      <dd>读过 Chain-of-Thought、想了解 Agent 基本工作方式的同学，预计阅读 15 分钟。</dd>
+    </dl>
+  </header>
+
+  <aside class="toc-wrap">
+    <details class="toc" id="toc" open>
+      <summary>目录</summary>
+      <p class="toc-label">目录</p>
+      <nav aria-label="文章目录">
+        <ol>
+          <li><a href="#s1"><span class="num">一</span>这篇论文想解决什么</a></li>
+          <li><a href="#s2"><span class="num">二</span>ReAct 怎么做</a></li>
+          <li><a href="#s3"><span class="num">三</span>实验看什么</a></li>
+          <li><a href="#s4"><span class="num">四</span>局限与延伸阅读</a></li>
+          <li><a href="#quiz"><span class="num">·</span>自测</a></li>
+          <li><a href="#refs"><span class="num">·</span>参考来源</a></li>
+        </ol>
+      </nav>
+      <p class="toc-meta">按“问题—方法—实验—局限”的顺序，重点在方法与实验设计。</p>
+    </details>
+  </aside>
+
+  <main class="article">
+    <p class="lead">在 ReAct 之前，大语言模型的两种能力基本是分开研究的：一边是推理，比如 Chain-of-Thought（CoT）<a class="cite" href="#ref3" aria-label="参考来源 3">[3]</a>让模型先写出中间步骤再给答案；另一边是行动，比如让模型生成动作计划、在环境里一步步操作。ReAct 的想法很直接：让模型交替写“想法”和“动作”，想法帮助它制定、跟踪和修改计划，动作让它从外部取得新信息。这篇导读按“问题—方法—实验—局限”的顺序梳理全文，重点放在方法和实验设计上。</p>
+
+    <section id="s1" aria-labelledby="h-s1">
+      <h2 id="h-s1"><span class="no">一</span><span>这篇论文想解决什么</span></h2>
+      <p>只做推理的模型有一个老问题：它所有的判断都来自自己的参数，遇到需要事实的问题时，推理链看起来通顺，却可能建立在一个记错的事实上，而且错误会沿着链条一路传下去。论文把这类问题称为幻觉（<span class="term">hallucination</span>）和错误传播（<span class="term">error propagation</span>）。</p>
+      <p>只做行动的模型则相反。它能调用搜索、能在环境里操作，但没有显式的推理过程，很难把大目标拆成小目标，也很难在某一步失败后意识到需要换一种做法。</p>
+      <p>作者的判断是：人在完成任务时本来就是边想边做的，想的内容决定下一步做什么，做的结果又反过来修正想法。如果让模型也按这种方式工作，两种能力应该可以互相补足。</p>
+    </section>
+
+    <section id="s2" aria-labelledby="h-s2">
+      <h2 id="h-s2"><span class="no">二</span><span>ReAct 怎么做</span></h2>
+      <p>ReAct 不训练新模型，核心是一种提示方式。提示里放一两个人工写好的解题轨迹，模型照着格式往下生成。每条轨迹由三种内容交替组成：</p>
+
+      <div class="traj" id="tao">
+        <p class="traj-head"><b>轨迹格式</b><span class="loop"><span class="nw">Thought →</span> <span class="nw">Action →</span> <span class="nw">Observation →</span> <span class="nw">Thought …</span></span></p>
+        <ol class="steps">
+          <li>
+            <div class="step-name"><span class="en">Thought</span><span class="zh">想法</span><span class="who model">模型生成</span></div>
+            <div class="step-body"><p>用自然语言写下当前的判断，比如“我需要先查出这个人出生在哪一年”。想法不改变外部环境。</p></div>
+          </li>
+          <li>
+            <div class="step-name"><span class="en">Action</span><span class="zh">动作</span><span class="who model">模型生成</span></div>
+            <div class="step-body"><p>调用一个外部接口。在问答任务里，作者只给了三个动作：<code>search[实体]</code> 搜索维基百科页面，<code>lookup[字符串]</code> 在当前页面里找关键词，<code>finish[答案]</code> 给出最终答案。</p></div>
+          </li>
+          <li>
+            <div class="step-name"><span class="en">Observation</span><span class="zh">观察</span><span class="who env">环境填入</span></div>
+            <div class="step-body"><p>外部接口返回的结果，由环境填入，不由模型生成。</p></div>
+          </li>
+        </ol>
+      </div>
+
+      <p>这样，模型每一步都能看到真实返回的信息，再决定下一步。对知识类任务，想法和动作通常一一交替；对需要很多步操作的决策类任务，想法只在需要的时候出现，比如拆分目标或者发现计划走不通的时候。</p>
+
+      <aside class="fig-missing" aria-label="图 1 说明">
+        <span class="tag">图 1<span>原文 Figure 1 · 本页未收录原图</span></span>
+        <p>同一道 HotpotQA 问题在 Standard、CoT、<span class="nw">Act-only</span>、ReAct 四种提示方式下的解题轨迹，以及 ALFWorld 中 <span class="nw">Act-only</span> 与 ReAct 的对比。导读没有复制原图，建议对照原文阅读。</p>
+        <a href="https://arxiv.org/abs/2210.03629">在 arXiv 打开原文</a>
+      </aside>
+
+      <p class="table-cap" id="tbl-cap">下表概括了这四种方式的区别：</p>
+      <div class="table-scroll" role="region" aria-labelledby="tbl-cap" tabindex="0">
+        <table>
+          <thead>
+            <tr><th scope="col">方式</th><th scope="col">显式推理</th><th scope="col">调用外部信息</th><th scope="col">主要风险</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Standard</th><td class="yn">无</td><td class="yn">无</td><td class="risk">直接给答案，无法检查过程</td></tr>
+            <tr><th scope="row">CoT</th><td class="yn yes">有</td><td class="yn">无</td><td class="risk">推理通顺但事实可能是编的</td></tr>
+            <tr><th scope="row">Act-only</th><td class="yn">无</td><td class="yn yes">有</td><td class="risk">能查资料，但不会拆解目标和纠错</td></tr>
+            <tr class="hl"><th scope="row">ReAct</th><td class="yn yes">有</td><td class="yn yes">有</td><td class="risk">轨迹更长，搜索结果不好时可能原地打转</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="s3" aria-labelledby="h-s3">
+      <h2 id="h-s3"><span class="no">三</span><span>实验看什么</span></h2>
+      <p>论文在两类任务上测试 ReAct。第一类是知识密集型推理：多跳问答 HotpotQA 和事实核查 FEVER，模型只能通过上面三个动作访问维基百科。第二类是交互式决策：ALFWorld 是文字版的家务环境，WebShop 是模拟的网上购物。</p>
+      <p>读实验部分时，建议关注三个结果。</p>
+
+      <ol class="findings">
+        <li id="f1">
+          <p><span class="ord">第一，</span>在 HotpotQA 和 FEVER 上，ReAct 通过查维基百科，明显减少了 CoT 中常见的幻觉和错误传播，生成的轨迹也更容易被人读懂和检查。但只用 ReAct 并不总是最好的，论文把 ReAct 和 CoT 结合起来，按条件在两者之间切换，效果更好。这说明内部知识和外部检索各有长处。</p>
+        </li>
+        <li id="f2">
+          <p><span class="ord">第二，</span>在 ALFWorld 和 WebShop 上，ReAct 只用一到两个示例，成功率就比模仿学习和强化学习方法分别高出 34 和 10 个百分点（绝对值）。这是论文里最醒目的数字，注意它比较的是提示方法和需要大量训练数据的方法。</p>
+          <div class="stat" role="group" aria-label="成功率提升">
+            <div><span class="n">+34</span><span class="l">ALFWorld · 百分点</span></div>
+            <div><span class="n">+10</span><span class="l">WebShop · 百分点</span></div>
+            <p class="note">成功率绝对提升。对照组是模仿学习和强化学习方法；ReAct 只用一到两个提示示例。</p>
+          </div>
+        </li>
+        <li id="f3">
+          <p><span class="ord">第三，</span>论文做了错误分析。ReAct 的失败有不少来自搜索没有返回有用信息，以及模型反复生成相同的想法和动作、陷入循环。读这部分可以帮助理解后来的工作为什么要加入反思或记忆。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="s4" aria-labelledby="h-s4">
+      <h2 id="h-s4"><span class="no">四</span><span>局限与延伸阅读</span></h2>
+      <p>ReAct 依赖人工写的示例，示例的质量和风格会影响结果；轨迹较长，复杂任务容易超出上下文长度；动作空间也是人为设计的，换一个任务就要重新定义。作者还尝试用 ReAct 轨迹微调较小的模型，这部分可以作为选读。</p>
+      <p>读完 ReAct，可以接着读两篇工作：Reflexion<a class="cite" href="#ref4" aria-label="参考来源 4">[4]</a> 让模型在失败后写下反思、存进记忆再重试，直接回应了上面提到的“原地打转”问题；Toolformer<a class="cite" href="#ref5" aria-label="参考来源 5">[5]</a> 则让模型自己学会在什么时候调用什么工具，而不是靠提示示例。</p>
+    </section>
+
+    <section id="quiz" aria-labelledby="h-quiz">
+      <h2 id="h-quiz"><span>自测</span></h2>
+      <ol class="quiz">
+        <li><div><p>Thought、Action、Observation 三者中，哪一个不是模型生成的？为什么这一点重要？</p><a class="back" href="#tao">回看：轨迹格式</a></div></li>
+        <li><div><p>为什么在 HotpotQA 上单独使用 ReAct 不一定比 CoT 好？</p><a class="back" href="#f1">回看：实验结果第一条</a></div></li>
+        <li><div><p>34 和 10 个百分点是和哪类方法比较得出的？</p><a class="back" href="#f2">回看：实验结果第二条</a></div></li>
+      </ol>
+    </section>
+
+    <section id="refs" aria-labelledby="h-refs">
+      <h2 id="h-refs"><span>参考来源</span></h2>
+      <ol class="refs">
+        <li id="ref1"><div><span class="t">Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models.</span><br><a href="https://arxiv.org/abs/2210.03629">https://arxiv.org/abs/2210.03629</a></div></li>
+        <li id="ref2"><div><span class="t">ReAct 项目主页与代码</span><br><a href="https://react-lm.github.io">https://react-lm.github.io</a></div></li>
+        <li id="ref3"><div><span class="t">Wei et al. Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.</span><br><a href="https://arxiv.org/abs/2201.11903">https://arxiv.org/abs/2201.11903</a></div></li>
+        <li id="ref4"><div><span class="t">Shinn et al. Reflexion: Language Agents with Verbal Reinforcement Learning.</span><br><a href="https://arxiv.org/abs/2303.11366">https://arxiv.org/abs/2303.11366</a></div></li>
+        <li id="ref5"><div><span class="t">Schick et al. Toolformer: Language Models Can Teach Themselves to Use Tools.</span><br><a href="https://arxiv.org/abs/2302.04761">https://arxiv.org/abs/2302.04761</a></div></li>
+      </ol>
+    </section>
+
+    <footer class="endnote">
+      <span>ReAct 导读 · 论文 arXiv 2210.03629</span>
+      <a href="#top">回到顶部</a>
+    </footer>
+  </main>
+</div>
+
+<a class="toc-fab" href="#toc" id="tocFab">目录</a>
+
+<script>
+(function () {
+  var toc = document.getElementById('toc');
+  var fab = document.getElementById('tocFab');
+  var narrow = window.matchMedia('(max-width: 900px)');
+
+  function syncToc() {
+    if (narrow.matches) toc.removeAttribute('open');
+    else toc.setAttribute('open', '');
+  }
+  syncToc();
+  if (narrow.addEventListener) narrow.addEventListener('change', syncToc);
+
+  // desktop: summary hidden, keep it open
+  toc.addEventListener('toggle', function () {
+    if (!narrow.matches && !toc.open) toc.open = true;
+  });
+
+  // choosing a TOC entry on phone collapses the list again
+  toc.querySelectorAll('nav a').forEach(function (a) {
+    a.addEventListener('click', function () { if (narrow.matches) toc.open = false; });
+  });
+
+  fab.addEventListener('click', function () { toc.open = true; });
+
+  // current-section marker
+  var links = {};
+  toc.querySelectorAll('nav a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.article section[id]'));
+
+  function update() {
+    var y = window.scrollY + window.innerHeight * 0.3;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= y) current = s.id; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = sections[sections.length - 1].id;
+    Object.keys(links).forEach(function (id) {
+      if (id === current) links[id].setAttribute('aria-current', 'true');
+      else links[id].removeAttribute('aria-current');
+    });
+    var tocBottom = toc.getBoundingClientRect().bottom;
+    fab.classList.toggle('show', tocBottom < 0);
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

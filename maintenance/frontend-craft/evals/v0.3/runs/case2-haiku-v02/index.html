@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>ReAct 导读</title>
+<style>
+:root{
+  color-scheme:light;
+  --paper:#FBF9F5;
+  --surface:#F3EFE7;
+  --ink:#23211C;
+  --ink-2:#5F594E;
+  --ink-3:#6F695D;
+  --rule:#E2DCCF;
+  --accent:#1F4E79;
+  --accent-soft:#E8EFF6;
+  --accent-line:#B5C8DC;
+  --warm:#8A5B1C;
+  --warm-soft:#F6EDDC;
+  --warm-line:#D8BE8E;
+  --serif:"Noto Serif SC","Source Han Serif SC","思源宋体","Songti SC","Noto Serif CJK SC","Source Han Serif CJK SC",STSong,SimSun,Georgia,"Times New Roman",serif;
+  --sans:"Noto Sans SC","Source Han Sans SC","思源黑体","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono";
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--serif);font-size:18px;line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+p{text-wrap:pretty}
+
+/* 页面骨架 */
+.page{
+  display:grid;grid-template-columns:minmax(0,1fr);
+  max-width:1080px;margin:0 auto;padding:40px 20px 96px;
+}
+main{min-width:0;width:100%;max-width:680px;justify-self:center}
+@media (min-width:1000px){
+  .page{grid-template-columns:184px minmax(0,680px);column-gap:72px;justify-content:center;padding-top:72px}
+  main{max-width:none;justify-self:stretch}
+}
+
+/* 目录：桌面吸附在左侧，手机端为可展开块 */
+.toc a{display:block;position:relative;padding:6px 0 6px 16px;font-family:var(--sans);font-size:14.5px;line-height:1.5;color:var(--ink-2);text-decoration:none}
+.toc a:hover{color:var(--ink)}
+.toc a[aria-current="location"]{color:var(--accent);font-weight:700}
+.toc a[aria-current="location"]::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--accent)}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc-label{margin:0 0 14px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+.toc-desk{display:none}
+@media (min-width:1000px){
+  .toc-desk{display:block;position:sticky;top:48px;align-self:start;max-height:calc(100vh - 96px);overflow-y:auto;padding-top:6px}
+  .toc-desk ol{border-left:1px solid var(--rule)}
+  .toc-mobile{display:none}
+}
+.toc-mobile{margin:0 0 8px;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+.toc-mobile summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;font-family:var(--sans);font-size:15px;font-weight:700;
+}
+.toc-mobile summary::-webkit-details-marker{display:none}
+.toc-mobile summary .cur{font-size:13.5px;font-weight:400;color:var(--ink-3);text-align:right;min-width:0}
+.toc-mobile summary .cur:empty{display:none}
+.toc-mobile summary::after{
+  content:"";flex:none;width:7px;height:7px;margin-right:4px;
+  border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);
+  transform:translateY(-2px) rotate(45deg);
+}
+.toc-mobile[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+.toc-mobile ol{padding:4px 16px 12px;border-top:1px solid var(--rule)}
+.toc-mobile a{padding:9px 0 9px 12px}
+
+/* 题名与元数据 */
+.kicker-bar{width:44px;height:3px;background:var(--accent);margin:8px 0 24px}
+h1{margin:0 0 28px;font-family:var(--sans);font-size:34px;line-height:1.32;font-weight:700;text-wrap:balance}
+.meta{margin:0 0 28px;padding:16px 0 10px;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:14.5px;line-height:1.7}
+.meta div{display:grid;grid-template-columns:4.6em minmax(0,1fr);column-gap:12px;padding:0 0 6px}
+.meta dt{color:var(--ink-3)}
+.meta dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.lede{margin:0 0 8px;font-size:19px;line-height:1.9;color:var(--ink)}
+
+/* 正文 */
+article h2{
+  margin:3.2em 0 1.2em;padding-top:1.4em;border-top:1px solid var(--rule);
+  font-family:var(--sans);font-size:24px;line-height:1.4;font-weight:700;text-wrap:balance;
+  scroll-margin-top:24px;
+}
+article p{margin:0 0 1.2em}
+article strong{font-weight:700;color:var(--ink)}
+article ul,article ol{margin:0 0 1.4em;padding-left:1.5em}
+article li{margin:0 0 .7em;padding-left:.2em}
+article ul li::marker{color:var(--accent)}
+article ol li::marker{color:var(--accent);font-family:var(--sans);font-weight:700}
+article code{
+  font-family:var(--mono),var(--sans);font-size:.9em;color:var(--ink);
+  background:var(--surface);padding:.1em .4em;border-radius:4px;
+}
+
+/* 图注式说明：不复制原图 */
+.note{margin:2em 0;padding:16px 20px 14px;background:var(--surface);border-left:3px solid var(--warm);border-radius:0 8px 8px 0}
+.note p{margin:0 0 .4em;font-size:15.5px;line-height:1.8;color:var(--ink-2)}
+.note .label{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--warm)}
+
+/* 一步循环示意（依据正文文字绘制，非原文图） */
+.flow{margin:2.2em 0 2.4em;padding:20px 18px 16px;background:var(--surface);border-radius:10px}
+.flow ol{list-style:none;margin:0;padding:0;display:flex;align-items:stretch;gap:24px}
+.flow li{position:relative;flex:1 1 0;min-width:0;margin:0;padding:14px 14px 13px;border:1px solid;border-radius:8px;background:var(--paper);display:flex;flex-direction:column;gap:2px}
+.flow li.model{border-color:var(--accent-line)}
+.flow li.env{border-color:var(--warm-line)}
+.flow li:not(:last-child)::after{
+  content:"→";position:absolute;left:100%;top:50%;width:24px;margin-top:-11px;
+  text-align:center;font-family:var(--sans);font-size:16px;line-height:22px;color:var(--ink-3);
+}
+.flow .en{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink)}
+.flow .zh{font-family:var(--sans);font-size:14px;color:var(--ink-2)}
+.flow .who{margin-top:auto;padding-top:8px;font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--accent)}
+.flow li.env .who{color:var(--warm)}
+.flow .back{margin:14px 0 0;font-family:var(--sans);font-size:13.5px;color:var(--ink-2);text-align:center}
+.flow figcaption{margin-top:10px;font-family:var(--sans);font-size:13px;line-height:1.6;color:var(--ink-3);text-align:center}
+
+/* 对比表：桌面为表格，手机逐条展开 */
+.table-wrap{margin:1.6em 0 2em}
+table{width:100%;border-collapse:collapse;font-size:16px;line-height:1.6}
+thead th{
+  padding:0 12px 10px 0;text-align:left;vertical-align:bottom;
+  font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink-3);
+  border-bottom:1.5px solid var(--ink);
+}
+tbody td{padding:13px 12px 13px 0;vertical-align:top;border-bottom:1px solid var(--rule)}
+tbody td:first-child{font-family:var(--sans);font-weight:700;white-space:nowrap}
+tbody tr.hl td:first-child{color:var(--accent)}
+
+/* 数字强调 */
+.stat{margin:2.2em 0;padding:24px 24px 20px;background:var(--accent-soft);border-radius:10px}
+.stat-row{display:flex;flex-wrap:wrap;gap:24px 44px}
+.stat-num{display:block;font-family:var(--sans);font-size:46px;font-weight:700;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.stat-cap{display:block;margin-top:10px;font-family:var(--sans);font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.stat-src{margin:18px 0 0;font-family:var(--sans);font-size:13.5px;line-height:1.6;color:var(--ink-3)}
+
+/* 自测：默认收起答案 */
+.quiz{padding-left:1.6em}
+.quiz > li{padding-left:.2em;margin-bottom:1.5em}
+.quiz > li > p{margin:0 0 .6em}
+.quiz summary{cursor:pointer;font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--accent);padding:2px 0}
+.quiz details[open]{padding:12px 16px 4px;background:var(--surface);border-radius:8px}
+.quiz details[open] summary{margin-bottom:6px}
+.quiz details p{margin:0 0 .8em;font-size:16.5px;line-height:1.8;color:var(--ink-2)}
+
+/* 参考来源 */
+.refs{padding-left:1.6em}
+.refs li{margin-bottom:.8em;font-size:15.5px;line-height:1.75;color:var(--ink-2)}
+.refs a{color:var(--accent);overflow-wrap:anywhere}
+
+.end{margin:64px 0 0;padding-top:20px;border-top:1px solid var(--rule);font-family:var(--sans);font-size:14px;color:var(--ink-3)}
+
+/* 手机 */
+@media (max-width:600px){
+  body{font-size:17px;line-height:1.8}
+  .page{padding:28px 18px 72px}
+  h1{font-size:28px;margin-bottom:22px}
+  .lede{font-size:17.5px;line-height:1.85}
+  article h2{font-size:21px;margin-top:2.6em}
+  .note p{font-size:15px}
+  .stat{padding:20px 18px 16px}
+  .stat-num{font-size:40px}
+  .stat-row{gap:20px 32px}
+
+  .flow{padding:16px 14px 14px}
+  .flow ol{flex-direction:column;gap:24px}
+  .flow li:not(:last-child)::after{
+    content:"↓";left:50%;top:100%;width:24px;height:24px;margin:0 0 0 -12px;line-height:24px;
+  }
+
+  table,thead,tbody,tr,td{display:block;width:100%}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  tbody tr{padding:14px 0 8px;border-bottom:1px solid var(--rule)}
+  tbody td{padding:3px 0;border:0;text-wrap:pretty}
+  tbody td:first-child{font-size:17px;padding-bottom:4px}
+  tbody td::before{
+    content:attr(data-label) "：";margin-right:.2em;
+    font-family:var(--sans);font-size:13.5px;color:var(--ink-3);
+  }
+  tbody td:first-child::before{content:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="toc toc-desk" aria-label="文章目录">
+    <p class="toc-label">目录</p>
+    <ol>
+      <li><a href="#s-problem">一、这篇论文想解决什么</a></li>
+      <li><a href="#s-method">二、ReAct 怎么做</a></li>
+      <li><a href="#s-exp">三、实验看什么</a></li>
+      <li><a href="#s-limit">四、局限与延伸阅读</a></li>
+      <li><a href="#s-quiz">自测</a></li>
+      <li><a href="#s-refs">参考来源</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header id="top">
+      <div class="kicker-bar" aria-hidden="true"></div>
+      <h1>ReAct 导读：让语言模型边想边做</h1>
+      <dl class="meta">
+        <div><dt>论文</dt><dd>ReAct: Synergizing Reasoning and Acting in Language Models</dd></div>
+        <div><dt>作者</dt><dd>Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao</dd></div>
+        <div><dt>发表</dt><dd>ICLR 2023（arXiv 2210.03629）</dd></div>
+        <div><dt>导读适合</dt><dd>读过 Chain-of-Thought、想了解 Agent 基本工作方式的同学，预计阅读 15 分钟。</dd></div>
+      </dl>
+      <p class="lede">在 ReAct 之前，大语言模型的两种能力基本是分开研究的：一边是推理，比如 Chain-of-Thought（CoT）让模型先写出中间步骤再给答案；另一边是行动，比如让模型生成动作计划、在环境里一步步操作。ReAct 的想法很直接：让模型交替写“想法”和“动作”，想法帮助它制定、跟踪和修改计划，动作让它从外部取得新信息。这篇导读按“问题—方法—实验—局限”的顺序梳理全文，重点放在方法和实验设计上。</p>
+    </header>
+
+    <details class="toc toc-mobile" id="toc">
+      <summary><span>目录</span><span class="cur"></span></summary>
+      <ol>
+        <li><a href="#s-problem">一、这篇论文想解决什么</a></li>
+        <li><a href="#s-method">二、ReAct 怎么做</a></li>
+        <li><a href="#s-exp">三、实验看什么</a></li>
+        <li><a href="#s-limit">四、局限与延伸阅读</a></li>
+        <li><a href="#s-quiz">自测</a></li>
+        <li><a href="#s-refs">参考来源</a></li>
+      </ol>
+    </details>
+
+    <article>
+
+      <h2 id="s-problem">一、这篇论文想解决什么</h2>
+      <p>只做推理的模型有一个老问题：它所有的判断都来自自己的参数，遇到需要事实的问题时，推理链看起来通顺，却可能建立在一个记错的事实上，而且错误会沿着链条一路传下去。论文把这类问题称为幻觉（hallucination）和错误传播（error propagation）。</p>
+      <p>只做行动的模型则相反。它能调用搜索、能在环境里操作，但没有显式的推理过程，很难把大目标拆成小目标，也很难在某一步失败后意识到需要换一种做法。</p>
+      <p>作者的判断是：人在完成任务时本来就是边想边做的，想的内容决定下一步做什么，做的结果又反过来修正想法。如果让模型也按这种方式工作，两种能力应该可以互相补足。</p>
+
+      <h2 id="s-method">二、ReAct 怎么做</h2>
+      <p>ReAct 不训练新模型，核心是一种提示方式。提示里放一两个人工写好的解题轨迹，模型照着格式往下生成。每条轨迹由三种内容交替组成：</p>
+      <ul>
+        <li><strong>Thought（想法）</strong>：用自然语言写下当前的判断，比如“我需要先查出这个人出生在哪一年”。想法不改变外部环境。</li>
+        <li><strong>Action（动作）</strong>：调用一个外部接口。在问答任务里，作者只给了三个动作：<code>search[实体]</code> 搜索维基百科页面，<code>lookup[字符串]</code> 在当前页面里找关键词，<code>finish[答案]</code> 给出最终答案。</li>
+        <li><strong>Observation（观察）</strong>：外部接口返回的结果，由环境填入，不由模型生成。</li>
+      </ul>
+      <p>这样，模型每一步都能看到真实返回的信息，再决定下一步。对知识类任务，想法和动作通常一一交替；对需要很多步操作的决策类任务，想法只在需要的时候出现，比如拆分目标或者发现计划走不通的时候。</p>
+
+      <figure class="flow">
+        <ol>
+          <li class="model">
+            <span class="en">Thought</span>
+            <span class="zh">想法</span>
+            <span class="who">模型生成</span>
+          </li>
+          <li class="model">
+            <span class="en">Action</span>
+            <span class="zh">动作</span>
+            <span class="who">模型生成，调用外部接口</span>
+          </li>
+          <li class="env">
+            <span class="en">Observation</span>
+            <span class="zh">观察</span>
+            <span class="who">环境返回，不由模型生成</span>
+          </li>
+        </ol>
+        <p class="back">循环：观察返回后，模型据此决定下一步</p>
+        <figcaption>示意（非原文图）：一步之中，三类内容分别由谁生成。</figcaption>
+      </figure>
+
+      <aside class="note">
+        <p class="label">图 1（原文 Figure 1）</p>
+        <p>同一道 HotpotQA 问题在 Standard、CoT、Act-only、ReAct 四种提示方式下的解题轨迹，以及 ALFWorld 中 Act-only 与 ReAct 的对比。导读没有复制原图，建议对照原文阅读。</p>
+      </aside>
+
+      <p>下表概括了这四种方式的区别：</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">方式</th>
+              <th scope="col">显式推理</th>
+              <th scope="col">调用外部信息</th>
+              <th scope="col">主要风险</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="方式">Standard</td>
+              <td data-label="显式推理">无</td>
+              <td data-label="调用外部信息">无</td>
+              <td data-label="主要风险">直接给答案，无法检查过程</td>
+            </tr>
+            <tr>
+              <td data-label="方式">CoT</td>
+              <td data-label="显式推理">有</td>
+              <td data-label="调用外部信息">无</td>
+              <td data-label="主要风险">推理通顺但事实可能是编的</td>
+            </tr>
+            <tr>
+              <td data-label="方式">Act-only</td>
+              <td data-label="显式推理">无</td>
+              <td data-label="调用外部信息">有</td>
+              <td data-label="主要风险">能查资料，但不会拆解目标和纠错</td>
+            </tr>
+            <tr class="hl">
+              <td data-label="方式">ReAct</td>
+              <td data-label="显式推理">有</td>
+              <td data-label="调用外部信息">有</td>
+              <td data-label="主要风险">轨迹更长，搜索结果不好时可能原地打转</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="s-exp">三、实验看什么</h2>
+      <p>论文在两类任务上测试 ReAct。第一类是知识密集型推理：多跳问答 HotpotQA 和事实核查 FEVER，模型只能通过上面三个动作访问维基百科。第二类是交互式决策：ALFWorld 是文字版的家务环境，WebShop 是模拟的网上购物。</p>
+      <p>读实验部分时，建议关注三个结果。</p>
+      <p>第一，在 HotpotQA 和 FEVER 上，ReAct 通过查维基百科，明显减少了 CoT 中常见的幻觉和错误传播，生成的轨迹也更容易被人读懂和检查。但只用 ReAct 并不总是最好的，论文把 ReAct 和 CoT 结合起来，按条件在两者之间切换，效果更好。这说明内部知识和外部检索各有长处。</p>
+      <p>第二，在 ALFWorld 和 WebShop 上，ReAct 只用一到两个示例，成功率就比模仿学习和强化学习方法分别高出 34 和 10 个百分点（绝对值）。这是论文里最醒目的数字，注意它比较的是提示方法和需要大量训练数据的方法。</p>
+
+      <aside class="stat" aria-label="论文中的关键数字">
+        <div class="stat-row">
+          <div>
+            <span class="stat-num">34</span>
+            <span class="stat-cap">百分点（绝对值），高于模仿学习方法</span>
+          </div>
+          <div>
+            <span class="stat-num">10</span>
+            <span class="stat-cap">百分点（绝对值），高于强化学习方法</span>
+          </div>
+        </div>
+        <p class="stat-src">数据范围：ALFWorld 和 WebShop，ReAct 只用一到两个示例。</p>
+      </aside>
+
+      <p>第三，论文做了错误分析。ReAct 的失败有不少来自搜索没有返回有用信息，以及模型反复生成相同的想法和动作、陷入循环。读这部分可以帮助理解后来的工作为什么要加入反思或记忆。</p>
+
+      <h2 id="s-limit">四、局限与延伸阅读</h2>
+      <p>ReAct 依赖人工写的示例，示例的质量和风格会影响结果；轨迹较长，复杂任务容易超出上下文长度；动作空间也是人为设计的，换一个任务就要重新定义。作者还尝试用 ReAct 轨迹微调较小的模型，这部分可以作为选读。</p>
+      <p>读完 ReAct，可以接着读两篇工作：Reflexion 让模型在失败后写下反思、存进记忆再重试，直接回应了上面提到的“原地打转”问题；Toolformer 则让模型自己学会在什么时候调用什么工具，而不是靠提示示例。</p>
+
+      <h2 id="s-quiz">自测</h2>
+      <ol class="quiz">
+        <li>
+          <p>Thought、Action、Observation 三者中，哪一个不是模型生成的？为什么这一点重要？</p>
+          <details>
+            <summary>查看参考答案</summary>
+            <p>是 Observation。它是外部接口返回的结果，由环境填入。这一点重要：模型每一步都基于真实返回的信息再决定下一步，而不是只靠参数里的记忆一路推下去，这也是 ReAct 能减少幻觉和错误传播的基础。</p>
+          </details>
+        </li>
+        <li>
+          <p>为什么在 HotpotQA 上单独使用 ReAct 不一定比 CoT 好？</p>
+          <details>
+            <summary>查看参考答案</summary>
+            <p>ReAct 查维基百科能减少幻觉，但它的轨迹更长，搜索结果不好时可能原地打转。内部知识和外部检索各有长处，所以论文把 ReAct 和 CoT 结合，按条件在两者之间切换，效果更好。</p>
+          </details>
+        </li>
+        <li>
+          <p>34 和 10 个百分点是和哪类方法比较得出的？</p>
+          <details>
+            <summary>查看参考答案</summary>
+            <p>和需要大量训练数据的方法比较得出：34 个百分点对应模仿学习方法，10 个百分点对应强化学习方法，都是绝对值，数据来自 ALFWorld 和 WebShop。ReAct 在这里只用了一到两个示例。</p>
+          </details>
+        </li>
+      </ol>
+
+      <h2 id="s-refs">参考来源</h2>
+      <ol class="refs">
+        <li>Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models. <a href="https://arxiv.org/abs/2210.03629">https://arxiv.org/abs/2210.03629</a></li>
+        <li>ReAct 项目主页与代码：<a href="https://react-lm.github.io">https://react-lm.github.io</a></li>
+        <li>Wei et al. Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. <a href="https://arxiv.org/abs/2201.11903">https://arxiv.org/abs/2201.11903</a></li>
+        <li>Shinn et al. Reflexion: Language Agents with Verbal Reinforcement Learning. <a href="https://arxiv.org/abs/2303.11366">https://arxiv.org/abs/2303.11366</a></li>
+        <li>Schick et al. Toolformer: Language Models Can Teach Themselves to Use Tools. <a href="https://arxiv.org/abs/2302.04761">https://arxiv.org/abs/2302.04761</a></li>
+      </ol>
+
+    </article>
+
+    <p class="end"><a href="#top">回到页首</a></p>
+  </main>
+</div>
+
+<script>
+(function () {
+  var heads = Array.prototype.slice.call(document.querySelectorAll('article h2[id]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var cur = document.querySelector('.toc-mobile .cur');
+  var mobile = document.querySelector('.toc-mobile');
+  var ticking = false;
+
+  function update() {
+    ticking = false;
+    var id = null;
+    var name = '';
+    heads.forEach(function (h) {
+      if (h.getBoundingClientRect().top <= 120) { id = h.id; name = h.textContent; }
+    });
+    links.forEach(function (a) {
+      if (id && a.getAttribute('href') === '#' + id) {
+        a.setAttribute('aria-current', 'location');
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    });
+    if (cur) cur.textContent = name ? '当前：' + name : '';
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  if (mobile) {
+    mobile.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a')) mobile.open = false;
+    });
+  }
+})();
+</script>
+</body>
+</html>
