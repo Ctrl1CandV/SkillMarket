@@ -7,7 +7,7 @@
 - **推荐级别（tier）**：`must_read` / `skim` / `archive`——**当次简报里的呈现档位**。数量先按本次要求，其次已有 `.grad/config.json` 的 `daily_caps`，均无时用 must_read 1 / skim 2；0 表示该类不安排。用户侧文案呈现为「优先关注 / 可以速览 / 其他候选」，避免强制任务感。
 - **重要性（importance）**：core / relevant / peripheral——论文与学习目标的**关系属性**，记在单篇主记录的 classification 里。
 
-tier ≠ importance：must_read 不自动等于 importance=core（今天可能只是 deadline 临近）；core 论文也不必出现在今天简报里（在读的可能早已登记）。反过来，归档一篇也不意味着它不重要——只意味着本次不投入。
+tier ≠ importance：must_read 不自动等于 importance=core（今天可能只是 deadline 临近）；core 论文也不必出现在今天简报里（在读的可能早已登记）。反过来，归档一篇也不意味着它不重要——只意味着本次不投入。二者也不决定选中后的讲解深度：进入单篇阅读后，按 reading-protocol 在任务范围内解释论文内容所必需的细节。
 
 ## 本次范围与常规流程
 
