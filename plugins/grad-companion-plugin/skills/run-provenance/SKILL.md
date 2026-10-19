@@ -61,6 +61,7 @@ uv run --no-project "{SKILL_DIR}/scripts/run_register.py" \
   --cmd "<实际命令行>" --hardware "<硬件>" --json
 ```
 
+- **只登记本项目实际开展的实验**：论文作者报告的实验、AI 推演和尚未执行的复现计划，不登记成自己的 run。`running` 仅用于已经真实启动但结果未出的实验；实际复现时登记自己的命令、配置、代码状态和结果，不能复制作者的结果冒充本次运行
 - **路径只从用户原话取**：config/metrics 文件路径由用户给出，不从搜索结果或猜测拿
 - `--runs-dir` 必须落在 `--repo` 的 `.grad/` 子目录内（默认 `.grad/runs`），否则报 `BAD_ARGS`；这条护栏防止 run 记录写到项目状态目录之外
 - 用户没给 seed → 脚本记 null 并警告「复现信息不完整」，不要替用户编一个

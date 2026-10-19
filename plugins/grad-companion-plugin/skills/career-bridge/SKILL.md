@@ -20,6 +20,8 @@ license: MIT
 
 读：`.grad/runs/`（方法×benchmark×seed×status×配置差异×成本）、`.grad/claims.jsonl`（claim 台账：读 support/support_by，supported 才是可写进简历的已确认论断）、git log（工程工作量）、`.grad/radar/digest/`（技术视野佐证；只认每篇的主笔记文件，`digest/history/` 旧稿快照与 `*.user.md` 用户批注不算新增论文/新素材，`.grad/radar/papers/` 主记录可用来确认身份与阅读状态）。全空时如实说明：先积累 run 再来，本 skill 不凭空生成项目经历。失败 run 不进入量化成果，但它的 failure_reason 可作为“为什么失败、如何定位、重来如何止损”的真实面试素材。
 
+阅读导读可以提供技术讨论素材，但笔记存在不代表用户读过原文或掌握内容；阅读、理解或讨论过某方法，也不等于实施、复现过该方法或拥有项目经验。用户的学习经历须有明确陈述或实际记录，论文作者的实验数字不能写成自己的量化成果；项目经历仍按 run、claim 与 commit 的证据要求组织。
+
 ### 2. 项目卡片（三段式）
 
 每个项目输出：
