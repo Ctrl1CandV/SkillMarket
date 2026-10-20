@@ -2,6 +2,7 @@
 
 存放自己常用的 skill 和 plugin，把项目里的经验整理成可复用的方法，再根据实际使用持续改进。
 
+- [write-with-judgment](write-with-judgment/SKILL.md)：结合材料、组织、语言和阅读感受，指导新写、实质改稿与审校；现有 de-ai-flavor 继续保留。
 - [de-ai-flavor](de-ai-flavor/SKILL.md)：识别空泛、绕口、重复等常见 AI 味问题，改善新写或已有的文稿、页面文案与回复。
 - [readable-reply](readable-reply/SKILL.md)：让 AI 回复更容易读懂，避免碎句、过度排版和冗长堆砌。
 - [frontend-craft](frontend-craft/SKILL.md)：改善页面的构图、排版、配色和视觉细节，同时照顾交互与可读性。目前仍在打磨。
