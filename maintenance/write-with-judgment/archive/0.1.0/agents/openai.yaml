@@ -1,0 +1,4 @@
+interface:
+  display_name: "写作判断"
+  short_description: "将材料、组织、语言和阅读感受结合起来，指导新写、实质改稿与审校"
+  default_prompt: "使用 $write-with-judgment，根据我的材料与用途撰写或修改文字，并保留重要事实与合适的声音。"

@@ -6,6 +6,7 @@
 
 | 目录 | 内容 |
 |---|---|
+| [write-with-judgment](write-with-judgment/reports/revision-0.2.1.md) | 0.2.1 整合取舍与静态审阅记录、0.1.0 完整存档；实际效果待试用 |
 | [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录） |
 | [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
 | [frontend-craft](frontend-craft/) | 布局优先方案与两轮审查报告、v0.1/v0.2 检查脚本与小样、0.1.1 完整存档、浏览器检查记录 |
