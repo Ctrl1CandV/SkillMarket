@@ -2,6 +2,8 @@
 
 维护资料目录：每个技能/插件一个子目录，内含评估与优化报告（`reports/`）、测试记录（`evals/`）、历史版本存档（`archive/`）及各自待办（`TODO.md`）。本目录在 **dev 分支**维护；main 分支只保留技能、插件与 README。
 
+新增能力的优先级与推进条件见 [开发计划](ROADMAP.md)。
+
 ## 目录
 
 | 目录 | 内容 |
@@ -11,6 +13,8 @@
 | [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
 | [frontend-craft](frontend-craft/) | 布局优先方案与两轮审查报告、v0.1/v0.2 检查脚本与小样、0.1.1 完整存档、浏览器检查记录 |
 | [grad-companion-plugin](grad-companion-plugin/) | 上游核验、阅读/选文/综述与场景适配审查、35 项回归与真实清单复核、其余待办及历史存档 |
+| [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；真实研究验收待补 |
+| [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
