@@ -31,7 +31,7 @@
 
 ## 中英混排
 
-- **中文和英文、数字之间留出空隙。** `text-autospace` 从 2025 年起已是 Baseline，默认值 `normal` 会自动加这个间距。材料里手动加的空格可以保留，浏览器不会重复加。
+- **中文和英文、数字之间留出空隙。** 需要自动间距时显式写 `text-autospace: normal`。MDN 兼容数据记录的浏览器初始值为 `no-autospace`，不能把支持该属性等同于默认启用。将它作为渐进增强，旧浏览器可能忽略；保留材料已有空格，在实际字体与混排内容中检查，不批量重写代码、URL 和标识符。
 - **标点**：中文句子用全角标点（，。：；“”），完整的英文句子内部用半角。
 - **专有名词按官方写法**，比如 GitHub、arXiv、JavaScript。
 - **长英文词、URL 和代码**在窄栏里会撑破布局或拉开字距。给它们加 `overflow-wrap: anywhere`；代码块放在自己的容器里横向滚动。
@@ -39,13 +39,13 @@
 ## 断行
 
 - **避头尾**：`line-break: strict` 让句号、逗号、右引号等不出现在行首。
-- **标题**：用 `text-wrap: balance`，各行长度均匀，末行不会只剩一两个字（Chromium 对 6 行以内的文本生效）。正文可以用 `text-wrap: pretty` 减少孤字。
+- **标题**：可用 `text-wrap: balance` 改善短标题的断行；不保证消除孤字，仍看实际宽度。正文可用 `text-wrap: pretty` 渐进增强，支持范围和行为按目标浏览器核对。
 - **不该拆开的短语**：日期、金额、“第 3 章”这类短语，用 `white-space: nowrap` 包起来。
 - **整段文字保持默认断行**。`word-break: break-all` 会把英文单词从中间切开，只用在 URL、哈希值这类元素上。
 
 ## 标点挤压
 
-Chromium 的 `text-spacing-trim` 默认会收紧相邻标点之间的空隙（比如“。”后面紧跟“”或“）”的情况），但字体必须带 `halt` 或 `chws` 特性。其他浏览器暂不支持。一般不需要额外设置；连续标点看起来松散时，换用带这些特性的字体（思源系列都有）。
+连续标点的间距受字体与浏览器影响。`text-spacing-trim` 尚未达到 Baseline，按目标浏览器核对兼容性；需要微调时用实际字体与连续标点样本检查，不假定各端默认表现相同。
 
 ## 标题与数字
 
@@ -57,4 +57,4 @@ Chromium 的 `text-spacing-trim` 默认会收紧相邻标点之间的空隙（�
 
 - W3C [Requirements for Chinese Text Layout（clreq）](https://www.w3.org/TR/clreq/)：§3.1 字体、§5.3.1 着重号、§6.1 断行与避头尾、§6.3 标点调整与中西文混排。
 - [中文文案排版指北](https://github.com/sparanoid/chinese-copywriting-guidelines)（MIT）。
-- MDN：`text-autospace`、`text-spacing-trim`、`text-wrap`（2026-10 查阅）。
+- MDN：[text-autospace](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-autospace)、[兼容数据中的初始值](https://github.com/mdn/browser-compat-data/blob/main/css/properties/text-autospace.json)、[text-spacing-trim](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-spacing-trim)、[text-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-wrap)（2026-10-24 核对）。
