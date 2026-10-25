@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "canvas": {
+    "width_in": 13.333333,
+    "height_in": 7.5
+  },
+  "defaults": {
+    "paper": "seminar-blue",
+    "progress": "lab-teal"
+  },
+  "themes": [
+    {
+      "id": "seminar-blue",
+      "name": "清晰学术",
+      "best_for": [
+        "论文组会",
+        "跨方向交流"
+      ],
+      "background": "F7F9FC",
+      "text": "182B42",
+      "muted": "526276",
+      "accent": "2764A5",
+      "secondary": "637B98",
+      "surface": "E9EFF6",
+      "rule": "BBC9D8",
+      "layout": "clean_split",
+      "recipe": "主证据占约三分之二宽度，短解释紧邻证据，结论沿阅读路径收束。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "paper-ink",
+      "name": "黑白论文",
+      "best_for": [
+        "论文精读",
+        "密集原图"
+      ],
+      "background": "FFFFFF",
+      "text": "171717",
+      "muted": "535B66",
+      "accent": "355C8C",
+      "secondary": "6B7280",
+      "surface": "F1F3F5",
+      "rule": "BFC5CC",
+      "layout": "paper_plate",
+      "recipe": "开放图版横向展开，减少容器，直接标签和邻近图注组织原图阅读。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "lab-teal",
+      "name": "实验手记",
+      "best_for": [
+        "实验进展",
+        "失败复盘"
+      ],
+      "background": "F6FAF8",
+      "text": "183C36",
+      "muted": "4B665F",
+      "accent": "166B5B",
+      "secondary": "657B72",
+      "surface": "E8F1EC",
+      "rule": "B5CFC4",
+      "layout": "lab_notebook",
+      "recipe": "窄区记录改动与控制条件，宽区展示观察，下一步紧接观察与不确定性。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "method-indigo",
+      "name": "方法图解",
+      "best_for": [
+        "算法机制",
+        "模型流程"
+      ],
+      "background": "F8F9FD",
+      "text": "252C48",
+      "muted": "575D77",
+      "accent": "4D4DA8",
+      "secondary": "697DB0",
+      "surface": "ECEEF8",
+      "rule": "C4CAE2",
+      "layout": "method_bands",
+      "recipe": "总览沿单一数据流展开，局部机制保留总览定位，输入输出贴近节点。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "results-cobalt",
+      "name": "数据对照",
+      "best_for": [
+        "主结果",
+        "消融比较"
+      ],
+      "background": "FFFFFF",
+      "text": "172B43",
+      "muted": "4D6177",
+      "accent": "245CA6",
+      "secondary": "58789B",
+      "surface": "EAF0F8",
+      "rule": "BAC9DB",
+      "layout": "result_focus",
+      "recipe": "结果表与同尺度图轴占主要区域，比较条件在上，解读邻接关键行列。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "theory-slate",
+      "name": "理论推导",
+      "best_for": [
+        "数学推导",
+        "优化理论"
+      ],
+      "background": "FAFAFB",
+      "text": "252A34",
+      "muted": "565E6C",
+      "accent": "485C79",
+      "secondary": "6E7188",
+      "surface": "EFF0F4",
+      "rule": "C3C7CF",
+      "layout": "theorem",
+      "recipe": "推导链占约七成宽度，右侧保留新符号与成立条件，关键转化邻近注释。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "systems-dark",
+      "name": "深色系统",
+      "best_for": [
+        "系统架构",
+        "组件交互"
+      ],
+      "background": "142330",
+      "text": "F3F6FA",
+      "muted": "BCC9D2",
+      "accent": "67D4C0",
+      "secondary": "9CBFE4",
+      "surface": "223746",
+      "rule": "526B7A",
+      "layout": "dark_system",
+      "recipe": "深底承载系统关系并高亮当前路径，黑色坐标轴的原图与表格使用浅底图版。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "vision-plum",
+      "name": "视觉证据",
+      "best_for": [
+        "图像与视频",
+        "定性错误分析"
+      ],
+      "background": "FAF8FC",
+      "text": "322A3D",
+      "muted": "65596E",
+      "accent": "77518E",
+      "secondary": "8D6E88",
+      "surface": "F0EAF4",
+      "rule": "CFBFD8",
+      "layout": "image_strip",
+      "recipe": "同尺度样本成行比较，局部放大与短注释紧靠差异，保持裁切与列序一致。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "bio-forest",
+      "name": "生命科学",
+      "best_for": [
+        "观察实验",
+        "多面板证据"
+      ],
+      "background": "F7FAF5",
+      "text": "283B2A",
+      "muted": "566751",
+      "accent": "3E703E",
+      "secondary": "647E61",
+      "surface": "EAF0E4",
+      "rule": "BECBBA",
+      "layout": "observation",
+      "recipe": "处理条件与观测结果对应，多面板按编号串联，比例尺和样本信息保持可见。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "social-clay",
+      "name": "人文实证",
+      "best_for": [
+        "访谈与文本",
+        "案例与混合方法"
+      ],
+      "background": "FCF9F5",
+      "text": "382F2A",
+      "muted": "6E6057",
+      "accent": "9B4F39",
+      "secondary": "8A7267",
+      "surface": "F3EBE3",
+      "rule": "D1BFB0",
+      "layout": "editorial",
+      "recipe": "窄区呈现问题与解释，宽区展示有出处的材料，按论证关系形成非对称阅读。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "teaching-ochre",
+      "name": "概念教学",
+      "best_for": [
+        "课程汇报",
+        "跨领域讲解"
+      ],
+      "background": "FFFCF3",
+      "text": "3A3324",
+      "muted": "6D624C",
+      "accent": "91630A",
+      "secondary": "6B7B81",
+      "surface": "F4EEDC",
+      "rule": "D2C7A8",
+      "layout": "teaching",
+      "recipe": "一个示例贯穿概念与操作，稳定位置保留上下文，再逐步加入机制与解释。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    },
+    {
+      "id": "defense-navy",
+      "name": "正式答辩",
+      "best_for": [
+        "开题与中期",
+        "学位答辩"
+      ],
+      "background": "FFFFFF",
+      "text": "1D2D46",
+      "muted": "526078",
+      "accent": "243F68",
+      "secondary": "6C7D98",
+      "surface": "EDF1F6",
+      "rule": "BCC7D6",
+      "layout": "formal",
+      "recipe": "研究问题、贡献与证据逐层对应，克制导航，正文面积优先留给论证和图表。",
+      "fonts": {
+        "cjk": "Microsoft YaHei",
+        "latin": "Arial"
+      },
+      "sizes": {
+        "title": 30,
+        "body": 22,
+        "caption": 14,
+        "source": 11
+      }
+    }
+  ]
+}
