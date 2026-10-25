@@ -11,7 +11,8 @@
 | [write-with-judgment](write-with-judgment/reports/revision-0.2.1.md) | 0.2.1 整合取舍与静态审阅记录、0.1.0 完整存档；实际效果待试用 |
 | [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录） |
 | [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
-| [frontend-craft](frontend-craft/) | [0.4.1 四种页面](frontend-craft/evals/current-skill-showcase-2026-10-25/index.html)、[0.4.1 样式组合](frontend-craft/reports/frontend-craft-0.4.1-style-2026-10-25.md)、[0.4.1 样式示意](frontend-craft/evals/style-pair-2026-10-25/index.html)、[0.4 规则重审](frontend-craft/reports/frontend-craft-0.4-diagnosis-2026-10-25.md)、[交互页面对照](frontend-craft/evals/direct-comparison-2026-10-25/index.html)、[反馈记录](frontend-craft/evals/direct-comparison-2026-10-25/README.md)、历次评测存档 |
+| [product-design](product-design/) | [0.1.0 制作与衔接记录](product-design/reports/initial-design-2026-10-25.md)、[用户指导文档原件](product-design/reports/implementation-guide-2026-10-25.md)；已与 frontend-craft 0.4.2 提交至本地 main/dev，效果评价见页面反馈 |
+| [frontend-craft](frontend-craft/) | [0.4.2 产品依据衔接](product-design/reports/initial-design-2026-10-25.md)、[0.4.1 四种页面](frontend-craft/evals/current-skill-showcase-2026-10-25/index.html)、[0.4.1 样式组合](frontend-craft/reports/frontend-craft-0.4.1-style-2026-10-25.md)、[0.4.1 样式示意](frontend-craft/evals/style-pair-2026-10-25/index.html)、[0.4 规则重审](frontend-craft/reports/frontend-craft-0.4-diagnosis-2026-10-25.md)、[交互页面对照](frontend-craft/evals/direct-comparison-2026-10-25/index.html)、[反馈记录](frontend-craft/evals/direct-comparison-2026-10-25/README.md)、历次评测存档 |
 | [grad-companion-plugin](grad-companion-plugin/) | 上游核验、阅读/选文/综述与场景适配审查、35 项回归与真实清单复核、其余待办及历史存档 |
 | [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；真实研究验收待补 |
 | [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
@@ -25,7 +26,7 @@
 
 ## 当前待办
 
-- **frontend-craft**：0.4.1 补固定内容与布局下的样式组合，四页演示获用户认可后补充搭配方向；保留品牌、内容与验证边界，详见 [TODO](frontend-craft/TODO.md)。
+- **product-design / frontend-craft**：0.1.0 与 0.4.2 当前版本已提交至本地 main/dev。用户认可[声音艺术专题](frontend-craft/evals/design-pair-2026-10-25/river-archive.html)，否定原管理页，并认为[修订管理页](frontend-craft/evals/management-v042-review-2026-10-25/management.html)效果更差；保留[拆解报告](frontend-craft/evals/management-v042-review-2026-10-25/analysis.md)，等用户给出思路再优化，见[制作记录](product-design/reports/initial-design-2026-10-25.md)和 [TODO](frontend-craft/TODO.md)。
 - **grad-companion-plugin**：三项阅读优化已实施，真实使用与其余旧方案待办见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
