@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#8c90ff">
+  <title>频场 FREQUENCY · 把频率交给夜晚</title>
+  <style>
+    :root{--paper:#e9edf4;--ink:#12162e;--red:#8c90ff;--yellow:#d8ff58;--muted:#5d6376;--line:#bbc3d2;--sans:Arial,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;--mono:"Courier New",monospace}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;text-autospace:normal;line-break:strict}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid currentColor;outline-offset:5px}button{border-radius:0}svg{display:block}::selection{background:var(--yellow);color:var(--ink)}.wrap{width:min(1280px,calc(100% - 96px));margin-inline:auto}.eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.09em}.arrow{display:inline-block;font-family:Arial,sans-serif;font-weight:400}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip{position:absolute;left:24px;top:-80px;z-index:20;background:var(--yellow);padding:12px 18px}.skip:focus{top:12px}
+    .header{height:88px;display:flex;align-items:center;justify-content:space-between;gap:28px}.brand{display:flex;align-items:center;gap:10px}.brand-mark{width:38px;height:38px}.brand-name{font-size:25px;font-weight:800;letter-spacing:-.06em;line-height:1}.brand-en{display:block;font-size:8px;letter-spacing:.14em;margin-top:7px}.header nav{display:flex;gap:36px;font-size:14px;font-weight:700}.header nav a{padding:8px 0;border-bottom:2px solid transparent}.header nav a:hover{border-color:var(--ink)}.return{font-size:12px;color:#535b70;white-space:nowrap}.return:hover{text-decoration:underline}
+    .hero{background:var(--red);overflow:hidden}.hero-inner{padding-top:28px;position:relative}.hero-meta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:25px;font-size:12px;font-weight:700;letter-spacing:.06em}.live-dot{width:8px;height:8px;border-radius:50%;background:var(--ink);display:inline-block;margin-right:9px}.hero-word{font-family:Impact,"Arial Black",Arial,sans-serif;font-size:clamp(62px,12.3vw,176px);font-weight:900;line-height:.9;letter-spacing:-.045em;margin:0 0 26px;transform:scaleX(1.025);transform-origin:left;white-space:nowrap}.hero-rule{height:1px;background:var(--ink);opacity:.7}.hero-grid{display:grid;grid-template-columns:1fr 1fr;position:relative;min-height:450px}.hero-copy{padding:28px 0 40px;position:relative;z-index:2}.hero h1{font-size:clamp(110px,12.8vw,176px);font-weight:900;letter-spacing:-.065em;line-height:1.05;margin:0 0 18px}.hero-sub{font-size:25px;font-weight:700;line-height:1.55;margin:0 0 26px;letter-spacing:-.02em}.hero-action{display:inline-flex;gap:44px;align-items:center;background:var(--ink);color:var(--paper);padding:14px 22px;font-size:15px;font-weight:700;transition:background .2s,color .2s}.hero-action:hover{background:var(--yellow);color:var(--ink)}.hero-action .arrow{font-size:26px;line-height:1}.hero-art{position:relative;align-self:center;margin-right:-58px;margin-top:-20px}.hero-art svg{width:100%;height:auto;overflow:visible}.art-caption{position:absolute;bottom:13px;right:63px;writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.16em}.hero-bottom{border-top:1px solid var(--ink);display:flex;justify-content:space-between;align-items:center;gap:24px;padding:20px 0 23px}.hero-date{font-family:var(--mono);font-size:23px;font-weight:700;letter-spacing:-.06em}.hero-place{display:flex;align-items:center;gap:20px;font-size:15px;font-weight:700}.hero-place .arrow{font-size:26px}
+    .ticker{background:var(--ink);color:var(--yellow);height:49px;display:flex;align-items:center;overflow:hidden}.ticker-track{display:flex;align-items:center;justify-content:space-around;gap:36px;min-width:1100px;width:100%;font-size:12px;font-weight:700;letter-spacing:.13em}.ticker-star{font-size:24px;font-weight:400}.section{padding-block:91px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:56px;margin-bottom:38px}.section-title{margin:9px 0 0;font-size:49px;line-height:1.2;font-weight:800;letter-spacing:-.045em}.section-intro{font-size:15px;line-height:1.9;max-width:365px;margin:26px 0 0}.lineup-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:27px}.artist-art{position:relative;overflow:hidden;background:var(--ink);aspect-ratio:1.14}.artist-art svg{width:100%;height:100%;transition:transform .45s ease}.artist:hover .artist-art svg{transform:scale(1.035)}.artist-index{position:absolute;top:15px;left:17px;font-family:var(--mono);font-size:11px;font-weight:700}.artist-index.light{color:var(--paper)}.artist-stamp{position:absolute;bottom:16px;right:17px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;font-weight:700}.artist h3{font-size:28px;letter-spacing:-.04em;margin:19px 0 3px;line-height:1.3}.artist-info{display:flex;align-items:center;justify-content:space-between;gap:12px}.artist-genre{color:var(--muted);font-size:12px}.artist-day{font-family:var(--mono);font-size:12px;font-weight:700}.artist-desc{font-size:14px;line-height:1.85;color:#48516b;max-width:32em;margin:12px 0 0}.supporting{border-top:1px solid var(--line);margin-top:36px;padding-top:23px;display:flex;align-items:center;justify-content:space-between;gap:28px}.supporting-label{font-size:12px;letter-spacing:.08em;font-weight:700}.supporting-names{display:flex;align-items:center;gap:30px;font-size:20px;font-weight:700}.supporting-names span+span:before{content:"✳";font-size:15px;color:var(--red);margin-right:30px}.supporting-note{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+    .schedule{border-top:1px solid var(--ink);padding-top:60px;padding-bottom:85px}.schedule .section-head{align-items:flex-end;margin-bottom:30px}.schedule-total{font-size:12px;color:var(--muted)}.schedule-bar{display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:2px solid var(--ink)}.days{display:flex;gap:8px}.day{border:1px solid var(--ink);border-bottom:0;background:transparent;min-width:190px;padding:15px 24px;display:flex;align-items:center;gap:14px;transition:background .15s}.day strong{font-family:var(--mono);font-size:25px;line-height:1.1;letter-spacing:-.06em}.day span{font-size:12px}.day[aria-selected="true"]{background:var(--ink);color:var(--paper)}.day[aria-selected="false"]:hover{background:var(--yellow)}.saved-filter{border:0;background:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 3px;font-size:12px}.check-box{border:1px solid var(--ink);width:15px;height:15px;line-height:13px;text-align:center;color:transparent}.saved-filter[aria-pressed="true"] .check-box{background:var(--ink);color:var(--paper)}.schedule-summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 0;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line)}.schedule-summary strong{font-weight:400;color:var(--ink)}.show-row{display:grid;grid-template-columns:130px minmax(0,1fr) 145px 100px;gap:26px;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}.show-time{font-family:var(--mono);font-size:29px;letter-spacing:-.06em;line-height:1.2}.show-time small{font-size:11px;letter-spacing:0;display:block;color:var(--muted);margin-top:7px}.show-name{font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.3}.show-name small{display:block;font-size:12px;font-weight:400;letter-spacing:0;color:var(--muted);margin-top:7px}.stage{font-size:13px;display:flex;align-items:center;gap:8px}.stage-dot{width:7px;height:7px;display:block;background:var(--ink)}.stage-dot.river{border-radius:50%;background:#3d47a1}.save{background:transparent;border:1px solid #8d98af;display:flex;gap:8px;align-items:center;justify-content:center;font-size:12px;padding:9px 10px;min-height:41px;white-space:nowrap}.save:hover{border-color:var(--ink);background:#dae2ec}.save[aria-pressed="true"]{border-color:var(--ink);background:var(--yellow)}.save-symbol{font-size:19px;line-height:1}.schedule-foot{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:18px;font-size:12px;color:var(--muted)}.schedule-foot .open-time{font-family:var(--mono);color:var(--ink);font-size:11px}.empty{padding:55px 20px;text-align:center;border-bottom:1px solid var(--line)}.empty p{font-size:15px;margin:0 0 13px}.empty button{border:0;border-bottom:1px solid var(--ink);background:none;font-size:13px;padding:5px 0}.schedule-list:focus{outline:none}
+    .venue{background:var(--ink);color:var(--paper);padding-block:72px 75px}.venue-grid{display:grid;grid-template-columns:1.04fr 1fr;gap:80px;align-items:center}.venue-graphic{border:1px solid #646c89;aspect-ratio:1.25;position:relative;overflow:hidden}.venue-graphic svg{width:100%;height:100%}.map-label{position:absolute;top:17px;left:19px;color:var(--paper);font-size:10px;letter-spacing:.12em}.venue .eyebrow{color:var(--yellow)}.venue h2{font-size:47px;line-height:1.25;letter-spacing:-.04em;margin:14px 0 28px}.venue-name{font-size:20px;font-weight:700;margin:0 0 9px}.venue-desc{font-size:14px;line-height:1.9;color:#bdc5d8;margin:0 0 26px;max-width:28em}.venue-details{margin:0;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #646c89;padding-top:20px;gap:22px}.venue-details dt{font-size:11px;color:#abb7ce;margin-bottom:7px}.venue-details dd{margin:0;font-size:14px}.venue-details dd small{display:block;font-family:var(--mono);font-size:11px;color:#bdc5d8;margin-top:5px}.footer{padding-block:30px 24px}.footer-top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}.footer-word{font-family:Impact,"Arial Black",Arial,sans-serif;font-size:clamp(39px,6.1vw,86px);line-height:1;font-weight:900;letter-spacing:-.035em}.footer-up{font-size:12px;white-space:nowrap;padding-bottom:5px}.footer-up span{margin-left:12px;font-size:22px}.footer-bottom{display:flex;justify-content:space-between;gap:28px;border-top:1px solid var(--line);padding-top:18px;margin-top:24px;font-size:10px;color:var(--muted)}.footer-bottom p{margin:0}.footer-bottom .eyebrow{font-size:10px;white-space:nowrap}.status{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);padding:11px 20px;background:var(--ink);color:var(--paper);font-size:13px;z-index:20;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;max-width:calc(100% - 32px);text-align:center;box-shadow:0 2px 0 var(--yellow)}.status.visible{opacity:1;transform:translate(-50%,0)}
+    @media(min-width:1500px){.hero-word{font-size:176px}.hero-art{margin-right:-20px}}
+    @media(max-width:1050px){.wrap{width:calc(100% - 64px)}.hero-grid{min-height:390px}.hero-copy{padding-top:30px}.hero h1{font-size:137px}.hero-sub{font-size:23px}.hero-art{margin-right:-38px}.hero-art svg{min-width:430px;position:relative;left:-35px}.hero-word{font-size:12.1vw}.hero-date{font-size:20px}.section{padding-block:70px}.section-title{font-size:42px}.lineup-grid{gap:20px}.artist h3{font-size:24px}.supporting-note{display:none}.supporting-names{font-size:18px;gap:20px}.supporting-names span+span:before{margin-right:20px}.venue-grid{gap:40px}.venue h2{font-size:39px}.show-row{grid-template-columns:115px minmax(0,1fr) 110px 90px;gap:20px}.show-name{font-size:23px}}
+    @media(max-width:720px){.wrap{width:calc(100% - 40px)}.header{height:76px;gap:14px}.header nav{gap:19px;font-size:12px}.brand-mark{width:29px;height:29px}.brand-name{font-size:21px}.brand-en{font-size:7px}.header .return{display:none}.hero-inner{padding-top:21px}.hero-meta{font-size:10px;letter-spacing:0;margin-bottom:21px;gap:12px}.hero-meta .edition{font-size:10px}.hero-word{font-size:12.3vw;letter-spacing:-.045em;transform:none;margin-bottom:20px}.hero-grid{grid-template-columns:1fr;min-height:0}.hero-copy{padding:25px 0 0}.hero h1{font-size:clamp(112px,29vw,172px);letter-spacing:-.06em;margin-bottom:14px}.hero-sub{font-size:22px;line-height:1.55;max-width:280px;margin-bottom:22px}.hero-action{padding:12px 18px;gap:35px;font-size:14px}.hero-action .arrow{font-size:23px}.hero-art{margin:-25px -27px -6px 58px;align-self:start;z-index:1;pointer-events:none}.hero-art svg{min-width:0;position:static;width:100%;max-height:330px}.art-caption{bottom:14px;right:26px;font-size:8px}.hero-bottom{padding:17px 0;display:block}.hero-date{font-size:21px;letter-spacing:-.07em}.hero-place{margin-top:9px;justify-content:space-between;font-size:12px}.hero-place .arrow{font-size:19px}.ticker{height:43px}.ticker-track{min-width:920px;justify-content:flex-start;padding-left:20px;gap:26px;font-size:10px}.ticker-star{font-size:20px}.section{padding-block:55px}.section-head{display:block;margin-bottom:27px}.eyebrow{font-size:10px}.section-title{font-size:36px;letter-spacing:-.045em}.section-intro{font-size:14px;max-width:32em;margin-top:18px}.lineup-grid{grid-template-columns:1fr;gap:32px}.artist{display:grid;grid-template-columns:130px minmax(0,1fr);column-gap:19px;align-items:start}.artist-art{grid-row:1 / 4;aspect-ratio:.88}.artist-index{top:10px;left:10px;font-size:9px}.artist-stamp{bottom:10px;right:9px;font-size:8px}.artist h3{margin:1px 0 9px;font-size:23px;line-height:1.25}.artist-info{align-items:flex-start;flex-direction:column;gap:5px}.artist-genre{font-size:11px}.artist-day{font-size:10px}.artist-desc{font-size:12px;line-height:1.7;margin-top:8px}.supporting{display:block;margin-top:29px;padding-top:20px}.supporting-label{font-size:10px}.supporting-names{gap:16px;font-size:17px;margin-top:13px;justify-content:space-between}.supporting-names span+span:before{display:none}.schedule{padding-top:42px;padding-bottom:48px}.schedule .section-head{display:flex;align-items:flex-end;gap:10px;margin-bottom:25px}.schedule-total{font-size:10px;white-space:nowrap}.schedule-bar{display:block}.days{gap:7px}.day{flex:1;min-width:0;justify-content:center;padding:14px 10px;gap:10px}.day strong{font-size:23px}.day span{font-size:11px}.saved-filter{margin-left:auto;padding:10px 0;font-size:11px}.schedule-summary{font-size:10px;padding:15px 0;gap:12px}.show-row{grid-template-columns:75px minmax(0,1fr) 74px;gap:13px;padding:23px 0;position:relative}.show-time{font-size:24px;align-self:start;padding-top:1px}.show-time small{font-size:9px;margin-top:7px}.show-name{font-size:21px}.show-name small{font-size:10px;margin-top:6px;line-height:1.55}.stage{grid-column:2;grid-row:auto;font-size:10px;gap:6px;margin-top:-5px}.stage-dot{height:5px;width:5px}.save{grid-column:3;grid-row:1 / 3;gap:4px;padding:8px 5px;min-height:39px;font-size:10px;align-self:center}.save-symbol{font-size:16px}.schedule-foot{align-items:flex-start;flex-direction:column;gap:8px;font-size:10px;line-height:1.8;padding-top:17px}.schedule-foot .open-time{font-size:10px}.venue{padding-block:48px}.venue-grid{grid-template-columns:1fr;gap:31px}.venue-graphic{grid-row:2;aspect-ratio:1.3}.venue h2{font-size:38px;margin:12px 0 25px}.venue-name{font-size:19px}.venue-desc{font-size:13px;margin-bottom:23px;max-width:none}.venue-details dt{font-size:10px}.venue-details dd{font-size:13px}.venue-details dd small{font-size:10px}.venue-graphic .map-label{font-size:9px}.footer{padding-block:25px}.footer-word{font-size:12vw}.footer-top{display:block}.footer-up{display:inline-block;margin-top:20px;font-size:11px}.footer-bottom{display:block;margin-top:17px;padding-top:15px;font-size:10px;line-height:1.9}.footer-bottom .eyebrow{display:block;margin-top:10px;font-size:9px}.footer-return{display:inline-block;margin-top:12px;font-size:11px;text-decoration:underline;text-underline-offset:4px}}
+    @media(min-width:721px){.footer-return{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+  </style>
+</head>
+<body id="top">
+<a class="skip" href="#schedule">跳到节目单</a>
+<header class="header wrap">
+  <a class="brand" href="#top" aria-label="频场 FREQUENCY 首页">
+    <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 12V28M10 5V35M17 12V28M24 3V37M31 10V30M38 15V25" stroke="currentColor" stroke-width="3"/></svg>
+    <span class="brand-name">频场<span class="brand-en">FREQUENCY</span></span>
+  </a>
+  <nav aria-label="页面导航"><a href="#lineup">音乐人</a><a href="#schedule">节目单</a><a href="#venue">到场</a></nav>
+  <a class="return" href="index.html">← 返回作品集</a>
+</header>
+<main>
+  <section class="hero" aria-labelledby="event-title">
+    <div class="hero-inner wrap">
+      <div class="hero-meta"><span><i class="live-dot" aria-hidden="true"></i>独立音乐周末</span><span class="edition">VOL. 01 / JIANGWAN / 2026</span></div>
+      <p class="hero-word" aria-hidden="true">FREQUENCY</p>
+      <div class="hero-rule"></div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <h1 id="event-title">频场<span class="sr-only"> FREQUENCY 独立音乐周末</span></h1>
+          <p class="hero-sub">把频率交给夜晚。<br>把自己交给现场。</p>
+          <a class="hero-action" href="#schedule">找到你的那一场 <span class="arrow" aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 640 510" role="img" aria-labelledby="sound-title">
+            <title id="sound-title">午夜蓝同心声波从蓝紫色声场中扩散，荧光绿星形标记写着 TURN IT UP</title>
+            <g transform="translate(298 258) rotate(-29)" fill="none" stroke="#12162e" stroke-width="3">
+              <ellipse rx="285" ry="174"/><ellipse rx="272" ry="168"/><ellipse rx="259" ry="162"/><ellipse rx="246" ry="156"/><ellipse rx="233" ry="150"/><ellipse rx="220" ry="144"/><ellipse rx="207" ry="138"/><ellipse rx="194" ry="132"/><ellipse rx="181" ry="126"/><ellipse rx="168" ry="120"/><ellipse rx="155" ry="114"/><ellipse rx="142" ry="108"/><ellipse rx="129" ry="102"/><ellipse rx="116" ry="96"/><ellipse rx="103" ry="90"/><ellipse rx="90" ry="84"/>
+              <ellipse rx="77" ry="78" fill="#12162e"/><ellipse rx="51" ry="52" fill="#e9edf4" stroke="none"/><ellipse rx="17" ry="18" fill="#12162e" stroke="none"/>
+            </g>
+            <path d="M398 24 420 54 455 39 457 76 495 82 478 116 507 141 472 157 480 195 443 190 427 226 403 196 369 214 366 175 329 170 346 136 316 113 352 95 344 59 381 63Z" fill="#d8ff58"/>
+            <g transform="rotate(11 411 124)" fill="#12162e" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="27"><text x="410" y="106">TURN</text><text x="410" y="135">IT UP</text><path d="M384 150h52" stroke="#12162e" stroke-width="3"/></g>
+            <path d="M65 420h65m-32-32v64" stroke="#12162e" stroke-width="2"/><circle cx="98" cy="420" r="21" fill="none" stroke="#12162e" stroke-width="1.5"/>
+            <text x="136" y="426" fill="#12162e" font-family="Courier New,monospace" font-size="11" font-weight="700">SOUND WITHOUT BORDERS</text>
+          </svg>
+          <span class="art-caption" aria-hidden="true">FEEL THE FREQUENCY / 31 OCT—01 NOV</span>
+        </div>
+      </div>
+      <div class="hero-bottom"><span class="hero-date">10.31 SAT — 11.01 SUN</span><a class="hero-place" href="#venue"><span>江湾 · 第七码头仓库</span><span class="arrow" aria-hidden="true">↗</span></a></div>
+    </div>
+  </section>
+  <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>两天 · 六组声音 · 无限共振</span><span class="ticker-star">✳</span><span>STAY FOR THE SOUND</span><span class="ticker-star">✳</span><span>把频率交给夜晚</span><span class="ticker-star">✳</span><span>MEET YOU IN THE NOISE</span><span class="ticker-star">✳</span></div></div>
+
+  <section class="section wrap" id="lineup" aria-labelledby="lineup-title">
+    <div class="section-head">
+      <div><span class="eyebrow">01 / THE LINEUP</span><h2 class="section-title" id="lineup-title">不止一种声音。</h2></div>
+      <p class="section-intro">从失真的吉他，到游离的电子脉冲。<br>六组音乐人，把各自的世界搬进同一间仓库。<br>你不用提前认识他们，来听就好。</p>
+    </div>
+    <div class="lineup-grid">
+      <article class="artist">
+        <div class="artist-art">
+          <svg viewBox="0 0 400 350" role="img" aria-label="折返海岸的声波图形：黑色波浪切过荧黄色海面" preserveAspectRatio="xMidYMid slice"><rect width="400" height="350" fill="#d8ff58"/><g fill="none" stroke="#12162e" stroke-width="11"><path d="M-40 87C34 87 29 261 106 261S180 87 253 87 326 261 405 261 472 87 520 87"/><path d="M-40 54C34 54 29 228 106 228S180 54 253 54 326 228 405 228 472 54 520 54"/><path d="M-40 120C34 120 29 294 106 294S180 120 253 120 326 294 405 294 472 120 520 120"/><path d="M-40 153C34 153 29 327 106 327S180 153 253 153 326 327 405 327 472 153 520 153"/></g><rect x="181" y="141" width="42" height="42" fill="#8c90ff" transform="rotate(45 202 162)"/></svg>
+          <span class="artist-index">FQ—001</span><span class="artist-stamp">REVERB COAST</span>
+        </div>
+        <div><h3>折返海岸</h3><div class="artist-info"><span class="artist-genre">后朋克 / 吉他噪声</span><span class="artist-day">10.31 SAT</span></div></div>
+        <p class="artist-desc">鼓点向前，吉他向远处。<br>为每一个不想早归的夜晚发声。</p>
+      </article>
+      <article class="artist">
+        <div class="artist-art">
+          <svg viewBox="0 0 400 350" role="img" aria-label="失重邮差的轨道图形：冰白色轨道环绕蓝紫色星球" preserveAspectRatio="xMidYMid slice"><rect width="400" height="350" fill="#12162e"/><g transform="translate(200 178) rotate(-32)" fill="none" stroke="#e9edf4" stroke-width="2"><ellipse rx="184" ry="47"/><ellipse rx="184" ry="72"/><ellipse rx="184" ry="96"/><ellipse rx="184" ry="121"/><ellipse rx="184" ry="145"/></g><circle cx="200" cy="178" r="65" fill="#8c90ff"/><g transform="translate(200 178) rotate(-32)"><path d="M-177 13C-144 70 144 70 177 13" stroke="#e9edf4" stroke-width="3" fill="none"/></g><circle cx="80" cy="254" r="10" fill="#d8ff58"/><path d="M315 62h20m-10-10v20" stroke="#d8ff58" stroke-width="2"/></svg>
+          <span class="artist-index light">FQ—002</span><span class="artist-stamp" style="color:var(--paper)">ZERO-G POSTMAN</span>
+        </div>
+        <div><h3>失重邮差</h3><div class="artist-info"><span class="artist-genre">氛围电子 / 合成器</span><span class="artist-day">10.31 SAT</span></div></div>
+        <p class="artist-desc">把日常收集成采样，<br>寄往一颗尚未命名的星球。</p>
+      </article>
+      <article class="artist">
+        <div class="artist-art">
+          <svg viewBox="0 0 400 350" role="img" aria-label="慢速动物的节奏图形：黑色锯齿与白色圆点在蓝紫色背景中交错" preserveAspectRatio="xMidYMid slice"><rect width="400" height="350" fill="#8c90ff"/><path d="M-40 277 28 31 85 237 143 31 200 237 258 31 315 237 374 31 443 277" stroke="#12162e" stroke-width="28" fill="none"/><path d="M-40 339 28 93 85 299 143 93 200 299 258 93 315 299 374 93 443 339" stroke="#12162e" stroke-width="10" fill="none"/><circle cx="142" cy="170" r="33" fill="#e9edf4"/><circle cx="258" cy="170" r="33" fill="#e9edf4"/><circle cx="151" cy="178" r="10" fill="#12162e"/><circle cx="267" cy="178" r="10" fill="#12162e"/></svg>
+          <span class="artist-index">FQ—003</span><span class="artist-stamp">SLOW ANIMALS</span>
+        </div>
+        <div><h3>慢速动物</h3><div class="artist-info"><span class="artist-genre">独立摇滚 / 迷幻</span><span class="artist-day">11.01 SUN</span></div></div>
+        <p class="artist-desc">允许心跳慢半拍，<br>也允许在最后一首歌里失控。</p>
+      </article>
+    </div>
+    <div class="supporting"><span class="supporting-label">还有这些声音 / ALSO WITH</span><div class="supporting-names"><span>白昼航线</span><span>一米噪声</span><span>无人接听</span></div><span class="supporting-note">6 ACTS. 2 DAYS.</span></div>
+  </section>
+
+  <section class="schedule wrap" id="schedule" aria-labelledby="schedule-title">
+    <div class="section-head"><div><span class="eyebrow">02 / RUNNING ORDER</span><h2 class="section-title" id="schedule-title">你的现场时间。</h2></div><span class="schedule-total" id="saved-count">已收藏 0 场</span></div>
+    <div class="schedule-bar">
+      <div class="days" role="tablist" aria-label="按日期查看节目">
+        <button class="day" id="day-0" type="button" role="tab" aria-selected="true" aria-controls="schedule-list" tabindex="0" data-day="0"><strong>10.31</strong><span>周六 / SAT</span></button>
+        <button class="day" id="day-1" type="button" role="tab" aria-selected="false" aria-controls="schedule-list" tabindex="-1" data-day="1"><strong>11.01</strong><span>周日 / SUN</span></button>
+      </div>
+      <button class="saved-filter" type="button" id="saved-filter" aria-pressed="false"><span class="check-box" aria-hidden="true">✓</span>只看收藏</button>
+    </div>
+    <div class="schedule-summary"><strong id="day-description">DAY 01 — 从日落，走进声浪。</strong><span id="show-count">3 场演出</span></div>
+    <div class="schedule-list" id="schedule-list" role="tabpanel" aria-labelledby="day-0" tabindex="0"></div>
+    <div class="schedule-foot"><span>两处舞台相距约 3 分钟步行；演出错峰，喜欢的声音都能听到。</span><span class="open-time">DOORS OPEN 16:00 / MUSIC STARTS 16:30</span></div>
+    <noscript><p>10 月 31 日：16:30 白昼航线（河岸小场）、18:00 失重邮差（仓库主场）、19:30 折返海岸（仓库主场）。<br>11 月 1 日：16:30 无人接听（河岸小场）、18:00 一米噪声（仓库主场）、19:30 慢速动物（仓库主场）。启用 JavaScript 后可按日切换与收藏节目。</p></noscript>
+  </section>
+
+  <section class="venue" id="venue" aria-labelledby="venue-title">
+    <div class="venue-grid wrap">
+      <div class="venue-graphic">
+        <span class="map-label">THE SEVENTH DOCK / 场内示意</span>
+        <svg viewBox="0 0 600 480" role="img" aria-labelledby="map-title"><title id="map-title">第七码头场内示意：北门通向仓库主场，沿步行连廊可抵达河岸小场</title>
+          <defs><pattern id="map-grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#535c76" stroke-width=".6"/></pattern><pattern id="water" width="32" height="24" patternUnits="userSpaceOnUse"><path d="M0 12h14m5 0h13" stroke="#12162e" stroke-width="1" opacity=".45"/></pattern></defs>
+          <rect width="600" height="480" fill="url(#map-grid)"/><path d="M-50 431 650 230V480H-50Z" fill="#8c90ff"/><path d="M-50 431 650 230V480H-50Z" fill="url(#water)"/>
+          <g transform="rotate(-16 265 240)"><rect x="131" y="120" width="238" height="133" fill="#e9edf4"/><path d="M150 139h200v95H150Z" stroke="#12162e" stroke-width="1" fill="none"/><text x="250" y="177" text-anchor="middle" fill="#12162e" font-family="Arial,Microsoft YaHei,sans-serif" font-size="24" font-weight="700">仓库主场</text><text x="250" y="205" text-anchor="middle" fill="#12162e" font-family="Courier New,monospace" font-size="10">WAREHOUSE STAGE / A</text><rect x="406" y="220" width="110" height="75" fill="#d8ff58"/><text x="461" y="253" text-anchor="middle" fill="#12162e" font-family="Arial,Microsoft YaHei,sans-serif" font-size="17" font-weight="700">河岸小场</text><text x="461" y="275" text-anchor="middle" fill="#12162e" font-family="Courier New,monospace" font-size="9">RIVERSIDE / B</text><path d="M70 100V286H397" fill="none" stroke="#d8ff58" stroke-width="3" stroke-dasharray="7 7"/><path d="m386 276 12 10-12 10" fill="none" stroke="#d8ff58" stroke-width="3"/><circle cx="70" cy="100" r="7" fill="#d8ff58"/><text x="70" y="79" text-anchor="middle" fill="#e9edf4" font-family="Arial,Microsoft YaHei,sans-serif" font-size="14">北门入口</text><text x="238" y="307" text-anchor="middle" fill="#e9edf4" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12">步行连廊 · 约 3 分钟</text></g>
+          <g fill="#12162e" font-family="Arial,Microsoft YaHei,sans-serif"><text x="417" y="418" font-size="28" font-weight="700">江  面</text><text x="417" y="441" font-family="Courier New,monospace" font-size="10">LET IT FLOW →</text></g><g stroke="#e9edf4" fill="none"><path d="M543 73V123m-8-39 8-11 8 11" stroke-width="2"/></g><text x="543" y="62" text-anchor="middle" fill="#e9edf4" font-family="Courier New,monospace" font-size="13">N</text>
+        </svg>
+      </div>
+      <div class="venue-copy"><span class="eyebrow">03 / FIND THE FREQUENCY</span><h2 id="venue-title">去江边。<br>让耳朵带路。</h2><p class="venue-name">江湾 · 第七码头仓库</p><p class="venue-desc">旧仓库里的回响，河岸吹来的晚风。<br>从北门进来，穿过连廊，就是我们见面的地方。带上轻便的外套，也留一点时间给日落。</p><dl class="venue-details"><div><dt>见面时间</dt><dd>2026.10.31 — 11.01<small>每日 16:00 开门 · 21:00 结束</small></dd></div><div><dt>现场空间</dt><dd>仓库主场 + 河岸小场<small>室内站席 / 户外自由区域</small></dd></div></dl></div>
+    </div>
+  </section>
+</main>
+<footer class="footer wrap"><div class="footer-top"><span class="footer-word" aria-hidden="true">SEE YOU IN THE NOISE.</span><a class="footer-up" href="#top">回到声场<span aria-hidden="true">↑</span></a></div><div class="footer-bottom"><p>频场、音乐人与场地均为虚构，本页为演示活动。</p><span class="eyebrow">FREQUENCY © 2026 / GOOD SOUND, GOOD COMPANY.</span></div><a class="footer-return" href="index.html">← 返回作品集</a></footer>
+<div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></div>
+<script>
+  (() => {
+    const shows = [
+      [{id:'daylight',time:'16:30',end:'17:20',name:'白昼航线',genre:'梦幻流行 / 为日落预留的开场',stage:'河岸小场',river:true},{id:'postman',time:'18:00',end:'19:00',name:'失重邮差',genre:'氛围电子 / 一封来自轨道外的信',stage:'仓库主场',river:false},{id:'coast',time:'19:30',end:'21:00',name:'折返海岸',genre:'后朋克 / 让回声再多停留一会儿',stage:'仓库主场',river:false}],
+      [{id:'unanswered',time:'16:30',end:'17:20',name:'无人接听',genre:'独立民谣 / 未发送的晚安',stage:'河岸小场',river:true},{id:'noise',time:'18:00',end:'19:00',name:'一米噪声',genre:'车库摇滚 / 和日常拉开一点距离',stage:'仓库主场',river:false},{id:'animals',time:'19:30',end:'21:00',name:'慢速动物',genre:'迷幻摇滚 / 留给夜晚的最后一场',stage:'仓库主场',river:false}]
+    ];
+    const descriptions = ['DAY 01 — 从日落，走进声浪。','DAY 02 — 让余响，留得久一点。'];
+    const key = 'frequency-demo-saved-2026';
+    const validIds = new Set(shows.flat().map(show => show.id));
+    let saved = new Set();
+    try { const existing = JSON.parse(localStorage.getItem(key) || '[]'); if (Array.isArray(existing)) saved = new Set(existing.filter(id => validIds.has(id))); } catch (_) {}
+    let currentDay = 0, onlySaved = false, statusTimer;
+    const list = document.getElementById('schedule-list');
+    const tabs = [...document.querySelectorAll('.day')];
+    const filter = document.getElementById('saved-filter');
+    function announce(message) {
+      const status = document.getElementById('status');
+      clearTimeout(statusTimer); status.textContent = message; status.classList.add('visible');
+      statusTimer = setTimeout(() => status.classList.remove('visible'), 2500);
+    }
+    function render() {
+      tabs.forEach((tab,index) => { tab.setAttribute('aria-selected',String(index === currentDay)); tab.tabIndex = index === currentDay ? 0 : -1; });
+      list.setAttribute('aria-labelledby','day-' + currentDay);
+      filter.setAttribute('aria-pressed',String(onlySaved));
+      document.getElementById('saved-count').textContent = '已收藏 ' + saved.size + ' 场';
+      document.getElementById('day-description').textContent = descriptions[currentDay];
+      const visible = shows[currentDay].filter(show => !onlySaved || saved.has(show.id));
+      document.getElementById('show-count').textContent = visible.length + (onlySaved ? ' 场已收藏' : ' 场演出');
+      list.innerHTML = visible.length ? visible.map(show => {
+        const isSaved = saved.has(show.id);
+        return `<article class="show-row"><div class="show-time">${show.time}<small>— ${show.end}</small></div><div class="show-name">${show.name}<small>${show.genre}</small></div><div class="stage"><span class="stage-dot ${show.river ? 'river' : ''}" aria-hidden="true"></span>${show.stage}</div><button type="button" class="save" data-id="${show.id}" aria-pressed="${isSaved}" aria-label="${isSaved ? '取消收藏' : '收藏'}${show.name} ${currentDay === 0 ? '10 月 31 日' : '11 月 1 日'} ${show.time}"><span class="save-symbol" aria-hidden="true">${isSaved ? '✓' : '+'}</span>${isSaved ? '已收藏' : '收藏'}</button></article>`;
+      }).join('') : '<div class="empty"><p>这一天还没有收藏的节目。</p><button type="button" id="show-all">看看当天全部演出 →</button></div>';
+    }
+    tabs.forEach((tab,index) => {
+      tab.addEventListener('click',() => {currentDay = index;render();});
+      tab.addEventListener('keydown',event => {
+        if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+        event.preventDefault();
+        currentDay = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - currentDay;
+        render();tabs[currentDay].focus();
+      });
+    });
+    filter.addEventListener('click',() => {onlySaved = !onlySaved;render();});
+    list.addEventListener('click',event => {
+      if (event.target.closest('#show-all')) {onlySaved = false;render();filter.focus();return;}
+      const button = event.target.closest('button[data-id]');
+      if (!button) return;
+      const id = button.dataset.id;
+      const show = shows.flat().find(item => item.id === id);
+      if (!show) return;
+      if (saved.has(id)) saved.delete(id); else saved.add(id);
+      let persisted = true;
+      try {localStorage.setItem(key,JSON.stringify([...saved]));} catch (_) {persisted = false;}
+      render();
+      const replacement = list.querySelector('[data-id="' + id + '"]');
+      if (replacement) replacement.focus({preventScroll:true}); else { const next = list.querySelector('button'); if (next) next.focus({preventScroll:true}); }
+      announce((saved.has(id) ? '已收藏 ' : '已取消收藏 ') + show.name + (!persisted ? '（仅本次浏览有效）' : ''));
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2e9">
+  <title>街角，城市的慢半拍 — 截面</title>
+  <style>
+    :root{--paper:#f5f2e9;--ink:#282c29;--muted:#676a60;--rule:#c8c9bd;--red:#9e4635;--sans:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;--serif:"Songti SC","Noto Serif CJK SC","Noto Serif SC",SimSun,serif;--body-size:18px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:30px}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-break:strict;text-autospace:normal}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}a{color:inherit;text-decoration-thickness:1px;text-underline-offset:5px}a:hover{color:var(--red)}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:5px}::selection{background:#e0b9a4}.shell{max-width:1352px;padding:0 56px;margin:auto}.skip-link{position:fixed;top:12px;left:12px;z-index:20;background:var(--paper);padding:12px;transform:translateY(-180%)}.skip-link:focus{transform:translateY(0)}
+    .topline{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--ink);font-size:11px;letter-spacing:.05em}.topline a{text-decoration:none}.topline span{color:var(--muted)}.masthead{display:flex;align-items:center;justify-content:space-between;padding:24px 0 22px;border-bottom:1px solid var(--ink)}.brand{display:flex;align-items:center;gap:24px;text-decoration:none}.wordmark{font-family:var(--serif);font-size:55px;letter-spacing:-.09em;line-height:1;padding-right:5px}.brand-label{font-size:11px;line-height:1.8;letter-spacing:.15em;border-left:1px solid var(--rule);padding-left:24px}.edition{text-align:right;font-size:11px;line-height:1.8;letter-spacing:.05em}.edition strong{font-weight:500;color:var(--red)}
+    .hero{padding-top:44px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:35px}.hero-copy{padding:15px 0 8px;display:flex;flex-direction:column;align-items:flex-start}.eyebrow{display:flex;align-items:center;gap:11px;font-size:12px;letter-spacing:.13em;color:var(--red)}.eyebrow::before{content:"";width:7px;height:7px;background:var(--red);border-radius:50%}.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,4.8vw,67px);line-height:1.22;letter-spacing:-.035em;margin:33px 0 24px}.hero h1 span{display:block}.deck{font-family:var(--serif);font-size:19px;line-height:1.85;margin:0;color:#53584e}.hero-bottom{margin-top:auto;padding-top:30px;display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px;letter-spacing:.05em}.hero-bottom::before{content:"";display:block;width:35px;height:1px;background:var(--muted)}.hero-figure{margin:0;min-width:0}.illustration{width:100%;height:auto;display:block;background:#e6e9e0}.hero-figure figcaption{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:10px;letter-spacing:.045em;color:var(--muted);line-height:1.7}.hero-figure figcaption span:first-child{max-width:75%}.article-meta{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:35px 0 0;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}.byline{display:flex;gap:24px;align-items:center;font-size:12px}.byline span{color:var(--muted)}.reading-tools{display:flex;align-items:center;gap:22px}.size-tools{display:flex;align-items:center;gap:3px}.size-tools>span{font-size:11px;color:var(--muted);margin-right:8px}.size-tools button{width:34px;height:34px;background:none;border:1px solid transparent;padding:0}.size-tools button[aria-pressed="true"]{border-color:var(--ink)}.size-tools button:last-child{font-size:20px}.save{display:flex;align-items:center;gap:7px;padding:7px 0 7px 17px;border:0;border-left:1px solid var(--rule);background:none;font-size:12px;min-height:36px}.save svg{width:15px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4}.save[aria-pressed="true"]{color:var(--red)}.save[aria-pressed="true"] svg{fill:var(--red)}
+    .reading-layout{display:grid;grid-template-columns:164px minmax(0,650px) minmax(130px,1fr);gap:40px;padding:55px 0 70px}.contents{position:sticky;top:30px;align-self:start}.contents summary{font-size:11px;letter-spacing:.1em;color:var(--muted);padding:0 0 20px;cursor:pointer;list-style:none;pointer-events:none}.contents summary::-webkit-details-marker{display:none}.contents summary::after{display:none}.contents nav{display:flex;flex-direction:column;gap:18px}.contents a{font-size:12px;color:var(--muted);display:flex;gap:13px;text-decoration:none;line-height:1.6}.contents a:hover,.contents a[aria-current="location"]{color:var(--red)}.contents a span{font-family:Georgia,serif;font-size:11px;color:var(--red)}.contents .vertical-note{margin-top:60px;width:90px;border-top:1px solid var(--rule);padding-top:16px;color:var(--muted);font-size:10px;line-height:1.8;letter-spacing:.08em}.prose{min-width:0;font-family:var(--serif);font-size:var(--body-size);line-height:1.95;letter-spacing:.015em}.prose p{margin:0 0 22px;text-wrap:pretty}.prose .intro{font-size:calc(var(--body-size) + 2px);line-height:1.9;margin-bottom:45px;color:#42483e}.prose .intro:first-letter{float:left;font-size:58px;line-height:1;padding:9px 11px 0 0;color:var(--red)}.prose section{scroll-margin-top:30px;margin-top:42px}.prose h2{font-family:var(--sans);font-size:22px;line-height:1.55;font-weight:600;letter-spacing:0;margin:0 0 20px}.prose h2 span{display:block;font-family:Georgia,serif;font-weight:400;font-size:12px;color:var(--red);margin-bottom:9px}.prose blockquote{margin:34px 0 38px;padding:22px 0 22px 26px;border-left:2px solid var(--red);font-size:27px;color:var(--red);line-height:1.65;letter-spacing:.015em}.prose blockquote p{margin:0}.prose blockquote cite{display:block;font-family:var(--sans);font-size:11px;font-style:normal;line-height:1.8;margin-top:14px;color:var(--muted)}.prose .ending{margin-top:29px}.end-mark{display:inline-block;width:7px;height:7px;background:var(--red);margin-left:10px;vertical-align:middle}.margin-notes{padding-top:218px}.margin-note{padding-top:14px;border-top:1px solid var(--red);max-width:170px}.margin-note .note-label{font-size:10px;letter-spacing:.12em;color:var(--red)}.margin-note h3{font-size:13px;font-weight:500;margin:13px 0 12px}.margin-note p{font-size:12px;line-height:1.85;color:var(--muted);margin:0}.margin-note .note-icon{display:block;width:70px;height:65px;margin:24px 0 12px}.margin-note small{display:block;margin-top:15px;font-family:Georgia,serif;color:var(--muted);font-size:10px;letter-spacing:.1em}.article-close{display:flex;align-items:center;justify-content:space-between;margin-top:45px;border-top:1px solid var(--rule);padding-top:21px;font-family:var(--sans);font-size:11px;color:var(--muted)}.article-close a{color:var(--red)}.footer{border-top:1px solid var(--ink);padding:27px 0 34px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;color:var(--muted);font-size:10px;line-height:1.8}.footer-brand{font-family:var(--serif);font-size:26px;color:var(--ink);margin-bottom:4px}.footer p{margin:0}.footer-right{text-align:right}.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,15px);background:var(--ink);color:var(--paper);font-size:12px;padding:12px 20px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:10;white-space:nowrap}.toast.visible{opacity:1;transform:translate(-50%,0)}
+    @media(min-width:901px){.contents:not([open]) nav,.contents:not([open]) .vertical-note{display:flex}.contents:not([open]) .vertical-note{display:block}}
+    @media(max-width:1100px){.shell{padding:0 38px}.hero{gap:25px}.hero h1{font-size:54px}.reading-layout{grid-template-columns:140px minmax(0,650px);gap:32px}.margin-notes{grid-column:2;padding-top:0}.margin-note{max-width:none;display:grid;grid-template-columns:140px 1fr;column-gap:25px}.margin-note .note-label{grid-column:1}.margin-note h3{grid-column:1}.margin-note p{grid-column:2;grid-row:1/4}.margin-note .note-icon,.margin-note small{display:none}.hero-bottom{padding-top:20px}.hero-figure figcaption{font-size:9px}}
+    @media(max-width:900px){.hero h1{font-size:43px}.hero-copy{padding-top:0}.hero h1{margin:23px 0 19px}.deck{font-size:17px}.hero-bottom{font-size:10px}.reading-layout{display:block;padding-top:30px}.contents{position:static;margin:0 0 38px;padding:17px 0 0;border-bottom:1px solid var(--rule)}.contents summary{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;padding-bottom:17px;font-size:12px;color:var(--ink)}.contents summary::after{display:block;content:"＋";font-size:18px;line-height:1}.contents[open] summary::after{content:"−"}.contents nav{padding:3px 0 22px;gap:17px}.contents .vertical-note{display:none}.prose{max-width:650px;margin:auto}.margin-notes{max-width:650px;margin:42px auto 0}.article-meta{margin-top:28px}.byline{gap:14px}.reading-tools{gap:10px}.size-tools>span{display:none}.save{padding-left:13px}}
+    @media(max-width:650px){.shell{padding:0 22px}.topline{padding:12px 0;font-size:10px}.topline span{font-size:9px}.masthead{padding:20px 0}.wordmark{font-size:44px}.brand{gap:15px}.brand-label{padding-left:15px;font-size:9px;letter-spacing:.08em}.edition{font-size:9px}.hero{display:flex;flex-direction:column;gap:28px;padding-top:30px}.hero-copy{display:block}.eyebrow{font-size:10px}.hero h1{font-size:49px;line-height:1.2;margin:23px 0 20px;letter-spacing:-.045em}.hero h1 span{display:inline}.hero h1 span:first-child::after{content:"";display:block}.deck{font-size:17px;line-height:1.7}.deck br{display:none}.hero-bottom{margin-top:20px;padding:0}.hero-bottom::before{width:23px}.hero-figure{margin:0 -22px}.hero-figure figcaption{padding:0 22px;margin-top:10px;font-size:9px}.illustration{aspect-ratio:1.35;object-fit:cover}.article-meta{flex-wrap:wrap;margin-top:27px;padding:16px 0;gap:15px}.byline{font-size:11px;width:100%;justify-content:space-between}.reading-tools{width:100%;justify-content:space-between}.size-tools>span{display:inline}.size-tools button{width:37px;height:37px}.save{border-left:0;padding-left:0;min-height:39px}.reading-layout{padding-top:9px;padding-bottom:42px}.contents{margin-bottom:30px}.prose{--body-size:17px;line-height:1.95;letter-spacing:.01em}.prose.large{--body-size:20px}.prose .intro{font-size:calc(var(--body-size) + 1px);margin-bottom:34px}.prose .intro:first-letter{font-size:50px;padding-top:8px}.prose section{margin-top:35px}.prose h2{font-size:20px}.prose h2 span{margin-bottom:7px}.prose p{margin-bottom:20px}.prose blockquote{font-size:24px;line-height:1.6;margin:29px 0;padding:17px 0 17px 20px}.margin-note{grid-template-columns:100px 1fr;gap:0 20px}.margin-note p{font-size:11px}.article-close{font-size:10px;gap:12px}.footer{align-items:flex-start;gap:18px;padding-top:21px}.footer-right{font-size:9px;max-width:170px}.footer-brand{font-size:23px}.footer-left p{font-size:9px}.toast{bottom:18px;font-size:11px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{transition:none}}
+  </style>
+</head>
+<body id="top">
+  <a class="skip-link" href="#article">跳到正文</a>
+  <div class="shell">
+    <div class="topline"><a href="index.html">← 返回作品集</a><span>把目光放低一点，把城市看近一点。</span></div>
+    <header class="masthead">
+      <a class="brand" href="#top" aria-label="截面，返回页首"><span class="wordmark">截面</span><span class="brand-label">城市观察杂志<br>THE CITY, AT EYE LEVEL</span></a>
+      <div class="edition"><strong>第 09 期 · 街道生活</strong><br>二〇二六年 · 秋</div>
+    </header>
+    <main>
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">街头札记 / FIELD NOTES</div>
+          <h1><span>街角，</span><span>城市的慢半拍</span></h1>
+          <p class="deck">一座城市的性格，<br>常常藏在转弯的地方。</p>
+          <div class="hero-bottom">从一处退让的屋檐，重新认识公共空间</div>
+        </div>
+        <figure class="hero-figure">
+          <svg class="illustration" viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="scene-title scene-desc">
+            <title id="scene-title">午后的街角</title><desc id="scene-desc">一栋灰绿色的老楼在街角转弯，底层面包店撑着赭红色遮阳篷。树下有人坐着，行人沿着宽阔的人行道慢慢走过。</desc>
+            <defs>
+              <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><path d="M0 0V8" stroke="#c9cdbf" stroke-width="1"/></pattern>
+              <pattern id="brick" width="44" height="24" patternUnits="userSpaceOnUse"><path d="M0 24H44M22 0V12M0 12H44M0 12V24M44 12V24" fill="none" stroke="#8d9a8e" stroke-width=".7" opacity=".55"/></pattern>
+              <pattern id="window" width="54" height="85" patternUnits="userSpaceOnUse"><rect x="13" y="7" width="26" height="45" fill="#70877e"/><path d="M26 7V52M13 28H39" fill="none" stroke="#b8bfb2" stroke-width="2"/><path d="M11 54H42" stroke="#64796f" stroke-width="3"/></pattern>
+              <pattern id="tile" width="73" height="40" patternUnits="userSpaceOnUse" patternTransform="skewX(-35)"><path d="M0 0H73V40H0Z" fill="none" stroke="#cebb9f" stroke-width=".8"/></pattern>
+            </defs>
+            <rect width="760" height="540" fill="#e6e9e0"/>
+            <path d="M0 237L130 194 255 218 362 180 760 241V421H0Z" fill="#d1d7ca"/>
+            <path d="M0 275L87 245 87 142 196 113 196 346 0 403Z" fill="#d2d7ca"/>
+            <path d="M98 165L178 144M98 190L178 169M98 215L178 194M98 240L178 219M98 265L178 244M98 290L178 269" stroke="#abb6a8" stroke-width="7"/>
+            <path d="M0 425L453 303 760 397V540H0Z" fill="#b7c1b5"/>
+            <path d="M0 478L455 353 760 436V540H0Z" fill="#e2d3b9"/>
+            <path d="M0 478L455 353 760 436V540H0Z" fill="url(#tile)"/>
+            <path d="M0 520L459 394 760 477V540H0Z" fill="#9eaba2"/>
+            <path d="M0 517L459 391 760 474" fill="none" stroke="#f5f0dc" stroke-width="7"/>
+            <path d="M460 393L460 398M522 410L521 417M584 428L583 434M646 445L645 452M708 462L707 469M391 411L393 418M321 431L324 437M250 450L252 457M179 470L181 477M108 490L110 497M38 509L40 516" stroke="#818f82" stroke-width="1"/>
+            <path d="M104 449L143 438 214 460 175 471ZM171 485L210 474 281 496 242 507ZM239 521L278 510 349 532 310 543Z" fill="#ece9d8"/>
+            <!-- The corner building, drawn as a quiet architectural portrait. -->
+            <path d="M179 122L418 57 576 105 576 346 410 393 179 326Z" fill="#b7bfaf"/>
+            <path d="M179 122L418 57 418 317 179 381Z" fill="#c8cdbb"/>
+            <path d="M418 57L576 105 576 347 418 317Z" fill="#8fa396"/>
+            <path d="M179 122L418 57 576 105 567 115 418 72 188 135Z" fill="#657d71"/>
+            <path d="M181 118L418 54 579 102 576 109 418 62 179 128Z" fill="#dbe0ce"/>
+            <path d="M196 139L404 83V290L196 346Z" fill="url(#brick)"/>
+            <g fill="#6c8278" stroke="#576f63" stroke-width="1.2">
+              <path d="M209 153L246 143V192L209 202Z"/><path d="M271 137L308 127V176L271 186Z"/><path d="M334 120L372 110V160L334 170Z"/>
+              <path d="M209 229L246 219V268L209 278Z"/><path d="M271 213L308 203V252L271 262Z"/><path d="M334 196L372 186V235L334 246Z"/>
+            </g>
+            <g fill="#a9b9a8"><path d="M213 157L225 154V194L213 197Z"/><path d="M275 141L287 138V178L275 181Z"/><path d="M338 124L350 121V162L338 165Z"/><path d="M213 233L225 230V270L213 273Z"/><path d="M338 200L350 197V237L338 241Z"/></g>
+            <g stroke="#d3d8c5" stroke-width="2" fill="none"><path d="M227 148V197M209 177L246 167M290 132V181M271 160L308 150M353 115V165M334 144L372 134M227 224V273M209 253L246 243M290 208V257M271 236L308 226M353 191V241M334 220L372 210"/></g>
+            <g stroke="#7d9181" stroke-width="5"><path d="M205 206L251 194M267 190L313 178M330 174L377 162M205 282L251 270M267 266L313 254M330 250L377 238"/></g>
+            <g fill="#536f66"><path d="M441 112L475 122V170L441 160Z"/><path d="M505 131L541 142V190L505 179Z"/><path d="M441 188L475 198V247L441 237Z"/><path d="M505 207L541 218V266L505 256Z"/></g>
+            <g fill="#b4c1ac"><path d="M445 117L456 121V161L445 157Z"/><path d="M509 136L520 140V180L509 177Z"/><path d="M445 193L456 197V238L445 234Z"/><path d="M509 212L520 216V256L509 253Z"/></g>
+            <g fill="none" stroke="#aebba7" stroke-width="2"><path d="M459 118V165M441 135L475 145M523 137V185M505 154L541 165M459 194V242M441 212L475 222M523 213V262M505 231L541 242"/></g>
+            <path d="M178 297L418 231 577 279V287L418 241 178 307Z" fill="#d3d7c3"/>
+            <path d="M180 305L418 240 418 317 180 381Z" fill="#a9b29d"/>
+            <path d="M419 249L575 294V346L419 317Z" fill="#637f71"/>
+            <path d="M193 316L400 260V325L193 381Z" fill="#475e51"/>
+            <path d="M204 325L257 311V367L204 381ZM267 308L320 294V350L267 364ZM332 291L390 275V331L332 347Z" fill="#d2b890"/>
+            <path d="M214 325L250 315V347L214 357ZM278 309L314 299V331L278 341ZM342 292L382 281V313L342 324Z" fill="#e8d8b5"/>
+            <path d="M211 364L250 354M275 347L314 336M340 331L382 320" stroke="#f0e1bd" stroke-width="3"/>
+            <path d="M183 307L410 247 451 287 214 354 177 342Z" fill="#b75c43"/>
+            <path d="M183 307L410 247 405 259 188 318Z" fill="#e1b395"/>
+            <path d="M207 301L239 347M246 290L278 336M287 279L319 324M328 269L360 313M369 258L402 301" stroke="#eed5b4" stroke-width="13"/>
+            <path d="M177 341L214 353 451 287V301L214 368 177 356Z" fill="#994b37"/>
+            <path d="M214 353L451 287" stroke="#e1b395" stroke-width="1.3"/>
+            <g transform="translate(308 304) rotate(-15)"><text text-anchor="middle" fill="#f7ebd0" font-family="serif" font-size="13" letter-spacing="5">日日面包</text></g>
+            <path d="M423 318L573 347 573 355 422 327Z" fill="#5d7564"/>
+            <path d="M461 287L485 294V330L461 324Z" fill="#d0bf94"/>
+            <path d="M489 298L536 311V335L489 327Z" fill="#a8b09a"/>
+            <path d="M456 288L458 333M539 311L541 349" stroke="#4b685a" stroke-width="2"/>
+            <path d="M178 384L415 319 576 351 562 361 414 333 187 395Z" fill="#dfd4bb"/>
+            <path d="M187 395L415 333 563 361V367L414 340 187 402Z" fill="#b8b598"/>
+            <!-- A narrow lane, a bicycle, and an unclaimed bit of shade. -->
+            <path d="M580 182L715 222V380L580 348Z" fill="#cbd1c0"/>
+            <path d="M589 192L705 225M589 211L705 244M589 231L705 264M589 251L705 284M589 271L705 304M589 291L705 324" stroke="#b2beab" stroke-width="1"/>
+            <path d="M638 256L673 267V371L638 363Z" fill="#a7b59f"/><path d="M643 261L668 269V354L643 348Z" fill="#788e7c"/>
+            <path d="M580 181L719 221 719 228 580 188Z" fill="#adbba6"/>
+            <g fill="none" stroke="#536d60" stroke-width="1.8"><ellipse cx="595" cy="365" rx="13" ry="18"/><ellipse cx="637" cy="376" rx="13" ry="18"/><path d="M595 365L610 341 618 371 595 365 623 349 637 376M610 341L624 344M623 349L628 334 637 336M606 337L615 339"/></g>
+            <ellipse cx="590" cy="420" rx="89" ry="15" fill="#a4ac91" opacity=".55" transform="rotate(14 590 420)"/>
+            <path d="M615 388L615 203M615 287L586 253M616 258L642 223" stroke="#627563" stroke-width="10" fill="none"/>
+            <path d="M610 207C567 230 539 200 549 170 515 146 533 109 567 108 570 72 615 71 635 92 671 77 702 107 691 135 725 148 716 182 691 192 678 221 640 228 610 207Z" fill="#849b76"/>
+            <path d="M551 169C571 184 597 173 602 154 626 165 653 154 652 132 675 142 693 133 694 119M582 108C582 132 601 139 617 127M617 194C638 183 670 191 682 173" fill="none" stroke="#647e61" stroke-width="1.5"/>
+            <path d="M548 168C558 137 584 141 588 119M636 92C618 101 614 118 617 127M692 192C664 176 641 187 636 203" fill="none" stroke="#adc09b" stroke-width="2"/>
+            <g stroke="#657761" fill="none" stroke-width="1"><path d="M561 120L572 132M548 142L560 151M576 90L586 100M652 103L664 113M676 146L688 156M573 185L585 195M645 169L656 179M602 99L612 110"/></g>
+            <path d="M547 398L613 416 628 409 563 392Z" fill="#a26d48"/><path d="M551 402L612 420V425L551 408Z" fill="#775d45"/><path d="M554 407V421M609 422V435M621 414V426" stroke="#526956" stroke-width="3"/>
+            <path d="M560 390L615 405V385L560 370Z" fill="#a87a50"/><path d="M561 379L615 394M565 372V396M610 384V411" stroke="#795a40" stroke-width="2"/>
+            <!-- People give the architecture its scale. -->
+            <g><ellipse cx="578" cy="415" rx="12" ry="3" fill="#8a947e"/><circle cx="574" cy="366" r="6" fill="#b48b67"/><path d="M570 372L582 374 585 392 574 396 568 384Z" fill="#f0dfbc"/><path d="M575 394L585 396 589 413M577 396L573 407 575 415" fill="none" stroke="#4a6255" stroke-width="5"/><path d="M572 381L566 390 576 392" stroke="#b48b67" stroke-width="3" fill="none"/><path d="M568 366Q567 356 579 360L580 365" fill="#526050"/></g>
+            <g><ellipse cx="357" cy="420" rx="16" ry="3" fill="#a9a68e"/><circle cx="352" cy="370" r="6" fill="#b08867"/><path d="M345 379L357 376 366 399 351 403Z" fill="#8c4436"/><path d="M351 401L349 418M361 400L367 416" stroke="#445c50" stroke-width="4"/><path d="M348 383L340 397M358 382L369 391" stroke="#b08867" stroke-width="3"/><path d="M339 395L348 394 350 407 340 409Z" fill="#d6c59e"/><path d="M346 370Q344 361 352 362Q360 361 358 369" fill="#4d584a"/></g>
+            <g><ellipse cx="121" cy="473" rx="13" ry="3" fill="#a7a58c"/><circle cx="120" cy="426" r="5" fill="#b08d6c"/><path d="M114 433L125 433 128 453 114 454Z" fill="#eae0bd"/><path d="M117 453L110 471M124 453L130 470" stroke="#526957" stroke-width="3.5"/><path d="M115 436L108 448M124 437L133 446" fill="none" stroke="#b08d6c" stroke-width="2.7"/><path d="M114 425Q111 418 122 419L127 425Z" fill="#b47a4a"/></g>
+            <path d="M288 384L304 380 309 403 292 408Z" fill="#576b57"/><path d="M292 389L301 387M293 394L303 392M294 399L304 397" stroke="#e4d6b7" stroke-width="1"/>
+            <g fill="#6a8563"><path d="M211 405L228 401 225 416 216 418Z" fill="#a76649"/><path d="M220 405C200 389 210 384 220 399 216 376 228 378 223 399 237 386 241 396 226 404Z"/><path d="M485 362L500 365 497 379 488 376Z" fill="#a66c4a"/><path d="M491 365C476 353 484 345 492 357 490 340 501 345 496 359 507 349 510 360 497 365Z"/></g>
+            <path d="M15 52H61M38 29V75" stroke="#82917d" stroke-width=".8"/><circle cx="38" cy="52" r="17" fill="none" stroke="#82917d" stroke-width=".8"/><text x="38" y="20" text-anchor="middle" fill="#677b67" font-size="9" font-family="Georgia,serif">N</text>
+            <path d="M662 478L711 491" stroke="#71836f" stroke-width="1"/><path d="M662 474V482M711 487V495" stroke="#71836f" stroke-width="1"/><text x="681" y="511" fill="#617661" font-size="9" font-family="Georgia,serif" letter-spacing="1">AT WALKING PACE</text>
+          </svg>
+          <figcaption><span>图 01　屋檐、树荫与一段可以停下来的路。</span><span>截面绘图室</span></figcaption>
+        </figure>
+      </div>
+      <div class="article-meta">
+        <div class="byline">文 / 林禾 <span><time datetime="2026-10-18">2026.10.18</time>　·　约 4 分钟</span></div>
+        <div class="reading-tools">
+          <div class="size-tools" role="group" aria-label="正文字号"><span>阅读字号</span><button type="button" id="normal-size" aria-label="标准字号" aria-pressed="true">A</button><button type="button" id="large-size" aria-label="大字号" aria-pressed="false">A</button></div>
+          <button type="button" class="save" id="save-article" aria-pressed="false"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="M2 1.5H14V18L8 14.4 2 18Z"/></svg><span>收藏文章</span></button>
+        </div>
+      </div>
+      <div class="reading-layout">
+        <details class="contents" id="contents" open>
+          <summary>本文目录</summary>
+          <nav aria-label="文章目录"><a href="#pause"><span>01</span>让出半步的建筑</a><a href="#stay"><span>02</span>停留也是一种使用</a><a href="#walk"><span>03</span>用脚步重新丈量</a></nav>
+          <div class="vertical-note">城市观察<br>从日常的尺度出发<br><br>31° N / 秋日札记</div>
+        </details>
+        <article class="prose" id="article" aria-label="街角，城市的慢半拍正文">
+          <p class="intro">午后三点，面包店的遮阳篷把阳光切成两半。一位老人挪动椅子，追着阴影坐下；送货的人把车停在墙边，给推婴儿车的母亲留出一条路。这个没有名字的街角，正在以自己的方式安排城市的秩序。</p>
+          <section id="pause">
+            <h2><span>01 / ARCHITECTURE</span>让出半步的建筑</h2>
+            <p>从地图上看，这里只是两条街的交点。走近才发现，老楼没有把地块占满：临街的门退进去一点，屋檐探出来一点，台阶又比入口宽了一些。几次微小的退让，拼出一块不必消费也能站一会儿的地方。</p>
+            <p>这些尺寸很少成为建筑的主角，却决定了人与街道的关系。下雨时，陌生人会在同一道檐下收伞；等人时，有一道墙可以靠。建筑的善意，有时并不需要一句醒目的宣言，只需要身体到了那里，觉得合适。</p>
+          </section>
+          <section id="stay">
+            <h2><span>02 / PUBLIC LIFE</span>停留也是一种使用</h2>
+            <p>我们习惯把人行道理解成通行的线路，仿佛停下来就是妨碍。可街道的生活恰好从那些暂停中发生：店主浇花，孩子数地砖，两个刚买完菜的人交换晚饭的主意。没有这些片刻，再宽的道路也只是通道。</p>
+            <blockquote><p>一条好走的街，<br>也应当允许人暂时不走。</p><cite>— 截面 · 街头札记</cite></blockquote>
+            <p>当然，停留并非越多越好。树池旁的座椅需要给轮椅留出位置，外摆不能挤掉盲道。公共空间的可贵，在于不同的身体能彼此看见，也能相互让一点。这里的尺度，需要在每天的使用中反复商量。</p>
+          </section>
+          <section id="walk">
+            <h2><span>03 / WALKING</span>用脚步重新丈量</h2>
+            <p>离开时，我没有走导航推荐的近路，而是沿着有树荫的一侧慢慢绕过去。多出的几十步，让我看见墙缝里冒出的草、修鞋摊收起的木凳，以及落在门牌上的一小片夕阳。</p>
+            <p class="ending">城市并不只由地标组成。更多时候，它是每个人日复一日走过、偶尔愿意停下的那些地方。下次转弯，不妨慢半拍。看看街角为谁留了位置，又有谁还在寻找自己的位置。<span class="end-mark" aria-hidden="true"></span></p>
+          </section>
+          <div class="article-close"><span>街道 · 建筑 · 公共生活</span><a href="#top">回到页首 ↑</a></div>
+        </article>
+        <aside class="margin-notes" aria-label="观察边注">
+          <div class="margin-note"><span class="note-label">MARGIN NOTE / 旁注</span><h3>停下来，再看一次</h3><p>选一个熟悉的街角，分别在早晨、午后和傍晚停留五分钟。记录谁在这里停下、谁需要绕行。使用者的变化，往往比平面图更能说明一个地方。</p><svg class="note-icon" viewBox="0 0 70 65" aria-hidden="true"><path d="M4 13H43V55M13 4V45H65M3 56H32V64M55 3V31H68" stroke="#9e4635" stroke-width="1" fill="none"/><path d="M25 55C24 36 42 35 56 42" stroke="#9e4635" stroke-width="1" stroke-dasharray="3 3" fill="none"/><circle cx="31" cy="29" r="3" fill="#9e4635"/></svg><small>LOOK / PAUSE / NOTICE</small></div>
+        </aside>
+      </div>
+    </main>
+    <footer class="footer"><div class="footer-left"><div class="footer-brand">截面</div><p>在熟悉的地方，重新看见。</p></div><div class="footer-right"><p>示例刊物 · 本文及示意插画均为原创</p><p>© 2026 截面　THE CITY, AT EYE LEVEL</p></div></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => {
+      const article = document.querySelector('.prose');
+      const normal = document.getElementById('normal-size');
+      const large = document.getElementById('large-size');
+      const save = document.getElementById('save-article');
+      const contents = document.getElementById('contents');
+      const toast = document.getElementById('toast');
+      const compact = window.matchMedia('(max-width: 900px)');
+      let toastTimer;
+      const read = key => { try { return localStorage.getItem(key); } catch { return null; } };
+      const persist = (key, value) => { try { localStorage.setItem(key, value); return true; } catch { return false; } };
+      function notify(message) { clearTimeout(toastTimer); toast.textContent = message; toast.classList.add('visible'); toastTimer = setTimeout(() => toast.classList.remove('visible'), 2400); }
+      function setSize(isLarge, shouldSave = true) {
+        article.classList.toggle('large', isLarge);
+        article.style.setProperty('--body-size', isLarge ? (window.innerWidth <= 650 ? '20px' : '21px') : (window.innerWidth <= 650 ? '17px' : '18px'));
+        normal.setAttribute('aria-pressed', String(!isLarge));
+        large.setAttribute('aria-pressed', String(isLarge));
+        if (shouldSave) persist('jiemian-reading-size', isLarge ? 'large' : 'normal');
+      }
+      function setSaved(saved) { save.setAttribute('aria-pressed', String(saved)); save.querySelector('span').textContent = saved ? '已收藏' : '收藏文章'; }
+      normal.addEventListener('click', () => setSize(false));
+      large.addEventListener('click', () => setSize(true));
+      save.addEventListener('click', () => { const saved = save.getAttribute('aria-pressed') !== 'true'; setSaved(saved); const persisted = persist('jiemian-corner-saved', String(saved)); notify(saved ? (persisted ? '已收藏，下次再来仍在这里。' : '已在本次阅读中收藏。') : '已取消收藏'); });
+      setSize(read('jiemian-reading-size') === 'large', false);
+      setSaved(read('jiemian-corner-saved') === 'true');
+      function syncContents() { contents.open = !compact.matches; }
+      syncContents();
+      compact.addEventListener('change', syncContents);
+      window.addEventListener('resize', () => setSize(large.getAttribute('aria-pressed') === 'true', false));
+      contents.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { if(compact.matches) contents.open = false; }));
+      const navLinks = [...contents.querySelectorAll('nav a')];
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) navLinks.forEach(link => { if(link.hash === '#' + entry.target.id) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); }); }); }, { rootMargin: '-10% 0px -55% 0px', threshold: 0 });
+        article.querySelectorAll('section').forEach(section => observer.observe(section));
+      }
+    })();
+  </script>
+</body>
+</html>

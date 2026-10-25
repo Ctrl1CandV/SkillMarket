@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f6f2">
+  <title>我的任务 · 轨迹</title>
+  <style>
+    :root{--ink:#26362e;--muted:#66736a;--soft:#f3f6f2;--line:#e3e9e2;--green:#2b6348;--green-dark:#204e38;--green-light:#e8f1e8;--white:#fff;--orange:#9a6027;--sans:Arial,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",sans-serif}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--white);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;text-autospace:normal;line-break:strict;-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font:inherit}
+    button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+    button{cursor:pointer;color:inherit}
+    button,a,input,select,textarea{outline-offset:4px}
+    :focus-visible{outline:2px solid var(--green)}
+    button{border:0;background:none}
+    a{color:inherit}
+    svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    button svg{pointer-events:none}
+    .symbols{position:absolute;width:0;height:0;overflow:hidden}
+    .app{display:grid;grid-template-columns:208px minmax(0,1fr);height:100dvh;min-height:640px}
+    .sidebar{display:flex;flex-direction:column;background:var(--soft);padding:30px 18px 20px;border-right:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:11px;padding:0 12px;margin-bottom:33px;font-size:23px;font-weight:700;letter-spacing:.04em}
+    .brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--green);color:white}
+    .brand-mark svg{width:25px;height:25px;stroke-width:1.8}
+    .workspace-name{display:flex;gap:9px;align-items:center;margin:0 10px 28px;color:var(--muted);font-size:12px}
+    .workspace-icon{display:grid;place-items:center;width:24px;height:24px;background:#e5eae2;border-radius:6px;color:#52644f;font-size:11px;font-weight:700}
+    .nav-list{display:flex;flex-direction:column;gap:5px}
+    .nav-button{display:flex;align-items:center;gap:11px;width:100%;min-height:43px;padding:10px 12px;text-align:left;border-radius:7px;color:#516057;font-size:14px}
+    .nav-button:hover{background:#e8eee6}
+    .nav-button.active{background:#e1ebdf;color:var(--green-dark);font-weight:600}
+    .nav-button svg{width:18px;height:18px}
+    .nav-count{margin-left:auto;font-size:12px;min-width:19px;text-align:center;font-variant-numeric:tabular-nums}
+    .nav-heading{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;letter-spacing:.08em;color:#65725e;margin:33px 12px 12px}
+    .project-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;background:var(--project-color,#876ca2)}
+    .project-button{font-size:13px;gap:13px;min-height:41px}
+    .sidebar-bottom{margin-top:auto;padding:36px 12px 0}
+    .demo-label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;margin-bottom:17px}
+    .demo-label:before{content:"";width:5px;height:5px;border-radius:50%;background:#82917f}
+    .back-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12px;color:#526458}
+    .back-link:hover{text-decoration:underline;text-underline-offset:4px}
+    .back-link svg{width:14px;height:14px}
+    .main{min-width:0;display:flex;flex-direction:column;overflow:hidden}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:25px 34px 0}
+    .breadcrumb{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:9px}
+    .breadcrumb svg{width:14px;height:14px;color:#89938a}
+    .breadcrumb strong{color:#44564a;font-weight:400}
+    .profile{display:flex;align-items:center;gap:9px;font-size:12px;color:#556359}
+    .avatar{display:inline-grid;place-items:center;flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#e3ecd9;color:#4e6642;font-size:12px;font-weight:600}
+    .avatar.amber{background:#f2e6d6;color:#8a6942}
+    .heading{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 34px 25px}
+    .heading h1{margin:0 0 9px;font-size:27px;letter-spacing:-.035em;line-height:1.25;font-weight:600}
+    .heading-summary{margin:0;color:var(--muted);font-size:13px}
+    .heading-summary .number{color:var(--green);font-weight:600}
+    .primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:white;border:1px solid var(--green);border-radius:7px;min-height:39px;padding:9px 15px;font-size:13px;font-weight:500;white-space:nowrap;transition:background .15s}
+    .primary:hover{background:var(--green-dark);border-color:var(--green-dark)}
+    .primary svg{width:16px;height:16px;stroke-width:2}
+    .toolbar{min-height:58px;padding:0 34px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .tabs{align-self:stretch;display:flex;gap:22px;white-space:nowrap}
+    .tab{position:relative;padding:12px 0 15px;color:var(--muted);font-size:13px}
+    .tab[aria-pressed="true"]{color:var(--green-dark);font-weight:600}
+    .tab[aria-pressed="true"]:after{content:"";position:absolute;height:2px;background:var(--green);bottom:-1px;left:0;right:0;border-radius:3px}
+    .tab-count{font-size:11px;margin-left:5px;padding:1px 5px;background:#edf1eb;border-radius:4px;color:#4b5f50}
+    .filters{display:flex;align-items:center;gap:14px}
+    .search{display:flex;align-items:center;gap:7px;color:#738173;width:172px}
+    .search svg{width:16px;height:16px}
+    .search input{width:100%;min-width:0;border:0;background:transparent;padding:8px 0;color:var(--ink);font-size:12px}
+    .search input::placeholder{color:#6c786e;opacity:1}
+    .mobile-project{display:none}
+    .work-area{flex:1;min-height:0;display:grid;grid-template-columns:minmax(370px,1.1fr) minmax(360px,.9fr)}
+    .task-pane{min-width:0;overflow-y:auto;padding:0 18px 36px 26px;scrollbar-width:thin;scrollbar-color:#cfd8cb transparent}
+    .list-top{display:flex;align-items:center;justify-content:space-between;gap:10px;height:52px;padding:0 12px;color:var(--muted);font-size:11px}
+    .list-top-right{display:flex;align-items:center;gap:6px}
+    .list-top-right svg{width:13px;height:13px}
+    .clear-filter{font-size:11px;color:var(--green);padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+    .group{margin-bottom:19px}
+    .group-title{display:flex;align-items:center;gap:7px;padding:7px 12px 9px;margin:0;font-size:12px;font-weight:600;color:#4d5f52}
+    .group-title svg{width:12px;height:12px;stroke-width:2}
+    .group-count{color:#65725e;font-size:11px;font-weight:400;margin-left:3px}
+    .task-row{position:relative;display:grid;grid-template-columns:21px minmax(0,1fr) 50px;gap:10px;align-items:center;min-height:82px;padding:14px 12px;border-radius:7px;margin-bottom:3px;border:1px solid transparent}
+    .task-row:hover{background:#f6f8f4}
+    .task-row.selected{background:#edf4e9;border-color:#dce8d7}
+    .task-row.selected:before{content:"";position:absolute;left:-1px;top:20px;bottom:20px;width:3px;background:var(--green);border-radius:0 2px 2px 0}
+    .check{appearance:none;-webkit-appearance:none;position:relative;width:18px;height:18px;border:1.5px solid #899889;border-radius:50%;background:white;cursor:pointer;margin:0;flex-shrink:0}
+    .check:hover{border-color:var(--green);background:#eef5e9}
+    .check:checked{border-color:var(--green);background:var(--green)}
+    .check:checked:after{content:"";position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid white;border-width:0 1.7px 1.7px 0;transform:rotate(45deg)}
+    .task-select{text-align:left;padding:0;min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center;gap:9px}
+    .task-title{font-size:15px;font-weight:500;line-height:1.5;overflow-wrap:anywhere}
+    .task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:#5d6c5f;line-height:1.3}
+    .task-project{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .task-project .project-dot{width:6px;height:6px;border-radius:2px}
+    .meta-dot{color:#a2aba0;font-size:9px}
+    .task-status{display:inline-flex;align-items:center;gap:4px}
+    .status-icon{width:8px;height:8px;border-radius:50%;border:1.4px solid #8b958c}
+    .status-icon.progress{border-color:#b98a3d;background:linear-gradient(90deg,#b98a3d 50%,transparent 50%)}
+    .status-icon.review{border-color:#8b78a6;background:#8b78a6}
+    .status-icon.done{border-color:var(--green);background:var(--green)}
+    .due{text-align:right;font-size:11px;font-variant-numeric:tabular-nums;color:#5d6c5f;white-space:nowrap}
+    .due.today{color:#606d36}
+    .task-row.done .task-title{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:#aab4a6;color:#64725f}
+    .task-row.done .check{background:#7d9674;border-color:#7d9674}
+    .task-row.done .task-meta{color:#64725f}
+    .list-end{display:flex;align-items:center;justify-content:center;gap:8px;margin:30px 0 0;font-size:11px;color:#65725e}
+    .list-end:before,.list-end:after{content:"";height:1px;background:#e7ece4;width:30px}
+    .empty{padding:66px 15px;text-align:center;color:var(--muted)}
+    .empty-icon{display:grid;place-items:center;width:48px;height:48px;background:var(--soft);border-radius:50%;margin:0 auto 16px}
+    .empty h2{font-size:16px;font-weight:500;color:#46594c;margin:0 0 8px}
+    .empty p{font-size:12px;margin:0 0 18px}
+    .secondary{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border:1px solid #cdd8c9;border-radius:6px;background:white;font-size:12px;min-height:36px}
+    .secondary:hover{background:#f2f6ef}
+    .details{min-width:0;display:flex;flex-direction:column;border-left:1px solid var(--line);background:#fff}
+    .detail-scroll{flex:1;overflow-y:auto;padding:25px 30px 22px;scrollbar-width:thin;scrollbar-color:#cfd8cb transparent}
+    .detail-eyebrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;color:#657360;font-size:11px;font-variant-numeric:tabular-nums}
+    .detail-crumb{display:flex;align-items:center;gap:8px}
+    .detail-crumb .project-dot{width:7px;height:7px;border-radius:2px}
+    .detail-crumb svg{width:11px;height:11px;color:#a0aaa0}
+    .mobile-back{display:none}
+    .detail-title{font-size:23px;letter-spacing:-.025em;line-height:1.55;font-weight:600;margin:0 0 14px;overflow-wrap:anywhere}
+    .status-pill{display:inline-flex;align-items:center;gap:6px;background:#f6efdf;color:#8a6528;border-radius:5px;padding:4px 8px;font-size:11px}
+    .status-pill .status-icon{width:8px;height:8px}
+    .status-pill.todo{background:#eef1ec;color:#667260}
+    .status-pill.review{background:#f0ebf5;color:#79628d}
+    .status-pill.done{background:var(--green-light);color:var(--green)}
+    .properties{display:grid;grid-template-columns:82px minmax(0,1fr);row-gap:14px;margin:26px 0 28px;font-size:12px;align-items:center}
+    .properties dt{display:flex;align-items:center;gap:8px;color:#64725f}
+    .properties dt svg{width:14px;height:14px;stroke-width:1.6}
+    .properties dd{margin:0;display:flex;align-items:center;gap:8px;color:#485c4f}
+    .properties .avatar{width:22px;height:22px;font-size:10px}
+    .priority{display:inline-flex;align-items:center;gap:6px;color:var(--orange)}
+    .priority svg{width:12px;height:12px}
+    .detail-section{margin-top:27px}
+    .detail-section h3{font-size:12px;font-weight:600;margin:0 0 12px;color:#516353}
+    .description{font-size:13px;line-height:1.9;margin:0;color:#5e6e62;overflow-wrap:anywhere}
+    .checklist-heading{display:flex;align-items:center;justify-content:space-between}
+    .checklist-heading span{font-size:11px;color:#65725e;font-weight:400;font-variant-numeric:tabular-nums}
+    .progress-track{height:3px;background:#edf1e8;border-radius:3px;margin:-1px 0 14px;overflow:hidden}
+    .progress-track i{display:block;height:100%;background:#99b887;transition:width .2s}
+    .subtasks{display:flex;flex-direction:column;gap:13px}
+    .subtask{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.65;cursor:pointer;color:#526353}
+    .subtask .check{width:15px;height:15px;margin-top:2px;border-radius:4px;border-width:1px}
+    .subtask .check:checked{background:#e5eddf;border-color:#b1c1a6}
+    .subtask .check:checked:after{border-color:#5b7a4e;left:5px;top:2px;width:3px;height:7px}
+    .subtask .check:checked+span{color:#65725e;text-decoration:line-through;text-decoration-color:#b4bdac}
+    .activity{border-top:1px solid var(--line);padding-top:22px;margin-top:28px}
+    .activity-entry{display:flex;align-items:flex-start;gap:9px;margin-top:16px}
+    .activity-entry .avatar{width:25px;height:25px;font-size:10px}
+    .activity-body{min-width:0;flex:1}
+    .activity-author{display:flex;align-items:center;gap:8px;margin:1px 0 7px;font-size:11px;color:#526552}
+    .activity-author time{font-size:10px;color:#65725e}
+    .activity-comment{font-size:12px;line-height:1.8;margin:0;color:#677260}
+    .activity-event{display:flex;align-items:center;gap:8px;margin:17px 0 0 7px;font-size:11px;line-height:1.7;color:#65725e}
+    .activity-event svg{width:13px;height:13px;color:#7c9670}
+    .detail-action{padding:17px 30px;border-top:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .detail-action .primary{min-height:39px;padding-left:20px;padding-right:20px}
+    .detail-action-note{font-size:11px;line-height:1.5;color:#65725e}
+    .detail-action-note strong{display:block;font-weight:400;color:#51664e;margin-bottom:2px}
+    .detail-action .secondary{min-height:39px}
+    .toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,15px);background:#283d2e;color:white;box-shadow:0 8px 30px #273c3020;border-radius:9px;padding:13px 16px;display:flex;align-items:center;gap:14px;font-size:13px;z-index:20;max-width:calc(100% - 32px);opacity:0;visibility:hidden;transition:opacity .2s,transform .2s;white-space:nowrap}
+    .toast.visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
+    .toast svg{width:17px;height:17px;color:#c9e0b5}
+    .toast button{color:#d7e8be;font-size:12px;border-left:1px solid #56705b;padding:0 0 0 13px;min-height:22px;white-space:nowrap}
+    dialog{border:1px solid #d6dfd1;border-radius:14px;width:440px;max-width:calc(100% - 32px);padding:28px;box-shadow:0 22px 80px #1c35272b;color:var(--ink)}
+    dialog::backdrop{background:#203a2a42;backdrop-filter:blur(3px)}
+    .dialog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .dialog-header h2{margin:0;font-size:20px;font-weight:600}
+    .icon-button{display:grid;place-items:center;width:32px;height:32px;border-radius:5px;color:#74806f}
+    .icon-button:hover{background:var(--soft)}
+    .field{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;font-size:12px;color:#5c6c59}
+    .field input,.field select,.field textarea{width:100%;border:1px solid #c7d2c1;border-radius:6px;background:white;color:var(--ink);padding:10px 11px;font-size:14px;line-height:1.5}
+    .field textarea{resize:vertical;min-height:87px}
+    .dialog-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:25px}
+    .dialog-note{font-size:11px;color:#65725e;margin:0 0 20px}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    [hidden]{display:none!important}
+    @media(min-width:1500px){.app{grid-template-columns:230px minmax(0,1fr)}.work-area{grid-template-columns:minmax(450px,1.2fr) minmax(440px,.8fr)}.task-pane{padding-right:30px;padding-left:30px}.task-row{min-height:87px}.detail-scroll{padding:30px 40px}.detail-action{padding:18px 40px}.heading,.toolbar{padding-left:42px;padding-right:42px}.topbar{padding-left:42px;padding-right:42px}}
+    @media(max-width:1190px){.app{grid-template-columns:180px minmax(0,1fr)}.sidebar{padding-left:12px;padding-right:12px}.brand{padding-left:8px}.work-area{grid-template-columns:minmax(330px,1fr) minmax(340px,.92fr)}.topbar,.heading,.toolbar{padding-left:26px;padding-right:26px}.task-pane{padding-left:14px;padding-right:12px}.detail-scroll{padding-left:24px;padding-right:24px}.detail-action{padding-left:24px;padding-right:24px}.task-title{font-size:14px}.tabs{gap:18px}.search{width:140px}}
+    @media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar{display:none}.mobile-project{display:block;max-width:130px;border:1px solid #d4ddd0;padding:7px 22px 7px 9px;border-radius:5px;color:#51664e;background:#fff;font-size:12px}.topbar{padding-top:19px}.breadcrumb:before{content:"轨迹";font-weight:700;color:var(--green);font-size:16px;margin-right:8px}.heading{padding-top:24px}.search{width:130px}.work-area{grid-template-columns:minmax(330px,1fr) minmax(340px,.94fr)}.tabs{gap:16px}.filters{gap:10px}}
+    @media(max-width:760px){.app{height:auto;min-height:100dvh}.main{overflow:visible}.topbar{padding:20px 20px 0}.breadcrumb{font-size:11px;gap:7px}.breadcrumb:before{font-size:19px}.profile span:last-child{display:none}.heading{padding:25px 20px 23px;align-items:flex-start}.heading h1{font-size:25px;margin-bottom:10px}.heading-summary{font-size:12px}.heading .primary{font-size:12px;padding:8px 11px;min-height:37px;margin-top:2px;gap:5px}.toolbar{padding:0 20px;display:flex;flex-direction:column-reverse;align-items:stretch;gap:11px}.filters{justify-content:space-between;gap:14px;padding-bottom:1px}.search{width:auto;flex:1;background:#f3f6f1;border-radius:6px;padding:2px 9px;min-width:0}.search input{font-size:12px}.mobile-project{max-width:130px;min-height:34px;font-size:12px;padding-right:8px}.tabs{gap:25px;min-height:44px}.tab{padding:7px 0 13px;font-size:12px}.work-area{display:block;flex:auto;min-height:0}.task-pane{overflow:visible;padding:0 12px 30px}.list-top{height:49px;padding:0 9px}.group{margin-bottom:20px}.group-title{padding-left:9px}.task-row{padding:15px 9px;grid-template-columns:21px minmax(0,1fr) 43px;gap:9px;min-height:86px}.task-title{font-size:15px}.task-select{gap:9px}.task-meta{font-size:10px;gap:6px}.task-project{gap:4px}.due{font-size:10px}.details{display:none}.main.detail-open>.topbar,.main.detail-open>.heading,.main.detail-open>.toolbar{display:none}.main.detail-open .task-pane{display:none}.main.detail-open .details{display:flex;min-height:100dvh;border:0}.detail-scroll{overflow:visible;padding:21px 23px 28px;flex:1}.mobile-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#51674b;padding:3px 0;margin:0 0 28px;min-height:30px}.mobile-back svg{width:16px;height:16px}.detail-eyebrow{margin-bottom:20px}.detail-title{font-size:24px;line-height:1.5;margin-bottom:15px}.properties{margin-top:28px;margin-bottom:30px;row-gap:17px;font-size:13px;grid-template-columns:84px 1fr}.description{font-size:14px;line-height:1.9}.detail-section h3{font-size:13px}.subtask{font-size:13px;gap:10px}.subtasks{gap:16px}.activity-comment{font-size:13px}.detail-action{position:sticky;bottom:0;padding:15px 23px calc(15px + env(safe-area-inset-bottom));min-height:76px;box-shadow:0 -6px 18px #ffffffdf}.detail-action .primary{min-height:42px}.toast{bottom:95px;font-size:12px;padding:12px;gap:9px;white-space:normal}.mobile-footer{display:flex!important;align-items:center;justify-content:space-between;padding:25px 9px 0}.mobile-footer .demo-label{margin:0}.mobile-footer .back-link{font-size:11px}.list-end{margin-top:17px}}
+    @media(min-width:761px) and (max-width:1000px){.mobile-footer{display:flex!important;align-items:center;justify-content:space-between;padding:28px 12px 0}.mobile-footer .demo-label{margin:0}.mobile-footer .back-link{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <svg class="symbols" aria-hidden="true"><defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4m8-4v4M4 11h16m-12 4h3"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4c5-4 9 4 14 0v10c-5 4-9-4-14 0"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M8 4v16m-3-3 3 3 3-3M16 20V4m-3 3 3-3 3 3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </defs></svg>
+  <div class="app">
+    <aside class="sidebar" aria-label="工作区导航">
+      <div class="brand"><span class="brand-mark"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 20V10a4 4 0 0 1 8 0v9a4 4 0 0 0 8 0V8"/><circle cx="21" cy="6" r="1.8" fill="currentColor" stroke="none"/></svg></span>轨迹</div>
+      <div class="workspace-name"><span class="workspace-icon">L</span>林见的工作区</div>
+      <nav class="nav-list" aria-label="任务视图">
+        <button type="button" class="nav-button active" data-view="all" aria-current="page"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>我的任务</span><span class="nav-count" id="allCount">7</span></button>
+        <button type="button" class="nav-button" data-view="today"><svg aria-hidden="true"><use href="#i-sun"/></svg><span>今天</span><span class="nav-count" id="todayCount">4</span></button>
+        <button type="button" class="nav-button" data-view="done"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><span>已完成</span><span class="nav-count" id="doneCount">2</span></button>
+      </nav>
+      <p class="nav-heading">项目 <span>3</span></p>
+      <nav class="nav-list" aria-label="项目筛选">
+        <button type="button" class="nav-button project-button" data-project="site"><span class="project-dot" style="--project-color:#8b79a2"></span><span>拾光官网</span><span class="nav-count" id="project-site">4</span></button>
+        <button type="button" class="nav-button project-button" data-project="letter"><span class="project-dot" style="--project-color:#c49b4c"></span><span>产品周刊</span><span class="nav-count" id="project-letter">1</span></button>
+        <button type="button" class="nav-button project-button" data-project="team"><span class="project-dot" style="--project-color:#6d9b91"></span><span>团队事务</span><span class="nav-count" id="project-team">2</span></button>
+      </nav>
+      <div class="sidebar-bottom"><span class="demo-label" title="本页修改仅在当前页面有效，刷新后重置。">演示数据</span><a class="back-link" href="index.html"><svg aria-hidden="true"><use href="#i-arrow"/></svg>返回作品目录</a></div>
+    </aside>
+    <main class="main" id="main">
+      <div class="topbar"><div class="breadcrumb"><span>工作区</span><svg aria-hidden="true"><use href="#i-chevron"/></svg><strong>我的任务</strong></div><div class="profile"><span class="avatar" aria-hidden="true">见</span><span>林见</span></div></div>
+      <header class="heading"><div><h1 id="pageHeading">我的任务</h1><p class="heading-summary" id="summary">10 月 26 日，周一 <span aria-hidden="true">·</span> 今天还有 <span class="number">4</span> 项待完成</p></div><button type="button" class="primary" id="newTask"><svg aria-hidden="true"><use href="#i-plus"/></svg>新建任务</button></header>
+      <div class="toolbar">
+        <div class="tabs" role="group" aria-label="按状态筛选"><button class="tab" data-status="all" aria-pressed="true">全部<span class="tab-count" id="totalCount">9</span></button><button class="tab" data-status="progress" aria-pressed="false">进行中</button><button class="tab" data-status="todo" aria-pressed="false">待办</button><button class="tab" data-status="done" aria-pressed="false">已完成</button></div>
+        <div class="filters"><label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="search" placeholder="搜索任务…" aria-label="搜索任务" autocomplete="off"></label><select class="mobile-project" id="projectFilter" aria-label="按项目筛选"><option value="all">全部项目</option><option value="site">拾光官网</option><option value="letter">产品周刊</option><option value="team">团队事务</option></select></div>
+      </div>
+      <div class="work-area">
+        <section class="task-pane" aria-label="任务列表">
+          <div class="list-top"><span id="resultCount" aria-live="polite">9 项任务</span><button class="clear-filter" id="clearFilter" hidden>清除筛选</button><span class="list-top-right"><svg aria-hidden="true"><use href="#i-sort"/></svg>按截止时间</span></div>
+          <div id="taskList"></div>
+          <div class="list-end" id="listEnd">每一步，都算数</div>
+          <footer class="mobile-footer" style="display:none"><span class="demo-label" title="本页修改仅在当前页面有效，刷新后重置。">演示数据</span><a class="back-link" href="index.html"><svg aria-hidden="true"><use href="#i-arrow"/></svg>返回作品目录</a></footer>
+        </section>
+        <section class="details" aria-labelledby="detailTitle" id="detailPanel"></section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><span id="toastText"></span><button id="undoAction" type="button" hidden>撤销</button></div>
+  <dialog id="taskDialog" aria-labelledby="dialogTitle">
+    <form id="taskForm">
+      <div class="dialog-header"><h2 id="dialogTitle">新建任务</h2><button class="icon-button" type="button" id="closeDialog" aria-label="关闭新建任务"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <label class="field">任务名称<input name="title" id="newTitle" placeholder="接下来要完成什么？" required maxlength="80" autocomplete="off"></label>
+      <label class="field">所属项目<select name="project"><option value="site">拾光官网</option><option value="letter">产品周刊</option><option value="team">团队事务</option></select></label>
+      <label class="field">任务说明<textarea name="description" placeholder="补充背景或需要注意的细节（选填）" maxlength="500"></textarea></label>
+      <p class="dialog-note">新任务归入今天；本页修改会在刷新后重置。</p>
+      <div class="dialog-footer"><button class="secondary" type="button" id="cancelDialog">取消</button><button class="primary" type="submit"><svg aria-hidden="true"><use href="#i-plus"/></svg>添加任务</button></div>
+    </form>
+  </dialog>
+  <script>
+    const projects={site:{name:'拾光官网',color:'#8b79a2'},letter:{name:'产品周刊',color:'#c49b4c'},team:{name:'团队事务',color:'#6d9b91'}};
+    const states={todo:'待办',progress:'进行中',review:'待确认',done:'已完成'};
+    const tasks=[
+      {id:24,title:'完成成员邀请流程的交互走查',project:'site',status:'progress',group:'today',time:'17:00',priority:'优先处理',description:'沿着首次邀请的完整流程走一遍，重点检查邀请链接失效、重复加入和手机端的提示。评审前把问题和调整建议收齐。',subtasks:[{text:'确认邮箱邀请与链接邀请的文案',done:true},{text:'检查手机端提示与按钮间距',done:true},{text:'补充邀请失效后的返回路径',done:false}],comment:'邀请链接过期的提示已补上，走查时可以一起看看这一步的返回路径。',commenter:'周予',commentTime:'10:24'},
+      {id:25,title:'确认首页文案与移动端截图',project:'site',status:'review',group:'today',time:'18:00',priority:'普通',description:'对照最新的首页稿件确认标题、功能说明和移动端截图。重点看看首屏是否能让第一次来的访客理解产品的用途。',subtasks:[{text:'核对三处功能说明',done:true},{text:'确认移动端截图使用最新版本',done:false}],comment:'首页第二屏的文字已经精简了一轮，你可以再看一下现在的长度。',commenter:'许恬',commentTime:'09:50'},
+      {id:26,title:'整理第 42 期周刊的开篇',project:'letter',status:'todo',group:'today',time:'18:30',priority:'普通',description:'这一期聊“把小功能做好”。从最近收到的一条用户反馈切入，写清楚这次改动解决了什么问题，开篇控制在 300 字以内。',subtasks:[{text:'选出一条有代表性的用户反馈',done:false},{text:'完成开篇并发给搭档校对',done:false}],comment:'上周关于快捷搜索的反馈很具体，适合用来做这期的开头。',commenter:'周予',commentTime:'09:12'},
+      {id:27,title:'更新本周协作安排',project:'team',status:'todo',group:'today',time:'19:00',priority:'普通',description:'把本周的评审时间、交付节点和需要协作的事项整理到一处，检查是否有时间冲突。',subtasks:[{text:'确认周四评审的参加人员',done:true},{text:'补上每项交付的负责人',done:false}],comment:'周四下午大家都有空，可以把设计评审放在 15:00。',commenter:'许恬',commentTime:'08:46'},
+      {id:28,title:'补充支付失败的错误提示',project:'site',status:'todo',group:'tomorrow',time:'11:00',priority:'优先处理',description:'分别补充网络异常、余额不足与银行卡验证失败的提示。每种情况都要给出用户下一步可以采取的动作。',subtasks:[{text:'整理常见支付失败的场景',done:false},{text:'补充提示文案和重试入口',done:false}],comment:'客服整理的高频问题里，银行卡验证失败出现得最多。',commenter:'周予',commentTime:'昨天'},
+      {id:29,title:'准备周四评审的演示脚本',project:'site',status:'todo',group:'tomorrow',time:'15:00',priority:'普通',description:'按照“进入首页—创建项目—邀请成员”的顺序准备演示，保留两分钟展示本周修复的问题和待讨论项。',subtasks:[{text:'串联演示的三个关键场景',done:false},{text:'列出需要团队拍板的事项',done:false}],comment:'演示时先走完正常流程，再集中讨论边界情况，时间会更好控制。',commenter:'许恬',commentTime:'昨天'},
+      {id:30,title:'预订下周团队共创的会议室',project:'team',status:'todo',group:'tomorrow',time:'17:00',priority:'普通',description:'下周一下午安排两小时共创，需要一间能容纳 6 人、有白板的会议室。先确认大家的时间，再完成场地预订。',subtasks:[{text:'确认参加人数与时间',done:false},{text:'预订会议室并登记场地信息',done:false}],comment:'这次会用到便利贴和白板笔，预订时记得确认一下。',commenter:'周予',commentTime:'昨天'},
+      {id:22,title:'修复项目列表的空状态',project:'site',status:'done',previousStatus:'progress',group:'today',time:'09:30',priority:'普通',description:'在还没有项目时，用清楚的提示和创建入口帮助新用户开始使用。已经完成桌面与手机尺寸下的检查。',subtasks:[{text:'完成空状态文案与创建入口',done:true},{text:'检查手机端显示',done:true}],comment:'空状态现在很清楚，可以直接从这里创建第一个项目了。',commenter:'许恬',commentTime:'09:28'},
+      {id:23,title:'把组件命名规范补进交接文档',project:'team',status:'done',previousStatus:'todo',group:'today',time:'09:10',priority:'普通',description:'整理按钮、表单和弹窗的命名方式，在交接文档里补充实例，方便新同事快速找到对应组件。',subtasks:[{text:'整理组件名称与使用场景',done:true},{text:'补充常见组合示例',done:true}],comment:'例子已经看过，后续新增组件也可以沿用这套命名。',commenter:'周予',commentTime:'09:02'}
+    ];
+    let selectedId=24,statusFilter='all',projectFilter='all',view='all',query='',undo=null,toastTimer;
+    const $=id=>document.getElementById(id);
+    const esc=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const icon=(name)=>`<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const isNarrow=()=>window.matchMedia('(max-width:760px)').matches;
+    function filteredTasks(){return tasks.filter(task=>(view!=='today'||task.group==='today'&&task.status!=='done')&&(view!=='done'||task.status==='done')&&(projectFilter==='all'||task.project===projectFilter)&&(statusFilter==='all'||task.status===statusFilter)&&(task.title+' '+task.description+' '+projects[task.project].name).toLowerCase().includes(query.toLowerCase()));}
+    function taskRow(task){return `<div class="task-row ${task.id===selectedId?'selected':''} ${task.status==='done'?'done':''}"><input class="check task-toggle" type="checkbox" data-id="${task.id}" aria-label="${task.status==='done'?'重新打开':'完成'}：${esc(task.title)}" ${task.status==='done'?'checked':''}><button type="button" class="task-select" data-select="${task.id}" aria-pressed="${task.id===selectedId}"><span class="task-title">${esc(task.title)}</span><span class="task-meta"><span class="task-project"><span class="project-dot" style="--project-color:${projects[task.project].color}"></span>${projects[task.project].name}</span><span class="meta-dot">·</span><span class="task-status"><span class="status-icon ${task.status}"></span>${states[task.status]}</span></span></button><span class="due ${task.group==='today'&&task.status!=='done'?'today':''}">${task.time||'今天'}</span></div>`;}
+    function renderList(){
+      const visible=filteredTasks();
+      $('resultCount').textContent=`${visible.length} 项任务`;
+      $('totalCount').textContent=tasks.filter(task=>(projectFilter==='all'||task.project===projectFilter)&&(view!=='today'||task.group==='today'&&task.status!=='done')&&(view!=='done'||task.status==='done')).length;
+      $('allCount').textContent=tasks.filter(task=>task.status!=='done').length;
+      $('todayCount').textContent=tasks.filter(task=>task.group==='today'&&task.status!=='done').length;
+      $('doneCount').textContent=tasks.filter(task=>task.status==='done').length;
+      Object.keys(projects).forEach(key=>$('project-'+key).textContent=tasks.filter(task=>task.project===key&&task.status!=='done').length);
+      $('summary').innerHTML=`10 月 26 日，周一 <span aria-hidden="true">·</span> 今天还有 <span class="number">${$('todayCount').textContent}</span> 项待完成`;
+      $('pageHeading').textContent=projectFilter!=='all'?projects[projectFilter].name:view==='today'?'今天的任务':view==='done'?'已完成':'我的任务';
+      document.querySelector('.breadcrumb strong').textContent=$('pageHeading').textContent;
+      $('clearFilter').hidden=statusFilter==='all'&&projectFilter==='all'&&view==='all'&&!query;
+      document.querySelectorAll('[data-status]').forEach(button=>button.setAttribute('aria-pressed',button.dataset.status===statusFilter));
+      document.querySelectorAll('[data-view]').forEach(button=>{const active=button.dataset.view===view&&projectFilter==='all';button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});
+      document.querySelectorAll('[data-project]').forEach(button=>{const active=button.dataset.project===projectFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',active);});
+      $('projectFilter').value=projectFilter;
+      $('listEnd').hidden=!visible.length;
+      if(!visible.length){$('taskList').innerHTML=`<div class="empty"><div class="empty-icon">${icon('search')}</div><h2>没有找到匹配的任务</h2><p>换个关键词，或清除筛选再看看。</p><button class="secondary" type="button" data-clear>清除筛选</button></div>`;return;}
+      const groups=[{key:'today',title:'今天',date:'10 月 26 日'},{key:'tomorrow',title:'明天',date:'10 月 27 日'},{key:'done',title:'已完成',date:''}];
+      $('taskList').innerHTML=groups.map(group=>{const items=visible.filter(task=>group.key==='done'?task.status==='done':task.status!=='done'&&task.group===group.key);return items.length?`<section class="group"><h2 class="group-title">${icon('down')}${group.title}<span class="group-count">${items.length}</span>${group.date?`<span class="group-count" style="margin-left:auto;font-size:10px">${group.date}</span>`:''}</h2>${items.map(taskRow).join('')}</section>`:'';}).join('');
+    }
+    function renderDetail(){
+      const task=tasks.find(item=>item.id===selectedId);
+      if(!task)return;
+      if(!filteredTasks().length&&!isNarrow()){$('detailPanel').innerHTML=`<div class="detail-scroll"><div class="empty"><div class="empty-icon">${icon('grid')}</div><h2 id="detailTitle">任务详情</h2><p>选择列表中的任务，查看说明与安排。</p></div></div>`;return;}
+      const doneCount=task.subtasks.filter(item=>item.done).length;
+      const subtaskBlock=task.subtasks.length?`<section class="detail-section"><h3 class="checklist-heading">子任务<span>${doneCount} / ${task.subtasks.length}</span></h3><div class="progress-track" aria-hidden="true"><i style="width:${doneCount/task.subtasks.length*100}%"></i></div><div class="subtasks">${task.subtasks.map((subtask,index)=>`<label class="subtask"><input type="checkbox" class="check" data-subtask="${index}" ${subtask.done?'checked':''}><span>${esc(subtask.text)}</span></label>`).join('')}</div></section>`:'';
+      const activity=task.comment?`<section class="detail-section activity"><h3>任务动态</h3><div class="activity-entry"><span class="avatar amber" aria-hidden="true">${task.commenter.slice(-1)}</span><div class="activity-body"><p class="activity-author">${task.commenter}<time>${task.commentTime}</time></p><p class="activity-comment">${esc(task.comment)}</p></div></div><p class="activity-event">${icon(task.status==='done'?'check-circle':'person')}林见${task.status==='done'?'完成了这项任务':task.status==='progress'?'将状态改为进行中':'创建了这项任务'}</p></section>`:'';
+      $('detailPanel').innerHTML=`<div class="detail-scroll"><button class="mobile-back" type="button" id="backToList">${icon('arrow')}返回任务列表</button><div class="detail-eyebrow"><span class="detail-crumb"><span class="project-dot" style="--project-color:${projects[task.project].color}"></span>${projects[task.project].name}${icon('chevron')}任务</span><span>TK-${String(task.id).padStart(3,'0')}</span></div><h2 class="detail-title" id="detailTitle" tabindex="-1">${esc(task.title)}</h2><span class="status-pill ${task.status}"><span class="status-icon ${task.status}"></span>${states[task.status]}</span><dl class="properties"><dt>${icon('person')}负责人</dt><dd><span class="avatar" aria-hidden="true">见</span>林见<span style="color:#65725e;font-size:11px">我</span></dd><dt>${icon('calendar')}截止时间</dt><dd>${task.group==='today'?'今天':'明天'}${task.time?' · '+task.time:''}</dd><dt>${icon('flag')}优先级</dt><dd><span class="${task.priority==='优先处理'?'priority':''}">${task.priority==='优先处理'?icon('flag'):''}${task.priority}</span></dd></dl><section class="detail-section"><h3>任务说明</h3><p class="description">${esc(task.description||'暂时没有补充说明。')}</p></section>${subtaskBlock}${activity}</div><div class="detail-action"><span class="detail-action-note"><strong>${task.status==='done'?'又向前走了一步':task.group==='today'?'今天完成':'留给明天的安排'}</strong>${task.status==='done'?'可以重新打开这项任务':task.time?'截止 '+task.time:'按自己的节奏推进'}</span><button type="button" class="${task.status==='done'?'secondary':'primary'}" id="completeTask">${icon(task.status==='done'?'arrow':'check')}${task.status==='done'?'重新打开':'标记完成'}</button></div>`;
+    }
+    function render(){renderList();renderDetail();}
+    function chooseTask(id,open=true){selectedId=id;render();if(isNarrow()&&open){$('main').classList.add('detail-open');window.scrollTo(0,0);$('detailTitle').focus({preventScroll:true});}else document.querySelector('.detail-scroll').scrollTop=0;}
+    function changeFilter(){const visible=filteredTasks();if(visible.length&&!visible.some(task=>task.id===selectedId))selectedId=visible[0].id;render();}
+    function resetFilters(){statusFilter='all';projectFilter='all';view='all';query='';$('search').value='';changeFilter();}
+    function toast(message,action){clearTimeout(toastTimer);$('toastText').textContent=message;undo=action||null;$('undoAction').hidden=!undo;$('toast').classList.add('visible');toastTimer=setTimeout(()=>{$('toast').classList.remove('visible');undo=null;},6500);}
+    function toggleTask(id){const task=tasks.find(item=>item.id===id);const before=task.status;const fromCheckbox=document.activeElement?.matches('.task-toggle');task.status=before==='done'?(task.previousStatus||'todo'):'done';if(before!=='done')task.previousStatus=before;render();if(fromCheckbox)document.querySelector(`.task-toggle[data-id="${id}"]`)?.focus({preventScroll:true});toast(task.status==='done'?'任务已完成':'任务已重新打开',()=>{task.status=before;render();toast('已撤销刚才的操作');});}
+    document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{view=button.dataset.view;projectFilter='all';statusFilter='all';changeFilter();}));
+    document.querySelectorAll('[data-project]').forEach(button=>button.addEventListener('click',()=>{projectFilter=button.dataset.project;view='all';changeFilter();}));
+    document.querySelectorAll('[data-status]').forEach(button=>button.addEventListener('click',()=>{statusFilter=button.dataset.status;if(view==='done'&&statusFilter!=='done')view='all';changeFilter();}));
+    $('projectFilter').addEventListener('change',event=>{projectFilter=event.target.value;view='all';changeFilter();});
+    $('search').addEventListener('input',event=>{query=event.target.value.trim();changeFilter();});
+    $('clearFilter').addEventListener('click',resetFilters);
+    $('taskList').addEventListener('click',event=>{const row=event.target.closest('[data-select]');if(row)chooseTask(Number(row.dataset.select));if(event.target.closest('[data-clear]'))resetFilters();});
+    $('taskList').addEventListener('change',event=>{if(event.target.matches('.task-toggle'))toggleTask(Number(event.target.dataset.id));});
+    $('detailPanel').addEventListener('click',event=>{if(event.target.closest('#completeTask')){toggleTask(selectedId);$('completeTask')?.focus({preventScroll:true});}if(event.target.closest('#backToList')){$('main').classList.remove('detail-open');document.querySelector(`[data-select="${selectedId}"]`)?.focus({preventScroll:true});}});
+    $('detailPanel').addEventListener('change',event=>{if(event.target.matches('[data-subtask]')){const index=Number(event.target.dataset.subtask);tasks.find(item=>item.id===selectedId).subtasks[index].done=event.target.checked;const scroll=document.querySelector('.detail-scroll').scrollTop;renderDetail();document.querySelector('.detail-scroll').scrollTop=scroll;document.querySelector(`[data-subtask="${index}"]`).focus({preventScroll:true});}});
+    $('undoAction').addEventListener('click',()=>{const action=undo;undo=null;if(action)action();});
+    $('newTask').addEventListener('click',()=>{$('taskForm').reset();$('taskForm').elements.project.value=projectFilter==='all'?'site':projectFilter;$('taskDialog').showModal();$('newTitle').focus();});
+    ['closeDialog','cancelDialog'].forEach(id=>$(id).addEventListener('click',()=>$('taskDialog').close()));
+    $('taskDialog').addEventListener('click',event=>{if(event.target===$('taskDialog')){const rect=$('taskDialog').getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)$('taskDialog').close();}});
+    $('taskForm').addEventListener('submit',event=>{event.preventDefault();const form=new FormData(event.target);const title=form.get('title').trim();if(!title){$('newTitle').setCustomValidity('请填写任务名称');$('newTitle').reportValidity();return;}const task={id:Math.max(...tasks.map(item=>item.id))+1,title,project:form.get('project'),status:'todo',group:'today',time:'',priority:'普通',description:form.get('description').trim(),subtasks:[],comment:''};tasks.unshift(task);$('taskDialog').close();resetFilters();chooseTask(task.id);toast('任务已添加到今天');});
+    $('newTitle').addEventListener('input',()=>$('newTitle').setCustomValidity(''));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('taskDialog').open&&$('main').classList.contains('detail-open')){$('main').classList.remove('detail-open');document.querySelector(`[data-select="${selectedId}"]`)?.focus({preventScroll:true});}});
+    render();
+  </script>
+</body>
+</html>
