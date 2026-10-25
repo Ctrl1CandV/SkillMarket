@@ -1,0 +1,95 @@
+[
+  {
+    "id": "p152",
+    "status": "copied",
+    "html_sha256": "eac47060cf1147646a552c8377420e518ff4bbc08d533b5b5f895f98eaa6557c",
+    "notes_sha256": "f5cbb9d6a0ab7214c8baa31b56e3afe220e5f339886b517abb3a16031f8071fa",
+    "scripts_same": false,
+    "script_syntax": true,
+    "nonstyle_same": false
+  },
+  {
+    "id": "p447",
+    "status": "copied",
+    "html_sha256": "0456e973304779a7d2a762996f1bf3e47693b9b1be8b7ce72f438f2534f741d1",
+    "notes_sha256": "e94dc6e07de10dcfab4cd0f6ff8035c0d0935a6ef1528b6f8e0d68549146d334",
+    "scripts_same": true,
+    "script_syntax": true,
+    "nonstyle_same": true
+  },
+  {
+    "id": "p551",
+    "status": "copied",
+    "html_sha256": "ae660f9f06f72d979a85de85fde6ca1be89c0dc8c866a473e84f8e98f2cf8ec3",
+    "notes_sha256": "2a42a418729699a1504d69a875b3c82d5e6d36ff34ed2cded03256166c07d501",
+    "scripts_same": true,
+    "script_syntax": true,
+    "nonstyle_same": false
+  },
+  {
+    "id": "p498",
+    "status": "copied",
+    "html_sha256": "be08dd811397f13df4632fac1325e0d41a647d68cce53da983987f2592ace90e",
+    "notes_sha256": "854825d3c61d71ac0f7f7a7b7a20ec912a60a274ce2c44308cbf61691f0f19cf",
+    "scripts_same": false,
+    "script_syntax": true,
+    "nonstyle_same": false
+  },
+  {
+    "id": "p740",
+    "status": "copied",
+    "html_sha256": "0fc0b3729e9fad55010b04b8e441e652a393814358864184e14ce622b2f9bedc",
+    "notes_sha256": "af6ae876acc5510dc6492bfc2f64a39f7bb9534654fcddd87ac1aa390d47775e",
+    "scripts_same": true,
+    "script_syntax": true,
+    "nonstyle_same": true
+  },
+  {
+    "id": "p875",
+    "status": "copied",
+    "html_sha256": "1b98be6438a8dd937ac05ec4875a543e7baf4abddc5b7d79020072c5599efd77",
+    "notes_sha256": "32ccbf73dd24905e8eb32375b3cfc92247dbe0c233a67c92ac9bd670989ac119",
+    "scripts_same": true,
+    "script_syntax": true,
+    "nonstyle_same": true
+  },
+  {
+    "id": "p177",
+    "status": "copied",
+    "html_sha256": "f26f4ae7e106f14e6d56d883312bc0326580e68f8408c202f9ce041831d9a2cd",
+    "notes_sha256": "0b38bd2c89c191296d0a38c51351626a4c89775d214bc871f5f4b5aea129db43",
+    "scripts_same": false,
+    "script_syntax": true,
+    "nonstyle_same": false
+  },
+  {
+    "id": "p466",
+    "status": "copied",
+    "html_sha256": "6fbb8fae1ebed3928cc05ad24fa2516b38e9d5018ca6a0cb02063d461e2dbdca",
+    "notes_sha256": "868ccb063c38abf0c4b3802a4ec246e6bd040585d52f3e7c3371c6fcdcddc21c",
+    "scripts_same": true,
+    "script_syntax": true,
+    "nonstyle_same": true
+  },
+  {
+    "id": "p696",
+    "status": "copied",
+    "html_sha256": "b7d7724ad2211282b36427168a3b03ff2000690e88b27759d8bf5f655b5c8351",
+    "notes_sha256": "74061983b4caed1ecd2f364d20505a49fb8e61dc750a3e75f9c508f93b2dfad9",
+    "scripts_same": false,
+    "script_syntax": true,
+    "nonstyle_same": false
+  },
+  {
+    "id": "p737",
+    "status": "pending"
+  },
+  {
+    "id": "p184",
+    "status": "pending"
+  },
+  {
+    "id": "p811",
+    "status": "pending"
+  }
+]

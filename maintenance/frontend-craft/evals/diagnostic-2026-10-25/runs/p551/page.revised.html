@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>组会候选 · 研目</title>
+<style>
+:root{--bg:#f5f5f0;--paper:#fffefa;--ink:#263b33;--text:#3c4942;--muted:#626d63;--line:#dedfd5;--green:#345b46;--green-soft:#eaf0e6;--soft:#f0f1e9;--danger:#a43d32;--sans:"Segoe UI","Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;--serif:"Songti SC",SimSun,serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;line-break:strict;text-autospace:normal}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed}button,a,input,summary{ -webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #b07835;outline-offset:4px}button{color:inherit}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip{position:absolute;left:20px;top:-80px;z-index:10;background:var(--paper);padding:12px 18px;color:var(--green)}.skip:focus{top:12px}
+.site-header{height:76px;border-bottom:1px solid var(--line);background:#fbfbf7}.header-inner{max-width:1248px;height:100%;margin:auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between}.identity{display:flex;align-items:center;gap:13px}.brand-mark{width:34px;height:36px;display:grid;place-items:center;background:var(--green);border-radius:6px;color:#fffefa}.brand-mark svg{width:23px;height:23px}.brand-name{font-size:23px;font-weight:650;letter-spacing:.12em;color:var(--ink)}.header-divider{height:20px;border-left:1px solid var(--line);margin:0 10px}.header-label{color:var(--muted);font-size:13px}.local-mark{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.local-mark svg{width:15px;height:15px}
+.page{max-width:1248px;margin:auto;padding:38px 40px 24px}.collection-heading{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:27px}.eyebrow{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;letter-spacing:.08em;margin:0 0 8px}.eyebrow svg{width:16px;height:16px}h1{margin:0;color:var(--ink);font-family:var(--serif);font-size:38px;font-weight:400;line-height:1.35;letter-spacing:.025em}.collection-count{color:var(--muted);font-size:13px;padding-bottom:7px;font-variant-numeric:tabular-nums}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 304px;gap:28px;align-items:start}.library{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}.toolbar{padding:20px 22px 15px;border-bottom:1px solid var(--line)}.search-box{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 13px;border:1px solid #85917f;border-radius:6px;background:#fffefa;color:var(--muted)}.search-box:focus-within{border-color:var(--green);box-shadow:0 0 0 2px #345b4620}.search-box svg{width:18px;height:18px}.search-box input{min-width:0;width:100%;border:0;background:transparent;color:var(--ink);height:42px;outline:none;font-size:14px}.search-box input:focus-visible{outline:none}.search-box input::placeholder{color:#687366}.clear-search{border:0;border-radius:4px;background:transparent;width:29px;height:29px;display:grid;place-items:center;padding:0;color:var(--muted)}.clear-search:hover{background:var(--soft)}.filter-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px}.filters{display:flex;gap:4px;flex-wrap:wrap}.filter{border:0;background:transparent;border-radius:5px;padding:5px 11px;color:var(--muted);font-size:13px;min-height:32px}.filter:hover{background:var(--soft);color:var(--ink)}.filter[aria-pressed=true]{background:var(--green-soft);color:#294d38;font-weight:600}.result-count{white-space:nowrap;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}.papers{list-style:none;margin:0;padding:0}.paper{padding:22px;display:grid;grid-template-columns:20px minmax(0,1fr) 66px;gap:7px 13px;align-items:center;position:relative;border-bottom:1px solid var(--line);transition:background .12s}.paper:last-child{border-bottom:0}.paper:hover{background:#f8f9f2}.paper.selected{background:#f0f5ec}.paper.selected:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--green)}.paper-check{width:18px;height:18px;accent-color:var(--green);margin:0;grid-column:1;grid-row:1;cursor:pointer}.paper-title{margin:0;font-size:16px;line-height:1.55;font-weight:600;color:var(--ink);grid-column:2;grid-row:1;overflow-wrap:anywhere}.paper-title label{cursor:pointer}.metadata{grid-column:2;grid-row:2;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;line-height:1.6}.metadata .dot{color:#939b8e}.status{grid-column:3;grid-row:1;display:flex;align-items:center;gap:6px;justify-self:end;font-size:12px;white-space:nowrap;color:var(--muted)}.status:before{content:"";width:6px;height:6px;border-radius:50%;background:#9aa394}.status.read{color:#41664a}.status.read:before{background:#557c55}.status.reading{color:#87612d}.status.reading:before{background:#aa8042}.status.unread:before{background:transparent;border:1px solid #86917e}.note-toggle{grid-column:3;grid-row:2;display:flex;align-items:center;gap:3px;justify-self:end;background:none;border:0;color:#687366;padding:2px 0 2px 8px;font-size:12px;min-height:25px}.note-toggle svg{width:12px;height:12px;transition:transform .15s}.note-toggle[aria-expanded=true] svg{transform:rotate(180deg)}.note-toggle:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}.note-text{grid-column:2/4;margin:3px 0 0;padding:10px 13px;border-left:2px solid #b3c0a8;background:#eaf0e4;color:#52604d;line-height:1.8;font-size:13px}.note-label{display:block;color:#63725d;font-size:11px;margin-bottom:2px}.empty{padding:58px 24px 60px;text-align:center}.empty svg{width:31px;height:31px;color:#7e8e76;margin-bottom:10px}.empty h2{margin:0 0 7px;color:var(--ink);font-size:17px;font-weight:600}.empty p{margin:0 0 19px;color:var(--muted);font-size:13px}.text-button{border:0;background:transparent;color:var(--green);padding:4px 0;font-size:13px;text-decoration:underline;text-underline-offset:4px}.text-button:disabled{color:#92998d;text-decoration:none}
+.export-panel{background:#eeefe5;border:1px solid #dce0d2;border-radius:10px;padding:23px;position:sticky;top:24px}.panel-heading{display:flex;align-items:center;gap:9px;margin-bottom:21px}.panel-heading svg{width:18px;height:18px;color:var(--green)}.panel-heading h2{margin:0;font-size:17px;font-weight:600;color:var(--ink)}.selection-overview{display:flex;align-items:flex-end;gap:8px}.selection-number{font-size:43px;font-weight:400;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:var(--green)}.selection-unit{font-size:13px;color:#626d5d;padding-bottom:4px}.clear-selection{margin-left:auto;margin-bottom:2px;font-size:12px}.selection-context{min-height:23px;color:#626d5d;font-size:12px;margin:10px 0 0}.selection-detail{margin:12px 0 0;font-size:12px;color:var(--green)}.selection-detail summary{cursor:pointer;min-height:25px}.selected-list{margin:8px 0 0;padding-left:18px;color:var(--text)}.selected-list li{margin:5px 0;line-height:1.65;overflow-wrap:anywhere}.export-options{border:0;border-top:1px solid #d3d8c8;padding:20px 0 0;margin:20px 0 0;min-width:0}.export-options legend{float:left;width:100%;padding:0;margin-bottom:11px;font-size:12px;color:#626d5d}.format-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px;clear:both}.format-option{position:relative;display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;border:1px solid #85917f;border-radius:6px;min-height:70px;cursor:pointer;background:#f6f7ef;color:#59654f}.format-option:has(input:checked){background:#fffefa;color:var(--green);border:1.5px solid var(--green)}.format-option:has(input:focus-visible){outline:3px solid #b07835;outline-offset:4px}.format-option input{position:absolute;top:7px;right:7px;width:12px;height:12px;accent-color:var(--green);margin:0}.format-name{font-size:13px;font-weight:600}.format-ext{font:11px "Segoe UI",sans-serif;color:#64705d}.notes-option{display:flex;align-items:center;gap:9px;margin-top:22px;cursor:pointer;font-size:13px;color:var(--ink)}.notes-option input{margin:0;width:16px;height:16px;accent-color:var(--green)}.privacy-note{font-size:12px;color:#626d5d;margin:5px 0 0 25px;line-height:1.7}.file-name{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:24px;color:#626d5d;font-size:12px}.file-name svg{width:14px;height:14px}.export-button{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fffefa;width:100%;border:1px solid var(--green);border-radius:6px;min-height:44px;margin-top:10px;font-size:14px;font-weight:600}.export-button svg{width:17px;height:17px}.export-button:hover:not(:disabled){background:#274a37}.export-button:disabled{background:#dce1d2;border-color:#dce1d2;color:#6d7864}.export-feedback{margin:15px 0 0;font-size:12px;color:#3e6647;line-height:1.8}.export-error{background:#fff6ee;border:1px solid #dcb8a8;border-radius:6px;margin-top:16px;padding:12px;color:#853f31;font-size:12px;line-height:1.8}.export-error strong{font-weight:600;font-size:13px}.export-error p{margin:3px 0 8px}.retry-button{background:#fffaf4;border:1px solid #a7644e;color:#853f31;border-radius:4px;padding:5px 12px;min-height:32px;font-size:12px}.retry-button:disabled{opacity:.5}
+.page-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:25px;color:#626d63;font-size:11px}.page-footer p{margin:0}.test-entry{max-width:280px;font-size:11px;text-align:right}.test-entry summary{cursor:pointer;min-height:25px;color:#687161}.test-body{padding:9px 0 0;text-align:left}.test-toggle{display:flex;gap:8px;align-items:center;color:#58614e;cursor:pointer}.test-toggle input{accent-color:var(--green);width:14px;height:14px;margin:0}.test-status{margin:6px 0 0!important;line-height:1.8}.noscript{padding:20px;background:#fff0dd;color:#7d4329}
+@media(min-width:1400px){.page{padding-top:46px}.paper{padding-top:24px;padding-bottom:24px}}
+@media(max-width:1000px){.header-inner,.page{padding-left:24px;padding-right:24px}.workspace{grid-template-columns:minmax(0,1fr) 280px;gap:20px}.export-panel{padding:20px}.paper{padding:20px 16px;gap:7px 10px}.toolbar{padding:18px 16px 14px}.filter{padding-left:8px;padding-right:8px}.paper-title{font-size:15px}.metadata{gap:3px 6px}}
+@media(max-width:760px){.site-header{height:65px}.header-inner,.page{padding-left:20px;padding-right:20px}.header-label,.header-divider{display:none}.brand-name{font-size:21px}.brand-mark{width:30px;height:32px}.page{padding-top:28px}.collection-heading{margin-bottom:22px}h1{font-size:32px}.workspace{grid-template-columns:minmax(0,1fr);gap:22px}.export-panel{position:static;padding:22px}.export-options{margin-top:18px}.format-option{min-height:64px}.selection-context{min-height:0}.paper{padding:20px 16px}.paper-title{font-size:16px}.page-footer{font-size:11px;flex-direction:column;gap:12px;margin-bottom:8px}.test-entry{text-align:left}.local-mark{font-size:11px}.toolbar{padding:16px}.filter-row{margin-top:12px}.filter{padding:5px 9px}.result-count{font-size:11px}.file-name{margin-top:21px}}
+@media(max-width:400px){.header-inner,.page{padding-left:16px;padding-right:16px}.paper{grid-template-columns:18px minmax(0,1fr) 59px;gap:6px 9px;padding:19px 13px}.paper-title{font-size:16px}.metadata{font-size:13px;column-gap:5px}.status,.note-toggle{font-size:12px}.toolbar{padding:14px 13px}.filter{padding:5px 8px}.result-count{font-size:10px}.collection-count{font-size:12px}}
+@media(max-width:760px){.search-box input{font-size:16px}.filter{min-height:36px}.note-toggle{min-height:32px;min-width:44px;justify-content:flex-end;margin-block:-3px}.export-panel .panel-heading{margin-bottom:14px}.selection-number{font-size:36px}.selection-context{margin-top:8px}.export-options{margin-top:16px;padding-top:16px}.notes-option{margin-top:18px}.privacy-note{font-size:13px}.file-name{margin-top:20px}.export-button{min-height:46px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳至文献清单</a>
+<header class="site-header"><div class="header-inner"><div class="identity"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4.5h6a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4z"/><path d="M13 7.5a3 3 0 0 1 3-3h4v13h-4a3 3 0 0 0-3 3M7 8h3M7 11h3"/></svg></span><span class="brand-name">研目</span><span class="header-divider" aria-hidden="true"></span><span class="header-label">我的文献</span></div><span class="local-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v2"/></svg>本地个人清单</span></div></header>
+<main class="page" id="main">
+<div class="collection-heading"><div><p class="eyebrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a1 1 0 0 1 1-1h6l2 3h8a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>文献集合</p><h1>组会候选</h1></div><span class="collection-count">6 篇文献</span></div>
+<noscript><p class="noscript">请启用 JavaScript，以查看文献并使用搜索、选择和导出。</p></noscript>
+<div class="workspace">
+<section class="library" aria-label="文献清单">
+<div class="toolbar"><div class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><label class="sr-only" for="search">搜索标题或作者</label><input type="search" id="search" autocomplete="off" placeholder="搜索标题或作者" aria-controls="papers"><button type="button" id="clear-search" class="clear-search" aria-label="清空搜索" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></div>
+<div class="filter-row"><div class="filters" role="group" aria-label="按阅读状态筛选"><button type="button" class="filter" data-filter="全部" aria-pressed="true">全部</button><button type="button" class="filter" data-filter="未读" aria-pressed="false">未读</button><button type="button" class="filter" data-filter="阅读中" aria-pressed="false">阅读中</button><button type="button" class="filter" data-filter="已读" aria-pressed="false">已读</button></div><span class="result-count" id="result-count" role="status" aria-live="polite">显示 6 篇</span></div></div>
+<ul class="papers" id="papers"></ul>
+<div class="empty" id="empty" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4M8 10.5h5"/></svg><h2>没有找到匹配的文献</h2><p>换个关键词，或重置阅读状态。</p><button type="button" class="text-button" id="reset-filters">重置搜索与筛选</button></div>
+</section>
+<aside class="export-panel" aria-labelledby="export-heading">
+<div class="panel-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h5"/></svg><h2 id="export-heading">导出清单</h2></div>
+<div class="selection-overview"><span class="selection-number" id="selected-count">0</span><span class="selection-unit">篇已选</span><button type="button" class="text-button clear-selection" id="clear-selection" disabled>清空选择</button></div>
+<p class="selection-context" id="selection-context" aria-live="polite">选择文献，整理本次讨论清单。</p>
+<details class="selection-detail" id="selection-detail" hidden><summary>查看已选文献</summary><ol class="selected-list" id="selected-list"></ol></details>
+<fieldset class="export-options"><legend>文件格式</legend><div class="format-choice"><label class="format-option"><input type="radio" name="format" value="md" checked><span class="format-name">Markdown</span><span class="format-ext">.md</span></label><label class="format-option"><input type="radio" name="format" value="txt"><span class="format-name">纯文本</span><span class="format-ext">.txt</span></label></div></fieldset>
+<label class="notes-option" for="include-notes"><input id="include-notes" type="checkbox">包含私人备注</label><p class="privacy-note">勾选后，备注会随文件一起分享。</p>
+<div class="file-name"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8zM14 3v5h5"/></svg><span id="file-name">组会候选.md</span></div>
+<button type="button" id="export" class="export-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg><span>导出清单</span></button>
+<p class="export-feedback" id="export-feedback" role="status" aria-live="polite" hidden></p>
+<div class="export-error" id="export-error" role="alert" hidden><strong>导出未完成</strong><p>文件未生成，所选文献与选项已保留。</p><button type="button" class="retry-button" id="retry">重试导出</button></div>
+</aside>
+</div>
+<footer class="page-footer"><p>样例文献，仅用于演示，不提供论文全文链接。</p><details class="test-entry"><summary>验收入口</summary><div class="test-body"><label class="test-toggle"><input type="checkbox" id="fail-next">让下一次导出失败</label><p class="test-status" id="test-status" role="status" aria-live="polite">仅影响一次导出，重试可正常生成文件。</p></div></details></footer>
+</main>
+<script>
+'use strict';
+const records = [
+{id:'P01', title:'长文档摘要中的证据定位', authors:'林知远、赵宁', year:2025, type:'会议论文', status:'已读', note:'组会上讨论如何检查摘要中的每条依据。'},
+{id:'P02', title:'小样本标注的一致性检查', authors:'陈晓、顾文', year:2024, type:'期刊论文', status:'阅读中', note:'需要补看附录中的标注说明。'},
+{id:'P03', title:'研究软件的可复现记录', authors:'许禾', year:2026, type:'技术报告', status:'未读', note:'先确认环境记录能否用于自己的项目。'},
+{id:'P04', title:'跨领域术语表的维护方法', authors:'王景、林知远', year:2023, type:'期刊论文', status:'已读', note:'可作为术语冲突讨论的背景材料。'},
+{id:'P05', title:'开放数据集的版本追踪', authors:'周简、何安', year:2025, type:'会议论文', status:'未读', note:'和本周的数据整理任务相关。'},
+{id:'P06', title:'人工评价中的分歧记录', authors:'宋可', year:2026, type:'技术报告', status:'阅读中', note:'重点看如何保存不同判断的理由。'}
+];
+const selected = new Set();
+const expandedNotes = new Set();
+let activeFilter = '全部';
+const $ = id => document.getElementById(id);
+const statusClasses = {'已读':'read','阅读中':'reading','未读':'unread'};
+function escapeHTML(value){return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
+function visibleRecords(){const query=$('search').value.trim().toLocaleLowerCase();return records.filter(record => (activeFilter==='全部'||record.status===activeFilter) && (!query || record.title.toLocaleLowerCase().includes(query) || record.authors.toLocaleLowerCase().includes(query)));}
+function selectedRecords(){return records.filter(record=>selected.has(record.id));}
+function currentFormat(){return document.querySelector('input[name="format"]:checked').value;}
+function updateSelection(){
+  const count=selected.size;
+  const visibleIds=new Set(visibleRecords().map(record=>record.id));
+  const hiddenCount=selectedRecords().filter(record=>!visibleIds.has(record.id)).length;
+  $('selected-count').textContent=count;
+  $('selection-context').textContent=count ? (hiddenCount ? `将导出全部 ${count} 篇，含筛选结果外 ${hiddenCount} 篇。` : `将导出已选的 ${count} 篇文献。`) : '选择文献，整理本次讨论清单。';
+  $('clear-selection').disabled=count===0;
+  $('export').disabled=count===0;
+  $('retry').disabled=count===0;
+  $('selection-detail').hidden=count===0;
+  $('selected-list').innerHTML=selectedRecords().map(record=>`<li>${escapeHTML(record.title)}</li>`).join('');
+}
+function renderList(){
+  const visible=visibleRecords();
+  $('papers').innerHTML=visible.map(record=>`<li class="paper${selected.has(record.id)?' selected':''}" data-id="${record.id}"><input class="paper-check" id="choose-${record.id}" type="checkbox" data-select="${record.id}" aria-labelledby="title-${record.id}" ${selected.has(record.id)?'checked':''}><h2 class="paper-title" id="title-${record.id}"><label for="choose-${record.id}">${escapeHTML(record.title)}</label></h2><span class="status ${statusClasses[record.status]}">${record.status}</span><div class="metadata"><span>${escapeHTML(record.authors)}</span><span class="dot" aria-hidden="true">·</span><span>${record.year}</span><span class="dot" aria-hidden="true">·</span><span>${record.type}</span></div><button type="button" class="note-toggle" data-note="${record.id}" aria-expanded="${expandedNotes.has(record.id)}" aria-controls="note-${record.id}" aria-label="${expandedNotes.has(record.id)?'收起':'查看'}《${escapeHTML(record.title)}》的私人备注">备注<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><p class="note-text" id="note-${record.id}" ${expandedNotes.has(record.id)?'':'hidden'}><span class="note-label">私人备注</span>${escapeHTML(record.note)}</p></li>`).join('');
+  $('empty').hidden=visible.length!==0;
+  $('result-count').textContent=`显示 ${visible.length} 篇`;
+  $('clear-search').hidden=$('search').value.length===0;
+  updateSelection();
+}
+function clearFeedback(){ $('export-feedback').hidden=true; }
+$('papers').addEventListener('change',event=>{
+  const id=event.target.dataset.select;
+  if(!id)return;
+  if(event.target.checked)selected.add(id);else selected.delete(id);
+  event.target.closest('.paper').classList.toggle('selected',event.target.checked);
+  clearFeedback();updateSelection();
+});
+$('papers').addEventListener('click',event=>{
+  const button=event.target.closest('[data-note]');if(!button)return;
+  const id=button.dataset.note;const record=records.find(item=>item.id===id);
+  if(expandedNotes.has(id))expandedNotes.delete(id);else expandedNotes.add(id);
+  const expanded=expandedNotes.has(id);button.setAttribute('aria-expanded',String(expanded));
+  button.setAttribute('aria-label',`${expanded?'收起':'查看'}《${record.title}》的私人备注`);
+  $('note-'+id).hidden=!expanded;
+});
+$('search').addEventListener('input',renderList);
+$('clear-search').addEventListener('click',()=>{$('search').value='';renderList();$('search').focus();});
+document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+  activeFilter=button.dataset.filter;
+  document.querySelectorAll('[data-filter]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.filter===activeFilter)));
+  renderList();
+}));
+$('reset-filters').addEventListener('click',()=>{
+  $('search').value='';activeFilter='全部';
+  document.querySelectorAll('[data-filter]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.filter==='全部')));
+  renderList();$('search').focus();
+});
+$('clear-selection').addEventListener('click',()=>{
+  selected.clear();
+  document.querySelectorAll('[data-select]').forEach(input=>{input.checked=false;input.closest('.paper').classList.remove('selected');});
+  clearFeedback();$('export-error').hidden=true;updateSelection();
+  $('search').focus();
+});
+document.querySelectorAll('input[name="format"]').forEach(input=>input.addEventListener('change',()=>{$('file-name').textContent=`组会候选.${currentFormat()}`;clearFeedback();}));
+$('include-notes').addEventListener('change',clearFeedback);
+$('fail-next').addEventListener('change',()=>{$('test-status').textContent=$('fail-next').checked?'已设置：下一次导出将失败，且不会下载文件。':'仅影响一次导出，重试可正常生成文件。';});
+function buildExport(items,format,includeNotes){
+  const blocks=items.map((record,index)=>format==='md'
+    ? `## ${index+1}. ${record.title}\n\n- 作者：${record.authors}\n- 年份：${record.year}\n- 类型：${record.type}${includeNotes?`\n- 私人备注：${record.note}`:''}`
+    : `${index+1}. ${record.title}\n作者：${record.authors}\n年份：${record.year}\n类型：${record.type}${includeNotes?`\n私人备注：${record.note}`:''}`);
+  return (format==='md'?'# 组会候选':'组会候选')+'\n\n'+blocks.join('\n\n')+'\n';
+}
+function showExportError(){clearFeedback();$('export-error').hidden=false;$('retry').focus();}
+function exportSelection(){
+  const items=selectedRecords();if(!items.length)return;
+  if($('fail-next').checked){
+    $('fail-next').checked=false;
+    $('test-status').textContent='已触发一次失败；现在可以重试导出。';
+    showExportError();return;
+  }
+  const format=currentFormat();const fileName=`组会候选.${format}`;
+  try{
+    const content=buildExport(items,format,$('include-notes').checked);
+    const blob=new Blob(['\uFEFF',content],{type:format==='md'?'text/markdown;charset=utf-8':'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement('a');link.href=url;link.download=fileName;link.hidden=true;
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const retryHadFocus=document.activeElement===$('retry');
+    $('export-error').hidden=true;
+    $('export-feedback').textContent=`已生成「${fileName}」，共 ${items.length} 篇。`;
+    $('export-feedback').hidden=false;
+    if(retryHadFocus)$('export').focus();
+  }catch(error){showExportError();}
+}
+$('export').addEventListener('click',exportSelection);
+$('retry').addEventListener('click',exportSelection);
+renderList();
+</script>
+</body>
+</html>

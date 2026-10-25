@@ -1,0 +1,221 @@
+{
+  "date": "2026-10-25",
+  "shuffle_seed": 20261025,
+  "design": "3 conditions × 2 tasks × 2 independent agents; one page per agent",
+  "runs": [
+    {
+      "id": "p152",
+      "condition": "040",
+      "task": "research",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p152",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41",
+        "skill/references/cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+        "skill/references/content.md": "b8543fa10feacd5da8de6994b0c22425080444612c74e006ac644bc8108bb68f",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "6e9b37a2263cf3644fd07f82d98237a96c4480257326dd578d7ddb0475cc5113",
+        "skill/references/review.md": "af2046bb24fd1bc24b29c9b3991af0acd35f5764869363efbd84173aa7c02843",
+        "skill/references/scenarios.md": "b33e718df4aaed2e7b3cb77175c2d2af1e9d6fea110a8ea0a223c5e05f918c59",
+        "skill/references/visual-style.md": "21cabbf4784f4bac7a949830d214062b4b8eee4bb1656e76038d15ac3d48e464",
+        "skill/SKILL.md": "9b8f8e2bf95a0e10d7336c83f4fde212bc511b92d247b588c9e2680ef9d40a9b"
+      }
+    },
+    {
+      "id": "p447",
+      "condition": "none",
+      "task": "collection",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p447",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9"
+      }
+    },
+    {
+      "id": "p551",
+      "condition": "040",
+      "task": "research",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p551",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41",
+        "skill/references/cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+        "skill/references/content.md": "b8543fa10feacd5da8de6994b0c22425080444612c74e006ac644bc8108bb68f",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "6e9b37a2263cf3644fd07f82d98237a96c4480257326dd578d7ddb0475cc5113",
+        "skill/references/review.md": "af2046bb24fd1bc24b29c9b3991af0acd35f5764869363efbd84173aa7c02843",
+        "skill/references/scenarios.md": "b33e718df4aaed2e7b3cb77175c2d2af1e9d6fea110a8ea0a223c5e05f918c59",
+        "skill/references/visual-style.md": "21cabbf4784f4bac7a949830d214062b4b8eee4bb1656e76038d15ac3d48e464",
+        "skill/SKILL.md": "9b8f8e2bf95a0e10d7336c83f4fde212bc511b92d247b588c9e2680ef9d40a9b"
+      }
+    },
+    {
+      "id": "p498",
+      "condition": "033",
+      "task": "research",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p498",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41",
+        "skill/references/cjk-typography.md": "78c8c3fe24fd5575fe772a694ca805678c1221a2cce05a61906eb2b1aa4891f5",
+        "skill/references/content.md": "40805d1931337718fad0ceec1e1c522d951a11b083f5e88036906c6db56f4cc0",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "1b277c581d084da2a5588f04374a2b59bd226daa345e2e16292322dcc6f151e4",
+        "skill/references/review.md": "9cb9927a993fc6b1cec7e742ba5c3263b859ea6e6d8ecaef37c76bc1e6d69fb1",
+        "skill/references/scenarios.md": "da064f4437e72d9f314eedad9791109434ddf3cecbae430d3f63b97ee6bcdb19",
+        "skill/references/visual-style.md": "06c0a234966c2d709656d7179b4e603f85a8d6264024b71e6bee832c3ad4dbd0",
+        "skill/SKILL.md": "b0c0e4d0d0af71084660fb79a35ad651157dfb33044d186ae1dfcb75aaf2256a"
+      }
+    },
+    {
+      "id": "p740",
+      "condition": "033",
+      "task": "collection",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p740",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "skill/references/cjk-typography.md": "78c8c3fe24fd5575fe772a694ca805678c1221a2cce05a61906eb2b1aa4891f5",
+        "skill/references/content.md": "40805d1931337718fad0ceec1e1c522d951a11b083f5e88036906c6db56f4cc0",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "1b277c581d084da2a5588f04374a2b59bd226daa345e2e16292322dcc6f151e4",
+        "skill/references/review.md": "9cb9927a993fc6b1cec7e742ba5c3263b859ea6e6d8ecaef37c76bc1e6d69fb1",
+        "skill/references/scenarios.md": "da064f4437e72d9f314eedad9791109434ddf3cecbae430d3f63b97ee6bcdb19",
+        "skill/references/visual-style.md": "06c0a234966c2d709656d7179b4e603f85a8d6264024b71e6bee832c3ad4dbd0",
+        "skill/SKILL.md": "b0c0e4d0d0af71084660fb79a35ad651157dfb33044d186ae1dfcb75aaf2256a"
+      }
+    },
+    {
+      "id": "p875",
+      "condition": "none",
+      "task": "research",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p875",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41"
+      }
+    },
+    {
+      "id": "p177",
+      "condition": "033",
+      "task": "research",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p177",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41",
+        "skill/references/cjk-typography.md": "78c8c3fe24fd5575fe772a694ca805678c1221a2cce05a61906eb2b1aa4891f5",
+        "skill/references/content.md": "40805d1931337718fad0ceec1e1c522d951a11b083f5e88036906c6db56f4cc0",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "1b277c581d084da2a5588f04374a2b59bd226daa345e2e16292322dcc6f151e4",
+        "skill/references/review.md": "9cb9927a993fc6b1cec7e742ba5c3263b859ea6e6d8ecaef37c76bc1e6d69fb1",
+        "skill/references/scenarios.md": "da064f4437e72d9f314eedad9791109434ddf3cecbae430d3f63b97ee6bcdb19",
+        "skill/references/visual-style.md": "06c0a234966c2d709656d7179b4e603f85a8d6264024b71e6bee832c3ad4dbd0",
+        "skill/SKILL.md": "b0c0e4d0d0af71084660fb79a35ad651157dfb33044d186ae1dfcb75aaf2256a"
+      }
+    },
+    {
+      "id": "p466",
+      "condition": "040",
+      "task": "collection",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p466",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "skill/references/cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+        "skill/references/content.md": "b8543fa10feacd5da8de6994b0c22425080444612c74e006ac644bc8108bb68f",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "6e9b37a2263cf3644fd07f82d98237a96c4480257326dd578d7ddb0475cc5113",
+        "skill/references/review.md": "af2046bb24fd1bc24b29c9b3991af0acd35f5764869363efbd84173aa7c02843",
+        "skill/references/scenarios.md": "b33e718df4aaed2e7b3cb77175c2d2af1e9d6fea110a8ea0a223c5e05f918c59",
+        "skill/references/visual-style.md": "21cabbf4784f4bac7a949830d214062b4b8eee4bb1656e76038d15ac3d48e464",
+        "skill/SKILL.md": "9b8f8e2bf95a0e10d7336c83f4fde212bc511b92d247b588c9e2680ef9d40a9b"
+      }
+    },
+    {
+      "id": "p696",
+      "condition": "none",
+      "task": "research",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p696",
+      "input_hashes": {
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "research.md": "08cf18bb8949d080bf13b2023aeef26377cd7a8129cffc4b6f5ffeb8dc3feb41"
+      }
+    },
+    {
+      "id": "p737",
+      "condition": "033",
+      "task": "collection",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p737",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "skill/references/cjk-typography.md": "78c8c3fe24fd5575fe772a694ca805678c1221a2cce05a61906eb2b1aa4891f5",
+        "skill/references/content.md": "40805d1931337718fad0ceec1e1c522d951a11b083f5e88036906c6db56f4cc0",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "1b277c581d084da2a5588f04374a2b59bd226daa345e2e16292322dcc6f151e4",
+        "skill/references/review.md": "9cb9927a993fc6b1cec7e742ba5c3263b859ea6e6d8ecaef37c76bc1e6d69fb1",
+        "skill/references/scenarios.md": "da064f4437e72d9f314eedad9791109434ddf3cecbae430d3f63b97ee6bcdb19",
+        "skill/references/visual-style.md": "06c0a234966c2d709656d7179b4e603f85a8d6264024b71e6bee832c3ad4dbd0",
+        "skill/SKILL.md": "b0c0e4d0d0af71084660fb79a35ad651157dfb33044d186ae1dfcb75aaf2256a"
+      }
+    },
+    {
+      "id": "p184",
+      "condition": "none",
+      "task": "collection",
+      "replicate": 2,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p184",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9"
+      }
+    },
+    {
+      "id": "p811",
+      "condition": "040",
+      "task": "collection",
+      "replicate": 1,
+      "packet": "<user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p811",
+      "input_hashes": {
+        "assets/work-01.svg": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+        "assets/work-02.svg": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+        "assets/work-03.svg": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+        "collection.md": "ceb30f51bc3662ac6baf3aac3599ae3e127e53b46395ffd80227dab901553b02",
+        "common.md": "67fb47fa5d2b11532fbe5797012a28a1db7fcdd7acaba44d6a2a5787d5caccb9",
+        "skill/references/cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+        "skill/references/content.md": "b8543fa10feacd5da8de6994b0c22425080444612c74e006ac644bc8108bb68f",
+        "skill/references/exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+        "skill/references/layout.md": "6e9b37a2263cf3644fd07f82d98237a96c4480257326dd578d7ddb0475cc5113",
+        "skill/references/review.md": "af2046bb24fd1bc24b29c9b3991af0acd35f5764869363efbd84173aa7c02843",
+        "skill/references/scenarios.md": "b33e718df4aaed2e7b3cb77175c2d2af1e9d6fea110a8ea0a223c5e05f918c59",
+        "skill/references/visual-style.md": "21cabbf4784f4bac7a949830d214062b4b8eee4bb1656e76038d15ac3d48e464",
+        "skill/SKILL.md": "9b8f8e2bf95a0e10d7336c83f4fde212bc511b92d247b588c9e2680ef9d40a9b"
+      }
+    }
+  ]
+}

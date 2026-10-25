@@ -1,0 +1,252 @@
+{
+  "p447": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "全部3件且收藏0",
+      "留白详情事实与原图正确",
+      "Esc关闭且焦点回到原入口",
+      "收藏留白后筛选仅1件",
+      "取消后空状态可返回全部"
+    ],
+    "screenshot_count": 5,
+    "screenshot_deviation": "initial.mobile.viewport.png 保留非零滚动位置，非默认顶部首屏；full 截图完整。原作者已收到并在 notes 中识别，待另存补拍，不追加第二次修订。"
+  },
+  "p152": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "全部6条、无选择、Markdown、不含备注",
+      "P01与P03选择跨林知远搜索保留2项",
+      "txt含备注失败保留选择与选项",
+      "重试实际下载仅含P01 P03与对应备注且顺序正确",
+      "Markdown实际文件含2篇且不含备注",
+      "清空选择后禁用导出"
+    ],
+    "screenshot_count": 5,
+    "browser_issue": "下载后既有标签截图接口反复失败；新标签打开同一未修改初稿恢复，未修改页面代码。"
+  },
+  "p551": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile_complete": true,
+    "screenshots_valid": [
+      "initial.desktop.viewport.png",
+      "initial.desktop.full.png",
+      "initial.desktop.error.png"
+    ],
+    "checks": [
+      "默认6条、0选择、Markdown、不含备注",
+      "P01与P03筛选外选择保留",
+      "txt含备注模拟失败保留设置",
+      "重试实际下载P01与P03及备注，顺序正确",
+      "Markdown实际文件含两篇且不含备注",
+      "清空后禁用导出"
+    ],
+    "browser_issue": "手机截图通道失败；备用截图疑似未刷新，隔离为invalid-capture，不用于评审。",
+    "capture_continuation": "默认手机、桌面已补录重叠分段；见 capture-continuation.json"
+  },
+  "p498": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认6条0选择Markdown无备注",
+      "P01 P03跨林知远搜索保持2项",
+      "纯文本含备注模拟失败保持选择与设置",
+      "重试实际txt仅P01 P03按序并含各自备注",
+      "实际md仅P01 P03且无备注",
+      "清空后禁用导出"
+    ],
+    "capture": "native重叠分段与失败状态"
+  },
+  "p740": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认3作品0收藏",
+      "留白详情事实与图像正确",
+      "Esc关闭且焦点返回原入口",
+      "收藏留白后仅1件",
+      "取消后空态，Return返回全部"
+    ],
+    "capture": "native重叠分段与过渡结束后详情；手机顶部有键盘焦点框"
+  },
+  "p875": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认6条0选择Markdown无备注",
+      "P01 P03跨林知远搜索保持2项",
+      "纯文本含备注模拟失败保持选择与设置",
+      "重试实际txt仅P01 P03按序并含各自备注",
+      "实际md仅P01 P03且无备注",
+      "清空后禁用导出"
+    ],
+    "capture": "native重叠段图，失败首张旧帧已隔离，使用再次核对的画面"
+  },
+  "p177": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认6条0选择Markdown无备注",
+      "P01 P03跨林知远搜索保持2项",
+      "纯文本含备注模拟失败保持选择与设置",
+      "重试实际txt仅P01 P03按序并含各自备注",
+      "实际md仅P01 P03且无备注",
+      "清空后禁用导出"
+    ],
+    "capture": "native默认重叠段图与失败状态"
+  },
+  "p466": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认3作品0收藏",
+      "留白详情事实与图像正确",
+      "Esc关闭且焦点返回原入口",
+      "收藏留白后仅1件",
+      "取消后空态，Return返回全部"
+    ],
+    "capture": "native重叠默认段图和详情"
+  },
+  "p696": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认6条0选择Markdown无备注",
+      "P01 P03跨林知远搜索保持2项",
+      "纯文本含备注模拟失败保持选择与设置",
+      "重试实际txt仅P01 P03按序并含各自备注",
+      "实际md仅P01 P03且无备注",
+      "清空后禁用导出"
+    ],
+    "capture": "native重叠默认段图和失败状态"
+  },
+  "p737": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认3作品0收藏",
+      "留白详情事实与图像正确",
+      "Esc关闭且焦点返回原入口",
+      "收藏留白后仅1件",
+      "取消后空态，Return返回全部"
+    ],
+    "capture": "native重叠默认段图和详情"
+  },
+  "p184": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认3作品0收藏",
+      "留白详情事实与图像正确",
+      "Esc关闭且焦点返回原入口",
+      "收藏留白后仅1件",
+      "取消后空态，Return返回全部"
+    ],
+    "capture": "native重叠默认段图和详情"
+  },
+  "p811": {
+    "stage": "initial",
+    "desktop": [
+      1280,
+      800
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_mobile": false,
+    "checks": [
+      "默认3作品0收藏",
+      "留白详情事实与图像正确",
+      "Esc关闭且焦点返回原入口",
+      "收藏留白后仅1件",
+      "取消后空态，Return返回全部"
+    ],
+    "capture": "native重叠默认段图和详情"
+  }
+}

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>组会候选 · 研目</title>
+<style>
+:root{--canvas:#f4f5f0;--paper:#fff;--ink:#263b31;--muted:#748077;--line:#e3e7dd;--green:#345c45;--green-deep:#244733;--sage:#edf3e9;--ochre:#9c7940;--radius:14px}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei UI","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.6}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed}button,input,summary,a{-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #a6bd83;outline-offset:4px}button{color:inherit}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sidebar{position:fixed;inset:0 auto 0 0;width:216px;background:#fafbf7;border-right:1px solid var(--line);padding:32px 22px 24px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:38px;height:41px;background:var(--green);color:white;border-radius:11px 11px 11px 3px;display:grid;place-items:center}.brand-mark svg{width:25px;height:25px;stroke-width:1.4}.brand-name{font-size:25px;font-weight:700;letter-spacing:3px;line-height:1.3}.brand-caption{font-size:10px;letter-spacing:1px;color:var(--muted);margin-top:3px}.nav-section{margin-top:45px}.nav-caption{color:#929a90;font-size:11px;letter-spacing:2px;margin:0 13px 13px}.library-link{display:flex;align-items:center;gap:12px;padding:10px 12px;color:#6f7b71}.nav-count{margin-left:auto;font-size:12px;color:#8a9489}.collection-link{margin-top:7px;display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;background:#e8eee2;color:var(--green-deep);font-weight:600;text-decoration:none}.collection-link svg{width:18px}.collection-link .nav-count{color:var(--green)}.sidebar-bottom{margin-top:auto}.reading-summary{padding:17px 12px 23px;border-bottom:1px solid var(--line)}.summary-heading{font-size:11px;color:#8a9489;margin-bottom:14px;letter-spacing:1px}.progress-track{display:flex;height:5px;gap:4px;margin-bottom:14px}.progress-track span{flex:1;border-radius:3px;background:#5f7c57}.progress-track span:nth-child(2){background:#c4b082}.progress-track span:nth-child(3){background:#dce0d4}.reading-key{display:flex;justify-content:space-between;color:#879080;font-size:10px}.local-info{margin:21px 11px 0;display:flex;gap:8px;align-items:center;color:#75816e;font-size:12px}.local-dot{width:6px;height:6px;background:#809372;border-radius:50%}.session-hint{font-size:10px;color:#a0a89b;margin:4px 11px 0}
+main{margin-left:216px;padding:0 38px 28px;max-width:1660px}.topbar{height:74px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);color:#879182;font-size:12px}.breadcrumb{display:flex;gap:13px;align-items:center}.breadcrumb svg{width:15px;height:15px}.breadcrumb strong{font-weight:500;color:#50644f}.top-hint{display:flex;gap:6px;align-items:center}.top-hint svg{width:14px;height:14px}.collection-header{display:flex;justify-content:space-between;align-items:center;padding:28px 0 27px}.collection-heading{display:flex;align-items:center;gap:17px}.folder-icon{width:51px;height:56px;display:grid;place-items:center;border:1px solid #dce3d5;border-radius:12px;background:#ecf0e6;color:#5e7552}.folder-icon svg{height:26px;width:26px}h1{font-size:30px;line-height:1.35;letter-spacing:1px;margin:0 0 6px;font-weight:650}.collection-subtitle{color:#818b7d;margin:0;font-size:12px}.collection-stat{display:flex;align-items:center;gap:12px}.collection-stat strong{font-family:Georgia,"Times New Roman",serif;font-size:38px;line-height:1;font-weight:400;color:#5e7351}.collection-stat span{font-size:11px;line-height:1.7;color:#8c9585}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 302px;gap:24px;align-items:start}.library-panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.search-zone{padding:20px 22px 0}.search-wrap{position:relative}.search-wrap svg{position:absolute;left:14px;top:12px;width:18px;height:18px;color:#8c9789}.search-input{width:100%;height:43px;border:1px solid #e2e6dc;border-radius:8px;background:#f8f9f5;padding:0 42px;color:var(--ink);font-size:13px}.search-input::placeholder{color:#929b8d}.search-input:focus{background:white;border-color:#849c73;outline-offset:2px}.filter-bar{display:flex;align-items:center;gap:6px;padding:17px 0 18px;flex-wrap:wrap}.filter-label{font-size:11px;color:#90998a;margin-right:9px}.filter{border:0;background:transparent;border-radius:5px;font-size:12px;padding:5px 10px;color:#7d8876;line-height:1.6}.filter .filter-count{font-size:10px;opacity:.7;margin-left:6px}.filter:hover{background:#f3f5ef}.filter[aria-pressed="true"]{background:var(--sage);color:#3e6246;font-weight:600}.list-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 22px;background:#fafbf8;border-top:1px solid #edf0e8;border-bottom:1px solid #edf0e8;font-size:11px;color:#8a9482}.select-all-label{display:flex;gap:11px;align-items:center;cursor:pointer}input[type="checkbox"],input[type="radio"]{accent-color:var(--green);width:16px;height:16px;margin:0;flex-shrink:0;cursor:pointer}.paper-row{display:flex;gap:14px;padding:18px 22px 16px;border-bottom:1px solid #edf0e8;transition:background .18s}.paper-row:last-child{border-bottom:0}.paper-row:hover{background:#fbfcf8}.paper-row.is-selected{background:#f1f6ed}.paper-checkbox{margin-top:5px!important}.paper-content{min-width:0;flex:1}.paper-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.paper-title{font-size:16px;font-weight:600;line-height:1.45;cursor:pointer;letter-spacing:.1px}.status{font-size:10px;line-height:1.6;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border-radius:4px;padding:2px 7px;background:#f3f4f0;color:#919886}.status:before{content:"";width:4px;height:4px;border-radius:100%;background:currentColor}.status.read{background:#eef3e9;color:#6c8459}.status.reading{background:#f7f1e6;color:#9d8350}.paper-meta{font-size:11px;color:#889180;margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.meta-divider{width:2px;height:2px;background:#b8c0b0;border-radius:100%}.paper-note{font-size:11px;color:#9aA18f;margin:6px 0 0;display:flex;gap:6px;align-items:baseline}.note-label{color:#a4ad9c;font-size:10px;flex-shrink:0}.list-footer{padding:13px 22px;background:#fcfcfa;border-top:1px solid #edf0e8;display:flex;justify-content:space-between;gap:12px;font-size:10px;color:#9ba28f}.empty-state{padding:62px 22px 68px;text-align:center}.empty-state svg{width:31px;height:31px;color:#9cab8d}.empty-state h2{font-size:16px;margin:13px 0 6px}.empty-state p{color:#85907e;font-size:12px;margin:0 0 17px}.text-button{font-size:12px;border:0;border-bottom:1px solid #829676;padding:0;background:none;color:#597348}.text-button:disabled{color:#adb4a6;border-bottom-color:transparent}.export-column{position:sticky;top:24px}.export-panel{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:23px}.panel-eyebrow{font-size:11px;color:#8a9581;letter-spacing:1px;display:flex;align-items:center;gap:7px}.panel-eyebrow svg{width:15px;height:15px}.selection-heading{display:flex;align-items:baseline;gap:6px;margin:13px 0 5px}.selection-heading h2{font-size:17px;font-weight:500;margin:0}.selection-heading strong{font-size:34px;font-weight:500;line-height:1.2;color:var(--green);font-variant-numeric:tabular-nums}.clear-selection{margin-left:auto;font-size:11px;border:0;background:transparent;color:#829375;padding:4px 0 4px 9px}.clear-selection:disabled{color:#b4bbaa}.selection-hint{font-size:11px;color:#8e9983;min-height:36px;margin:8px 0 18px;line-height:1.8}.selection-hint.has-hidden{color:#7f774e}.export-divider{border:0;border-top:1px solid var(--line);margin:0 0 20px}.format-fieldset{border:0;padding:0;margin:0}.format-fieldset legend{font-size:12px;font-weight:600;margin-bottom:11px;padding:0}.format-option{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;margin:0 0 9px;cursor:pointer}.format-option:has(input:checked){border-color:#859b72;background:#f5f8f1;box-shadow:0 0 0 1px #859b7212}.format-option:hover{background:#f8faf5}.format-text{flex:1}.format-name{font-size:12px;display:block;font-weight:600}.format-description{font-size:10px;color:#96a087;display:block;margin-top:2px}.file-extension{font-size:11px;color:#99a38b;font-family:Consolas,monospace}.include-notes{display:flex;align-items:flex-start;gap:9px;margin:18px 0 16px;cursor:pointer}.include-notes input{margin-top:3px}.include-title{font-size:12px;display:block}.include-description{font-size:10px;color:#9ba48f;display:block;margin-top:2px}.export-fields{border-top:1px dashed #e3e8da;padding:13px 0 16px;color:#9ba58d;font-size:10px;line-height:1.8}.export-fields span{display:block;color:#7c8b70;margin-top:3px;font-size:11px}.export-button{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;border:0;border-radius:8px;padding:12px 8px;background:var(--green);color:white;font-size:13px;font-weight:600;transition:background .18s,transform .18s}.export-button:hover:enabled{background:var(--green-deep);transform:translateY(-1px)}.export-button:disabled{background:#e6ebe0;color:#a2ae95}.export-button svg{width:17px;height:17px}.download-caption{font-size:10px;text-align:center;color:#9aa58e;margin:11px 0 0}.export-feedback{font-size:11px;margin:12px 0 0;padding:11px 12px;border-radius:7px;line-height:1.8}.export-feedback:empty{display:none}.export-feedback.error{color:#9c5848;background:#fff1ec}.export-feedback.success{color:#526e43;background:#edf4e7}.export-feedback strong{display:block;font-weight:600}.privacy-note{display:flex;gap:9px;padding:17px 13px 12px;color:#9ca590;font-size:10px;line-height:1.8}.privacy-note svg{margin-top:1px;width:15px;height:15px}.privacy-note p{margin:0}.test-details{font-size:10px;color:#a0a995;margin:4px 13px}.test-details summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px;padding:5px 0}.test-details summary::-webkit-details-marker{display:none}.test-details summary svg{width:12px;height:12px;transition:transform .15s}.test-details[open] summary svg{transform:rotate(90deg)}.test-details p{margin:8px 0;color:#8d9882}.test-button{padding:7px 10px;border:1px solid #dfe5d6;border-radius:5px;background:#fafbf7;color:#7c8b6d;font-size:10px}.test-button:disabled{background:#ecefe6;color:#94a087}.test-state{display:block;margin-top:6px;color:#9b855b}
+@media(min-width:1600px){main{padding-left:48px;padding-right:48px}.workspace{grid-template-columns:minmax(0,1fr) 326px;gap:30px}.paper-row{padding-top:21px;padding-bottom:20px}}
+@media(max-width:1180px){.sidebar{width:182px;padding-left:15px;padding-right:15px}main{margin-left:182px;padding-left:24px;padding-right:24px}.workspace{grid-template-columns:minmax(0,1fr) 276px;gap:18px}.export-panel{padding:19px}.paper-row{padding-left:17px;padding-right:17px;gap:10px}.paper-title{font-size:14px}.paper-top{align-items:flex-start}.status{font-size:9px}.paper-meta{gap:6px}.search-zone{padding-left:17px;padding-right:17px}.filter{padding-left:8px;padding-right:8px}.filter-label{margin-right:2px}.filter-count{display:none}.collection-stat{display:none}.brand-name{font-size:23px}}
+@media(max-width:960px){.sidebar{width:72px;padding:24px 13px;align-items:center}.brand{gap:0}.brand-words,.nav-caption,.library-link span,.collection-link span,.sidebar-bottom{display:none}.nav-section{margin-top:31px}.library-link,.collection-link{padding:12px}.library-link svg,.collection-link svg{width:20px}.collection-link{margin-top:10px}main{margin-left:72px;padding-left:23px;padding-right:23px}.workspace{grid-template-columns:minmax(0,1fr) 264px;gap:16px}.export-panel{padding:17px}.collection-header{padding-top:24px;padding-bottom:23px}.topbar{height:62px}.paper-top{flex-wrap:wrap;gap:6px}.paper-meta{font-size:10px}.paper-note{font-size:10px}.paper-row{padding-top:16px;padding-bottom:15px}.filter-label{display:none}.filter{padding:5px 8px}.collection-subtitle{font-size:11px}}
+@media(max-width:760px){.sidebar{position:relative;width:100%;height:68px;inset:auto;padding:0 20px;flex-direction:row;justify-content:space-between;border-right:0;border-bottom:1px solid var(--line)}.brand{gap:9px}.brand-mark{width:31px;height:34px;border-radius:8px 8px 8px 2px}.brand-mark svg{width:22px}.brand-words{display:block}.brand-name{font-size:21px;letter-spacing:2px}.brand-caption{display:none}.nav-section{margin:0}.nav-section .library-link{display:none}.collection-link{background:none;margin:0;padding:0;gap:7px;font-size:12px}.collection-link span{display:inline}.collection-link .nav-count{display:none}.collection-link svg{width:16px}main{margin:0;padding:0 18px 28px}.topbar{height:47px;font-size:10px}.top-hint{font-size:10px}.top-hint svg{width:12px}.breadcrumb{gap:7px}.collection-header{padding:22px 0 23px}.collection-heading{gap:12px}.folder-icon{width:43px;height:47px;border-radius:10px}.folder-icon svg{width:23px}h1{font-size:26px;letter-spacing:.6px}.collection-subtitle{font-size:10px}.workspace{grid-template-columns:1fr;gap:20px}.export-column{position:static}.export-panel{padding:22px}.search-zone{padding-top:17px;padding-left:17px;padding-right:17px}.filter-bar{gap:4px;padding:14px 0}.filter{padding:5px 10px;font-size:11px}.filter-count{display:inline}.list-heading{padding:11px 17px;font-size:10px}.paper-row{padding:17px 17px 15px;gap:12px}.paper-top{flex-wrap:nowrap}.paper-title{font-size:14px;line-height:1.55}.status{margin-top:2px}.paper-meta{font-size:10px;gap:7px}.paper-note{line-height:1.8;font-size:10px}.list-footer{padding-left:17px;padding-right:17px;font-size:9px}.format-fieldset{display:grid;grid-template-columns:1fr 1fr;gap:10px}.format-fieldset legend{margin-bottom:12px}.format-option{margin:0;padding:12px 10px;gap:8px}.file-extension{display:none}.format-description{font-size:9px}.selection-hint{min-height:0;margin-bottom:19px}.privacy-note{padding-bottom:10px}.test-details{margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5.5C9.5 3.8 6 3.7 3 4.5v15c3-.8 6.5-.7 9 1 2.5-1.7 6-1.8 9-1v-15c-3-.8-6.5-.7-9 1Z"/><path d="M12 5.5v15M6.5 8.2l2.4.5M15.2 8.7l2.4-.5"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M3 10h18"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M8 5h13M8 12h13M8 19h13M3 5h.01M3 12h.01M3 19h.01"/></symbol>
+</defs></svg>
+<aside class="sidebar" aria-label="工作空间">
+  <div class="brand"><div class="brand-mark"><svg aria-hidden="true"><use href="#i-book"/></svg></div><div class="brand-words"><div class="brand-name">研目</div><div class="brand-caption">让阅读成为积累</div></div></div>
+  <nav class="nav-section" aria-label="文献导航"><p class="nav-caption">我的工作空间</p><div class="library-link"><svg aria-hidden="true"><use href="#i-book"/></svg><span>文献库</span><span class="nav-count">6</span></div><a class="collection-link" href="#collection-title" aria-current="page"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>组会候选</span><span class="nav-count">6</span></a></nav>
+  <div class="sidebar-bottom"><div class="reading-summary"><div class="summary-heading">本集合 · 阅读概况</div><div class="progress-track" aria-hidden="true"><span></span><span></span><span></span></div><div class="reading-key"><span>已读 2</span><span>在读 2</span><span>未读 2</span></div></div><div class="local-info"><span class="local-dot"></span>个人文献工作区</div><p class="session-hint">本地会话 · 刷新后重置</p></div>
+</aside>
+<main>
+  <header class="topbar"><div class="breadcrumb"><svg aria-hidden="true"><use href="#i-book"/></svg><span>文献库</span><span>/</span><strong>我的集合</strong></div><div class="top-hint"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>仅保存在当前页面</span></div></header>
+  <section class="collection-header" aria-labelledby="collection-title"><div class="collection-heading"><div class="folder-icon"><svg aria-hidden="true"><use href="#i-folder"/></svg></div><div><h1 id="collection-title">组会候选</h1><p class="collection-subtitle">整理阅读线索，让下一次讨论更有准备。</p></div></div><div class="collection-stat"><strong>06</strong><span>篇候选文献<br>2023 — 2026</span></div></section>
+  <div class="workspace">
+    <section class="library-panel" aria-label="文献列表">
+      <div class="search-zone"><div class="search-wrap"><svg aria-hidden="true"><use href="#i-search"/></svg><label for="paper-search" class="sr-only">按标题或作者搜索文献</label><input class="search-input" id="paper-search" type="search" placeholder="搜索标题或作者…" autocomplete="off"></div><div class="filter-bar" role="group" aria-label="按阅读状态筛选"><span class="filter-label">阅读状态</span><button class="filter" type="button" data-filter="全部" aria-pressed="true">全部<span class="filter-count">6</span></button><button class="filter" type="button" data-filter="未读" aria-pressed="false">未读<span class="filter-count">2</span></button><button class="filter" type="button" data-filter="阅读中" aria-pressed="false">阅读中<span class="filter-count">2</span></button><button class="filter" type="button" data-filter="已读" aria-pressed="false">已读<span class="filter-count">2</span></button></div></div>
+      <div class="list-heading"><label class="select-all-label" for="select-visible"><input id="select-visible" type="checkbox">选择当前结果</label><span id="result-count" aria-live="polite">共 6 篇文献</span></div>
+      <div id="paper-list"></div>
+      <div class="list-footer"><span>样例记录，不对应真实出版物</span><span id="footer-count">显示 6 / 6 篇</span></div>
+    </section>
+    <aside class="export-column" aria-label="导出选中的文献">
+      <section class="export-panel"><div class="panel-eyebrow"><svg aria-hidden="true"><use href="#i-list"/></svg>准备讨论清单</div><div class="selection-heading"><h2>已选 <strong id="selected-count">0</strong> 篇</h2><button id="clear-selection" class="clear-selection" type="button" disabled>清空选择</button></div><p class="selection-hint" id="selection-hint" aria-live="polite">勾选要讨论的文献，<br>生成一份可以分享给同学的清单。</p><hr class="export-divider">
+      <fieldset class="format-fieldset"><legend>导出格式</legend><label class="format-option"><input type="radio" name="export-format" value="md" checked><span class="format-text"><span class="format-name">Markdown</span><span class="format-description">保留层级，方便继续编辑</span></span><span class="file-extension">.md</span></label><label class="format-option"><input type="radio" name="export-format" value="txt"><span class="format-text"><span class="format-name">纯文本</span><span class="format-description">轻量易读，直接复制分享</span></span><span class="file-extension">.txt</span></label></fieldset>
+      <label class="include-notes" for="include-notes"><input type="checkbox" id="include-notes"><span><span class="include-title">包含私人备注</span><span class="include-description">勾选后，备注会一同分享给同学</span></span></label>
+      <div class="export-fields">清单包含<span id="included-fields">标题 · 作者 · 年份 · 类型</span></div><button type="button" class="export-button" id="export-button" disabled><svg aria-hidden="true"><use href="#i-download"/></svg><span id="export-button-text">导出文献清单</span></button><p class="download-caption"><span id="download-filename">组会候选.md</span> · 按原始记录顺序</p><div id="export-feedback" class="export-feedback" role="status" aria-live="polite"></div>
+      </section>
+      <div class="privacy-note"><svg aria-hidden="true"><use href="#i-lock"/></svg><p>文件仅在浏览器中生成。<br>你的选择和备注不会发送到服务器。</p></div>
+      <details class="test-details"><summary><svg aria-hidden="true"><use href="#i-chevron"/></svg>验收入口 · 导出失败与重试</summary><p>开启后，下一次导出将模拟失败，不下载文件。再次点击导出即可重试。</p><button type="button" class="test-button" id="arm-failure">让下一次导出失败</button><span class="test-state" id="test-state" role="status"></span></details>
+    </aside>
+  </div>
+</main>
+<script>
+'use strict';
+const papers = [
+  {id:'P01',title:'长文档摘要中的证据定位',authors:'林知远、赵宁',year:2025,type:'会议论文',status:'已读',note:'组会上讨论如何检查摘要中的每条依据。'},
+  {id:'P02',title:'小样本标注的一致性检查',authors:'陈晓、顾文',year:2024,type:'期刊论文',status:'阅读中',note:'需要补看附录中的标注说明。'},
+  {id:'P03',title:'研究软件的可复现记录',authors:'许禾',year:2026,type:'技术报告',status:'未读',note:'先确认环境记录能否用于自己的项目。'},
+  {id:'P04',title:'跨领域术语表的维护方法',authors:'王景、林知远',year:2023,type:'期刊论文',status:'已读',note:'可作为术语冲突讨论的背景材料。'},
+  {id:'P05',title:'开放数据集的版本追踪',authors:'周简、何安',year:2025,type:'会议论文',status:'未读',note:'和本周的数据整理任务相关。'},
+  {id:'P06',title:'人工评价中的分歧记录',authors:'宋可',year:2026,type:'技术报告',status:'阅读中',note:'重点看如何保存不同判断的理由。'}
+];
+const selected = new Set();
+let currentFilter = '全部';
+let failNextExport = false;
+let exportFailed = false;
+const byId = id => document.getElementById(id);
+const searchInput = byId('paper-search');
+const selectVisible = byId('select-visible');
+const paperList = byId('paper-list');
+function visiblePapers() {
+  const query = searchInput.value.trim().toLocaleLowerCase();
+  return papers.filter(paper => (currentFilter === '全部' || paper.status === currentFilter) && (!query || (paper.title + ' ' + paper.authors).toLocaleLowerCase().includes(query)));
+}
+function renderPapers() {
+  const visible = visiblePapers();
+  if (!visible.length) {
+    paperList.innerHTML = '<div class="empty-state"><svg aria-hidden="true"><use href="#i-search"/></svg><h2>没有找到匹配的文献</h2><p>试试其他标题、作者，或清除筛选条件。</p><button type="button" class="text-button" id="reset-filters">显示全部文献</button></div>';
+    byId('reset-filters').addEventListener('click', () => {
+      searchInput.value = '';
+      currentFilter = '全部';
+      updateFilters();
+      renderPapers();
+      searchInput.focus();
+    });
+  } else {
+    paperList.innerHTML = visible.map(paper => '<article class="paper-row' + (selected.has(paper.id) ? ' is-selected' : '') + '" data-id="' + paper.id + '">' +
+      '<input class="paper-checkbox" id="select-' + paper.id + '" type="checkbox" data-id="' + paper.id + '"' + (selected.has(paper.id) ? ' checked' : '') + '>' +
+      '<div class="paper-content"><div class="paper-top"><label class="paper-title" for="select-' + paper.id + '">' + paper.title + '</label><span class="status ' + (paper.status === '已读' ? 'read' : paper.status === '阅读中' ? 'reading' : 'unread') + '">' + paper.status + '</span></div>' +
+      '<div class="paper-meta"><span>' + paper.authors + '</span><span class="meta-divider" aria-hidden="true"></span><span>' + paper.year + '</span><span class="meta-divider" aria-hidden="true"></span><span>' + paper.type + '</span></div><p class="paper-note"><span class="note-label">备注</span><span>' + paper.note + '</span></p></div></article>').join('');
+  }
+  byId('result-count').textContent = '共 ' + visible.length + ' 篇文献';
+  byId('footer-count').textContent = '显示 ' + visible.length + ' / 6 篇';
+  updateSelection();
+}
+function updateFilters() {
+  document.querySelectorAll('[data-filter]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === currentFilter)));
+}
+function updateSelection() {
+  const visible = visiblePapers();
+  const visibleSelected = visible.filter(paper => selected.has(paper.id)).length;
+  const hiddenCount = selected.size - visibleSelected;
+  selectVisible.checked = visible.length > 0 && visibleSelected === visible.length;
+  selectVisible.indeterminate = visibleSelected > 0 && visibleSelected < visible.length;
+  selectVisible.disabled = visible.length === 0;
+  byId('selected-count').textContent = selected.size;
+  byId('clear-selection').disabled = selected.size === 0;
+  byId('export-button').disabled = selected.size === 0;
+  const hint = byId('selection-hint');
+  hint.classList.toggle('has-hidden', hiddenCount > 0);
+  if (!selected.size) hint.innerHTML = '勾选要讨论的文献，<br>生成一份可以分享给同学的清单。';
+  else if (hiddenCount) hint.textContent = '将导出全部 ' + selected.size + ' 篇，含当前结果之外的 ' + hiddenCount + ' 篇已选文献。';
+  else hint.textContent = '将导出全部 ' + selected.size + ' 篇已选文献。切换搜索或筛选后，选择仍会保留。';
+  paperList.querySelectorAll('.paper-checkbox').forEach(box => {
+    box.checked = selected.has(box.dataset.id);
+    box.closest('.paper-row').classList.toggle('is-selected', box.checked);
+  });
+}
+function formatValue() { return document.querySelector('input[name="export-format"]:checked').value; }
+function updateFormat() {
+  byId('download-filename').textContent = '组会候选.' + formatValue();
+  byId('included-fields').textContent = '标题 · 作者 · 年份 · 类型' + (byId('include-notes').checked ? ' · 私人备注' : '');
+}
+function setFeedback(kind, title, detail) {
+  const feedback = byId('export-feedback');
+  feedback.className = 'export-feedback ' + kind;
+  feedback.replaceChildren();
+  const heading = document.createElement('strong');
+  heading.textContent = title;
+  feedback.append(heading, document.createTextNode(detail));
+}
+function buildExport(format, includeNotes) {
+  const chosen = papers.filter(paper => selected.has(paper.id));
+  if (format === 'md') {
+    return '# 组会候选\n\n' + chosen.map((paper, index) => '## ' + (index + 1) + '. ' + paper.title + '\n\n- 作者：' + paper.authors + '\n- 年份：' + paper.year + '\n- 类型：' + paper.type + (includeNotes ? '\n- 私人备注：' + paper.note : '')).join('\n\n') + '\n';
+  }
+  return '组会候选\n\n' + chosen.map((paper, index) => (index + 1) + '. ' + paper.title + '\n作者：' + paper.authors + '\n年份：' + paper.year + '\n类型：' + paper.type + (includeNotes ? '\n私人备注：' + paper.note : '')).join('\n\n') + '\n';
+}
+function exportPapers() {
+  if (!selected.size) return;
+  if (failNextExport) {
+    failNextExport = false;
+    exportFailed = true;
+    byId('arm-failure').disabled = false;
+    byId('test-state').textContent = '已模拟一次失败；下一次导出将正常生成文件。';
+    byId('export-button-text').textContent = '重试导出';
+    setFeedback('error', '这次导出未完成', '模拟失败，未下载文件。选择和选项已保留，请点击上方按钮重试。');
+    return;
+  }
+  let url;
+  let anchor;
+  try {
+    const format = formatValue();
+    const contents = buildExport(format, byId('include-notes').checked);
+    const blob = new Blob(['\uFEFF', contents], {type: format === 'md' ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8'});
+    url = URL.createObjectURL(blob);
+    anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = '组会候选.' + format;
+    document.body.appendChild(anchor);
+    anchor.click();
+    const wasRetry = exportFailed;
+    exportFailed = false;
+    byId('export-button-text').textContent = '导出文献清单';
+    setFeedback('success', wasRetry ? '重试成功，已发起下载' : '清单已生成，已发起下载', selected.size + ' 篇文献 · 组会候选.' + format + '。已保留你的选择。');
+  } catch (error) {
+    exportFailed = true;
+    byId('export-button-text').textContent = '重试导出';
+    setFeedback('error', '暂时无法生成清单', '选择和选项已保留，请点击上方按钮重试。');
+  } finally {
+    if (anchor) anchor.remove();
+    if (url) setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+}
+searchInput.addEventListener('input', renderPapers);
+document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => { currentFilter = button.dataset.filter; updateFilters(); renderPapers(); }));
+paperList.addEventListener('change', event => {
+  const box = event.target;
+  if (!box.matches('.paper-checkbox')) return;
+  if (box.checked) selected.add(box.dataset.id); else selected.delete(box.dataset.id);
+  updateSelection();
+});
+selectVisible.addEventListener('change', () => {
+  const shouldSelect = selectVisible.checked;
+  visiblePapers().forEach(paper => shouldSelect ? selected.add(paper.id) : selected.delete(paper.id));
+  updateSelection();
+});
+byId('clear-selection').addEventListener('click', () => {
+  selected.clear();
+  updateSelection();
+  byId('export-feedback').replaceChildren();
+  exportFailed = false;
+  byId('export-button-text').textContent = '导出文献清单';
+  searchInput.focus();
+});
+document.querySelectorAll('input[name="export-format"]').forEach(radio => radio.addEventListener('change', updateFormat));
+byId('include-notes').addEventListener('change', updateFormat);
+byId('export-button').addEventListener('click', exportPapers);
+byId('arm-failure').addEventListener('click', () => {
+  failNextExport = true;
+  byId('arm-failure').disabled = true;
+  byId('test-state').textContent = '已开启：下一次导出将失败一次。';
+});
+renderPapers();
+updateFormat();
+</script>
+</body>
+</html>

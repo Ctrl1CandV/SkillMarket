@@ -1,0 +1,34 @@
+[
+  {
+    "path": "frontend-craft/SKILL.md",
+    "sha256": "9b8f8e2bf95a0e10d7336c83f4fde212bc511b92d247b588c9e2680ef9d40a9b"
+  },
+  {
+    "path": "frontend-craft/references/cjk-typography.md",
+    "sha256": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83"
+  },
+  {
+    "path": "frontend-craft/references/content.md",
+    "sha256": "b8543fa10feacd5da8de6994b0c22425080444612c74e006ac644bc8108bb68f"
+  },
+  {
+    "path": "frontend-craft/references/exemplars.md",
+    "sha256": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948"
+  },
+  {
+    "path": "frontend-craft/references/layout.md",
+    "sha256": "6e9b37a2263cf3644fd07f82d98237a96c4480257326dd578d7ddb0475cc5113"
+  },
+  {
+    "path": "frontend-craft/references/review.md",
+    "sha256": "af2046bb24fd1bc24b29c9b3991af0acd35f5764869363efbd84173aa7c02843"
+  },
+  {
+    "path": "frontend-craft/references/scenarios.md",
+    "sha256": "b33e718df4aaed2e7b3cb77175c2d2af1e9d6fea110a8ea0a223c5e05f918c59"
+  },
+  {
+    "path": "frontend-craft/references/visual-style.md",
+    "sha256": "21cabbf4784f4bac7a949830d214062b4b8eee4bb1656e76038d15ac3d48e464"
+  }
+]

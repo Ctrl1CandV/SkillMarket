@@ -1,0 +1,14 @@
+{
+  "p152": {
+    "desktop": true,
+    "mobile": true,
+    "overflow": false,
+    "selectionAcrossFilter": true,
+    "mobileAnchor": true,
+    "errorRetry": true,
+    "actualDownloads": [
+      "txt-with-notes",
+      "md-without-notes"
+    ]
+  }
+}

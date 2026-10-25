@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>纸面研究 · 页间</title>
+<style>
+:root{--paper:#f5f3ed;--ink:#252620;--muted:#77776d;--line:#d8d6cc;--accent:#ac3828;--serif:"Noto Serif CJK SC","Source Han Serif SC","SimSun","Songti SC",serif;--sans:"Microsoft YaHei","PingFang SC",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:6px}button{border:0;background:none}a{color:inherit}svg{display:block}button:disabled{cursor:default}.wrap{width:min(1320px,calc(100% - 112px));margin-inline:auto}.topbar{height:96px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.identity{text-decoration:none;display:flex;align-items:center;gap:20px}.wordmark{font-family:var(--serif);font-size:33px;letter-spacing:5px;font-weight:600;line-height:1}.identity-note{font-size:10px;letter-spacing:2px;line-height:1.8;color:var(--muted);border-left:1px solid var(--line);padding-left:19px}.header-actions{display:flex;align-items:center;gap:44px;font-size:12px;letter-spacing:1px}.current-section{position:relative}.current-section:before{content:"";position:absolute;left:-13px;top:6px;width:4px;height:4px;background:var(--accent);border-radius:50%}.header-save{display:flex;align-items:center;gap:10px;padding:10px 0}.save-count{font-size:11px;border:1px solid var(--line);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;letter-spacing:0;font-variant-numeric:tabular-nums}.intro{padding:52px 0 42px;display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:40px}.eyebrow{margin:0 0 22px;display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:2px}.eyebrow b{color:var(--accent);font-weight:500}.eyebrow-line{width:28px;height:1px;background:var(--accent)}h1{margin:0;font-family:var(--serif);font-weight:400;font-size:82px;letter-spacing:5px;line-height:1.2}.intro-copy{max-width:385px;justify-self:end;margin:0 0 7px;font-size:14px;line-height:2.15;letter-spacing:.6px}.intro-copy .muted{display:block;color:var(--muted);font-size:11px;margin-top:12px;letter-spacing:1px}.collection-bar{border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;min-height:62px}.tabs{display:flex;align-self:stretch;gap:31px}.tab{position:relative;padding:0 1px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}.tab[aria-pressed="true"]{color:var(--ink)}.tab[aria-pressed="true"]:after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent)}.tab-count{font-size:10px;font-variant-numeric:tabular-nums;color:var(--muted);align-self:center}.browse-hint{font-size:11px;color:var(--muted);letter-spacing:1px;display:flex;gap:14px;align-items:center}.browse-hint>span:last-child{font-size:17px;color:var(--ink)}.gallery{display:grid;grid-template-columns:1.05fr 1.05fr .95fr;gap:30px;padding-top:24px;min-height:495px}.work:nth-child(2){padding-top:36px}.work:nth-child(3){padding-top:16px}.work{min-width:0}.work-view{padding:0;width:100%;position:relative;display:block;overflow:hidden;isolation:isolate}.work-view:after{content:"";position:absolute;inset:0;border:1px solid rgba(37,38,32,.035);pointer-events:none}.work-image{width:100%;height:auto;display:block;}.open-mark{position:absolute;bottom:12px;right:12px;width:30px;height:30px;display:grid;place-items:center;background:rgba(245,243,237,.93);font-family:Arial,sans-serif;font-size:19px;transition:transform .2s}.work-view:hover .open-mark{transform:translate(2px,-2px)}.work-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:21px}.work-title{display:flex;align-items:baseline;gap:14px;min-width:0}.work-number{font-family:Georgia,serif;font-size:11px;font-style:italic;color:var(--muted)}h2{font-family:var(--serif);font-size:27px;line-height:1.2;font-weight:400;letter-spacing:2px;margin:0}.title-button{padding:0;font:inherit;letter-spacing:inherit}.save-button{display:flex;align-items:center;gap:7px;padding:7px 0;font-size:12px;white-space:nowrap;color:var(--muted);min-height:44px;min-width:58px;justify-content:flex-end}.bookmark{width:13px;height:16px;stroke:currentColor;fill:none;stroke-width:1.35;stroke-linejoin:round}.save-button[aria-pressed="true"]{color:var(--accent)}.save-button[aria-pressed="true"] .bookmark{fill:currentColor}.work-meta{font-size:12px;color:var(--muted);margin:12px 0 0 28px;letter-spacing:.7px;display:flex;gap:10px;align-items:center}.meta-dot{width:2px;height:2px;border-radius:50%;background:var(--muted)}.collection-note{font-size:11px;color:var(--muted);letter-spacing:.3px;text-align:right;margin:42px 0 36px}.footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:24px 0 34px;font-size:10px;color:var(--muted);letter-spacing:1px}.footer-left{display:flex;gap:17px;align-items:center}.footer-brand{font-family:var(--serif);font-size:15px;color:var(--ink);letter-spacing:2px;white-space:nowrap;flex-shrink:0}.footer-right{font-family:Georgia,serif;letter-spacing:1.5px;font-size:10px}.empty{padding:95px 24px 100px;text-align:center;border-bottom:1px solid var(--line);min-height:425px}.empty-icon{width:28px;height:36px;margin:0 auto 26px;stroke:var(--accent);fill:none;stroke-width:1}.empty h2{font-size:28px}.empty p{font-size:12px;line-height:2;color:var(--muted);margin:18px 0 28px}.text-link{font-size:12px;padding:0 0 7px;border-bottom:1px solid var(--ink)}.text-link span{margin-left:25px}dialog{width:min(1150px,calc(100% - 80px));max-height:calc(100dvh - 80px);padding:0;border:0;background:var(--paper);color:var(--ink);overflow:auto}dialog::backdrop{background:rgba(24,25,22,.64);backdrop-filter:blur(5px)}.dialog-top{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;border-bottom:1px solid var(--line)}.dialog-label{font-size:10px;letter-spacing:1.5px;color:var(--muted)}.dialog-close{display:flex;align-items:center;gap:15px;font-size:11px;padding:6px}.close-cross{font-family:Arial,sans-serif;font-size:22px;line-height:1}.dialog-body{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr)}.dialog-art{padding:30px;background:#e8e6dd;display:grid;place-items:center;min-height:460px}.dialog-image{display:block;width:100%;height:auto;max-height:66dvh;object-fit:contain}.dialog-info{padding:44px 38px 28px;display:flex;flex-direction:column}.dialog-index{font-family:Georgia,serif;font-size:12px;color:var(--accent);letter-spacing:2px;margin:0 0 25px}.dialog-title{font-size:54px;letter-spacing:5px}.details{display:grid;grid-template-columns:1fr 1fr;margin:32px 0 29px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;gap:15px}.details dt{font-size:10px;color:var(--muted);margin-bottom:9px}.details dd{font-size:12px;margin:0}.dialog-description{font-size:14px;line-height:2.1;margin:0 0 32px}.dialog-save{display:flex;align-items:center;justify-content:center;gap:12px;border:1px solid var(--ink);padding:14px 20px;font-size:12px;margin-top:auto;min-height:47px}.dialog-save[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}.dialog-save[aria-pressed="true"] .bookmark{fill:currentColor}.dialog-note{font-size:10px;color:var(--muted);line-height:1.8;margin:12px 0 24px;text-align:center}.dialog-nav{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:19px;gap:12px}.dialog-nav button{display:flex;gap:12px;align-items:center;font-size:11px;padding:6px 0;color:var(--muted)}.dialog-nav button span{font-size:18px;color:var(--ink)}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[hidden]{display:none!important}@media(min-width:1600px){.intro{padding-top:78px;padding-bottom:66px}h1{font-size:94px}.gallery{gap:40px}}@media(max-width:1000px){.wrap{width:calc(100% - 64px)}h1{font-size:66px}.intro{gap:26px}.intro-copy{font-size:12px}.gallery{gap:22px}.work-head{align-items:flex-start}.work-title{gap:9px}h2{font-size:24px}.work-meta{margin-left:22px}dialog{width:calc(100% - 40px);max-height:calc(100dvh - 40px)}.dialog-info{padding:30px 26px 22px}.dialog-art{padding:24px}.dialog-title{font-size:44px}.dialog-body{grid-template-columns:minmax(0,1.25fr) minmax(270px,1fr)}}@media(max-width:700px){.wrap{width:calc(100% - 40px)}.topbar{height:82px}.wordmark{font-size:28px}.identity{gap:12px}.identity-note{font-size:8px;padding-left:12px;letter-spacing:1px}.header-actions{gap:0}.current-section{display:none}.header-save{font-size:11px;gap:6px}.save-count{width:21px;height:21px}.intro{padding:45px 0 33px;display:block}.eyebrow{font-size:9px;margin-bottom:20px}h1{font-size:59px;letter-spacing:3px}.intro-copy{margin:23px 0 0;width:100%;max-width:100%;justify-self:start;text-align:left;font-size:13px;line-height:2}.intro-copy .muted{margin-top:10px;font-size:9px}.collection-bar{min-height:60px}.tabs{gap:25px}.browse-hint{font-size:9px;letter-spacing:0;gap:7px}.browse-hint .hint-word{display:none}.gallery{grid-template-columns:1fr;gap:37px;padding-top:24px;min-height:0}.work:nth-child(n){padding-top:0}.work-head{margin-top:17px;align-items:center}h2{font-size:28px}.work-title{gap:14px}.save-button{font-size:12px;padding:10px 1px;min-width:64px;min-height:44px}.work-meta{margin-top:8px;margin-left:28px}.collection-note{text-align:left;line-height:1.8;margin:38px 0 25px;font-size:12px}.footer{padding:21px 0 28px;align-items:flex-start;flex-direction:column;gap:14px;line-height:1.8}.footer-left{gap:16px;width:100%;font-size:11px}.footer-right{font-size:9px;white-space:nowrap}.empty{padding:80px 10px;min-height:360px}.empty h2{font-size:25px}dialog{width:calc(100% - 24px);max-height:calc(100dvh - 24px)}.dialog-top{padding:14px 18px;position:sticky;top:0;background:var(--paper);z-index:1}.dialog-body{grid-template-columns:1fr}.dialog-art{min-height:0;padding:20px}.dialog-image{max-height:49dvh;width:100%;object-fit:contain}.dialog-info{padding:26px 24px 24px}.dialog-index{margin-bottom:15px}.dialog-title{font-size:42px}.details{margin:24px 0 22px;padding:16px 0}.dialog-description{margin-bottom:25px;font-size:13px}.dialog-note{margin-bottom:19px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+<a class="identity" href="#main" aria-label="页间，前往纸面研究专题"><span class="wordmark">页间</span><span class="identity-note">线上作品集合<br>BETWEEN PAGES</span></a>
+<nav class="header-actions" aria-label="页面导航"><span class="current-section">本期专题</span><button class="header-save" id="header-saved">我的收藏 <span class="save-count" id="header-count">0</span></button></nav>
+</header>
+<main id="main">
+<section class="intro" aria-labelledby="page-title">
+<div><p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span><b>专题 01</b><span>/</span><span>PAPER STUDIES</span></p><h1 id="page-title">纸面研究</h1></div>
+<p class="intro-copy">折叠、间隙与逐渐退去的颜色。<br>从三件数字构成中，观察纸面的另一种可能。<span class="muted">挑选作品，留待下一次选题讨论。</span></p>
+</section>
+<section aria-label="专题作品">
+<div class="collection-bar">
+<div class="tabs" role="group" aria-label="筛选作品"><button class="tab" id="all-tab" aria-pressed="true" aria-controls="works-region">全部作品 <span class="tab-count">03</span></button><button class="tab" id="saved-tab" aria-pressed="false" aria-controls="works-region">已收藏 <span class="tab-count" id="tab-count">00</span></button></div>
+<div class="browse-hint" aria-hidden="true"><span class="hint-word">点击作品，</span>展开细节 <span>↗</span></div>
+</div>
+<div id="works-region"><div class="gallery" id="gallery"></div><div class="empty" id="empty" hidden><svg class="empty-icon" viewBox="0 0 28 36" aria-hidden="true"><path d="M5 2h18v31l-9-7-9 7z"/></svg><h2>还没有收藏的作品</h2><p>将想带到选题会上的作品留在这里。<br>从一件让你停留的作品开始。</p><button class="text-link" id="back-all">浏览全部作品 <span aria-hidden="true">↗</span></button></div></div>
+<p class="collection-note">收藏仅保留在本次页面会话中，刷新后将清空。</p>
+</section>
+</main>
+<footer class="footer"><div class="footer-left"><span class="footer-brand">页间</span><span>在作品之间，留下思考的空隙。</span></div><span class="footer-right">03 WORKS / 2025—2026</span></footer>
+</div>
+<p class="sr-only" role="status" aria-live="polite" id="announcement"></p>
+<dialog id="detail-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+<div class="dialog-top"><span class="dialog-label">纸面研究 / 作品详情</span><button class="dialog-close" id="close-dialog" autofocus>返回作品 <span class="close-cross" aria-hidden="true">×</span></button></div>
+<div class="dialog-body">
+<div class="dialog-art"><img id="dialog-image" class="dialog-image" alt=""></div>
+<div class="dialog-info"><p class="dialog-index" id="dialog-index"></p><h2 class="dialog-title" id="dialog-title"></h2><dl class="details"><div><dt>年份</dt><dd id="dialog-year"></dd></div><div><dt>媒介</dt><dd id="dialog-medium"></dd></div></dl><p class="dialog-description" id="dialog-description"></p><button class="dialog-save" id="dialog-save" aria-pressed="false"></button><p class="dialog-note">为下一次选题讨论保留此作品。</p><div class="dialog-nav"><button id="previous-work"><span aria-hidden="true">←</span>上一件</button><button id="next-work">下一件<span aria-hidden="true">→</span></button></div></div>
+</div>
+</dialog>
+<script>
+"use strict";
+const works = [
+{id:"fold",title:"折线",year:"2026",medium:"数字构成",description:"两次折叠形成不同朝向的纸面，斜向光线穿过它们。",image:"data:image/svg+xml;base64,PHN2ZyBpZD0iYXJ0LTAiIHZpZXdCb3g9IjAgMCA3MjAgNjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJhcnQtdGl0bGUtMCI+PHRpdGxlIGlkPSJhcnQtdGl0bGUtMCI+5oqY57q/77ya5Lik5qyh5oqY5Y+g55qE57q46Z2i5LiO5pac5bCE5YWJ57q/77yM5Y6f5Yib5pWw5a2X5p6E5oiQPC90aXRsZT48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImZvbGQtYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZDlkN2NlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZWVlY2UyIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImZvbGQtd2hpdGUiIHgxPSIwIiB5MT0iMCIgeDI9Ii42IiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZmRmMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q2ZDFjNCIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJmb2xkLXNoYWRvdyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9Ii4yIj48c3RvcCBzdG9wLWNvbG9yPSIjM2UzYjM0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOGI4NzdiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjcyMCIgaGVpZ2h0PSI2ODAiIGZpbGw9InVybCgjZm9sZC1iZykiLz48cGF0aCBkPSJNMCA1MDAgNDQ4IDBoMTcwTDAgNjgwWiIgZmlsbD0iI2Y5ZjZlOSIgb3BhY2l0eT0iLjYiLz48cGF0aCBkPSJtMTU0IDU0MiAyMDMtMzQ5IDIzMyAyMjktMTk3IDE1N1oiIGZpbGw9IiM1MjRkNDIiIG9wYWNpdHk9Ii4xNiIvPjxwYXRoIGQ9Im0xNjUgNDY3IDE2Mi0zMzggMjI2IDYzLTE2MyAzMzhaIiBmaWxsPSJ1cmwoI2ZvbGQtd2hpdGUpIi8+PHBhdGggZD0ibTMyNyAxMjkgNTUgMjE5IDE3MS0xNTZaIiBmaWxsPSIjZmRmYmVmIi8+PHBhdGggZD0ibTMyNyAxMjkgNTUgMjE5LTIxNyAxMTlaIiBmaWxsPSJ1cmwoI2ZvbGQtc2hhZG93KSIvPjxwYXRoIGQ9Im0zODIgMzQ4IDggMTgyIDE2My0zMzhaIiBmaWxsPSIjYjliNGE2Ii8+PHBhdGggZD0ibTM4MiAzNDgtMjE3IDExOSAyMjUgNjNaIiBmaWxsPSIjZjhmNWU4Ii8+PHBhdGggZD0ibTMyNyAxMjkgNTUgMjE5IDggMTgyIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZkZjQiIHN0cm9rZS13aWR0aD0iMS41Ii8+PHBhdGggZD0ibTE2NSA0NjcgMjE3LTExOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzViZWFkIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJtNDE5IDQ3NyAyMC00MiA3NS0xNjMtNjIgMTgyWiIgZmlsbD0iI2JmM2QyYSIvPjxwYXRoIGQ9Ik0wIDU5OCA3MjAgMzkwdjM1TDAgNjMzWiIgZmlsbD0iI2ZmZmZmZiIgb3BhY2l0eT0iLjEiLz48L3N2Zz4K",alt:"折线：灰白折叠纸面、斜向光线与一小段朱红",width:720,height:680},
+{id:"space",title:"留白",year:"2026",medium:"数字构成",description:"两张纸之间的间隙成为观看的对象。",image:"data:image/svg+xml;base64,PHN2ZyBpZD0iYXJ0LTEiIHZpZXdCb3g9IjAgMCA3MjAgNjUwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJhcnQtdGl0bGUtMSI+PHRpdGxlIGlkPSJhcnQtdGl0bGUtMSI+55WZ55m977ya57q45byg5LmL6Ze055qE6Ze06ZqZ77yM5Y6f5Yib5pWw5a2X5p6E5oiQPC90aXRsZT48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InNwYWNlLWJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2RlZGVkNyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2M0YzNiYSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJzcGFjZS13aGl0ZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmYWY5ZjEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNlM2UwZDYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjY1MCIgZmlsbD0idXJsKCNzcGFjZS1iZykiLz48cGF0aCBkPSJNNjUgMTIzaDMwOHY0NDdINjV6IiBmaWxsPSIjYThhNjljIiBvcGFjaXR5PSIuMzUiLz48cGF0aCBkPSJtNTggMTA3IDMwMSAxMy04IDQwOS0zMTAtMTJaIiBmaWxsPSJ1cmwoI3NwYWNlLXdoaXRlKSIvPjxwYXRoIGQ9Im00MDAgOTIgMjYwIDE4IDMwIDQyNC0yNjUtMTZaIiBmaWxsPSIjYTA5ZDkyIiBvcGFjaXR5PSIuNCIvPjxwYXRoIGQ9Im0zOTYgNzUgMjU5IDE4IDI4IDQyNC0yNjUtMTZaIiBmaWxsPSJ1cmwoI3NwYWNlLXdoaXRlKSIvPjxwYXRoIGQ9Im0zNTkgMTIwIDM3LTQ1IDIyIDQyNi02NyAyOFoiIGZpbGw9IiMyOTJiMjkiLz48cGF0aCBkPSJtMzUwIDEzMiA5LTEyLTggNDA5LTgtOVoiIGZpbGw9IiNmZWZkZjciLz48cGF0aCBkPSJtMzk2IDc1IDggMiAyMyA0MjUtOS0xWiIgZmlsbD0iI2I2YjRhOSIvPjxwYXRoIGQ9Ik0wIDQwIDcyMCAyMDZ2MTZMMCA1NVoiIGZpbGw9IiNmZmZkZjUiIG9wYWNpdHk9Ii4yNSIvPjxwYXRoIGQ9Im04NSAxMDcgMzYgMi02MCA0MDgtMjAgMFoiIGZpbGw9IiNmZmZkZjgiIG9wYWNpdHk9Ii4yIi8+PHBhdGggZD0ibTM1NyAyNzEgNDItMTIgMiAyOS00NCAxMloiIGZpbGw9IiNiZjNkMmEiLz48cGF0aCBkPSJNOTcgNTcwaDE5NCIgc3Ryb2tlPSIjYjdiM2E4IiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4K",alt:"留白：两张灰白纸面之间的暗色间隙与朱红细节",width:720,height:650},
+{id:"warm",title:"余温",year:"2025",medium:"数字构成",description:"暗面边缘的一段颜色沿纸面逐渐减弱。",image:"data:image/svg+xml;base64,PHN2ZyBpZD0iYXJ0LTIiIHZpZXdCb3g9IjAgMCA2MjAgNjUwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJhcnQtdGl0bGUtMiI+PHRpdGxlIGlkPSJhcnQtdGl0bGUtMiI+5L2Z5rip77ya5pyx57qi5LuO5pqX6Z2i6L6557yY6YCA5Y6777yM5Y6f5Yib5pWw5a2X5p6E5oiQPC90aXRsZT48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9Indhcm0tYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjMzgzNjMwIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjAyMTFmIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Indhcm0tZWRnZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlOTZhNDMiLz48c3RvcCBvZmZzZXQ9Ii40OCIgc3RvcC1jb2xvcj0iI2JlM2QyOSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzViMmQyMyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJ3YXJtLWxpZ2h0IiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ViZTdkOSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2E3YTI5MSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJ3YXJtLWZhY2UiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIj48c3RvcCBzdG9wLWNvbG9yPSIjNGU0MDM1Ii8+PHN0b3Agb2Zmc2V0PSIuMiIgc3RvcC1jb2xvcj0iIzMxMmQyNyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzI0MjQyMCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNjUwIiBmaWxsPSJ1cmwoI3dhcm0tYmcpIi8+PHBhdGggZD0iTTAgNzQgNjIwIDE1djE5TDAgOTJaIiBmaWxsPSIjNjI1YjRkIiBvcGFjaXR5PSIuMjUiLz48cGF0aCBkPSJtOTYgMTcwIDMzNS02OSA5NSAzNjItMzE4IDk5WiIgZmlsbD0iIzEyMTUxMiIgb3BhY2l0eT0iLjQiLz48cGF0aCBkPSJtMTA0IDE0NiAzMDQtNzAgODcgMzY2LTMwMiA4NloiIGZpbGw9InVybCgjd2FybS1mYWNlKSIvPjxwYXRoIGQ9Im0xMDQgMTQ2IDM4LTggODQgMzc5LTMzIDExWiIgZmlsbD0idXJsKCN3YXJtLWVkZ2UpIi8+PHBhdGggZD0ibTEwNCAxNDYgMzA0LTcwIDI1IDE1LTI5MSA0N1oiIGZpbGw9InVybCgjd2FybS1saWdodCkiLz48cGF0aCBkPSJtNDA4IDc2IDI1IDE1IDc5IDM1NS0xNy00WiIgZmlsbD0iIzczNmM1YSIvPjxwYXRoIGQ9Im0xNDIgMTM4IDg0IDM3OSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjE3YjUwIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9Ii42NSIvPjxwYXRoIGQ9Im0xOTMgNTI4IDMwMi04NiAxNyA0LTMwMyA5MVoiIGZpbGw9IiM0YjNiMmUiLz48cGF0aCBkPSJNMCA1OTUgNjIwIDQ1MHYzNUwwIDYzMFoiIGZpbGw9IiMwOTBkMGMiIG9wYWNpdHk9Ii4xNSIvPjwvc3ZnPgo=",alt:"余温：深色纸面边缘逐渐暗下的朱红色",width:620,height:650}
+];
+const saved = new Set();
+let filter = "all";
+let activeIndex = 0;
+let origin = null;
+const el = id => document.getElementById(id);
+const dialog = el("detail-dialog");
+const bookmark = '<svg class="bookmark" viewBox="0 0 14 18" aria-hidden="true"><path d="M2 1.5h10v15l-5-3.5-5 3.5z"/></svg>';
+const pad = number => String(number).padStart(2,"0");
+function announce(message){el("announcement").textContent=message;}
+function renderGallery(){
+  const visible=works.filter(work=>filter==="all"||saved.has(work.id));
+  el("gallery").innerHTML=visible.map(work=>{
+    const index=works.indexOf(work);
+    const selected=saved.has(work.id);
+    return '<article class="work" aria-labelledby="title-'+work.id+'"><button class="work-view" data-open="'+index+'" aria-label="查看《'+work.title+'》作品详情"><img class="work-image" src="'+work.image+'" width="'+work.width+'" height="'+work.height+'" alt="'+work.alt+'"><span class="open-mark" aria-hidden="true">↗</span></button><div class="work-head"><div class="work-title"><span class="work-number" aria-hidden="true">'+pad(index+1)+'</span><h2 id="title-'+work.id+'"><button class="title-button" data-open="'+index+'" aria-label="查看《'+work.title+'》作品详情">'+work.title+'</button></h2></div><button class="save-button" data-save="'+index+'" aria-pressed="'+selected+'" aria-label="'+(selected?'取消收藏':'收藏')+'《'+work.title+'》">'+bookmark+'<span>'+(selected?'已收藏':'收藏')+'</span></button></div><p class="work-meta"><span>'+work.year+'</span><span class="meta-dot" aria-hidden="true"></span><span>'+work.medium+'</span></p></article>';
+  }).join("");
+  el("gallery").hidden=visible.length===0;
+  el("empty").hidden=visible.length!==0;
+  el("header-count").textContent=saved.size;
+  el("tab-count").textContent=pad(saved.size);
+  el("header-saved").setAttribute("aria-label","查看我的收藏，共 "+saved.size+" 件作品");
+  el("all-tab").setAttribute("aria-pressed",String(filter==="all"));
+  el("saved-tab").setAttribute("aria-pressed",String(filter==="saved"));
+}
+function setFilter(next,focusTab=false){
+  filter=next;
+  renderGallery();
+  if(focusTab)el(next==="all"?"all-tab":"saved-tab").focus();
+  announce(next==="all"?"显示全部 3 件作品":"显示已收藏的 "+saved.size+" 件作品");
+}
+function toggleSave(index){
+  const work=works[index];
+  const wasSaved=saved.has(work.id);
+  if(wasSaved)saved.delete(work.id);else saved.add(work.id);
+  const restoreCardFocus=document.activeElement?.matches("[data-save]");
+  renderGallery();
+  if(dialog.open)renderDetail();
+  if(restoreCardFocus){
+    const target=document.querySelector('[data-save="'+index+'"]');
+    (target||el(filter==="all"?"all-tab":"saved-tab")).focus();
+  }
+  announce((wasSaved?"已取消收藏":"已收藏")+"《"+work.title+"》，当前共收藏 "+saved.size+" 件作品。");
+}
+function renderDetail(){
+  const work=works[activeIndex];
+  el("dialog-image").src=work.image;
+  el("dialog-image").alt=work.alt;
+  el("dialog-title").textContent=work.title;
+  el("dialog-year").textContent=work.year;
+  el("dialog-medium").textContent=work.medium;
+  el("dialog-description").textContent=work.description;
+  el("dialog-index").textContent=pad(activeIndex+1)+" / 03";
+  el("dialog-save").innerHTML=bookmark+"<span>"+(saved.has(work.id)?"已收藏 · 取消收藏":"收藏这件作品")+"</span>";
+  el("dialog-save").setAttribute("aria-pressed",String(saved.has(work.id)));
+  el("dialog-save").setAttribute("aria-label",(saved.has(work.id)?"取消收藏":"收藏")+"《"+work.title+"》");
+}
+function openDetail(index){
+  activeIndex=index;
+  origin=document.activeElement;
+  renderDetail();
+  dialog.showModal();
+  document.body.style.overflow="hidden";
+}
+function navigateDetail(direction){
+  activeIndex=(activeIndex+direction+works.length)%works.length;
+  renderDetail();
+  announce("正在查看《"+works[activeIndex].title+"》，第 "+(activeIndex+1)+" 件，共 3 件。");
+}
+el("gallery").addEventListener("click",event=>{
+  const openButton=event.target.closest("[data-open]");
+  const saveButton=event.target.closest("[data-save]");
+  if(openButton)openDetail(Number(openButton.dataset.open));
+  if(saveButton)toggleSave(Number(saveButton.dataset.save));
+});
+el("all-tab").addEventListener("click",()=>setFilter("all"));
+el("saved-tab").addEventListener("click",()=>setFilter("saved"));
+el("header-saved").addEventListener("click",()=>{setFilter("saved",true);el("saved-tab").scrollIntoView({block:"center"});});
+el("back-all").addEventListener("click",()=>setFilter("all",true));
+el("dialog-save").addEventListener("click",()=>toggleSave(activeIndex));
+el("close-dialog").addEventListener("click",()=>dialog.close());
+el("previous-work").addEventListener("click",()=>navigateDetail(-1));
+el("next-work").addEventListener("click",()=>navigateDetail(1));
+dialog.addEventListener("keydown",event=>{
+  if(event.key==="ArrowLeft"){event.preventDefault();navigateDetail(-1);}
+  if(event.key==="ArrowRight"){event.preventDefault();navigateDetail(1);}
+});
+dialog.addEventListener("click",event=>{
+  if(event.target!==dialog)return;
+  const rect=dialog.getBoundingClientRect();
+  if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();
+});
+dialog.addEventListener("close",()=>{
+  document.body.style.overflow="";
+  if(origin?.isConnected)origin.focus();
+  else{
+    const card=document.querySelector('[data-open="'+activeIndex+'"]');
+    (card||el(filter==="all"?"all-tab":"saved-tab")).focus();
+  }
+});
+renderGallery();
+</script>
+</body>
+</html>

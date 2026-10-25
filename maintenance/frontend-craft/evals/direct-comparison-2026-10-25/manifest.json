@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-25",
+  "old_version": "0.3.3",
+  "new_version": "0.4.0 unpublished candidate, revised for user feedback",
+  "old_sources": {
+    "reader": "../v0.4/runs/baseline/reader.html",
+    "research": "../diagnostic-2026-10-25/runs/p177/page.initial.html",
+    "exhibition": "../v0.4/runs/baseline/exhibition.html"
+  },
+  "artwork_sha256": [
+    "b075a3cd8f988230a29aa9069b2af93441d6744ea2fa0d6014c05779de67e65a",
+    "a61f84d572b2726e3dc2b6105eb088c621326c75882cc431a904c039e8c8312d",
+    "8fa68c0ee644c98f17bc013edf4ed268358e7b0b926a20495b5ffaf9505afd35"
+  ],
+  "pages": {
+    "new\\exhibition.html": "c3e6a1d78c0ceb5e3197edbc86c3dce57f9c3b4330f832b3e49422239b73f45d",
+    "new\\reader.html": "225847f8ee6080a7fb8dd3ada803807cb0da6b2e0b2adb5b9b00f8851dbf22fc",
+    "new\\research.html": "ea64f4f968dcb81300a578db80e87528e51d071987587f05d64212581b53cd69",
+    "old\\exhibition.html": "f37e8861171ef5eb995979e675c2524a5d4d71181e9c2981a85eb7ae61c21656",
+    "old\\reader.html": "a2bdae488caf051e5918a100ebbffcac161f31d20a8abc184128d3659aec2988",
+    "old\\research.html": "d3a5c8cacc5e53bd7b86a2d288ad5b4eaad8b0db9832d4a44d092834264f2b9c"
+  },
+  "current_skill_sha256": {
+    "frontend-craft\\references\\cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+    "frontend-craft\\references\\content.md": "23b39045050b99985e352458e3a06babc6638789624f0f47616fadd21879cc27",
+    "frontend-craft\\references\\exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+    "frontend-craft\\references\\layout.md": "58182ead99af9eac49d0d42ba09524299fe1b7f10f5a78ba811adce64162e613",
+    "frontend-craft\\references\\review.md": "885789211db4420b39894080867928652d531f66dba508907e1c1b237d187c25",
+    "frontend-craft\\references\\scenarios.md": "80c5997b039839c907ed8a5465a89e00e38c20527fc8327fe2118a4e284a88cd",
+    "frontend-craft\\references\\visual-style.md": "69b945b8f0018e26080e149525ef07b1915da9786ede782001474e974d49204d",
+    "frontend-craft\\SKILL.md": "d1c46ef26041fb9e6f652be28bbf27be110d40e9970a4d1b8c04d8e421e6e2bc"
+  },
+  "method": "Reuse immutable old pages; refine the new pages in ongoing context from user feedback and audience-focused skill changes. Direct qualitative comparison, not an isolated generation or causal experiment.",
+  "before_feedback": {
+    "pages": {
+      "new\\exhibition.html": "d387f0033fb03c8f8ff25b179e056765254214293b90f61d0b62e0fc288e556b",
+      "new\\reader.html": "3c95b72e5af6754e47587d0e368a730696839fc2df414fdacbcaef6e604ec34f",
+      "new\\research.html": "f2d9ba0ca9b6c13a38676fe7c7bfd1ad96412181b9506ff3bff2d64c61c1eae8"
+    },
+    "skill_sha256": {
+      "frontend-craft\\references\\cjk-typography.md": "afbf82b282a45f33bcf3cfa012499f796d8f493f93cfb8f0753fca6db62c2f83",
+      "frontend-craft\\references\\content.md": "9a3421e2e44a976c5063a410f2b96b90ce2888f4dc012c8c43603f057e791380",
+      "frontend-craft\\references\\exemplars.md": "bf6c1999113c7f875e7403712a7cb8a6be052bdf4495201926e918f48ebe7948",
+      "frontend-craft\\references\\layout.md": "9e7b7471eec5aa7cc53bf8e9a35410a8975733688df19206bc2b84e8aea38964",
+      "frontend-craft\\references\\review.md": "760ae35592b9f7e0e48b09b6a07ea50a3bea74e47bc168f46132a69679e923f0",
+      "frontend-craft\\references\\scenarios.md": "4663f34aa94819944e2a84bd8bc8fede41f09ff2ad1db9b772de80ecfee29c9b",
+      "frontend-craft\\references\\visual-style.md": "c89af2b8a23b4b71256ff2bc1796ac9f106574bf2f3c29204db36691006dea13",
+      "frontend-craft\\SKILL.md": "8a3ed340149de1f104c63110f41730cf8597f5ca842745d634e6fec53783ea00"
+    },
+    "location": "before-feedback/"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "purpose": "Identical fixed artwork for all new collection-page conditions",
+  "source": "../v0.4/runs/baseline/exhibition.html",
+  "source_sha256": "f37e8861171ef5eb995979e675c2524a5d4d71181e9c2981a85eb7ae61c21656",
+  "color_dependencies": "None: all artwork fills, strokes and gradient stops use literal colors; no CSS variables, currentColor, inherited color or class selectors",
+  "normalization": "No color substitutions required; SVG bytes preserved, with one trailing newline added to each standalone file",
+  "scope": "Reused artwork is controlled input, not an unseen asset set or new generation",
+  "assets": [
+    {
+      "file": "inputs/assets/work-01.svg",
+      "source_svg_id": "art-0",
+      "source_svg_sha256": "b075a3cd8f988230a29aa9069b2af93441d6744ea2fa0d6014c05779de67e65a",
+      "file_sha256": "56dc7eb6e21796d7f2f28de368e321a0d60670143c7c00d8ea607c9d0f06327d",
+      "viewBox": "0 0 720 680"
+    },
+    {
+      "file": "inputs/assets/work-02.svg",
+      "source_svg_id": "art-1",
+      "source_svg_sha256": "a61f84d572b2726e3dc2b6105eb088c621326c75882cc431a904c039e8c8312d",
+      "file_sha256": "872acb90a81f4bef8476773350b7dfad916ce9a8681b8679404ae707f3a3ebcd",
+      "viewBox": "0 0 720 650"
+    },
+    {
+      "file": "inputs/assets/work-03.svg",
+      "source_svg_id": "art-2",
+      "source_svg_sha256": "8fa68c0ee644c98f17bc013edf4ed268358e7b0b926a20495b5ffaf9505afd35",
+      "file_sha256": "d4a8baf50923165870ee28f0492c24640617acb2f7e64b1ca78677ebfd7868e5",
+      "viewBox": "0 0 620 650"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "purpose": "Diagnostic copies of existing outputs; not new skill evaluation generations",
+  "sources": {
+    "033": {
+      "file": "../../v0.4/runs/baseline/exhibition.html",
+      "sha256": "f37e8861171ef5eb995979e675c2524a5d4d71181e9c2981a85eb7ae61c21656"
+    },
+    "040": {
+      "file": "../../v0.4/runs/candidate/exhibition.html",
+      "sha256": "b33310e70677ca57e8e5763b90ea7f3397ea819b5eb0c47b0bbfbd1b5a8458af"
+    }
+  },
+  "copies": [
+    {
+      "file": "C.html",
+      "layout_source": "033",
+      "art_source": "033",
+      "sha256": "f37e8861171ef5eb995979e675c2524a5d4d71181e9c2981a85eb7ae61c21656",
+      "unchanged_non_svg_sha256": "67dfd4e89b290166f447c5352c75605d3beb18857638f115da90807183e36d82",
+      "style_sha256": [
+        "8b0569eca735fc5093a18edeb2044904c674f97ce253a85385f73a9001ee7796"
+      ],
+      "script_sha256": [
+        "8b60314ca1b39eca8e7f2ef714ea12b431e3cc3c39bf484ea3988025d8215ebc"
+      ],
+      "source_identical": true,
+      "svg_replacements": 0,
+      "static_checks": "Exactly three donor artwork SVGs; non-SVG bytes/style/script unchanged; ids and aria-labelledby references valid",
+      "combination": "layout-033__art-033"
+    },
+    {
+      "file": "A.html",
+      "layout_source": "033",
+      "art_source": "040",
+      "sha256": "98a1d0b2b00440840646bb5fd879f9bf72ad2e055ceeef17b35fb395e2d18163",
+      "unchanged_non_svg_sha256": "67dfd4e89b290166f447c5352c75605d3beb18857638f115da90807183e36d82",
+      "style_sha256": [
+        "8b0569eca735fc5093a18edeb2044904c674f97ce253a85385f73a9001ee7796"
+      ],
+      "script_sha256": [
+        "8b60314ca1b39eca8e7f2ef714ea12b431e3cc3c39bf484ea3988025d8215ebc"
+      ],
+      "source_identical": false,
+      "svg_replacements": 3,
+      "static_checks": "Exactly three donor artwork SVGs; non-SVG bytes/style/script unchanged; ids and aria-labelledby references valid",
+      "combination": "layout-033__art-040"
+    },
+    {
+      "file": "B.html",
+      "layout_source": "040",
+      "art_source": "033",
+      "sha256": "01e4a8754da0cb226af166012a57275493e396f9d6c79c532869f7cb1c6752df",
+      "unchanged_non_svg_sha256": "bc799c0ad3a15f920d09dc0f6649d508ada7c39814fc969af1bbdddabdce1164",
+      "style_sha256": [
+        "961c09304c1fedb821f02101fa733120c2ef962f4b2c9c8924150ed58a01be2f"
+      ],
+      "script_sha256": [
+        "56a312c4f9f9b60382d2ac3e4fb3535d072311cc4798b501b2241077bda7b6b6"
+      ],
+      "source_identical": false,
+      "svg_replacements": 3,
+      "static_checks": "Exactly three donor artwork SVGs; non-SVG bytes/style/script unchanged; ids and aria-labelledby references valid",
+      "combination": "layout-040__art-033"
+    },
+    {
+      "file": "D.html",
+      "layout_source": "040",
+      "art_source": "040",
+      "sha256": "b33310e70677ca57e8e5763b90ea7f3397ea819b5eb0c47b0bbfbd1b5a8458af",
+      "unchanged_non_svg_sha256": "bc799c0ad3a15f920d09dc0f6649d508ada7c39814fc969af1bbdddabdce1164",
+      "style_sha256": [
+        "961c09304c1fedb821f02101fa733120c2ef962f4b2c9c8924150ed58a01be2f"
+      ],
+      "script_sha256": [
+        "56a312c4f9f9b60382d2ac3e4fb3535d072311cc4798b501b2241077bda7b6b6"
+      ],
+      "source_identical": true,
+      "svg_replacements": 0,
+      "static_checks": "Exactly three donor artwork SVGs; non-SVG bytes/style/script unchanged; ids and aria-labelledby references valid",
+      "combination": "layout-040__art-040"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "run": "p152",
+    "agent": "/root/trial_p152",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p152 。只读取这个目录内的 common.md、research.md、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p447",
+    "agent": "/root/trial_p447",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p447 。只读取这个目录内的 common.md、collection.md 和 assets/ 中的三张作品SVG；按这些输入实现，不加载任何设计Skill。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p551",
+    "agent": "/root/trial_p551",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p551 。只读取这个目录内的 common.md、research.md、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p498",
+    "agent": "/root/trial_p498",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p498 。只读取这个目录内的 common.md、research.md、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p740",
+    "agent": "/root/trial_p740",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p740 。只读取这个目录内的 common.md、collection.md、assets/ 中的三张作品SVG、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p875",
+    "agent": "/root/trial_p875",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p875 。只读取这个目录内的 common.md、research.md；按这些输入实现，不加载任何设计Skill。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p177",
+    "agent": "/root/trial_p177",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p177 。只读取这个目录内的 common.md、research.md、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p466",
+    "agent": "/root/trial_p466",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p466 。只读取这个目录内的 common.md、collection.md、assets/ 中的三张作品SVG、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p696",
+    "agent": "/root/trial_p696",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p696 。只读取这个目录内的 common.md、research.md；按这些输入实现，不加载任何设计Skill。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p737",
+    "agent": "/root/trial_p737",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p737 。只读取这个目录内的 common.md、collection.md、assets/ 中的三张作品SVG、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p184",
+    "agent": "/root/trial_p184",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p184 。只读取这个目录内的 common.md、collection.md 和 assets/ 中的三张作品SVG；按这些输入实现，不加载任何设计Skill。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  },
+  {
+    "run": "p811",
+    "agent": "/root/trial_p811",
+    "fork_turns": "none",
+    "model_override": null,
+    "reasoning_override": null,
+    "prompt": "完成一个页面。你的独立工作包是 <user-profile>\\.codex\\visualizations\\2026\\10\\24\\01a16e64-45ad-7cd0-bf8c-c0d48dc590cd\\frontend-diagnostic\\packets\\p811 。只读取这个目录内的 common.md、collection.md、assets/ 中的三张作品SVG、skill/SKILL.md 及其按需参考；按这些输入实现。除工具自身必要文档外，不读取仓库、其他目录、其他设计技能、其他代理信息或历史，不联网，不派生/列举/消息其他代理。所有shell调用请显式以该工作包为workdir，避免默认仓库上下文。只向 output 写 page.initial.html 和 notes.initial.md。这个阶段完成首稿及必要的代码自检，不启动浏览器；统一截图会在稍后提供，再由你在同一上下文看图修订。notes记录实际读过的文件、做过的检查、模拟边界，不作未验证的效果声明。完成后给出文件路径与SHA256，然后结束本阶段，不继续等待或改稿。"
+  }
+]

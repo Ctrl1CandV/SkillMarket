@@ -1,0 +1,192 @@
+[
+  {
+    "id": "p152",
+    "sha256": "5372a513bf73bdb521bdffe7451c598d54db733b3cd9484c1e134997bb219778",
+    "bytes": 24613,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      },
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p447",
+    "sha256": "a16415dc2aad103360cc1426747c626d8a0ff4e9f0fb6db2034f9c252da28daf",
+    "bytes": 25240,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "id": "p551",
+    "sha256": "06caeec3433fe18caaa0466b971b558b9c9059e1f906ac5feb87225f0a8e8dda",
+    "bytes": 25791,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p498",
+    "sha256": "e0501ce083effdd5372c001f21c8a7c85f130ac2ff564a766678f22de2e56f6b",
+    "bytes": 24603,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p740",
+    "sha256": "05ca3b94e81b1e42f1b60dc28b98e80cdec095df31df8fd0b851bce4bb5f112d",
+    "bytes": 25315,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "id": "p875",
+    "sha256": "1b9b896f32467f0926aefcdc18d4325666fa43f91a98b35c1c1d2f306b94ca9b",
+    "bytes": 31767,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p177",
+    "sha256": "d3a5c8cacc5e53bd7b86a2d288ad5b4eaad8b0db9832d4a44d092834264f2b9c",
+    "bytes": 25068,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p466",
+    "sha256": "82488f372a05e0ec102f3d84281cf720e0a1fd649a6d8e7386de6000d484466e",
+    "bytes": 23324,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "id": "p696",
+    "sha256": "53aa77a21b0cd6c222a5f9ce1ac0b276baa34d3fe9862d735baa13c92127652b",
+    "bytes": 31082,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "id": "p737",
+    "sha256": "63e376476ac2508c92d174646273d2f526e9000ee9cd8251741a7c72a7b897f1",
+    "bytes": 23523,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "id": "p184",
+    "sha256": "3f926d94a33e8160c37908d52f06a8088af8fd18cffa17ad10d33a71781eb5b5",
+    "bytes": 25762,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "id": "p811",
+    "sha256": "7125c082178a595b7c7cf8380a5e5fcdfd67e8c664a62d438e40bbcb2a8d5654",
+    "bytes": 27222,
+    "duplicate_static_ids": [],
+    "external_static_resources": [],
+    "script_syntax": [
+      {
+        "ok": true,
+        "stderr": ""
+      }
+    ],
+    "original_assets_present_as_static_or_js_data_uris": [
+      true,
+      true,
+      true
+    ]
+  }
+]
