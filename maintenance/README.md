@@ -26,6 +26,8 @@
 
 ## 当前待办
 
+- **PaperDesk 实践反馈**：已保存 [product-design 建议](product-design/reports/paperdesk-practice-feedback-2026-10-26.md)与 [frontend-craft 建议](frontend-craft/reports/paperdesk-practice-feedback-2026-10-26.md)，区分执行问题、案例缺口和调整幅度校准；供后续版本评估，不修改当前技能运行文件。
+
 - **product-design / frontend-craft**：0.2.0-rc.1 / 0.5.0-rc.1 的实施、比较、用户反馈和核查已收尾，按用户随后授权将运行变更提交到 main/dev、维护归档仅留 dev，见[收尾记录](frontend-craft/upgrades/2026-10-26/reports/closeout.md)。[阅读反馈](frontend-craft/upgrades/2026-10-26/reports/user-feedback-2026-10-26.md)认可两版布局、认为差距不明显，略偏向旧版标题层级；原终审 INSUFFICIENT_EVIDENCE 与整体视觉提升未证实的事实保留。原包已归档、临时服务与日志已清理，完整入口见[本轮归档](frontend-craft/upgrades/2026-10-26/README.md)和 [TODO](frontend-craft/TODO.md)。
 - **grad-companion-plugin**：三项阅读优化已实施，真实使用与其余旧方案待办见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
