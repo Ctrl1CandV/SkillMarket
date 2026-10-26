@@ -1,0 +1,80 @@
+{
+  "branch": "dev",
+  "HEAD": "eddd2176090961bc5247f2050e7015aec538d53a",
+  "initial_unrelated_change": " D write-with-judgment/agents/openai.yaml; preserved",
+  "files": [
+    {
+      "path": "frontend-craft/SKILL.md",
+      "head_sha256": "715fc5d810e6951ca962243407cb11a0271552e646bfea824808430d36091992",
+      "package_baseline_sha256": "715fc5d810e6951ca962243407cb11a0271552e646bfea824808430d36091992",
+      "normalized_equal": true
+    },
+    {
+      "path": "product-design/SKILL.md",
+      "head_sha256": "7a461a41420fc5463e8ed8b9de6b00f3f6da776e19f77cdff82df50096cb7e77",
+      "package_baseline_sha256": "7a461a41420fc5463e8ed8b9de6b00f3f6da776e19f77cdff82df50096cb7e77",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/cjk-typography.md",
+      "head_sha256": "e0a4403b1e372eb9eeb49f7b9db58b2e32649d550c56051506aab42f055d499f",
+      "package_baseline_sha256": "e0a4403b1e372eb9eeb49f7b9db58b2e32649d550c56051506aab42f055d499f",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/content.md",
+      "head_sha256": "0eb7ad8f9c2381e43fbb9f76db2bfba8397e705f6c75e990ba85c94d6f33f097",
+      "package_baseline_sha256": "0eb7ad8f9c2381e43fbb9f76db2bfba8397e705f6c75e990ba85c94d6f33f097",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/exemplars.md",
+      "head_sha256": "33b624c888fa78cfa543dcdd641a8de386b2a747044d346ecd59fc9eb720b870",
+      "package_baseline_sha256": "33b624c888fa78cfa543dcdd641a8de386b2a747044d346ecd59fc9eb720b870",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/layout.md",
+      "head_sha256": "6ba1241eab2dd774e5e4a4d006f129bbfb3f7b75bb503e7d1de7ac173c54e914",
+      "package_baseline_sha256": "6ba1241eab2dd774e5e4a4d006f129bbfb3f7b75bb503e7d1de7ac173c54e914",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/review.md",
+      "head_sha256": "c652f85385d98bb42fd9ca84f16b1c80d631f2be957ed17f8cd6e28d4ef0a39b",
+      "package_baseline_sha256": "c652f85385d98bb42fd9ca84f16b1c80d631f2be957ed17f8cd6e28d4ef0a39b",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/scenarios.md",
+      "head_sha256": "59b999391f07b4a91f720c99f65189a36227c0190da8619eafb56a37d08d7f97",
+      "package_baseline_sha256": "59b999391f07b4a91f720c99f65189a36227c0190da8619eafb56a37d08d7f97",
+      "normalized_equal": true
+    },
+    {
+      "path": "frontend-craft/references/visual-style.md",
+      "head_sha256": "a5c34df20c7728cefc90b69dd1bcb0bd35c8851b0e000a9ed4c6890ed1cad1ed",
+      "package_baseline_sha256": "a5c34df20c7728cefc90b69dd1bcb0bd35c8851b0e000a9ed4c6890ed1cad1ed",
+      "normalized_equal": true
+    },
+    {
+      "path": "product-design/references/examples.md",
+      "head_sha256": "839072428b3e3695eb3e47cc89e44b1b5ac639e6d0149ce98fb9fb9589283d0d",
+      "package_baseline_sha256": "839072428b3e3695eb3e47cc89e44b1b5ac639e6d0149ce98fb9fb9589283d0d",
+      "normalized_equal": true
+    },
+    {
+      "path": "product-design/references/new-and-redesign.md",
+      "head_sha256": "a4d4011185ecb2250980e737ac7c2fc12cb7f8dab928afd0cb584b4aad77a09a",
+      "package_baseline_sha256": "a4d4011185ecb2250980e737ac7c2fc12cb7f8dab928afd0cb584b4aad77a09a",
+      "normalized_equal": true
+    },
+    {
+      "path": "product-design/references/product-context.md",
+      "head_sha256": "e5842a69cbaac9b5ac8314e37aabe73555d349aa58542c98e41a3a7d7acb0e26",
+      "package_baseline_sha256": "e5842a69cbaac9b5ac8314e37aabe73555d349aa58542c98e41a3a7d7acb0e26",
+      "normalized_equal": true
+    }
+  ],
+  "decision": "All normalized text matches; candidate replaces 12 files, adds six initial runtime resources; original bundle untouched."
+}

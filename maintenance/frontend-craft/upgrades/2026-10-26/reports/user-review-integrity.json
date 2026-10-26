@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-10-26T05:22:07.675773+00:00",
+  "prior_manifest_generated_at": "2026-10-26T12:17:58.987743+08:00",
+  "checks": {
+    "runtime_unchanged_since_initial_final_audit": {
+      "files": 32,
+      "changed_or_missing": []
+    },
+    "canonical_images_unchanged": {
+      "files": 22,
+      "changed_or_missing": []
+    },
+    "original_run_files_unchanged": {
+      "files": 71,
+      "changed_or_missing": []
+    },
+    "frozen_reviews_unchanged": {
+      "files": 2,
+      "changed_or_missing": []
+    },
+    "original_requirements_preserved": {
+      "files": 6,
+      "changed_or_missing": []
+    },
+    "new_document_links": {
+      "checked": 43,
+      "broken": []
+    },
+    "viewer_browser": {
+      "pairs": 11,
+      "images": 22,
+      "failed_images": [],
+      "console": [],
+      "pixel_mode": {
+        "images": [
+          {
+            "display": 1440,
+            "natural": 1440
+          },
+          {
+            "display": 1440,
+            "natural": 1440
+          }
+        ],
+        "pageWidth": 1425,
+        "pressed": "true",
+        "viewport": 1440
+      },
+      "fit_mode": {
+        "images": [
+          {
+            "display": 666.2250366210938,
+            "natural": 1440
+          },
+          {
+            "display": 666.2250366210938,
+            "natural": 1440
+          }
+        ],
+        "pageWidth": 1425,
+        "pressed": "true",
+        "viewport": 1440
+      },
+      "narrow_window": {
+        "images": [
+          {
+            "complete": true,
+            "display": 341.57501220703125,
+            "natural": 1440
+          },
+          {
+            "complete": true,
+            "display": 341.57501220703125,
+            "natural": 1440
+          }
+        ],
+        "pageWidth": 375,
+        "viewport": 390
+      }
+    },
+    "git_diff_check": {
+      "exit_code": 0,
+      "note": "Completed immediately before this record; CRLF conversion notices only."
+    },
+    "scope": "Integrity and viewer checks only; no preference or visual improvement inferred."
+  }
+}

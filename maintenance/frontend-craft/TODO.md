@@ -1,6 +1,8 @@
 # frontend-craft 待办
 
-当前版本 0.4.2，新增与 product-design 0.1.0 的项目依据、真实内容和跨页流程衔接。运行资源已按用户要求提交到 dev（`dde7655`）与 main（`1e90263`），尚未推送或同步安装目录，见[制作与验证记录](../product-design/reports/initial-design-2026-10-25.md)。用户认可声音艺术专题，否定原管理页，并认为重新制作的管理页效果更差；[拆解报告](evals/management-v042-review-2026-10-25/analysis.md)保留事实与推断的边界。下一轮等待用户阅读报告并给出思路，再继续优化。
+当前为 frontend-craft 0.5.0-rc.1 与 product-design 0.2.0-rc.1 联合升级候选。正文、参考、样张、隔离比较与用户反馈已完成；用户随后明确要求清理并提交推送 main/dev，按运行资源与维护归档分开交付，见[收尾记录](upgrades/2026-10-26/reports/closeout.md)。保留 RC 与效果证据边界，没有创建发布标签或安装个人技能。
+
+上一版 0.4.2 / 0.1.0 的本地分支保存记录见[制作与验证记录](../product-design/reports/initial-design-2026-10-25.md)。用户对声音艺术专题、原管理页与修订管理页的历史反馈及[拆解报告](evals/management-v042-review-2026-10-25/analysis.md)继续保留，不能当作本轮结果。
 
 0.4.1 四页演示曾获用户认可，并按配色相似的反馈补充搭配方向；历史方法与检查边界见[0.4.1 样式修订](reports/frontend-craft-0.4.1-style-2026-10-25.md)，0.4.0 见[原修订记录](reports/frontend-craft-0.4-diagnosis-2026-10-25.md)。
 
@@ -8,7 +10,10 @@
 
 - [x] 0.4.2 读取项目产品与设计依据，按实质变化衔接 product-design；保留页面级设计能力，补真实内容与跨页连续性复核，取消固定两种构图比较要求。
 - [x] 按用户要求保存 0.4.2 与 product-design 0.1.0 的当前运行版本；两个分支内容一致，维护材料仅留 dev。
-- [ ] 等待用户给出新的设计思路，再修订技能；两次管理页未获认可，不将静态可读性检查写成视觉效果提升。
+- [x] 用户已提供完整讨论与候选包，按“产品取舍进入画面、整体构图与样式共同成立”的方向替换并补全；静态检查不替代效果判断。
+- [x] 本轮替换、资源补全、样张检查、六次独立构建、盲评与[独立终审](upgrades/2026-10-26/reports/final-review.md)完成；结论 INSUFFICIENT_EVIDENCE，保留全部结果与 RC。
+- [x] 按用户允许局部未达预期的新要求，完成[验收复核](upgrades/2026-10-26/reports/acceptance-reassessment.md)、[阅读原因分析](upgrades/2026-10-26/reports/reading-cause-analysis.md)和[用户对比入口](upgrades/2026-10-26/user-review/index.html)。未发现必须修改技能正文的确定缺陷，本次保持运行文件与原始比较产物不变。
+- [x] R33 已收集[实际阅读反馈](upgrades/2026-10-26/reports/user-feedback-2026-10-26.md)：两版布局均获认可、差距不明显，旧版标题层级略优。按[追加说明](upgrades/2026-10-26/ACCEPTANCE-ADDENDUM-2026-10-26.md)收束阅读原因核查，不改正文、不追加生成；保留整体效果未证实，不将此项完成记为用户全面接受。后续范围见 [remaining-work](upgrades/2026-10-26/reports/remaining-work.md)。
 - [ ] 在获授权的真实产品核心流程中验证 product-design 与 frontend-craft 配合后的任务、视觉和实现效果；文本行为检查不作为效果证明。
 - [x] 保留说明按用途出现、删除无用容器、中文字体与必要交互保障。
 - [x] 构图决策提前，修正机械对齐与单调就加底色，移除固定色板示例；补展示页的观看顺序与精修边界。

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f0"><title>照读 · 资料与证据</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="app-header"><a class="brand" href="./index.html" aria-label="照读阅读工作台"><span class="brand-mark" aria-hidden="true">照</span><b>照读</b><span class="brand-sub">资料与证据</span></a><div class="header-right"><span class="local-status"><i></i>仅保存在此浏览器</span><button class="quiet" id="reset-button">恢复演示数据</button></div></header>
+<div class="demo-banner"><span class="demo-tag">演示资料</span><span>全文、人物与数值均为原创虚构内容，不可作为真实研究证据。</span><button id="notice-button" aria-label="查看完整演示说明">详情</button></div>
+<nav class="mobile-nav" aria-label="工作区"><button data-view="library">资料库</button><button data-view="reading" class="active">原文</button><button data-view="questions">问答核对</button><button data-view="notes">我的笔记</button></nav>
+<div id="storage-error" role="alert" hidden></div>
+<main class="workspace" data-view="reading">
+<aside class="library" aria-label="资料库"><div class="library-heading"><h2>资料库</h2><span>06 篇</span></div><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索题名、摘要或标签" aria-label="搜索题名、摘要或标签"></label><div class="list-meta"><span id="result-count">全部资料</span><span>原创演示</span></div><div id="paper-list" class="paper-list"></div><div class="library-foot">离线可读 · 无联网请求</div></aside>
+<section class="reader-panel" aria-label="资料原文"><div class="reader-toolbar"><span><span class="dot"></span>原文阅读</span><span id="reading-progress">开始阅读</span></div><div id="verification" hidden><span id="verification-label"></span><div><button id="back-answer">返回回答 ↗</button><button id="continue-reading">继续阅读</button></div></div><div class="reader-scroll" id="reader" tabindex="0"><article id="article"></article></div></section>
+<aside class="workbench" aria-label="阅读工作区"><div class="workbench-tabs"><button data-tool="questions" class="active">问答核对</button><button data-tool="notes">我的笔记 <span id="note-count">1</span></button></div><div id="questions-panel" class="tool-panel"></div><div id="notes-panel" class="tool-panel" hidden></div><div class="workbench-foot">预置问答与个人笔记分别保存来源</div></aside>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="action-dialog"><h2 id="dialog-title"></h2><p id="dialog-body"></p><div id="dialog-actions"></div></dialog>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>

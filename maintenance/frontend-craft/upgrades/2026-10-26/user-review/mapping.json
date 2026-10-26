@@ -1,0 +1,17 @@
+{
+  "purpose": "Maintenance mapping for neutral display aliases; not loaded into visible page labels.",
+  "created_at": "2026-10-26",
+  "reading-evidence": {
+    "方案甲": { "artifact_label": "A", "skill_version": "baseline" },
+    "方案乙": { "artifact_label": "B", "skill_version": "candidate" }
+  },
+  "dense-operations": {
+    "方案甲": { "artifact_label": "B", "skill_version": "baseline" },
+    "方案乙": { "artifact_label": "A", "skill_version": "candidate" }
+  },
+  "public-exhibition": {
+    "方案甲": { "artifact_label": "A", "skill_version": "baseline" },
+    "方案乙": { "artifact_label": "B", "skill_version": "candidate" }
+  },
+  "limits": "Labels reduce direct version prompting; the user may recognize pages from earlier discussion. This is not a fully blinded study. Existing apps, screenshots and prior review records are unchanged."
+}

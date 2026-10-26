@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="neutral-cobalt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>笺阅 · 离线样式实验室</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script src="lab.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header page-width">
+    <a class="brand" href="#top" aria-label="笺阅样式实验室，回到顶部">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <rect x="2" y="2" width="36" height="36" rx="10" fill="currentColor"/>
+        <path d="M13 11h13v19l-6.5-4-6.5 4V11Z" stroke="var(--on-accent)" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M17 16h5M17 20h5" stroke="var(--on-accent)" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span><strong>笺阅</strong><span class="brand-detail">离线样式实验室</span></span>
+    </a>
+    <fieldset class="theme-picker">
+      <legend class="sr-only">选择样式主题</legend>
+      <label><input type="radio" name="theme" value="neutral-cobalt" checked><span class="theme-label" data-swatch="neutral-cobalt">中性与钴蓝</span></label>
+      <label><input type="radio" name="theme" value="ink-cyan"><span class="theme-label" data-swatch="ink-cyan">墨色与冰青</span></label>
+      <label><input type="radio" name="theme" value="paper-berry"><span class="theme-label" data-swatch="paper-berry">纸面与莓红</span></label>
+    </fieldset>
+  </header>
+
+  <div class="modebar">
+    <div class="modebar-inner page-width">
+      <nav class="view-switcher" aria-label="样张视图">
+        <button type="button" data-view="reader" aria-pressed="true" aria-controls="view-reader">阅读与核对</button>
+        <button type="button" data-view="library" aria-pressed="false" aria-controls="view-library">资料列表</button>
+        <button type="button" data-view="components" aria-pressed="false" aria-controls="view-components">组件与状态</button>
+      </nav>
+      <span class="demo-badge"><span aria-hidden="true"></span>原创演示</span>
+    </div>
+  </div>
+
+  <main class="page-width main-content" id="main-content" tabindex="-1">
+    <p class="sample-notice">原创界面样本 · 非真实论文与研究数据，未接入外部服务</p>
+    <section id="view-reader" class="view-panel" aria-labelledby="reader-heading">
+      <div class="section-intro">
+        <p class="section-path">设计笔记 <span aria-hidden="true">/</span> 阅读样张</p>
+        <a class="text-link evidence-entry" href="#evidence-panel" data-locate>查看核对面板 <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="reading-layout">
+        <article class="reading-paper" aria-labelledby="reader-heading">
+          <header class="document-header">
+            <p class="document-category">阅读、定位与信息关系</p>
+            <h1 id="reader-heading" tabindex="-1">当一条解释需要回到原文：<br class="wide-break">长文阅读中的定位与上下文</h1>
+            <p class="document-deck">阅读并不总是从上到下。停下来核对一句解释，再回到刚才的段落，也是一条需要被认真安排的阅读路径。</p>
+            <div class="document-meta"><span>界面设计笔记</span><span>4 节正文</span><span>含 3 处可定位依据</span></div>
+          </header>
+
+          <nav class="document-outline" aria-label="本文目录">
+            <a href="#section-position" data-locate>定位</a>
+            <a href="#section-evidence" data-locate>证据</a>
+            <a href="#section-figure" data-locate>图文</a>
+            <a href="#section-window" data-locate>窗口变化</a>
+          </nav>
+
+          <div class="reading-copy">
+            <section aria-labelledby="section-position">
+              <h2 id="section-position" tabindex="-1"><span class="section-number">01</span>让位置成为上下文的一部分</h2>
+              <p id="source-1" tabindex="-1">在连续阅读中，读者记住的不只是某个句子的意思，也包括它在论述中的位置：上一段提出了什么问题，旁边的图说明了什么，下一节将转向哪项限制。打开一个解释面板以后，这些关系仍然应该容易找回。<a class="citation" href="#evidence-1" data-locate aria-label="查看依据 1 的核对说明">[1]</a></p>
+              <p>因此，“返回原文”不能只把人送到文章开头。一个合适的定位入口，应当让目标段落清楚可见，同时保留继续阅读相邻内容的空间。读者离开这处段落后，也应能够回到正在核对的解释。</p>
+              <blockquote>
+                <p>位置本身携带上下文。一次跳转的价值，既包括找到目标，也包括让之后的阅读能够继续。</p>
+              </blockquote>
+            </section>
+
+            <section aria-labelledby="section-evidence">
+              <h2 id="section-evidence" tabindex="-1"><span class="section-number">02</span>解释与依据需要可辨认的联系</h2>
+              <p>当解释包含多项判断时，把所有来源堆在末尾并不总能帮助核对。更清楚的做法，是让当前判断与相应的段落、图或注释建立联系。引用标记负责指出关系；内容本身负责支持判断。</p>
+              <p id="source-2" tabindex="-1">这并不意味着所有材料必须一直并排。短解释可能适合与正文共同查看；长解释或宽图则可能需要临时扩大阅读空间。<mark>共同可见、容易往返和足够可读</mark>是需要一起权衡的目标，而不是固定列数的同义表达。<a class="citation" href="#evidence-2" data-locate aria-label="查看依据 2 的核对说明">[2]</a></p>
+              <p>同样，信息的重要程度也不只通过放在最上方体现。持续可见的对象名称、恰好出现的操作入口，以及清楚的选中状态，都能帮助读者保持当前任务。</p>
+            </section>
+
+            <section aria-labelledby="section-figure">
+              <h2 id="section-figure" tabindex="-1"><span class="section-number">03</span>图与文字共同承担解释</h2>
+              <p>下面的关系图展示本篇样稿里的三种角色。它不提供实验数值，也不代替正文中的论证；它帮助说明从阅读位置到核对动作之间如何建立联系。</p>
+              <figure class="relationship-figure">
+                <ol class="relationship-diagram" aria-label="原文段落经定位标记关联到解释与批注">
+                  <li><span class="diagram-index">1</span><strong>原文段落</strong><span>保留前后文</span></li>
+                  <li><span class="diagram-index">2</span><strong>定位标记</strong><span>指出对应关系</span></li>
+                  <li><span class="diagram-index">3</span><strong>解释与批注</strong><span>支持继续判断</span></li>
+                </ol>
+                <figcaption>图 1　从定位到核对的三种信息角色</figcaption>
+              </figure>
+              <p>图片进入页面以后，真正的可读性还取决于显示尺寸。原图足够清楚，并不代表缩进一个小容器后仍然容易辨认。标题、图注与邻近正文已经解释清楚的内容，也不必再附加一层重复说明。</p>
+            </section>
+
+            <section aria-labelledby="section-window">
+              <h2 id="section-window" tabindex="-1"><span class="section-number">04</span>窗口改变，工作关系继续</h2>
+              <p id="source-3" tabindex="-1">可用空间变窄时，呈现形式可以变化，但当前对象、被核对的依据和返回入口应继续清楚。把侧边内容移到下方，只完成了位置变化；若读者不知道入口在哪里，工作关系就仍然断开。<a class="citation" href="#evidence-3" data-locate aria-label="查看依据 3 的核对说明">[3]</a></p>
+              <p>在这个样张中，宽屏把正文与核对面板放在相邻区域；窄屏保留正文优先的连续阅读，并通过本文顶部和段落中的入口定位到核对内容。每条核对说明都提供返回相应段落的链接。</p>
+              <p>这只是一个可观察、可修改的样式起点。是否适合某个真实产品，仍然需要放入那个产品的内容与操作，查看这些关系有没有成立。</p>
+            </section>
+          </div>
+          <footer class="document-end"><span>正文结束</span><a class="text-link" href="#reader-heading" data-locate>回到文章标题 <span aria-hidden="true">↑</span></a></footer>
+        </article>
+
+        <aside class="evidence-pane" id="evidence-panel" aria-labelledby="evidence-heading" tabindex="-1">
+          <div class="pane-heading"><p class="document-category">核对面板</p><h2 id="evidence-heading">一项解释，三处依据</h2></div>
+          <p class="question">怎样核对解释，同时保留原文的阅读位置？</p>
+          <p class="answer-summary">这篇样稿将位置、依据和返回动作联系起来。阅读空间可以调整，但内容之间的关系应保持清楚。</p>
+          <ol class="evidence-list">
+            <li id="evidence-1" tabindex="-1"><span class="evidence-index">1</span><div><h3>位置也是上下文</h3><p>定位应保留继续阅读前后文的条件。</p><a href="#source-1" class="text-link" data-locate>定位到原文 <span aria-hidden="true">↗</span></a></div></li>
+            <li id="evidence-2" tabindex="-1"><span class="evidence-index">2</span><div><h3>共视与可读需要权衡</h3><p>是否并置，应由真实内容与当前任务决定。</p><a href="#source-2" class="text-link" data-locate>定位到原文 <span aria-hidden="true">↗</span></a></div></li>
+            <li id="evidence-3" tabindex="-1"><span class="evidence-index">3</span><div><h3>窄屏也保留联系</h3><p>入口、目标和返回路径共同支撑切换。</p><a href="#source-3" class="text-link" data-locate>定位到原文 <span aria-hidden="true">↗</span></a></div></li>
+          </ol>
+          <section class="note-editor" aria-labelledby="note-heading">
+            <h3 id="note-heading">临时批注</h3>
+            <label class="sr-only" for="note-input">输入临时批注</label>
+            <textarea id="note-input" rows="3" placeholder="写下你想继续核对的内容……" aria-describedby="note-hint"></textarea>
+            <p class="field-hint" id="note-hint">仅在本页预览，刷新后清除。</p>
+            <button class="button button-secondary" id="preview-note" type="button">预览批注</button>
+            <p class="field-error" id="note-error" role="status" hidden>先写下一段批注，再预览。</p>
+            <div class="note-preview" id="note-preview" aria-live="polite" hidden><p class="note-preview-label">当前批注</p><p id="note-preview-text"></p></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section id="view-library" class="view-panel" aria-labelledby="library-heading" hidden>
+      <header class="view-heading"><div><p class="section-path">设计笔记 <span aria-hidden="true">/</span> 资料列表</p><h1 id="library-heading" tabindex="-1">把需要继续阅读的内容放在一起</h1><p>八篇原创样稿，展示长标题、判断依据与状态怎样共同组织。</p></div><button class="button button-primary" data-open-reader type="button">打开阅读样张 <span aria-hidden="true">↗</span></button></header>
+      <form class="filter-bar" id="filter-form" role="search">
+        <div class="search-field"><label for="document-search">搜索标题与摘要</label><div class="search-input-wrap"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input type="search" id="document-search" placeholder="试试“阅读”“比较”或“颜色”" autocomplete="off"></div></div>
+        <div class="select-field"><label for="status-filter">整理状态</label><select id="status-filter"><option value="all">全部状态</option><option value="reading">在读</option><option value="review">待核对</option><option value="organized">已整理</option></select></div>
+        <button class="button button-quiet" id="clear-filters" type="button" disabled>清空筛选</button>
+      </form>
+      <div class="list-heading"><p id="result-count" role="status" aria-live="polite">当前显示 8 篇</p><span>判断依据随条目可见</span></div>
+      <ul class="document-list" id="document-list">
+        <li class="document-row" data-status="reading"><div class="row-content"><div class="row-meta"><span>阅读与定位</span><span>设计笔记</span></div><h2>当一条解释需要回到原文：长文阅读中的定位与上下文</h2><p class="row-summary">讨论原文、引用和解释的联系，以及窗口变化之后如何保持阅读位置。</p><div id="summary-1" class="row-detail" hidden><p>这篇样稿包含连续正文、引用往返和关系图，可在“阅读与核对”视图中查看。它是界面内容样本，不是对真实用户行为的研究结论。</p><button type="button" class="text-link" data-open-reader>打开完整阅读样张 ↗</button></div></div><div class="row-actions"><span class="status-pill status-reading">在读</span><button class="disclosure-button" type="button" data-disclosure="summary-1" aria-controls="summary-1" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="review"><div class="row-content"><div class="row-meta"><span>比较与判断</span><span>方法备忘</span></div><h2>一个列表究竟在帮助比较什么：从对象名称到关键差异的视觉地位</h2><p class="row-summary">对象身份需要稳定可认，当前判断依据也可能获得更高的视觉分量。</p><div id="summary-2" class="row-detail" hidden><p>名称、状态和数值之间不存在永久固定的强弱顺序。先明确读者在查找什么，再决定哪些字段直接出现、哪些保持对齐。</p></div></div><div class="row-actions"><span class="status-pill status-review">待核对</span><button class="disclosure-button" type="button" data-disclosure="summary-2" aria-controls="summary-2" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="organized"><div class="row-content"><div class="row-meta"><span>文字与尺度</span><span>实践记录</span></div><h2>字号以外，文字还在怎样组织画面？</h2><p class="row-summary">把字形、字重、行高、行宽和段落间距放在同一个画面中观察。</p><div id="summary-3" class="row-detail" hidden><p>一组孤立的字号并不等于一套文字层级。连续阅读、元信息和操作标签需要不同的处理，并在真实中文与英文混排时检查体量。</p></div></div><div class="row-actions"><span class="status-pill status-organized">已整理</span><button class="disclosure-button" type="button" data-disclosure="summary-3" aria-controls="summary-3" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="reading"><div class="row-content"><div class="row-meta"><span>颜色与表面</span><span>设计笔记</span></div><h2>同一种强调色，为什么在两张页面上显得完全不同</h2><p class="row-summary">颜色的面积、邻接背景、文字分量与表面层级共同影响整体感受。</p><div id="summary-4" class="row-detail" hidden><p>更换按钮色不会自动改变整屏的明暗分布。比较主题时保留相同内容，观察主要阅读面、辅助区域与选中状态的关系。</p></div></div><div class="row-actions"><span class="status-pill status-reading">在读</span><button class="disclosure-button" type="button" data-disclosure="summary-4" aria-controls="summary-4" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="review"><div class="row-content"><div class="row-meta"><span>窗口与上下文</span><span>方法备忘</span></div><h2>侧栏收起以后：窄屏界面里仍然需要保留的工作关系</h2><p class="row-summary">讨论共视、分步、返回与当前位置，避免只把响应式理解为上下堆叠。</p><div id="summary-5" class="row-detail" hidden><p>辅助内容的位置可以变化，但用户需要知道如何找到它、它对应哪个对象，以及怎样返回。导航模式应根据内容关系选择。</p></div></div><div class="row-actions"><span class="status-pill status-review">待核对</span><button class="disclosure-button" type="button" data-disclosure="summary-5" aria-controls="summary-5" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="organized"><div class="row-content"><div class="row-meta"><span>图像与解释</span><span>实践记录</span></div><h2>图片不是统一比例的填充物</h2><p class="row-summary">从内容对象、证据、关系解释与氛围四种作用，判断素材应如何进入构图。</p><div id="summary-6" class="row-detail" hidden><p>原图清楚不代表缩小后可读。需要看清数据的图，与需要感受主体形态的照片，可以采用不同的空间和裁切方式。</p></div></div><div class="row-actions"><span class="status-pill status-organized">已整理</span><button class="disclosure-button" type="button" data-disclosure="summary-6" aria-controls="summary-6" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="review"><div class="row-content"><div class="row-meta"><span>动态内容</span><span>设计笔记</span></div><h2>在结果不断增加的时候，让正在阅读的人留在原处</h2><p class="row-summary">加载、追加结果和展开内容，都需要考虑焦点与阅读位置的延续。</p><div id="summary-7" class="row-detail" hidden><p>异步状态存在，并不代表变化过程稳定。检查文字、图片或结果出现以后，主要内容是否移动，当前焦点是否仍可辨认。</p></div></div><div class="row-actions"><span class="status-pill status-review">待核对</span><button class="disclosure-button" type="button" data-disclosure="summary-7" aria-controls="summary-7" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+        <li class="document-row" data-status="organized"><div class="row-content"><div class="row-meta"><span>设计取舍</span><span>方法备忘</span></div><h2>需要被保留的重复：长页面中的对象、条件与确认</h2><p class="row-summary">重复是否有价值，取决于它是否降低了回看和记忆负担。</p><div id="summary-8" class="row-detail" hidden><p>在距离较远的区域或不同流程步骤里，再次显示当前对象和关键条件可能很有帮助。是否合并，应根据具体作用判断。</p></div></div><div class="row-actions"><span class="status-pill status-organized">已整理</span><button class="disclosure-button" type="button" data-disclosure="summary-8" aria-controls="summary-8" aria-expanded="false">展开摘要 <span aria-hidden="true">+</span></button></div></li>
+      </ul>
+      <div class="empty-state" id="list-empty" hidden><h2>没有符合条件的样稿</h2><p>可以换一个词，或清空整理状态后再找。</p><button class="button button-secondary" type="button" data-reset-filters>清空全部筛选</button></div>
+    </section>
+
+    <section id="view-components" class="view-panel" aria-labelledby="components-heading" hidden>
+      <header class="view-heading"><div><p class="section-path">样式关系 <span aria-hidden="true">/</span> 组件与状态</p><h1 id="components-heading" tabindex="-1">让同一套样式承受真实状态</h1><p>查看文字、表面、输入、选中与反馈的组合。状态由你手动切换，不发送网络请求。</p></div></header>
+      <div class="component-layout">
+        <section class="sample-panel" aria-labelledby="form-sample-heading">
+          <div class="sample-panel-heading"><span class="sample-index">01</span><div><h2 id="form-sample-heading">输入与操作</h2><p>标签保持可见，反馈贴近它所影响的内容。</p></div></div>
+          <form id="sample-form" novalidate>
+            <div class="field-group"><label for="sample-title">资料标题 <span class="field-optional">必填</span></label><input id="sample-title" name="title" value="当一条解释需要回到原文" required aria-describedby="title-hint"><p class="field-hint" id="title-hint">清空标题后检查，可以查看错误样式。</p><p class="field-error" id="title-error" hidden>请填写资料标题。</p></div>
+            <div class="field-group"><label for="sample-topic">内容主题</label><select id="sample-topic" name="topic"><option>阅读与定位</option><option>颜色与表面</option><option>文字与尺度</option></select></div>
+            <div class="button-row"><button class="button button-primary" type="submit">检查输入</button><button class="button button-secondary" id="reset-form" type="button">恢复示例</button><button class="button button-secondary" type="button" disabled>未接入导出</button></div>
+            <p class="form-feedback" id="form-feedback" role="status" hidden></p>
+          </form>
+          <div class="type-specimen"><h3>文字角色</h3><p class="specimen-title">当前对象的标题</p><p class="specimen-body">连续阅读需要足够的行宽与清楚的字形。Example text 与数字 2026 放回中文段落中一起判断。</p><p class="specimen-meta">元信息仍然可读，分量可以退后。</p></div>
+        </section>
+
+        <section class="sample-panel" aria-labelledby="state-sample-heading">
+          <div class="sample-panel-heading"><span class="sample-index">02</span><div><h2 id="state-sample-heading">异步反馈的样式</h2><p>切换不同状态，观察表面、文字与恢复入口。</p></div></div>
+          <div class="field-group"><label for="state-selector">演示状态</label><select id="state-selector"><option value="ready">可开始</option><option value="loading">加载中</option><option value="success">结果已呈现</option><option value="error">需要处理的问题</option></select></div>
+          <div class="state-stage" id="state-stage" data-state="ready" aria-live="polite" aria-atomic="true">
+            <div class="state-content" data-state-content="ready"><span class="state-symbol" aria-hidden="true">↗</span><h3>准备查看内容</h3><p>此处展示状态反馈，不连接外部资料。</p><button class="button button-secondary" type="button" data-demo-state="loading">查看加载样式</button></div>
+            <div class="state-content" data-state-content="loading" hidden><span class="spinner" aria-hidden="true"></span><h3>内容加载中 · 演示</h3><div class="skeleton-lines" aria-hidden="true"><span></span><span></span><span></span></div><button class="button button-quiet" type="button" data-demo-state="ready">返回可开始状态</button></div>
+            <div class="state-content" data-state-content="success" hidden><span class="state-symbol state-symbol-good" aria-hidden="true">✓</span><h3>示例内容已呈现</h3><p>这是预置的完成状态样张，没有执行上传、分析或保存。</p><button class="button button-secondary" type="button" data-demo-state="ready">返回可开始状态</button></div>
+            <div class="state-content" data-state-content="error" hidden><span class="state-symbol state-symbol-error" aria-hidden="true">!</span><h3>样例输入需要补充</h3><p>示例：资料标题为空。保留已输入内容，让用户在原处修正。</p><button class="button button-secondary" type="button" data-demo-state="ready">查看恢复后的状态</button></div>
+          </div>
+        </section>
+
+        <section class="sample-panel" aria-labelledby="combined-heading">
+          <div class="sample-panel-heading"><span class="sample-index">03</span><div><h2 id="combined-heading">状态可以同时存在</h2><p>选中、焦点和警告分别表达，避免互相覆盖。</p></div></div>
+          <div class="checkbox-row"><label><input type="checkbox" id="combined-selected" checked>显示选中</label><label><input type="checkbox" id="combined-warning">显示警告</label></div>
+          <button class="combined-item" id="combined-item" type="button" data-selected="true" aria-pressed="true"><span class="selection-indicator" aria-hidden="true">✓</span><span><strong>资料核对的工作关系</strong><span class="combined-meta">选中后继续处理；Tab 可查看键盘焦点。</span></span></button>
+          <p class="warning-message" id="combined-warning-message" hidden><span aria-hidden="true">!</span>示例警告：有一处来源尚未标明。</p>
+          <div class="status-samples" aria-label="状态标签示例"><span class="status-pill status-reading">在读</span><span class="status-pill status-review">待核对</span><span class="status-pill status-organized">已整理</span><span class="status-pill status-error">需补充</span></div>
+        </section>
+
+        <section class="sample-panel" aria-labelledby="surface-heading">
+          <div class="sample-panel-heading"><span class="sample-index">04</span><div><h2 id="surface-heading">表面与强调</h2><p>同一主题中的底、内容面、嵌入区和强调应共同成立。</p></div></div>
+          <div class="surface-samples"><div class="surface-base"><span>页面底</span><div class="surface-content"><strong>主要内容面</strong><p>清楚的正文与辅助信息保持层级。</p><div class="surface-inset">嵌入内容与引用区域</div></div></div></div>
+          <dl class="role-notes"><div><dt>正文</dt><dd>与所在表面形成清楚对比。</dd></div><div><dt>辅助文字</dt><dd>分量退后，仍能直接阅读。</dd></div><div><dt>交互强调</dt><dd>用于动作、定位与选中关系。</dd></div></dl>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer page-width"><p>所有题名、正文与状态均为原创界面样本，不代表真实论文、研究数据或接入服务。这三套主题是待迁移验证的候选，不是外部优秀案例截图。</p><a href="#top" class="text-link">回到顶部 ↑</a></footer>
+  <p id="app-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+</body>
+</html>

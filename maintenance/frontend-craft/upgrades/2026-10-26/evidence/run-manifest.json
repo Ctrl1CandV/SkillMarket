@@ -1,0 +1,114 @@
+{
+  "created_at": "2026-10-26T10:14:58.765527+08:00",
+  "model": "inherited parent model; no override for all no-history subagents",
+  "context": "fork_turns=none; no upgrade history, criteria or counterpart output",
+  "tools": "same host tools and permissions; browser via cua_repl; no external writes",
+  "engineering": "empty directory; vanilla HTML/CSS/JS; local behavior and fixture data; no package installation required; same localhost server at http://127.0.0.1:8766/",
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "budget": "one independent attempt per version per scene, up to 25 minutes; normal self-check/fix within attempt; no coordinator design guidance",
+  "runs": [
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A",
+      "input_sha256": {
+        "brief.md": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+        "data.json": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198"
+      },
+      "state": "builder_completed",
+      "completion_observed_at": "2026-10-26T10:41:41.410175+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md",
+      "agent": "build_reading_a",
+      "fork_turns": "none"
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B",
+      "input_sha256": {
+        "brief.md": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+        "data.json": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198"
+      },
+      "state": "builder_completed",
+      "agent": "build_reading_b",
+      "fork_turns": "none",
+      "completion_observed_at": "2026-10-26T11:07:24.709858+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A",
+      "input_sha256": {
+        "brief.md": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+        "data.json": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6"
+      },
+      "state": "builder_completed",
+      "agent": "build_dense_a",
+      "fork_turns": "none",
+      "completion_observed_at": "2026-10-26T11:07:24.709858+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B",
+      "input_sha256": {
+        "brief.md": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+        "data.json": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6"
+      },
+      "state": "builder_completed",
+      "completion_observed_at": "2026-10-26T10:41:41.410175+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md",
+      "agent": "build_dense_b",
+      "fork_turns": "none"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A",
+      "input_sha256": {
+        "brief.md": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+        "data.json": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d"
+      },
+      "state": "builder_completed",
+      "agent": "build_exhibition_a",
+      "fork_turns": "none",
+      "completion_observed_at": "2026-10-26T11:07:24.709858+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "directory": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B",
+      "input_sha256": {
+        "brief.md": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+        "data.json": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d"
+      },
+      "state": "builder_completed",
+      "agent": "build_exhibition_b",
+      "fork_turns": "none",
+      "completion_observed_at": "2026-10-26T11:15:37.200635+08:00",
+      "builder_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    }
+  ],
+  "model_revision_limit": "Host does not expose immutable model build ID; every builder uses inherited parent model with no override.",
+  "browser_parallelism_limit": "Concurrent IAB viewport overrides interfered with one builder capture; canonical paired captures will be taken sequentially after builders finish. Builder screenshots retained with their stated scope.",
+  "candidate_snapshot": "candidate-snapshot",
+  "candidate_hash_record": "candidate-snapshot-hashes.json"
+}

@@ -1,0 +1,67 @@
+{
+  "repository": "Ctrl1CandV/SkillMarket",
+  "commit": "d4c9eadcaa8f7ba287c3cd7f61a26775552eaf11",
+  "verification": "git blob SHA matches original retrieved source for all 12 files",
+  "files": [
+    {
+      "path": "frontend-craft/SKILL.md",
+      "git_blob_sha": "13592568ae64b09ffbd0b986ba3adae99813e418",
+      "sha256": "715fc5d810e6951ca962243407cb11a0271552e646bfea824808430d36091992"
+    },
+    {
+      "path": "frontend-craft/references/content.md",
+      "git_blob_sha": "1c899cae46aca264a5c29dca7aee9e010afc2677",
+      "sha256": "0eb7ad8f9c2381e43fbb9f76db2bfba8397e705f6c75e990ba85c94d6f33f097"
+    },
+    {
+      "path": "frontend-craft/references/layout.md",
+      "git_blob_sha": "f271ab9226e97a2204e82e5374eb8cb0f9386403",
+      "sha256": "6ba1241eab2dd774e5e4a4d006f129bbfb3f7b75bb503e7d1de7ac173c54e914"
+    },
+    {
+      "path": "frontend-craft/references/visual-style.md",
+      "git_blob_sha": "42fe6dfccd984273698bd2666f4003670bcaecf7",
+      "sha256": "a5c34df20c7728cefc90b69dd1bcb0bd35c8851b0e000a9ed4c6890ed1cad1ed"
+    },
+    {
+      "path": "frontend-craft/references/cjk-typography.md",
+      "git_blob_sha": "685dc54479bca0051aff7ec8f410749eae7d0ff1",
+      "sha256": "e0a4403b1e372eb9eeb49f7b9db58b2e32649d550c56051506aab42f055d499f"
+    },
+    {
+      "path": "frontend-craft/references/review.md",
+      "git_blob_sha": "d8c56de5a6992bfd4958a589230cdbc5d8ba8c9e",
+      "sha256": "c652f85385d98bb42fd9ca84f16b1c80d631f2be957ed17f8cd6e28d4ef0a39b"
+    },
+    {
+      "path": "frontend-craft/references/scenarios.md",
+      "git_blob_sha": "68235eb619698000911471ea553f6c95e1ad5cb2",
+      "sha256": "59b999391f07b4a91f720c99f65189a36227c0190da8619eafb56a37d08d7f97"
+    },
+    {
+      "path": "frontend-craft/references/exemplars.md",
+      "git_blob_sha": "90722f9b87799f4183de69b199a350b728fec550",
+      "sha256": "33b624c888fa78cfa543dcdd641a8de386b2a747044d346ecd59fc9eb720b870"
+    },
+    {
+      "path": "product-design/SKILL.md",
+      "git_blob_sha": "11db39d4b9dd1ae21f96323a3a81dcab48e2f186",
+      "sha256": "7a461a41420fc5463e8ed8b9de6b00f3f6da776e19f77cdff82df50096cb7e77"
+    },
+    {
+      "path": "product-design/references/product-context.md",
+      "git_blob_sha": "529977dec9626563c255ba2f6ac53f7a723833b6",
+      "sha256": "e5842a69cbaac9b5ac8314e37aabe73555d349aa58542c98e41a3a7d7acb0e26"
+    },
+    {
+      "path": "product-design/references/new-and-redesign.md",
+      "git_blob_sha": "63f0a931e365237c44507e00adba7110aa5c7207",
+      "sha256": "a4d4011185ecb2250980e737ac7c2fc12cb7f8dab928afd0cb584b4aad77a09a"
+    },
+    {
+      "path": "product-design/references/examples.md",
+      "git_blob_sha": "fca710c6b6a1b755cc6cd99d1f49621193cd6556",
+      "sha256": "839072428b3e3695eb3e47cc89e44b1b5ac639e6d0149ce98fb9fb9589283d0d"
+    }
+  ]
+}

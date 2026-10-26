@@ -1,0 +1,8 @@
+{
+  "scope": "All package Markdown relative file targets, including maintenance and baseline; external URLs not checked by this pass",
+  "markdown_files": 39,
+  "destinations_seen": 198,
+  "relative_links_checked": 85,
+  "errors": [],
+  "status": "pass"
+}

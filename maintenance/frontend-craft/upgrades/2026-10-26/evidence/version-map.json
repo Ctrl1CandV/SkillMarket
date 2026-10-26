@@ -1,0 +1,14 @@
+{
+  "reading-evidence": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "dense-operations": {
+    "A": "candidate",
+    "B": "baseline"
+  },
+  "public-exhibition": {
+    "A": "baseline",
+    "B": "candidate"
+  }
+}

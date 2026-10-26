@@ -1,0 +1,89 @@
+{
+  "checks": [
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "file": "brief.md",
+      "sha256": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+      "matches_original": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "file": "data.json",
+      "sha256": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198",
+      "matches_original": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "file": "brief.md",
+      "sha256": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+      "matches_original": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "file": "data.json",
+      "sha256": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198",
+      "matches_original": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "A",
+      "file": "brief.md",
+      "sha256": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+      "matches_original": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "A",
+      "file": "data.json",
+      "sha256": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6",
+      "matches_original": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "B",
+      "file": "brief.md",
+      "sha256": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+      "matches_original": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "B",
+      "file": "data.json",
+      "sha256": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6",
+      "matches_original": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "file": "brief.md",
+      "sha256": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+      "matches_original": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "file": "data.json",
+      "sha256": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d",
+      "matches_original": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "B",
+      "file": "brief.md",
+      "sha256": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+      "matches_original": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "B",
+      "file": "data.json",
+      "sha256": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d",
+      "matches_original": true
+    }
+  ],
+  "all_equal": true
+}

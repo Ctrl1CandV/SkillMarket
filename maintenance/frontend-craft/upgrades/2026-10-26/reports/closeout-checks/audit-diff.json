@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-26T06:10:35.579461+00:00",
+  "runtime_changed_since_final_audit": [
+    "frontend-craft/assets/references/tabler/LICENSE.txt",
+    "frontend-craft/assets/references/tufte-css/LICENSE.txt"
+  ],
+  "change": "Trailing blank lines only; license text unchanged. Historical audit hashes are retained.",
+  "runtime_files": 32,
+  "all_other_runtime_files_unchanged": true
+}

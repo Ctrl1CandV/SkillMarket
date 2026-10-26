@@ -1,0 +1,10 @@
+{
+  "scope": "Static HTML IDs, label/ARIA/anchor associations, disclosure target associations, and resource checks only; no browser interaction performed",
+  "ids": 60,
+  "references": 56,
+  "missing_ids": [],
+  "duplicate_ids": [],
+  "external_resources": [],
+  "javascript_syntax": "node --check passed after view-switch change",
+  "browser_render": "not_performed"
+}

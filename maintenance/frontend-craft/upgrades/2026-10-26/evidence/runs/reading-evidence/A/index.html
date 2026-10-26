@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#234b3c">
+  <title>页间 · 资料阅读与证据核对</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="#" id="brand" aria-label="页间，返回当前资料开头"><span class="brand-mark" aria-hidden="true">页</span><span>页间<span class="brand-sub">阅读 · 核对 · 留下判断</span></span></a>
+    <div class="header-actions"><span class="local-status" id="localStatus"><span class="status-dot"></span>保存在本机</span><button id="reset" class="text-button">恢复演示数据</button></div>
+  </header>
+  <div class="demo-notice"><span class="notice-label">演示资料</span><span>全部资料与实验数字均为原创虚构内容，未发表，不可作为真实研究证据。</span></div>
+  <nav class="mobile-nav" aria-label="工作区"><button data-view="library">资料 <span>6</span></button><button data-view="reader" class="active">原文</button><button data-view="tools">问答与笔记</button></nav>
+  <main class="workspace" data-view="reader">
+    <aside class="library" aria-label="资料集合">
+      <div class="library-top"><div class="eyebrow">我的资料</div><h1>阅读资料库 <span>06</span></h1><div class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="search" type="search" placeholder="搜索题名、摘要或标签" aria-label="搜索题名、摘要或标签"></div><div class="library-count" id="resultCount">全部资料 · 6 篇</div></div>
+      <div id="paperList" class="paper-list"></div>
+      <div class="library-footer"><span class="tiny-book" aria-hidden="true">▱</span><span>让每一处判断<br>回到它的依据。</span></div>
+    </aside>
+    <section class="reader-shell" aria-label="文章原文">
+      <div class="reader-toolbar"><span class="source-label">文章原文</span><label class="toc-label">目录 <select id="toc" aria-label="跳转原文章节"></select></label><span class="read-progress" id="readProgress">0%</span></div>
+      <div id="evidenceBar" class="evidence-bar" hidden><span id="evidenceLabel"></span><button id="returnAnswer">返回回答 ↗</button><button id="closeEvidence" aria-label="结束核对，继续阅读">×</button></div>
+      <div id="reader" class="reader" tabindex="0"><article id="article"></article></div>
+    </section>
+    <aside class="tools-shell" aria-label="问答与笔记">
+      <div class="tools-heading"><span class="eyebrow">研读工作台</span><span class="tools-symbol" aria-hidden="true">✳</span></div>
+      <div class="tool-tabs" role="tablist" aria-label="研读工具"><button id="answerTab" role="tab" aria-selected="true" aria-controls="answerPanel" class="active">预置问答</button><button id="notesTab" role="tab" aria-selected="false" aria-controls="notesPanel">我的笔记 <span id="noteCount">1</span></button></div>
+      <div class="tools-content"><section id="answerPanel" role="tabpanel" aria-labelledby="answerTab"></section><section id="notesPanel" role="tabpanel" aria-labelledby="notesTab" hidden></section></div>
+      <div class="tools-footer">仅保存在当前浏览器 · 无云端同步</div>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <dialog id="confirmDialog"><form method="dialog"><div class="dialog-kicker">请确认</div><h2 id="dialogTitle"></h2><p id="dialogMessage"></p><div class="dialog-actions"><button value="cancel" class="secondary">继续编辑</button><button value="discard" class="danger" id="dialogDiscard">放弃更改</button><button value="save" class="primary" id="dialogSave">保存并继续</button></div></form></dialog>
+</body>
+</html>

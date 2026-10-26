@@ -1,0 +1,315 @@
+{
+  "executed_at": "2026-10-26T12:16:58.378749+08:00",
+  "runtime_frozen_files": [
+    {
+      "path": "frontend-craft/SKILL.md",
+      "expected": "09ef6435eecfac863f9ddd746a973a6b5b8dbf14c7db2871c25f0dabb88f4afd",
+      "actual": "09ef6435eecfac863f9ddd746a973a6b5b8dbf14c7db2871c25f0dabb88f4afd",
+      "match": true
+    },
+    {
+      "path": "product-design/SKILL.md",
+      "expected": "10143a26f2a028ae1bf867885404b238be8931412eddba18536edf63e3d5936f",
+      "actual": "10143a26f2a028ae1bf867885404b238be8931412eddba18536edf63e3d5936f",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/cjk-typography.md",
+      "expected": "634a84e2d9e8dec8b81e40997cbe65fdb6800820abb393abfd3530eeb0d6fb2d",
+      "actual": "634a84e2d9e8dec8b81e40997cbe65fdb6800820abb393abfd3530eeb0d6fb2d",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/content.md",
+      "expected": "3392c602a6e2847b2c07044f4f2cb12dd503a6ec19ad23df2975d955958d10db",
+      "actual": "3392c602a6e2847b2c07044f4f2cb12dd503a6ec19ad23df2975d955958d10db",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/exemplar-index.json",
+      "expected": "0e50d1502459c87e4c1385c64861947078d0e6883d7e5268b78b474912f51db6",
+      "actual": "0739944423bde23dcd41d77a1a9493d0dac517e0fa447bc4314bcee6a57779b9",
+      "match": false
+    },
+    {
+      "path": "frontend-craft/references/exemplars.md",
+      "expected": "799a1198018dfe3bc849311da7b78006675b071d41c32b20505055e1366fe583",
+      "actual": "13095d5afbc26c95701e299ad882155879a61a4585c3f255c960554b09ff1053",
+      "match": false
+    },
+    {
+      "path": "frontend-craft/references/layout.md",
+      "expected": "652e2adc1f91cfe8002b035bccf2dd22be3d44faf4a9ea334cd38df3a2d39a85",
+      "actual": "652e2adc1f91cfe8002b035bccf2dd22be3d44faf4a9ea334cd38df3a2d39a85",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/reference-selection.md",
+      "expected": "feb8e09cc121c9d456438a2ed34efa1afe1b66d02686e0dd9fe6433052b42076",
+      "actual": "feb8e09cc121c9d456438a2ed34efa1afe1b66d02686e0dd9fe6433052b42076",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/review.md",
+      "expected": "cdacba7f1938acffed64d9710e06b625b2a4307b6ec1b96d0f551d7702e37dae",
+      "actual": "cdacba7f1938acffed64d9710e06b625b2a4307b6ec1b96d0f551d7702e37dae",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/scenarios.md",
+      "expected": "20b92b4ec845de4c6593ddac18521c4cb252988afde8b8c977b2d8cdb64e3df5",
+      "actual": "20b92b4ec845de4c6593ddac18521c4cb252988afde8b8c977b2d8cdb64e3df5",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/style-samples.md",
+      "expected": "f05895f6dfd56df05076bc498fc1b8a21c4fd0f3d5e0beac61943ecb5fe79860",
+      "actual": "f05895f6dfd56df05076bc498fc1b8a21c4fd0f3d5e0beac61943ecb5fe79860",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/references/visual-style.md",
+      "expected": "3557df31eb34e3782e81443562edcb889aecc403c64ae1f299a36a6620583fbf",
+      "actual": "3557df31eb34e3782e81443562edcb889aecc403c64ae1f299a36a6620583fbf",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/style-lab/index.html",
+      "expected": "dfd2048a3f9c0a9a51176b313999d93bc8b873e857c67971fe0ef010572f9617",
+      "actual": "dfd2048a3f9c0a9a51176b313999d93bc8b873e857c67971fe0ef010572f9617",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/style-lab/lab.js",
+      "expected": "9a22a63601ce342b592eb42b28db42a6870b548da50fe2f27367631ecf45112a",
+      "actual": "9a22a63601ce342b592eb42b28db42a6870b548da50fe2f27367631ecf45112a",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/style-lab/styles.css",
+      "expected": "06021a84bcca0558edf277ef967c3070866d8969d6674bb0b8330c99ae9147f0",
+      "actual": "06021a84bcca0558edf277ef967c3070866d8969d6674bb0b8330c99ae9147f0",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/ATTRIBUTION.md",
+      "expected": "d24cde5ca27be904f119426052a3a3d63f94f4dd3949d3dcb35f063934ffce8f",
+      "actual": "d24cde5ca27be904f119426052a3a3d63f94f4dd3949d3dcb35f063934ffce8f",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/gallery.jpg",
+      "expected": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5",
+      "actual": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/LICENSE.txt",
+      "expected": "41924a489f374dcc647db30916c6de47c4eb8c9a995de6a4c08629696096db3e",
+      "actual": "41924a489f374dcc647db30916c6de47c4eb8c9a995de6a4c08629696096db3e",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/lightbox.jpg",
+      "expected": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb",
+      "actual": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/desktop.jpg",
+      "expected": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a",
+      "actual": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/LICENSE.txt",
+      "expected": "21e9d21528005d3d87b46e18ccfe287ad966f9a34fc9bf248c5055e9b9ae3a98",
+      "actual": "21e9d21528005d3d87b46e18ccfe287ad966f9a34fc9bf248c5055e9b9ae3a98",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/SOURCE.md",
+      "expected": "2e023495adf1f5d378d8c012dc2bb3a7e6a7d45f484411426063e057fbab212c",
+      "actual": "2e023495adf1f5d378d8c012dc2bb3a7e6a7d45f484411426063e057fbab212c",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/desktop.jpg",
+      "expected": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d",
+      "actual": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/LICENSE.txt",
+      "expected": "7f885133d8bbdf97d8ebe75017dcc729ab34ea96bfe1be3248ad78caaa876a63",
+      "actual": "7f885133d8bbdf97d8ebe75017dcc729ab34ea96bfe1be3248ad78caaa876a63",
+      "match": true
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/SOURCE.md",
+      "expected": "372dec08df579c3fcaaeb19dda3958cb1ddd8974c6c1a6efd256a8c5d0620b49",
+      "actual": "372dec08df579c3fcaaeb19dda3958cb1ddd8974c6c1a6efd256a8c5d0620b49",
+      "match": true
+    },
+    {
+      "path": "product-design/references/examples.md",
+      "expected": "e668da7366f7b5ee26d7b38f137eee37077fe1fc3b99237677a1fbc262ed11f4",
+      "actual": "e668da7366f7b5ee26d7b38f137eee37077fe1fc3b99237677a1fbc262ed11f4",
+      "match": true
+    },
+    {
+      "path": "product-design/references/new-and-redesign.md",
+      "expected": "43995e8e6428e33615cffd81fec0a6a121594eced024bfc10971cad9777a59d5",
+      "actual": "43995e8e6428e33615cffd81fec0a6a121594eced024bfc10971cad9777a59d5",
+      "match": true
+    },
+    {
+      "path": "product-design/references/product-context.md",
+      "expected": "c6bd5701c43178d7f595d3308668a0f9f71854eaaa5885448c069408de4f3859",
+      "actual": "c6bd5701c43178d7f595d3308668a0f9f71854eaaa5885448c069408de4f3859",
+      "match": true
+    }
+  ],
+  "final_runtime_file_count": 32,
+  "post_freeze_diff": {
+    "added": [
+      "frontend-craft/assets/references/wikipedia-attention/ATTRIBUTION.md",
+      "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+      "frontend-craft/assets/references/wikipedia-attention/body-citation.jpg",
+      "frontend-craft/assets/references/wikipedia-attention/source-location.jpg"
+    ],
+    "removed": [],
+    "changed": [
+      "frontend-craft/references/exemplar-index.json",
+      "frontend-craft/references/exemplars.md"
+    ],
+    "meaning": "Runs used the frozen snapshot. Additional resource evidence is not retroactively attributed to their construction; see post-freeze-resource-supplement.md."
+  },
+  "original_criteria_unchanged": [
+    {
+      "path": "PLAN.md",
+      "original_sha256": "1b092e0089ed8b81db290771e77ebe4114c734e953e76b73f7b54da791392007",
+      "current_sha256": "1b092e0089ed8b81db290771e77ebe4114c734e953e76b73f7b54da791392007",
+      "match": true
+    },
+    {
+      "path": "REQUIREMENTS.md",
+      "original_sha256": "82665c755d7fdc80aab820514d2ecfd6d75eaf9456f5e11a70672a7a13077c5d",
+      "current_sha256": "82665c755d7fdc80aab820514d2ecfd6d75eaf9456f5e11a70672a7a13077c5d",
+      "match": true
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "original_sha256": "35258db145667ab6d50865532cd1b6907f866f4e42378af3d91106cf75fd8ee1",
+      "current_sha256": "35258db145667ab6d50865532cd1b6907f866f4e42378af3d91106cf75fd8ee1",
+      "match": true
+    },
+    {
+      "path": "prompts/01-complete-and-evaluate.md",
+      "original_sha256": "6cfd4fb840127a73e5ad6ff567817b4e7be1c8b9b510a74c923aa56bb133878c",
+      "current_sha256": "6cfd4fb840127a73e5ad6ff567817b4e7be1c8b9b510a74c923aa56bb133878c",
+      "match": true
+    },
+    {
+      "path": "prompts/02-final-review.md",
+      "original_sha256": "48adf304ac33f0bf2b9ec7d1ba56e20134e49f4730e2719a3d1a0cd269fa4009",
+      "current_sha256": "48adf304ac33f0bf2b9ec7d1ba56e20134e49f4730e2719a3d1a0cd269fa4009",
+      "match": true
+    },
+    {
+      "path": "tools/check_package.py",
+      "original_sha256": "b7a134278a03c4da757fee6126f9b6dc0f51e428089ec32de6fab54de0534592",
+      "current_sha256": "b7a134278a03c4da757fee6126f9b6dc0f51e428089ec32de6fab54de0534592",
+      "match": true
+    }
+  ],
+  "paired_original_inputs": [
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "file": "data.json",
+      "match": true
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "file": "data.json",
+      "match": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "A",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "B",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "A",
+      "file": "data.json",
+      "match": true
+    },
+    {
+      "scene": "dense-operations",
+      "label": "B",
+      "file": "data.json",
+      "match": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "B",
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "file": "data.json",
+      "match": true
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "B",
+      "file": "data.json",
+      "match": true
+    }
+  ],
+  "git_diff_check": {
+    "command": [
+      "git",
+      "-c",
+      "core.safecrlf=false",
+      "diff",
+      "--check"
+    ],
+    "executed_at": "2026-10-26T12:16:58.378749+08:00",
+    "process_exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "unrelated_deletion_preserved": true,
+  "scope": "Integrity and static checks only; no visual, behavioral or license verdict."
+}

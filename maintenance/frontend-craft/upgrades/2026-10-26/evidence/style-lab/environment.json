@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-26",
+  "timezone": "Asia/Shanghai",
+  "browser": "Codex in-app browser (Chromium family)",
+  "browser_build": "User-Agent reports Chrome/156.0.0.0; full internal patch build is reduced/not exposed",
+  "os": "Windows",
+  "url": "http://127.0.0.1:8766/frontend-craft/assets/style-lab/index.html",
+  "css_viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "raw_jpeg_sizes": [
+    [
+      1425,
+      990
+    ],
+    [
+      375,
+      811
+    ]
+  ],
+  "image_processing": "none; original returned bytes",
+  "font_stack_observed": {
+    "neutral-cobalt": "PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif",
+    "paper-berry": "Noto Serif CJK SC, Noto Serif SC, Songti SC, SimSun, serif"
+  },
+  "installed_fonts_registry_confirmed": [
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    "Noto Serif SC",
+    "SimSun"
+  ],
+  "actual_glyph_family_limit": "No per-glyph font API exposed; Microsoft YaHei/Noto Serif SC expected from installed families and stack order, not directly measured.",
+  "body_copy_px": 17,
+  "checks": "interaction-checks.json",
+  "contrast": "contrast-check.json",
+  "visual_review": "../../reports/style-lab-review.md",
+  "user_agent_evidence": "browser-request.json",
+  "screenshots": [
+    "ink-cyan-combined-focus.jpg",
+    "ink-cyan-components.jpg",
+    "ink-cyan-desktop.jpg",
+    "ink-cyan-library.jpg",
+    "ink-cyan-mobile.jpg",
+    "neutral-cobalt-components.jpg",
+    "neutral-cobalt-desktop.jpg",
+    "neutral-cobalt-library.jpg",
+    "neutral-cobalt-mobile.jpg",
+    "paper-berry-combined-focus.jpg",
+    "paper-berry-desktop.jpg",
+    "paper-berry-library.jpg",
+    "paper-berry-mobile-evidence.jpg",
+    "paper-berry-mobile-source.jpg",
+    "paper-berry-mobile.jpg"
+  ],
+  "captured_at_range": "2026-10-26 morning Asia/Shanghai; per-file timestamps retained in manifest"
+}

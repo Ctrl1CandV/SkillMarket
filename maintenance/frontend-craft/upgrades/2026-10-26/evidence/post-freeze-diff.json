@@ -1,0 +1,14 @@
+{
+  "added": [
+    "frontend-craft/assets/references/wikipedia-attention/ATTRIBUTION.md",
+    "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+    "frontend-craft/assets/references/wikipedia-attention/body-citation.jpg",
+    "frontend-craft/assets/references/wikipedia-attention/source-location.jpg"
+  ],
+  "removed": [],
+  "changed": [
+    "frontend-craft/references/exemplar-index.json",
+    "frontend-craft/references/exemplars.md"
+  ],
+  "meaning": "Runs used the frozen snapshot. Additional resource evidence is not retroactively attributed to their construction; see post-freeze-resource-supplement.md."
+}

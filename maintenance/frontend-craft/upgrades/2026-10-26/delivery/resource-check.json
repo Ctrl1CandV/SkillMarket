@@ -1,0 +1,123 @@
+{
+  "checker": "skillmarket-package-static",
+  "schema_version": 1,
+  "mode": "release_prerequisites",
+  "static_status": "fail",
+  "exit_code": 1,
+  "targets": [
+    {
+      "label": "package",
+      "root": "runtime",
+      "static_status": "fail",
+      "errors": [
+        {
+          "code": "release_coverage",
+          "path": "frontend-craft/references/exemplar-index.json",
+          "message": "缺少完整外部画面覆盖：dense-operation, public-display, reading-verification"
+        },
+        {
+          "code": "release_sources",
+          "path": "frontend-craft/references/exemplar-index.json",
+          "message": "完整外部画面需至少 2 个声明的独立发布主体；现有 0 个。"
+        }
+      ],
+      "pending": [
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "oil-reader",
+          "status": "candidate",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "oil-minutes",
+          "status": "candidate",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "oil-mail",
+          "status": "candidate",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "linear-refresh",
+          "status": "documented",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "carbon-type",
+          "status": "documented",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "carbon-grid",
+          "status": "documented",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "letterform-archive",
+          "status": "documented",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        },
+        {
+          "code": "visual_reference_pending",
+          "entry_id": "oil-folio",
+          "status": "candidate",
+          "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+        }
+      ],
+      "summary": {
+        "text_files_checked": 15,
+        "local_links_checked": 57,
+        "frontmatter": {
+          "frontend-craft": {
+            "name": "frontend-craft",
+            "version": "0.5.0-rc.1"
+          },
+          "product-design": {
+            "name": "product-design",
+            "version": "0.2.0-rc.1"
+          }
+        },
+        "exemplars": {
+          "total": 8,
+          "candidate": 4,
+          "documented": 4,
+          "verified_visual": 0
+        },
+        "release_prerequisites": {
+          "static_gate": "not_met",
+          "eligible_entries": [],
+          "required_categories": [
+            "dense-operation",
+            "public-display",
+            "reading-verification"
+          ],
+          "covered_categories": [],
+          "missing_categories": [
+            "dense-operation",
+            "public-display",
+            "reading-verification"
+          ],
+          "declared_source_origins": {},
+          "minimum_independent_source_origins": 2,
+          "independence_verified_by_script": false,
+          "human_visual_and_behavior_review_required": true
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "结构 PASS 或 --release PASS 只表示静态前提满足，不代表本轮总验收通过。",
+    "本工具不运行浏览器，不判断审美、内容关系、可访问性、交互或动态连续性。",
+    "viewed、来源独立性、许可与观察记录是作者声明，须由独立终审核实，不能以字段自证。",
+    "图片仅检查文件存在与格式签名，不解码画面，也不能证明它来自所声明页面或已经被查看。",
+    "只检查常见 Markdown 文件链接和 HTML src/href；不执行 JavaScript、不解析 CSS 依赖，不实现完整 YAML/CommonMark。"
+  ],
+  "delivery_note": "Paths rebased to package root for portability; command result and checks unchanged. This is delivery-time static evidence, not a final use review."
+}

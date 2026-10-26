@@ -1,0 +1,365 @@
+{
+  "schema_version": 1,
+  "package": "SkillMarket two-skill upgrade candidate",
+  "delivery_date": "2026-10-26",
+  "date_timezone": "Asia/Shanghai",
+  "built_at_utc": "2026-10-25T17:08:39.628108+00:00",
+  "source_repository": "https://github.com/Ctrl1CandV/SkillMarket",
+  "baseline_commit": "d4c9eadcaa8f7ba287c3cd7f61a26775552eaf11",
+  "versions": {
+    "frontend-craft": {
+      "baseline": "0.4.2",
+      "candidate": "0.5.0-rc.1"
+    },
+    "product-design": {
+      "baseline": "0.1.0",
+      "candidate": "0.2.0-rc.1"
+    }
+  },
+  "status": {
+    "files_generated": true,
+    "static_structure": "pass",
+    "original_samples_browser_render": "pending",
+    "external_verified_visual_entries": 0,
+    "old_new_usage_comparison": "pending",
+    "final_independent_acceptance": "pending"
+  },
+  "install_mapping": {
+    "runtime/frontend-craft": "frontend-craft",
+    "runtime/product-design": "product-design",
+    "dev-only/maintenance": "dev branch only: maintenance",
+    "baseline": "isolated comparison directory; not runtime/main"
+  },
+  "entrypoint": "START_HERE.md",
+  "requirements_count": 36,
+  "inventory_excludes": [
+    "manifest.json",
+    "SHA256SUMS"
+  ],
+  "files": [
+    {
+      "path": "START_HERE.md",
+      "role": "entry_guide",
+      "bytes": 4527,
+      "sha256": "f319011665e6453c57990fea5f0f3ab8e86509ab4ec4def44f4529c036c5f282"
+    },
+    {
+      "path": "baseline/frontend-craft/SKILL.md",
+      "role": "baseline_snapshot",
+      "bytes": 7603,
+      "sha256": "715fc5d810e6951ca962243407cb11a0271552e646bfea824808430d36091992"
+    },
+    {
+      "path": "baseline/frontend-craft/references/cjk-typography.md",
+      "role": "baseline_snapshot",
+      "bytes": 5293,
+      "sha256": "e0a4403b1e372eb9eeb49f7b9db58b2e32649d550c56051506aab42f055d499f"
+    },
+    {
+      "path": "baseline/frontend-craft/references/content.md",
+      "role": "baseline_snapshot",
+      "bytes": 9732,
+      "sha256": "0eb7ad8f9c2381e43fbb9f76db2bfba8397e705f6c75e990ba85c94d6f33f097"
+    },
+    {
+      "path": "baseline/frontend-craft/references/exemplars.md",
+      "role": "baseline_snapshot",
+      "bytes": 3706,
+      "sha256": "33b624c888fa78cfa543dcdd641a8de386b2a747044d346ecd59fc9eb720b870"
+    },
+    {
+      "path": "baseline/frontend-craft/references/layout.md",
+      "role": "baseline_snapshot",
+      "bytes": 5379,
+      "sha256": "6ba1241eab2dd774e5e4a4d006f129bbfb3f7b75bb503e7d1de7ac173c54e914"
+    },
+    {
+      "path": "baseline/frontend-craft/references/review.md",
+      "role": "baseline_snapshot",
+      "bytes": 6374,
+      "sha256": "c652f85385d98bb42fd9ca84f16b1c80d631f2be957ed17f8cd6e28d4ef0a39b"
+    },
+    {
+      "path": "baseline/frontend-craft/references/scenarios.md",
+      "role": "baseline_snapshot",
+      "bytes": 3654,
+      "sha256": "59b999391f07b4a91f720c99f65189a36227c0190da8619eafb56a37d08d7f97"
+    },
+    {
+      "path": "baseline/frontend-craft/references/visual-style.md",
+      "role": "baseline_snapshot",
+      "bytes": 12967,
+      "sha256": "a5c34df20c7728cefc90b69dd1bcb0bd35c8851b0e000a9ed4c6890ed1cad1ed"
+    },
+    {
+      "path": "baseline/product-design/SKILL.md",
+      "role": "baseline_snapshot",
+      "bytes": 7896,
+      "sha256": "7a461a41420fc5463e8ed8b9de6b00f3f6da776e19f77cdff82df50096cb7e77"
+    },
+    {
+      "path": "baseline/product-design/references/examples.md",
+      "role": "baseline_snapshot",
+      "bytes": 6031,
+      "sha256": "839072428b3e3695eb3e47cc89e44b1b5ac639e6d0149ce98fb9fb9589283d0d"
+    },
+    {
+      "path": "baseline/product-design/references/new-and-redesign.md",
+      "role": "baseline_snapshot",
+      "bytes": 3909,
+      "sha256": "a4d4011185ecb2250980e737ac7c2fc12cb7f8dab928afd0cb584b4aad77a09a"
+    },
+    {
+      "path": "baseline/product-design/references/product-context.md",
+      "role": "baseline_snapshot",
+      "bytes": 4839,
+      "sha256": "e5842a69cbaac9b5ac8314e37aabe73555d349aa58542c98e41a3a7d7acb0e26"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/ACCEPTANCE.md",
+      "role": "dev_only_maintenance",
+      "bytes": 7864,
+      "sha256": "35258db145667ab6d50865532cd1b6907f866f4e42378af3d91106cf75fd8ee1"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/DELIVERY_STATUS.md",
+      "role": "dev_only_maintenance",
+      "bytes": 4268,
+      "sha256": "15e46ec47f8104ce967e4444a8f73a40dbf0379bd1a8efc7865da6ecfe0a1680"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/PLAN.md",
+      "role": "dev_only_maintenance",
+      "bytes": 10770,
+      "sha256": "1b092e0089ed8b81db290771e77ebe4114c734e953e76b73f7b54da791392007"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/REQUIREMENTS.md",
+      "role": "dev_only_maintenance",
+      "bytes": 9389,
+      "sha256": "82665c755d7fdc80aab820514d2ecfd6d75eaf9456f5e11a70672a7a13077c5d"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/SOURCES.md",
+      "role": "dev_only_maintenance",
+      "bytes": 8129,
+      "sha256": "b0d308830f7506259c180c484d4af25c3f50a83e544c57ab518074a999d21dff"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/baseline-integrity.json",
+      "role": "dev_only_maintenance",
+      "bytes": 2801,
+      "sha256": "3f952577068a5551100ef83d2c44d37c1d50476b3494ba623a25921916e095ec"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/fixture-check.json",
+      "role": "dev_only_maintenance",
+      "bytes": 1274,
+      "sha256": "8398e70d5f2c743846659f5493f4e6ae92167285e6d6b42fdbc49b65bfdc771a"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/package-link-check.json",
+      "role": "dev_only_maintenance",
+      "bytes": 256,
+      "sha256": "fa389b6cf4a4ed17bbf68432c9c54e680988eb28c962cd3661a3b46dc0837b62"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/palette-contrast.json",
+      "role": "dev_only_maintenance",
+      "bytes": 8305,
+      "sha256": "cb66cb3c54586ea96299d190581302eb9fcf5ddfd82a64ba14cefb281094ba26"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/resource-check.json",
+      "role": "dev_only_maintenance",
+      "bytes": 4582,
+      "sha256": "8c7dccdda78ca858e7d2bf476aa5115e570c0297947b511281da7fe06f19a78f"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/sample-static-check.json",
+      "role": "dev_only_maintenance",
+      "bytes": 370,
+      "sha256": "af6908c574a697ca4f8dfbb62f4f8900e0e09e4b542fa425cb88a10517dcd0a4"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/static-check.json",
+      "role": "dev_only_maintenance",
+      "bytes": 4101,
+      "sha256": "51ca39e6ec797f28b38e08f8917e0c8c37ae8ba4fb3e0bdeeec5c41d7b6408e5"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/static-review.md",
+      "role": "dev_only_maintenance",
+      "bytes": 2721,
+      "sha256": "64b52cb96b157095b5b8bdcf3db924cb9603383caa560651e4152309d2739a02"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/README.md",
+      "role": "dev_only_maintenance",
+      "bytes": 3623,
+      "sha256": "b898a0d95bfc7399cb95f1e4f572fe39bf57370ade04417b4251fec6be0fbd9f"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/dense-operations/brief.md",
+      "role": "dev_only_maintenance",
+      "bytes": 2219,
+      "sha256": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/dense-operations/data.json",
+      "role": "dev_only_maintenance",
+      "bytes": 20016,
+      "sha256": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/public-exhibition/brief.md",
+      "role": "dev_only_maintenance",
+      "bytes": 2139,
+      "sha256": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/public-exhibition/data.json",
+      "role": "dev_only_maintenance",
+      "bytes": 17901,
+      "sha256": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/reading-evidence/brief.md",
+      "role": "dev_only_maintenance",
+      "bytes": 2392,
+      "sha256": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/reading-evidence/data.json",
+      "role": "dev_only_maintenance",
+      "bytes": 32188,
+      "sha256": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/prompts/01-complete-and-evaluate.md",
+      "role": "dev_only_maintenance",
+      "bytes": 12372,
+      "sha256": "6cfd4fb840127a73e5ad6ff567817b4e7be1c8b9b510a74c923aa56bb133878c"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/prompts/02-final-review.md",
+      "role": "dev_only_maintenance",
+      "bytes": 9165,
+      "sha256": "48adf304ac33f0bf2b9ec7d1ba56e20134e49f4730e2719a3d1a0cd269fa4009"
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/tools/check_package.py",
+      "role": "dev_only_maintenance",
+      "bytes": 25687,
+      "sha256": "b7a134278a03c4da757fee6126f9b6dc0f51e428089ec32de6fab54de0534592"
+    },
+    {
+      "path": "runtime/frontend-craft/SKILL.md",
+      "role": "runtime_skill",
+      "bytes": 7910,
+      "sha256": "09ef6435eecfac863f9ddd746a973a6b5b8dbf14c7db2871c25f0dabb88f4afd"
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/index.html",
+      "role": "runtime_skill",
+      "bytes": 27060,
+      "sha256": "dfd2048a3f9c0a9a51176b313999d93bc8b873e857c67971fe0ef010572f9617"
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/lab.js",
+      "role": "runtime_skill",
+      "bytes": 10195,
+      "sha256": "9a22a63601ce342b592eb42b28db42a6870b548da50fe2f27367631ecf45112a"
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/styles.css",
+      "role": "runtime_skill",
+      "bytes": 27622,
+      "sha256": "06021a84bcca0558edf277ef967c3070866d8969d6674bb0b8330c99ae9147f0"
+    },
+    {
+      "path": "runtime/frontend-craft/references/cjk-typography.md",
+      "role": "runtime_skill",
+      "bytes": 9019,
+      "sha256": "634a84e2d9e8dec8b81e40997cbe65fdb6800820abb393abfd3530eeb0d6fb2d"
+    },
+    {
+      "path": "runtime/frontend-craft/references/content.md",
+      "role": "runtime_skill",
+      "bytes": 9282,
+      "sha256": "3392c602a6e2847b2c07044f4f2cb12dd503a6ec19ad23df2975d955958d10db"
+    },
+    {
+      "path": "runtime/frontend-craft/references/exemplar-index.json",
+      "role": "runtime_skill",
+      "bytes": 4820,
+      "sha256": "c1dcddf8e7f7138f14d184059b41812a8fa7dc4ae3b8fd7c1b9cc0e26413a7df"
+    },
+    {
+      "path": "runtime/frontend-craft/references/exemplars.md",
+      "role": "runtime_skill",
+      "bytes": 4103,
+      "sha256": "72f1c76509438fdfcf6bea000e56ff45a50944b56e6d2e07cd4b6b46b6453f8d"
+    },
+    {
+      "path": "runtime/frontend-craft/references/layout.md",
+      "role": "runtime_skill",
+      "bytes": 9353,
+      "sha256": "652e2adc1f91cfe8002b035bccf2dd22be3d44faf4a9ea334cd38df3a2d39a85"
+    },
+    {
+      "path": "runtime/frontend-craft/references/reference-selection.md",
+      "role": "runtime_skill",
+      "bytes": 5586,
+      "sha256": "feb8e09cc121c9d456438a2ed34efa1afe1b66d02686e0dd9fe6433052b42076"
+    },
+    {
+      "path": "runtime/frontend-craft/references/review.md",
+      "role": "runtime_skill",
+      "bytes": 8244,
+      "sha256": "cdacba7f1938acffed64d9710e06b625b2a4307b6ec1b96d0f551d7702e37dae"
+    },
+    {
+      "path": "runtime/frontend-craft/references/scenarios.md",
+      "role": "runtime_skill",
+      "bytes": 7688,
+      "sha256": "20b92b4ec845de4c6593ddac18521c4cb252988afde8b8c977b2d8cdb64e3df5"
+    },
+    {
+      "path": "runtime/frontend-craft/references/style-samples.md",
+      "role": "runtime_skill",
+      "bytes": 5087,
+      "sha256": "f05895f6dfd56df05076bc498fc1b8a21c4fd0f3d5e0beac61943ecb5fe79860"
+    },
+    {
+      "path": "runtime/frontend-craft/references/visual-style.md",
+      "role": "runtime_skill",
+      "bytes": 11531,
+      "sha256": "3557df31eb34e3782e81443562edcb889aecc403c64ae1f299a36a6620583fbf"
+    },
+    {
+      "path": "runtime/product-design/SKILL.md",
+      "role": "runtime_skill",
+      "bytes": 8539,
+      "sha256": "10143a26f2a028ae1bf867885404b238be8931412eddba18536edf63e3d5936f"
+    },
+    {
+      "path": "runtime/product-design/references/examples.md",
+      "role": "runtime_skill",
+      "bytes": 7353,
+      "sha256": "e668da7366f7b5ee26d7b38f137eee37077fe1fc3b99237677a1fbc262ed11f4"
+    },
+    {
+      "path": "runtime/product-design/references/new-and-redesign.md",
+      "role": "runtime_skill",
+      "bytes": 4584,
+      "sha256": "43995e8e6428e33615cffd81fec0a6a121594eced024bfc10971cad9777a59d5"
+    },
+    {
+      "path": "runtime/product-design/references/product-context.md",
+      "role": "runtime_skill",
+      "bytes": 4621,
+      "sha256": "c6bd5701c43178d7f595d3308668a0f9f71854eaaa5885448c069408de4f3859"
+    }
+  ]
+}

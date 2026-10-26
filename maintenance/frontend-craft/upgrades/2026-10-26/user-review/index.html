@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>页面对比 · 本轮技能升级</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <p class="eyebrow">本轮技能升级 · 用户评价</p>
+      <h1>查看页面，判断哪些变化对你有价值</h1>
+      <p class="intro">同一任务的两份独立实现，以方案甲、乙并排显示。先看整体，再查看文字与关键状态；需要操作时，可以打开对应页面实际体验。</p>
+    </header>
+
+    <section class="controls" aria-label="选择比较内容">
+      <label>场景
+        <select id="scene">
+          <option value="reading-evidence">阅读与证据核对</option>
+          <option value="dense-operations">密集作业管理</option>
+          <option value="public-exhibition">作品展示</option>
+        </select>
+      </label>
+      <label>视口
+        <select id="viewport">
+          <option value="desktop">宽屏 · 1440 × 1000 CSS px</option>
+          <option value="mobile">手机 · 390 × 844 CSS px</option>
+        </select>
+      </label>
+      <label>状态
+        <select id="state"></select>
+      </label>
+      <div class="sizing" role="group" aria-label="图片显示尺寸">
+        <button id="fit" type="button" aria-pressed="true">适合页面</button>
+        <button id="pixels" type="button" aria-pressed="false">原始像素</button>
+      </div>
+    </section>
+
+    <div class="comparison-note">
+      <p id="state-description" aria-live="polite"></p>
+      <p id="size-note">预览会随可用空间缩小，手机图保持其自然宽度；原始图像未经编辑。</p>
+    </div>
+
+    <section class="comparison" aria-label="同状态页面对比">
+      <article class="variant" aria-labelledby="title-jia">
+        <div class="variant-header">
+          <h2 id="title-jia">方案甲</h2>
+          <div class="links">
+            <a id="original-jia" target="_blank" rel="noopener">打开原图 <span aria-hidden="true">↗</span></a>
+            <a id="app-jia" target="_blank" rel="noopener">实际体验 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="image-window" tabindex="0" role="region" aria-label="方案甲图片，原始像素模式下可滚动">
+          <img id="image-jia" alt="" decoding="async">
+          <p id="error-jia" class="image-error" hidden>图片没有载入，请确认本目录与 evidence 目录保持原有相对位置。</p>
+        </div>
+        <p id="meta-jia" class="image-meta"></p>
+      </article>
+      <article class="variant" aria-labelledby="title-yi">
+        <div class="variant-header">
+          <h2 id="title-yi">方案乙</h2>
+          <div class="links">
+            <a id="original-yi" target="_blank" rel="noopener">打开原图 <span aria-hidden="true">↗</span></a>
+            <a id="app-yi" target="_blank" rel="noopener">实际体验 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="image-window" tabindex="0" role="region" aria-label="方案乙图片，原始像素模式下可滚动">
+          <img id="image-yi" alt="" decoding="async">
+          <p id="error-yi" class="image-error" hidden>图片没有载入，请确认本目录与 evidence 目录保持原有相对位置。</p>
+        </div>
+        <p id="meta-yi" class="image-meta"></p>
+      </article>
+    </section>
+
+    <section class="feedback" aria-labelledby="feedback-title">
+      <h2 id="feedback-title">看完后，在当前聊天里说说你的感受</h2>
+      <ul>
+        <li>整体观感和阅读舒适度：更喜欢哪一份，还是两者相当？</li>
+        <li>具体使用：哪里更方便，哪里让你觉得别扭？</li>
+        <li>取舍：哪些不足可以接受，哪些会影响你日常使用？</li>
+      </ul>
+      <p>可以按场景回复，例如“阅读：偏向甲；管理：相当；展示：偏向乙”，再补充理由。无需每个场景都选出优胜者。</p>
+    </section>
+
+    <footer>
+      <p>截图采集于 2026-10-26。两侧来自相同任务、数据与目标视口，图中内容均为演示。实际体验打开的是完整应用，当前状态可能与截图不同，窗口宽度也由你当前的浏览器决定。</p>
+      <p>此页暂不标注版本身份或评审结论；已有阅读经历仍可能让你认出方案，因此这只是减少标签引导的安排。此页不收集、保存或上传评价，请在聊天中反馈。</p>
+    </footer>
+    <noscript><p class="image-error">请启用 JavaScript 以切换图片。也可从相邻 evidence/canonical 目录直接打开已保存的原图。</p></noscript>
+  </main>
+</body>
+</html>

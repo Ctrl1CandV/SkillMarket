@@ -1,0 +1,508 @@
+{
+  "dataset_version": "1.0",
+  "data_notice": "全部团队成员、作业、文件名、时间与业务记录均为原创虚构演示内容。所有操作仅更改本地状态，不连接实际文件或生产系统。",
+  "locale": "zh-CN",
+  "time_zone": "Asia/Shanghai",
+  "snapshot_at": "2026-10-26T09:35:00+08:00",
+  "owners": [
+    {
+      "id": "owner-01",
+      "name": "周岚"
+    },
+    {
+      "id": "owner-02",
+      "name": "Avery Chen"
+    },
+    {
+      "id": "owner-03",
+      "name": "吴桐"
+    },
+    {
+      "id": "owner-04",
+      "name": "陈序"
+    },
+    {
+      "id": "owner-05",
+      "name": "许沐"
+    }
+  ],
+  "status_labels": {
+    "queued": "待处理",
+    "running": "进行中",
+    "needs_review": "待复核",
+    "failed": "失败",
+    "completed": "完成",
+    "cancelled": "已取消"
+  },
+  "priority_labels": {
+    "high": "高",
+    "normal": "普通",
+    "low": "低"
+  },
+  "priority_order": [
+    "high",
+    "normal",
+    "low"
+  ],
+  "jobs": [
+    {
+      "id": "IMP-20261026-001",
+      "name": "季度设备目录与维修责任人映射",
+      "source_file": "equipment_owners_q4.csv",
+      "project": "设备资料整理",
+      "owner_id": "owner-01",
+      "status": "needs_review",
+      "priority": "high",
+      "records_total": 12480,
+      "records_processed": 12480,
+      "open_issue_count": 7,
+      "submitted_at": "2026-10-26T07:15:00+08:00",
+      "updated_at": "2026-10-26T07:27:00+08:00",
+      "issue_code": "OWNER_ALIAS_AMBIGUOUS",
+      "summary": "导入完成，7 条记录使用了未确认的负责人别名，需要核对映射后确认。原文件内容已读取，当前尚未计入正式可用目录。",
+      "activity": [
+        {
+          "id": "IMP-20261026-001-event-01",
+          "at": "2026-10-26T07:15:00+08:00",
+          "actor_id": "owner-01",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-001-event-02",
+          "at": "2026-10-26T07:27:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：待复核。导入完成，7 条记录使用了未确认的负责人别名，需要核对映射后确认。原文件内容已读取，当前尚未计入正式可用目录。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-002",
+      "name": "WaterQuality_StationMap 增量记录",
+      "source_file": "station_map_20261026.jsonl",
+      "project": "水质观测站",
+      "owner_id": "owner-02",
+      "status": "running",
+      "priority": "normal",
+      "records_total": 32000,
+      "records_processed": 18720,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T07:22:00+08:00",
+      "updated_at": "2026-10-26T07:35:00+08:00",
+      "issue_code": null,
+      "summary": "正在合并站点名称与坐标记录。本地演示中进度保持在当前快照，不会自动跳到完成，也不提供暂停或修改优先级操作。",
+      "activity": [
+        {
+          "id": "IMP-20261026-002-event-01",
+          "at": "2026-10-26T07:22:00+08:00",
+          "actor_id": "owner-02",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-002-event-02",
+          "at": "2026-10-26T07:35:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：进行中。正在合并站点名称与坐标记录。本地演示中进度保持在当前快照，不会自动跳到完成，也不提供暂停或修改优先级操作。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-003",
+      "name": "展品目录：2026 秋季第二批补充",
+      "source_file": "autumn_catalog_batch_02.csv",
+      "project": "展览资料",
+      "owner_id": "owner-03",
+      "status": "failed",
+      "priority": "high",
+      "records_total": 865,
+      "records_processed": 412,
+      "open_issue_count": 3,
+      "submitted_at": "2026-10-26T07:29:00+08:00",
+      "updated_at": "2026-10-26T07:43:00+08:00",
+      "issue_code": "INVALID_DATE",
+      "summary": "第 413 行起出现 3 个无法解析的日期。作业停止在已读取 412 条记录处；重试会从队列重新开始，不会把当前部分进度当作成功结果。",
+      "activity": [
+        {
+          "id": "IMP-20261026-003-event-01",
+          "at": "2026-10-26T07:29:00+08:00",
+          "actor_id": "owner-03",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-003-event-02",
+          "at": "2026-10-26T07:43:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：失败。第 413 行起出现 3 个无法解析的日期。作业停止在已读取 412 条记录处；重试会从队列重新开始，不会把当前部分进度当作成功结果。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-004",
+      "name": "城市交通指标 09 月归档",
+      "source_file": "traffic_metrics_2026_09.csv",
+      "project": "城市公开数据",
+      "owner_id": "owner-04",
+      "status": "completed",
+      "priority": "normal",
+      "records_total": 186000,
+      "records_processed": 186000,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T07:36:00+08:00",
+      "updated_at": "2026-10-26T07:51:00+08:00",
+      "issue_code": null,
+      "summary": "全部记录已经完成检查与归档。可查看作业属性与操作历史，本演示不允许对完成作业重试或变更优先级。",
+      "activity": [
+        {
+          "id": "IMP-20261026-004-event-01",
+          "at": "2026-10-26T07:36:00+08:00",
+          "actor_id": "owner-04",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-004-event-02",
+          "at": "2026-10-26T07:51:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：完成。全部记录已经完成检查与归档。可查看作业属性与操作历史，本演示不允许对完成作业重试或变更优先级。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-005",
+      "name": "旧项目联系人字段更新",
+      "source_file": "legacy_contact_updates.csv",
+      "project": "项目资料迁移",
+      "owner_id": "owner-05",
+      "status": "queued",
+      "priority": "low",
+      "records_total": 2480,
+      "records_processed": 0,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T07:43:00+08:00",
+      "updated_at": "2026-10-26T07:59:00+08:00",
+      "issue_code": null,
+      "summary": "等待处理。此次只更新已有对象的联系人字段，未发现预检查问题；可调整优先级，但待处理作业不能重复加入重试队列。",
+      "activity": [
+        {
+          "id": "IMP-20261026-005-event-01",
+          "at": "2026-10-26T07:43:00+08:00",
+          "actor_id": "owner-05",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-005-event-02",
+          "at": "2026-10-26T07:59:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：待处理。等待处理。此次只更新已有对象的联系人字段，未发现预检查问题；可调整优先级，但待处理作业不能重复加入重试队列。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-006",
+      "name": "馆藏数字资源链接检查清单",
+      "source_file": "collection_links_v3.jsonl",
+      "project": "数字馆藏",
+      "owner_id": "owner-03",
+      "status": "cancelled",
+      "priority": "normal",
+      "records_total": 9400,
+      "records_processed": 1760,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T07:50:00+08:00",
+      "updated_at": "2026-10-26T08:07:00+08:00",
+      "issue_code": null,
+      "summary": "负责人主动取消了作业，取消前已读取 1,760 条。当前记录仅用于说明停止位置；如需继续，可以重试并从待处理状态重新开始。",
+      "activity": [
+        {
+          "id": "IMP-20261026-006-event-01",
+          "at": "2026-10-26T07:50:00+08:00",
+          "actor_id": "owner-03",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-006-event-02",
+          "at": "2026-10-26T08:07:00+08:00",
+          "actor_id": "owner-03",
+          "action": "status_changed",
+          "message": "当前快照状态：已取消。负责人主动取消了作业，取消前已读取 1,760 条。当前记录仅用于说明停止位置；如需继续，可以重试并从待处理状态重新开始。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-007",
+      "name": "站点回传数据：夜间缺口补录",
+      "source_file": "night_gap_backfill.csv",
+      "project": "水质观测站",
+      "owner_id": "owner-01",
+      "status": "needs_review",
+      "priority": "normal",
+      "records_total": 6080,
+      "records_processed": 6080,
+      "open_issue_count": 12,
+      "submitted_at": "2026-10-26T07:57:00+08:00",
+      "updated_at": "2026-10-26T08:15:00+08:00",
+      "issue_code": "OVERLAPPING_PERIOD",
+      "summary": "检测到 12 条时间范围重叠记录。其余字段校验完成，待复核确认本次补录是否应覆盖原有时段；演示确认只标记已处理，不调用真实数据源。",
+      "activity": [
+        {
+          "id": "IMP-20261026-007-event-01",
+          "at": "2026-10-26T07:57:00+08:00",
+          "actor_id": "owner-01",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-007-event-02",
+          "at": "2026-10-26T08:15:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：待复核。检测到 12 条时间范围重叠记录。其余字段校验完成，待复核确认本次补录是否应覆盖原有时段；演示确认只标记已处理，不调用真实数据源。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-008",
+      "name": "研究资料索引——DOI 与来源字段",
+      "source_file": "reading_index_doi_sources.jsonl",
+      "project": "研究资料管理",
+      "owner_id": "owner-02",
+      "status": "failed",
+      "priority": "normal",
+      "records_total": 1500,
+      "records_processed": 26,
+      "open_issue_count": 1,
+      "submitted_at": "2026-10-26T08:04:00+08:00",
+      "updated_at": "2026-10-26T08:23:00+08:00",
+      "issue_code": "MALFORMED_RECORD",
+      "summary": "第 27 条 JSON 记录缺少闭合符号，无法继续解析。数据源文件名较长且与其他索引作业相近，核对时需要保留完整文件名。",
+      "activity": [
+        {
+          "id": "IMP-20261026-008-event-01",
+          "at": "2026-10-26T08:04:00+08:00",
+          "actor_id": "owner-02",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-008-event-02",
+          "at": "2026-10-26T08:23:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：失败。第 27 条 JSON 记录缺少闭合符号，无法继续解析。数据源文件名较长且与其他索引作业相近，核对时需要保留完整文件名。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-009",
+      "name": "临时采集清单（等待统计）",
+      "source_file": "temporary_collection_pending.csv",
+      "project": "城市公开数据",
+      "owner_id": "owner-04",
+      "status": "queued",
+      "priority": "normal",
+      "records_total": null,
+      "records_processed": 0,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T08:11:00+08:00",
+      "updated_at": "2026-10-26T08:31:00+08:00",
+      "issue_code": null,
+      "summary": "作业已进入队列，但记录总数尚未统计。未知数量不等于空文件，排序或进度呈现时不能把它解释成 0 条。",
+      "activity": [
+        {
+          "id": "IMP-20261026-009-event-01",
+          "at": "2026-10-26T08:11:00+08:00",
+          "actor_id": "owner-04",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-009-event-02",
+          "at": "2026-10-26T08:31:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：待处理。作业已进入队列，但记录总数尚未统计。未知数量不等于空文件，排序或进度呈现时不能把它解释成 0 条。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-010",
+      "name": "公开数据集代码表与字段释义",
+      "source_file": "public_dataset_codebook.csv",
+      "project": "城市公开数据",
+      "owner_id": "owner-05",
+      "status": "completed",
+      "priority": "low",
+      "records_total": 420,
+      "records_processed": 420,
+      "open_issue_count": 0,
+      "submitted_at": "2026-10-26T08:18:00+08:00",
+      "updated_at": "2026-10-26T08:39:00+08:00",
+      "issue_code": null,
+      "summary": "代码表和字段释义导入完成。此次规模较小，原始操作记录仍应保留，不因记录数量较少而省略该作业。",
+      "activity": [
+        {
+          "id": "IMP-20261026-010-event-01",
+          "at": "2026-10-26T08:18:00+08:00",
+          "actor_id": "owner-05",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-010-event-02",
+          "at": "2026-10-26T08:39:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：完成。代码表和字段释义导入完成。此次规模较小，原始操作记录仍应保留，不因记录数量较少而省略该作业。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-011",
+      "name": "历史扫描文本的修订索引",
+      "source_file": "archive_scan_revision_index.jsonl",
+      "project": "数字馆藏",
+      "owner_id": "owner-01",
+      "status": "running",
+      "priority": "high",
+      "records_total": 48200,
+      "records_processed": 43000,
+      "open_issue_count": 2,
+      "submitted_at": "2026-10-26T08:25:00+08:00",
+      "updated_at": "2026-10-26T08:47:00+08:00",
+      "issue_code": "NON_BLOCKING_TEXT_WARNING",
+      "summary": "已处理 43,000 条记录，2 条存在非阻断性的文本警告，作业仍在进行。警告数量不代表作业失败；当前状态不允许重试或修改优先级。",
+      "activity": [
+        {
+          "id": "IMP-20261026-011-event-01",
+          "at": "2026-10-26T08:25:00+08:00",
+          "actor_id": "owner-01",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-011-event-02",
+          "at": "2026-10-26T08:47:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：进行中。已处理 43,000 条记录，2 条存在非阻断性的文本警告，作业仍在进行。警告数量不代表作业失败；当前状态不允许重试或修改优先级。"
+        }
+      ]
+    },
+    {
+      "id": "IMP-20261026-012",
+      "name": "设备位置变更与负责人交接",
+      "source_file": "equipment_transfer_location.csv",
+      "project": "设备资料整理",
+      "owner_id": "owner-04",
+      "status": "failed",
+      "priority": "high",
+      "records_total": 7200,
+      "records_processed": 0,
+      "open_issue_count": 4,
+      "submitted_at": "2026-10-26T08:32:00+08:00",
+      "updated_at": "2026-10-26T08:55:00+08:00",
+      "issue_code": "MISSING_REQUIRED_FIELD",
+      "summary": "预检查发现 4 条记录缺少 location_code，未开始读取正文。问题发生在处理前，所以已处理数量为 0；这与未知记录总数的待处理作业含义不同。",
+      "activity": [
+        {
+          "id": "IMP-20261026-012-event-01",
+          "at": "2026-10-26T08:32:00+08:00",
+          "actor_id": "owner-04",
+          "action": "submitted",
+          "message": "提交作业并加入演示处理队列。"
+        },
+        {
+          "id": "IMP-20261026-012-event-02",
+          "at": "2026-10-26T08:55:00+08:00",
+          "actor_id": null,
+          "action": "status_changed",
+          "message": "当前快照状态：失败。预检查发现 4 条记录缺少 location_code，未开始读取正文。问题发生在处理前，所以已处理数量为 0；这与未知记录总数的待处理作业含义不同。"
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "search_fields": [
+      "id",
+      "name",
+      "source_file"
+    ],
+    "filter_fields": [
+      "status",
+      "owner_id"
+    ],
+    "sort_fields": [
+      "submitted_at",
+      "priority",
+      "records_total"
+    ],
+    "unknown_total": "records_total 为 null 时表示尚未统计，不表示 0。按记录总数升序或降序排列时，未知值都排在已知值之后。",
+    "batch_retry": {
+      "allowed_statuses": [
+        "failed",
+        "cancelled"
+      ],
+      "new_status": "queued",
+      "set_fields": {
+        "records_processed": 0,
+        "open_issue_count": 0,
+        "issue_code": null,
+        "summary": "已重新加入本地演示队列，尚未开始处理。"
+      },
+      "retain_fields": [
+        "id",
+        "name",
+        "source_file",
+        "project",
+        "owner_id",
+        "priority",
+        "records_total",
+        "submitted_at"
+      ],
+      "invalid_behavior": "不符合条件的作业保持原状态，给出作业编号和未执行原因。允许同一批中部分成功，不把未执行项显示成成功。",
+      "activity_action": "retried",
+      "activity_message": "由用户重试，已重新加入本地演示队列。"
+    },
+    "approve_review": {
+      "allowed_statuses": [
+        "needs_review"
+      ],
+      "new_status": "completed",
+      "set_fields": {
+        "open_issue_count": 0,
+        "issue_code": null,
+        "summary": "用户已在本地演示中完成复核确认。"
+      },
+      "activity_action": "review_approved",
+      "activity_message": "用户确认复核，作业标记为完成；原始问题说明仍可在活动历史中查看。"
+    },
+    "change_priority": {
+      "allowed_statuses": [
+        "queued",
+        "needs_review",
+        "failed",
+        "cancelled"
+      ],
+      "allowed_values": [
+        "high",
+        "normal",
+        "low"
+      ],
+      "activity_action": "priority_changed",
+      "activity_message": "记录从原优先级到新优先级的实际变化；若选择相同值，不生成虚假变化事件。"
+    },
+    "local_mutation": "每次实际生效的操作更新 updated_at 并追加一条活动记录，原有活动保留。新增记录的 actor_id 可为 null，message 说明由本地用户操作。不要模拟后台已经处理或将队列自动推进到完成。",
+    "activity_actor": "actor_id 为 null 表示本地演示系统记录；已知成员由 owners 对应。",
+    "selection_scope": "用户应知道操作作用于哪些编号；筛选变化后，不允许选中范围悄悄扩大。可以清除隐藏选中项或保留并明确提示隐藏选择，但必须让执行范围可检查。",
+    "reset": "恢复本文件的十二条记录及其初始活动，清除本地演示操作结果。"
+  }
+}

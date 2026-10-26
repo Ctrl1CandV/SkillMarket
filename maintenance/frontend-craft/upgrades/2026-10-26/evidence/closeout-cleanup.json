@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-10-26T06:01:59.9692051Z",
+  "archive": "delivery/original-package.zip",
+  "archived_source_removed": "D:\\Program Project\\SkillMarket\\SkillMarket-frontend-product-upgrade-2026-10-26-rc1",
+  "removed_files": [
+    "evidence/server-stdout.log",
+    "evidence/server-stderr.log",
+    "evidence/server8766-stdout.log",
+    "evidence/server8766-stderr.log",
+    "evidence/user-review-server.stdout.log",
+    "evidence/user-review-server.stderr.log",
+    "tools/record_reference_supplement.py"
+  ],
+  "server_pid": 23676,
+  "server_stopped": true,
+  "browser_tab_closed": true
+}

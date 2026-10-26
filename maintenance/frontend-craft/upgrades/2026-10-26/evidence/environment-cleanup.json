@@ -1,0 +1,23 @@
+{
+  "recorded_at": "2026-10-26T04:08:17.1330083Z",
+  "processes": [
+    {
+      "process_id": 2196,
+      "command": "\"D:\\ProgramData\\anaconda3\\python.exe\" -m http.server 8765 --bind 127.0.0.1 --directory \"D:\\Program Project\\SkillMarket\"",
+      "result": "stopped_verified_task_process"
+    },
+    {
+      "process_id": 4656,
+      "command": "\"D:\\ProgramData\\anaconda3\\python.exe\" -u -m http.server 8766 --bind 127.0.0.1 --directory \"D:\\Program Project\\SkillMarket\"",
+      "result": "stopped_verified_task_process"
+    },
+    {
+      "process_id": 7308,
+      "command": "\"D:\\ProgramData\\anaconda3\\python.exe\" -X utf8 \"D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-26\\tools\\browser_environment.py\"",
+      "result": "stopped_verified_task_process"
+    }
+  ],
+  "viewport": "restored via CUA viewport.reset",
+  "restart": "python -m http.server 8766 --bind 127.0.0.1, run from repository root",
+  "scope": "Only this task temporary services; original pages and source files preserved"
+}

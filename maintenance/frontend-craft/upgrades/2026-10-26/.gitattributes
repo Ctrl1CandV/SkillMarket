@@ -1,0 +1,6 @@
+# Preserve the exact bytes of the retained snapshots and their hash records.
+# Scope is this upgrade archive only; ordinary runtime text keeps repo settings.
+# CRLF and original terminal blank lines are evidence, not cleanup targets.
+* -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+# This retained upstream license contains an original trailing space.
+evidence/references/candidate-source-research/distill-feature-visualization/LICENSE-CC-BY-4.0.txt -whitespace

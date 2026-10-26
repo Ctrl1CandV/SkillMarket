@@ -1,0 +1,267 @@
+{
+  "dataset_version": "1.0",
+  "data_notice": "本展览、场地、艺术家、作品、作品图和参观名额均为原创虚构演示内容，不是真实展讯。预约仅保存在当前浏览器，不产生入场资格，不发送信息。",
+  "locale": "zh-CN",
+  "time_zone": "Asia/Shanghai",
+  "exhibition": {
+    "id": "unfinished-routes",
+    "title": "未完成的路线",
+    "english_title": "Unfinished Routes",
+    "subtitle": "关于行走、停顿与城市记忆的八件作品",
+    "starts_on": "2026-11-07",
+    "ends_on": "2026-12-06",
+    "opening_hours": "周二至周日 10:00—18:00，17:30 停止入场；周一闭馆。",
+    "venue": "河岸艺术空间（虚构场地）",
+    "address": "示例城市·河岸路 18 号二层（虚构地址）",
+    "organizer": "路径观察小组（虚构策展团队）",
+    "admission": "免费；页面提供本地演示预约。",
+    "curatorial_text": [
+      "一条路线通常从起点被讲到终点，但真正留下来的记忆，常常发生在中间：走错的一步、绕开的围挡、门后一块突然出现的光。未完成并不总意味着遗憾，它也可能让人看见原本被目的地遮住的东西。",
+      "这场虚构展览将八件几何图像放在同一个问题之下：当我们不急于抵达，会如何记住一个地方？四位虚构创作者分别从通勤、室内边界、河岸水纹和缺席的地名出发，用不同的线条、平面与尺度记录停顿。",
+      "作品没有对应唯一的城市，也没有要求观众认出某个准确地点。你可以从一束光开始，也可以从一条迟迟没有转弯的线开始，把自己的行走经验带进来。路线在观看之后仍然可以继续。"
+    ],
+    "visit_notes": [
+      "本页所有地点和场次仅用于前端演示，请勿据此前往真实场地。",
+      "作品图可以放大观看；媒介与尺寸为本次虚构展览的作品资料。",
+      "演示预约每次 1—4 人，场次余量会在当前浏览器内更新。"
+    ]
+  },
+  "artists": [
+    {
+      "id": "artist-01",
+      "name": "林见",
+      "english_name": "Jian Lin",
+      "bio": "虚构创作者。以重复通勤中的转角、路面和光影为题，尝试把熟悉的方向重新变成可以观察的形状。"
+    },
+    {
+      "id": "artist-02",
+      "name": "宋予",
+      "english_name": "Yu Song",
+      "bio": "虚构创作者。通过矢量拼贴讨论室内与公共空间的边界，关注人们进入、停留与离开时短暂改变的关系。"
+    },
+    {
+      "id": "artist-03",
+      "name": "陆澄",
+      "english_name": "Cheng Lu",
+      "bio": "虚构创作者。作品围绕水面、潮位和缓慢变化展开，以不完整的线条保留观察时尚未确定的部分。"
+    },
+    {
+      "id": "artist-04",
+      "name": "何序",
+      "english_name": "Xu He",
+      "bio": "虚构创作者。关注地名、空置站台和记忆中的入口，使用几何图像探索离开之后仍然留下的空间经验。"
+    }
+  ],
+  "works": [
+    {
+      "id": "work-01",
+      "title": "地铁出口以北，七点四十二分",
+      "artist_id": "artist-01",
+      "year": 2026,
+      "medium": "数字版画",
+      "dimensions": "80 × 50 cm",
+      "series": "折返",
+      "description": "林见把通勤途中没有命名的转角拆成多层线条：一条路很直，另一条反复绕开障碍。作品中的圆点并不代表目的地，而是脚步暂时放慢的位置。它记录的不是一张能够导航的地图，而是人在熟悉路线里仍然发生犹豫的时刻。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1600,
+        "height": 1000,
+        "alt": "灰蓝背景上交错的道路网格，深色折线穿过画面，橘红路线在中央绕行，三个金色圆点标记停顿。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1000\" viewBox=\"0 0 1600 1000\" role=\"img\"><title>地铁出口以北，七点四十二分</title><rect width=\"1600\" height=\"1000\" fill=\"#b9c9d0\"/><path d=\"M0 180H1600M0 420H1600M0 680H1600M0 900H1600M220 0V1000M590 0V1000M1060 0V1000M1390 0V1000\" fill=\"none\" stroke=\"#e0e6e5\" stroke-width=\"42\"/><path d=\"M-40 830L350 830L350 270L900 270L900 680L1640 680\" fill=\"none\" stroke=\"#263c4a\" stroke-width=\"88\"/><path d=\"M100 180L510 180L510 540L1200 540L1200 1000\" fill=\"none\" stroke=\"#c2563f\" stroke-width=\"24\"/><circle cx=\"350\" cy=\"830\" r=\"43\" fill=\"#e1b04f\"/><circle cx=\"900\" cy=\"270\" r=\"43\" fill=\"#e1b04f\"/><circle cx=\"1200\" cy=\"540\" r=\"43\" fill=\"#e1b04f\"/><rect x=\"1440\" y=\"110\" width=\"70\" height=\"210\" fill=\"#748b95\"/></svg>"
+      }
+    },
+    {
+      "id": "work-02",
+      "title": "停在门后的光",
+      "artist_id": "artist-02",
+      "year": 2026,
+      "medium": "矢量拼贴",
+      "dimensions": "40 × 60 cm",
+      "series": "室内的方向",
+      "description": "一块门板把同一束光分成可见与不可见的两部分。宋予保留了门框的不对称，也让地面的亮面超出门的边缘。我们通常把门理解为进入和离开的界线，在这件作品里，它更像一次没有立刻做出的决定。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1000,
+        "height": 1500,
+        "alt": "竖幅画面由深褐门框、炭黑门板和斜向铺开的金色光面构成，浅色墙体留出不规则边缘。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1000\" height=\"1500\" viewBox=\"0 0 1000 1500\" role=\"img\"><title>停在门后的光</title><rect width=\"1000\" height=\"1500\" fill=\"#ded7c8\"/><rect x=\"160\" y=\"100\" width=\"640\" height=\"1240\" fill=\"#624f43\"/><path d=\"M220 160H700V1180L220 1360Z\" fill=\"#242626\"/><path d=\"M700 160L790 130V1300L700 1180Z\" fill=\"#aa6d38\"/><path d=\"M700 1180L1000 1390V1500H80L220 1360Z\" fill=\"#dcae4a\"/><path d=\"M240 1370L1000 1470\" stroke=\"#f1cf79\" stroke-width=\"12\"/><circle cx=\"640\" cy=\"760\" r=\"17\" fill=\"#b89b6c\"/></svg>"
+      }
+    },
+    {
+      "id": "work-03",
+      "title": "河流还没有转弯",
+      "artist_id": "artist-03",
+      "year": 2026,
+      "medium": "数字绘图",
+      "dimensions": "90 × 60 cm",
+      "series": "慢水",
+      "description": "陆澄从河岸上重复出现的水纹里选取几段，并将它们拉长到无法对应具体地点。线条在靠近画面边缘时变缓，留下一片看似安静却并不空白的水面。作品不描绘一条真实河流，而是观察人如何通过有限片段想象它继续流向哪里。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1500,
+        "height": 1000,
+        "alt": "深青色底面上，数条浅色曲线从左侧缓慢转向右下，右上有一个小型赭金圆形。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1500\" height=\"1000\" viewBox=\"0 0 1500 1000\" role=\"img\"><title>河流还没有转弯</title><rect width=\"1500\" height=\"1000\" fill=\"#295961\"/><path d=\"M-50 220C350 40 520 470 880 410S1230 540 1590 800\" fill=\"none\" stroke=\"#8ab7b3\" stroke-width=\"160\"/><path d=\"M-50 120C350 -60 520 370 880 310S1230 440 1590 700M-50 320C350 140 520 570 880 510S1230 640 1590 900\" fill=\"none\" stroke=\"#d8e4d9\" stroke-width=\"8\"/><path d=\"M-80 640C330 400 680 870 1000 760S1310 840 1540 1020\" fill=\"none\" stroke=\"#427c80\" stroke-width=\"80\"/><circle cx=\"1260\" cy=\"180\" r=\"46\" fill=\"#cfaa62\"/></svg>"
+      }
+    },
+    {
+      "id": "work-04",
+      "title": "夜行者的第二个影子",
+      "artist_id": "artist-01",
+      "year": 2026,
+      "medium": "数字版画",
+      "dimensions": "60 × 60 cm",
+      "series": "折返",
+      "description": "夜间多处光源会让一个人同时拥有数个方向不同的影子。林见省略了路灯，只保留人物和两块逐渐偏离的暗面。身体显得短暂而小，影子却占据了更多空间，像一段跟随行走不断变长的回忆。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1200,
+        "height": 1200,
+        "alt": "深蓝方形画面中，洋红与蓝色斜面交叠；一个简化人物和两条不同方向的长影子位于下部。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"1200\" viewBox=\"0 0 1200 1200\" role=\"img\"><title>夜行者的第二个影子</title><rect width=\"1200\" height=\"1200\" fill=\"#172b47\"/><path d=\"M0 0H940L480 1200H0Z\" fill=\"#564269\"/><path d=\"M1200 120L330 1200H1200Z\" fill=\"#315b83\"/><path d=\"M610 750L180 1200H700Z\" fill=\"#101f37\"/><path d=\"M610 750L1110 1120L1190 960Z\" fill=\"#24304b\"/><circle cx=\"610\" cy=\"650\" r=\"46\" fill=\"#d6c9bb\"/><path d=\"M570 720L650 710L675 870L545 870Z\" fill=\"#b86870\"/><path d=\"M575 870L565 995M645 870L665 990\" stroke=\"#e1d2c2\" stroke-width=\"25\"/></svg>"
+      }
+    },
+    {
+      "id": "work-05",
+      "title": "潮位之间的空白",
+      "artist_id": "artist-03",
+      "year": 2026,
+      "medium": "线条绘图",
+      "dimensions": "90 × 50 cm",
+      "series": "慢水",
+      "description": "作品把一天中想象的几条潮位线并置，却没有标注时间。线与线之间的空白既像水曾经到达的地方，也像尚未发生的路径。陆澄让读者自己决定从哪条线开始，寻找微小变化，而不是把所有线条合成为一个平均高度。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1800,
+        "height": 1000,
+        "alt": "米灰底面上排列着多条深蓝灰折线，线条高度各不相同；右侧有细长蓝灰色矩形和一块赭色小方块。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1800\" height=\"1000\" viewBox=\"0 0 1800 1000\" role=\"img\"><title>潮位之间的空白</title><rect width=\"1800\" height=\"1000\" fill=\"#e7e3d9\"/><g fill=\"none\" stroke=\"#536d79\" stroke-width=\"8\"><path d=\"M0 170H450V230H1100V200H1600\"/><path d=\"M0 310H300V275H900V350H1550\"/><path d=\"M0 460H560V410H1180V470H1680\"/><path d=\"M0 610H420V660H940V590H1600\"/><path d=\"M0 780H690V735H1220V820H1640\"/></g><rect x=\"1660\" y=\"90\" width=\"36\" height=\"810\" fill=\"#395b6c\"/><rect x=\"1420\" y=\"490\" width=\"120\" height=\"90\" fill=\"#ba8550\"/></svg>"
+      }
+    },
+    {
+      "id": "work-06",
+      "title": "临时广场 / Temporary Square",
+      "artist_id": "artist-02",
+      "year": 2026,
+      "medium": "矢量拼贴",
+      "dimensions": "50 × 70 cm",
+      "series": "室内的方向",
+      "description": "几块来自不同方向的平面暂时相遇，形成一个没有固定边界的广场。明亮区域看似中央，却被周围块面挤压得不断偏移。宋予借这种不稳定讨论公共空间里的短暂停留：人们共享同一个地点，也带着彼此不同的进入方式。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1000,
+        "height": 1400,
+        "alt": "竖幅画面以橙红背景承托靛蓝和浅赭色几何块面，中央较亮的多边形向右上偏移。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1000\" height=\"1400\" viewBox=\"0 0 1000 1400\" role=\"img\"><title>临时广场 / Temporary Square</title><rect width=\"1000\" height=\"1400\" fill=\"#c26242\"/><path d=\"M0 0H640L400 650H0Z\" fill=\"#273d60\"/><path d=\"M1000 450V1400H410L540 970Z\" fill=\"#3e4a72\"/><path d=\"M330 480L860 260L760 990L230 1110Z\" fill=\"#e4ca8a\"/><path d=\"M0 980L230 1110L410 1400H0Z\" fill=\"#a4433b\"/><path d=\"M330 480L540 970L760 990\" fill=\"none\" stroke=\"#f0ddb2\" stroke-width=\"12\"/></svg>"
+      }
+    },
+    {
+      "id": "work-07",
+      "title": "没有写完的地名",
+      "artist_id": "artist-04",
+      "year": 2026,
+      "medium": "数字绘图",
+      "dimensions": "44 × 60 cm",
+      "series": "留名",
+      "description": "何序没有在画面中写出任何一个完整地名，而是让弧线像尚未完成的笔画。入口与字形在这里互相重叠：一个地方在被命名之前已经被经过，在名字被忘记之后也可能留下方向感。作品邀请观看者回想一处自己说不出名字、却仍记得如何抵达的地方。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 1100,
+        "height": 1500,
+        "alt": "灰绿色背景上，一个深青色拱形包围浅米色内拱，红色细线向外延伸，底部有深色圆形。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1100\" height=\"1500\" viewBox=\"0 0 1100 1500\" role=\"img\"><title>没有写完的地名</title><rect width=\"1100\" height=\"1500\" fill=\"#b8c3b6\"/><path d=\"M170 1300V580A380 380 0 0 1 760 260Q930 400 930 620V1300Z\" fill=\"#3b6561\"/><path d=\"M350 1300V620A200 200 0 0 1 750 620V1300Z\" fill=\"#ded7bd\"/><path d=\"M0 970H470V780H1100\" fill=\"none\" stroke=\"#b85e4b\" stroke-width=\"15\"/><circle cx=\"610\" cy=\"1170\" r=\"82\" fill=\"#344a4a\"/><path d=\"M110 220L330 90\" stroke=\"#e3e2d0\" stroke-width=\"12\"/></svg>"
+      }
+    },
+    {
+      "id": "work-08",
+      "title": "最后一班车经过以后",
+      "artist_id": "artist-04",
+      "year": 2026,
+      "medium": "数字版画",
+      "dimensions": "100 × 50 cm",
+      "series": "留名",
+      "description": "车辆已经离开，站台仍然保留着等待的形状。画面中看不到时刻表内容，也无法确认这里还会不会有人回来。何序把这一瞬间停在到达与结束之间，让空旷成为可以被观察的具体事物，而不是叙事中被跳过的部分。",
+      "image": {
+        "kind": "inline_svg",
+        "width": 2000,
+        "height": 1000,
+        "alt": "横向夜色画面中有一座简化候车亭，蓝色站牌与橘红立柱相邻，金色细线沿地面延伸。",
+        "provenance": "本演示原创的几何矢量作品图；人物与作品均为虚构，不复制真实艺术家作品。",
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"2000\" height=\"1000\" viewBox=\"0 0 2000 1000\" role=\"img\"><title>最后一班车经过以后</title><rect width=\"2000\" height=\"1000\" fill=\"#172d3b\"/><rect y=\"740\" width=\"2000\" height=\"260\" fill=\"#253e4a\"/><path d=\"M440 310H1240L1330 370H360Z\" fill=\"#72868a\"/><rect x=\"440\" y=\"370\" width=\"30\" height=\"410\" fill=\"#9ca9a1\"/><rect x=\"1220\" y=\"370\" width=\"30\" height=\"410\" fill=\"#9ca9a1\"/><rect x=\"535\" y=\"410\" width=\"510\" height=\"260\" fill=\"#315b75\"/><path d=\"M520 700H1100M570 700V790M1050 700V790\" stroke=\"#9ca9a1\" stroke-width=\"22\"/><rect x=\"1430\" y=\"280\" width=\"30\" height=\"510\" fill=\"#c86a43\"/><rect x=\"1390\" y=\"230\" width=\"110\" height=\"150\" fill=\"#456d83\"/><path d=\"M0 850H2000\" stroke=\"#d0a958\" stroke-width=\"14\"/><path d=\"M1610 900H1870\" stroke=\"#72868a\" stroke-width=\"10\"/></svg>"
+      }
+    }
+  ],
+  "visit_slots": [
+    {
+      "id": "slot-01",
+      "start_at": "2026-11-07T14:00:00+08:00",
+      "end_at": "2026-11-07T15:00:00+08:00",
+      "capacity": 20,
+      "remaining": 8
+    },
+    {
+      "id": "slot-02",
+      "start_at": "2026-11-07T16:00:00+08:00",
+      "end_at": "2026-11-07T17:00:00+08:00",
+      "capacity": 20,
+      "remaining": 0
+    },
+    {
+      "id": "slot-03",
+      "start_at": "2026-11-08T10:00:00+08:00",
+      "end_at": "2026-11-08T11:00:00+08:00",
+      "capacity": 16,
+      "remaining": 3
+    },
+    {
+      "id": "slot-04",
+      "start_at": "2026-11-08T14:00:00+08:00",
+      "end_at": "2026-11-08T15:00:00+08:00",
+      "capacity": 20,
+      "remaining": 14
+    },
+    {
+      "id": "slot-05",
+      "start_at": "2026-11-14T14:00:00+08:00",
+      "end_at": "2026-11-14T15:00:00+08:00",
+      "capacity": 20,
+      "remaining": 1
+    },
+    {
+      "id": "slot-06",
+      "start_at": "2026-11-15T10:00:00+08:00",
+      "end_at": "2026-11-15T11:00:00+08:00",
+      "capacity": 16,
+      "remaining": 9
+    }
+  ],
+  "reservation_rules": {
+    "visitor_name": {
+      "required": true,
+      "min_length": 1,
+      "max_length": 30,
+      "trim_whitespace": true
+    },
+    "party_size": {
+      "type": "integer",
+      "min": 1,
+      "max": 4
+    },
+    "slot_id": {
+      "required": true,
+      "must_reference": "visit_slots[].id"
+    },
+    "availability": "人数必须小于等于该场次当前 remaining。remaining 为 0 时不能提交；已选场次余量不足时给出可理解的结果，不允许负数余量。",
+    "on_success": "生成本地预约编号，保存称呼、人数、场次编号和提交时间，将对应场次 remaining 减去人数。提交后应能查看确认信息。",
+    "confirmation_notice": "这是本地演示预约，不产生真实入场资格，也不会发送给任何机构。",
+    "reset": "恢复原始场次余量，清除当前浏览器内的演示预约。"
+  },
+  "initial_reservations": []
+}

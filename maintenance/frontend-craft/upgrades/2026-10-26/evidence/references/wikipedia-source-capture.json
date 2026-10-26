@@ -1,0 +1,48 @@
+{
+  "source": "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need",
+  "captured_at": "2026-10-26T03:58:14.086Z",
+  "file": "D:/Program Project/SkillMarket/frontend-craft/assets/references/wikipedia-attention/source-location.jpg",
+  "state": {
+    "height": 1000,
+    "links": [
+      {
+        "href": "#cite_ref-:22_23-0",
+        "text": "Jump up to: 1"
+      },
+      {
+        "href": "#cite_ref-:22_23-1",
+        "text": "2"
+      },
+      {
+        "href": "https://aclanthology.org/D14-1179",
+        "text": "\"Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation\""
+      },
+      {
+        "href": "https://en.wikipedia.org/wiki/ArXiv_(identifier)",
+        "text": "arXiv"
+      },
+      {
+        "href": "https://arxiv.org/abs/1406.1078",
+        "text": "1406.1078"
+      },
+      {
+        "href": "https://en.wikipedia.org/wiki/Doi_(identifier)",
+        "text": "doi"
+      },
+      {
+        "href": "https://doi.org/10.3115%2Fv1%2FD14-1179",
+        "text": "10.3115/v1/D14-1179"
+      },
+      {
+        "href": "https://web.archive.org/web/20240906214240/https://aclanthology.org/D14-1179/",
+        "text": "Archived"
+      }
+    ],
+    "scrollY": 8487.2001953125,
+    "targetText": "Jump up to:\n Cho, Kyunghyun; van Merriënboer, Bart; Gulcehre, Caglar; Bahdanau, Dzmitry; Bougares, Fethi; Schwenk, Holger; Bengio, Yoshua (October 2014). \"Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation\". In Moschitti, Alessandro; Pang, Bo; Daelemans, Walter (eds.). Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP). Doha, Qatar: Association for Computational Linguistics. pp. 1724–1734. arXiv:1406.1078. doi:10.3115/v1/D14-1179. Archived from the original on 6 September 2024. Retrieved 9 August 2024.",
+    "url": "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#cite_note-:22-23",
+    "width": 1440
+  },
+  "action": "Clicked visible first body [21] citation; source target Cho et al. 2014 and two backlinks verified in DOM before screenshot",
+  "raw_screenshot": true
+}

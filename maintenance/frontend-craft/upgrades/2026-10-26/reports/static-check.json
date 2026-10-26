@@ -1,0 +1,147 @@
+{
+  "command": [
+    "D:\\ProgramData\\anaconda3\\python.exe",
+    "-X",
+    "utf8",
+    "D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-26\\tools\\check_package.py",
+    "--repo-root",
+    "D:\\Program Project\\SkillMarket"
+  ],
+  "executed_at": "2026-10-26T12:16:58.378749+08:00",
+  "process_exit_code": 0,
+  "stdout": "{\n  \"checker\": \"skillmarket-package-static\",\n  \"schema_version\": 1,\n  \"mode\": \"structure\",\n  \"static_status\": \"pass\",\n  \"exit_code\": 0,\n  \"targets\": [\n    {\n      \"label\": \"repository\",\n      \"root\": \"D:\\\\Program Project\\\\SkillMarket\",\n      \"static_status\": \"pass\",\n      \"errors\": [],\n      \"pending\": [\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"oil-reader\",\n          \"status\": \"candidate\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"oil-minutes\",\n          \"status\": \"candidate\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"oil-mail\",\n          \"status\": \"candidate\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"linear-refresh\",\n          \"status\": \"documented\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"carbon-type\",\n          \"status\": \"documented\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"carbon-grid\",\n          \"status\": \"documented\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"letterform-archive\",\n          \"status\": \"documented\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        },\n        {\n          \"code\": \"visual_reference_pending\",\n          \"entry_id\": \"oil-folio\",\n          \"status\": \"candidate\",\n          \"message\": \"未纳入完整本地画面覆盖；继续按已记录依据使用。\"\n        }\n      ],\n      \"summary\": {\n        \"text_files_checked\": 20,\n        \"local_links_checked\": 78,\n        \"frontmatter\": {\n          \"frontend-craft\": {\n            \"name\": \"frontend-craft\",\n            \"version\": \"0.5.0-rc.1\"\n          },\n          \"product-design\": {\n            \"name\": \"product-design\",\n            \"version\": \"0.2.0-rc.1\"\n          }\n        },\n        \"exemplars\": {\n          \"total\": 14,\n          \"candidate\": 4,\n          \"documented\": 4,\n          \"verified_visual\": 6\n        },\n        \"release_prerequisites\": {\n          \"static_gate\": \"met\",\n          \"eligible_entries\": [\n            \"tufte-sidenotes\",\n            \"tabler-datatables\",\n            \"photoswipe-gallery\",\n            \"photoswipe-lightbox\",\n            \"wikipedia-attention-body\",\n            \"wikipedia-attention-source\"\n          ],\n          \"required_categories\": [\n            \"dense-operation\",\n            \"public-display\",\n            \"reading-verification\"\n          ],\n          \"covered_categories\": [\n            \"dense-operation\",\n            \"public-display\",\n            \"reading-verification\"\n          ],\n          \"missing_categories\": [],\n          \"declared_source_origins\": {\n            \"edwardtufte-tufte-css\": [\n              \"https://edwardtufte.github.io/tufte-css/#sidenotes\"\n            ],\n            \"tabler\": [\n              \"https://preview.tabler.io/datatables.html#content\"\n            ],\n            \"photoswipe-dmytro-semenov\": [\n              \"https://photoswipe.com/\",\n              \"https://photoswipe.com/\"\n            ],\n            \"wikipedia-contributors\": [\n              \"https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#Attention_with_seq2seq\",\n              \"https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#cite_note-:22-23\"\n            ]\n          },\n          \"minimum_independent_source_origins\": 2,\n          \"independence_verified_by_script\": false,\n          \"human_visual_and_behavior_review_required\": true\n        }\n      }\n    }\n  ],\n  \"limitations\": [\n    \"结构 PASS 或 --release PASS 只表示静态前提满足，不代表本轮总验收通过。\",\n    \"本工具不运行浏览器，不判断审美、内容关系、可访问性、交互或动态连续性。\",\n    \"viewed、来源独立性、许可与观察记录是作者声明，须由独立终审核实，不能以字段自证。\",\n    \"图片仅检查文件存在与格式签名，不解码画面，也不能证明它来自所声明页面或已经被查看。\",\n    \"只检查常见 Markdown 文件链接和 HTML src/href；不执行 JavaScript、不解析 CSS 依赖，不实现完整 YAML/CommonMark。\"\n  ]\n}\n",
+  "stderr": "",
+  "result": {
+    "checker": "skillmarket-package-static",
+    "schema_version": 1,
+    "mode": "structure",
+    "static_status": "pass",
+    "exit_code": 0,
+    "targets": [
+      {
+        "label": "repository",
+        "root": "D:\\Program Project\\SkillMarket",
+        "static_status": "pass",
+        "errors": [],
+        "pending": [
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "oil-reader",
+            "status": "candidate",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "oil-minutes",
+            "status": "candidate",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "oil-mail",
+            "status": "candidate",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "linear-refresh",
+            "status": "documented",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "carbon-type",
+            "status": "documented",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "carbon-grid",
+            "status": "documented",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "letterform-archive",
+            "status": "documented",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          },
+          {
+            "code": "visual_reference_pending",
+            "entry_id": "oil-folio",
+            "status": "candidate",
+            "message": "未纳入完整本地画面覆盖；继续按已记录依据使用。"
+          }
+        ],
+        "summary": {
+          "text_files_checked": 20,
+          "local_links_checked": 78,
+          "frontmatter": {
+            "frontend-craft": {
+              "name": "frontend-craft",
+              "version": "0.5.0-rc.1"
+            },
+            "product-design": {
+              "name": "product-design",
+              "version": "0.2.0-rc.1"
+            }
+          },
+          "exemplars": {
+            "total": 14,
+            "candidate": 4,
+            "documented": 4,
+            "verified_visual": 6
+          },
+          "release_prerequisites": {
+            "static_gate": "met",
+            "eligible_entries": [
+              "tufte-sidenotes",
+              "tabler-datatables",
+              "photoswipe-gallery",
+              "photoswipe-lightbox",
+              "wikipedia-attention-body",
+              "wikipedia-attention-source"
+            ],
+            "required_categories": [
+              "dense-operation",
+              "public-display",
+              "reading-verification"
+            ],
+            "covered_categories": [
+              "dense-operation",
+              "public-display",
+              "reading-verification"
+            ],
+            "missing_categories": [],
+            "declared_source_origins": {
+              "edwardtufte-tufte-css": [
+                "https://edwardtufte.github.io/tufte-css/#sidenotes"
+              ],
+              "tabler": [
+                "https://preview.tabler.io/datatables.html#content"
+              ],
+              "photoswipe-dmytro-semenov": [
+                "https://photoswipe.com/",
+                "https://photoswipe.com/"
+              ],
+              "wikipedia-contributors": [
+                "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#Attention_with_seq2seq",
+                "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#cite_note-:22-23"
+              ]
+            },
+            "minimum_independent_source_origins": 2,
+            "independence_verified_by_script": false,
+            "human_visual_and_behavior_review_required": true
+          }
+        }
+      }
+    ],
+    "limitations": [
+      "结构 PASS 或 --release PASS 只表示静态前提满足，不代表本轮总验收通过。",
+      "本工具不运行浏览器，不判断审美、内容关系、可访问性、交互或动态连续性。",
+      "viewed、来源独立性、许可与观察记录是作者声明，须由独立终审核实，不能以字段自证。",
+      "图片仅检查文件存在与格式签名，不解码画面，也不能证明它来自所声明页面或已经被查看。",
+      "只检查常见 Markdown 文件链接和 HTML src/href；不执行 JavaScript、不解析 CSS 依赖，不实现完整 YAML/CommonMark。"
+    ]
+  }
+}

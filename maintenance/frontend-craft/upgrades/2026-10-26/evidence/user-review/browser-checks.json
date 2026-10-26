@@ -1,0 +1,328 @@
+{
+  "checked_at": "2026-10-26T05:19:50.644Z",
+  "states": [
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/reading-evidence/A/desktop-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/reading-evidence/B/desktop-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/reading-evidence/A/desktop-initial.jpg",
+        "../evidence/runs/reading-evidence/A/index.html",
+        "../evidence/canonical/reading-evidence/B/desktop-initial.jpg",
+        "../evidence/runs/reading-evidence/B/index.html"
+      ],
+      "scene": "reading-evidence",
+      "state": "desktop-initial",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/reading-evidence/A/desktop-citation-s2-p2.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/reading-evidence/B/desktop-citation-s2-p2.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/reading-evidence/A/desktop-citation-s2-p2.jpg",
+        "../evidence/runs/reading-evidence/A/index.html",
+        "../evidence/canonical/reading-evidence/B/desktop-citation-s2-p2.jpg",
+        "../evidence/runs/reading-evidence/B/index.html"
+      ],
+      "scene": "reading-evidence",
+      "state": "desktop-citation-s2-p2",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 843,
+          "naturalWidth": 390,
+          "src": "../evidence/canonical/reading-evidence/A/mobile-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 843,
+          "naturalWidth": 390,
+          "src": "../evidence/canonical/reading-evidence/B/mobile-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/reading-evidence/A/mobile-initial.jpg",
+        "../evidence/runs/reading-evidence/A/index.html",
+        "../evidence/canonical/reading-evidence/B/mobile-initial.jpg",
+        "../evidence/runs/reading-evidence/B/index.html"
+      ],
+      "scene": "reading-evidence",
+      "state": "mobile-initial",
+      "viewport": "mobile"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 843,
+          "naturalWidth": 390,
+          "src": "../evidence/canonical/reading-evidence/A/mobile-citation-s2-p2.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 843,
+          "naturalWidth": 390,
+          "src": "../evidence/canonical/reading-evidence/B/mobile-citation-s2-p2.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/reading-evidence/A/mobile-citation-s2-p2.jpg",
+        "../evidence/runs/reading-evidence/A/index.html",
+        "../evidence/canonical/reading-evidence/B/mobile-citation-s2-p2.jpg",
+        "../evidence/runs/reading-evidence/B/index.html"
+      ],
+      "scene": "reading-evidence",
+      "state": "mobile-citation-s2-p2",
+      "viewport": "mobile"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/dense-operations/B/desktop-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/dense-operations/A/desktop-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/dense-operations/B/desktop-initial.jpg",
+        "../evidence/runs/dense-operations/B/index.html",
+        "../evidence/canonical/dense-operations/A/desktop-initial.jpg",
+        "../evidence/runs/dense-operations/A/index.html"
+      ],
+      "scene": "dense-operations",
+      "state": "desktop-initial",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/dense-operations/B/desktop-mixed-retry.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/dense-operations/A/desktop-mixed-retry.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/dense-operations/B/desktop-mixed-retry.jpg",
+        "../evidence/runs/dense-operations/B/index.html",
+        "../evidence/canonical/dense-operations/A/desktop-mixed-retry.jpg",
+        "../evidence/runs/dense-operations/A/index.html"
+      ],
+      "scene": "dense-operations",
+      "state": "desktop-mixed-retry",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 811,
+          "naturalWidth": 375,
+          "src": "../evidence/canonical/dense-operations/B/mobile-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 811,
+          "naturalWidth": 375,
+          "src": "../evidence/canonical/dense-operations/A/mobile-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/dense-operations/B/mobile-initial.jpg",
+        "../evidence/runs/dense-operations/B/index.html",
+        "../evidence/canonical/dense-operations/A/mobile-initial.jpg",
+        "../evidence/runs/dense-operations/A/index.html"
+      ],
+      "scene": "dense-operations",
+      "state": "mobile-initial",
+      "viewport": "mobile"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/public-exhibition/A/desktop-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/public-exhibition/B/desktop-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/public-exhibition/A/desktop-initial.jpg",
+        "../evidence/runs/public-exhibition/A/index.html",
+        "../evidence/canonical/public-exhibition/B/desktop-initial.jpg",
+        "../evidence/runs/public-exhibition/B/index.html"
+      ],
+      "scene": "public-exhibition",
+      "state": "desktop-initial",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/public-exhibition/A/desktop-gallery.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 990,
+          "naturalWidth": 1425,
+          "src": "../evidence/canonical/public-exhibition/B/desktop-gallery.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/public-exhibition/A/desktop-gallery.jpg",
+        "../evidence/runs/public-exhibition/A/index.html",
+        "../evidence/canonical/public-exhibition/B/desktop-gallery.jpg",
+        "../evidence/runs/public-exhibition/B/index.html"
+      ],
+      "scene": "public-exhibition",
+      "state": "desktop-gallery",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/public-exhibition/A/desktop-artwork-02.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 1000,
+          "naturalWidth": 1440,
+          "src": "../evidence/canonical/public-exhibition/B/desktop-artwork-02.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/public-exhibition/A/desktop-artwork-02.jpg",
+        "../evidence/runs/public-exhibition/A/index.html",
+        "../evidence/canonical/public-exhibition/B/desktop-artwork-02.jpg",
+        "../evidence/runs/public-exhibition/B/index.html"
+      ],
+      "scene": "public-exhibition",
+      "state": "desktop-artwork-02",
+      "viewport": "desktop"
+    },
+    {
+      "images": [
+        {
+          "complete": true,
+          "naturalHeight": 811,
+          "naturalWidth": 375,
+          "src": "../evidence/canonical/public-exhibition/A/mobile-initial.jpg"
+        },
+        {
+          "complete": true,
+          "naturalHeight": 811,
+          "naturalWidth": 375,
+          "src": "../evidence/canonical/public-exhibition/B/mobile-initial.jpg"
+        }
+      ],
+      "links": [
+        "../evidence/canonical/public-exhibition/A/mobile-initial.jpg",
+        "../evidence/runs/public-exhibition/A/index.html",
+        "../evidence/canonical/public-exhibition/B/mobile-initial.jpg",
+        "../evidence/runs/public-exhibition/B/index.html"
+      ],
+      "scene": "public-exhibition",
+      "state": "mobile-initial",
+      "viewport": "mobile"
+    }
+  ],
+  "pixelCheck": {
+    "images": [
+      {
+        "display": 1440,
+        "natural": 1440
+      },
+      {
+        "display": 1440,
+        "natural": 1440
+      }
+    ],
+    "pageWidth": 1425,
+    "pressed": "true",
+    "viewport": 1440
+  },
+  "fitCheck": {
+    "images": [
+      {
+        "display": 666.2250366210938,
+        "natural": 1440
+      },
+      {
+        "display": 666.2250366210938,
+        "natural": 1440
+      }
+    ],
+    "pageWidth": 1425,
+    "pressed": "true",
+    "viewport": 1440
+  },
+  "narrow_window": {
+    "images": [
+      {
+        "complete": true,
+        "display": 341.57501220703125,
+        "natural": 1440
+      },
+      {
+        "complete": true,
+        "display": 341.57501220703125,
+        "natural": 1440
+      }
+    ],
+    "pageWidth": 375,
+    "viewport": 390
+  },
+  "console": [],
+  "scope": "Viewer controls, image loading and responsive containment; existing application checks remain in canonical/interaction-review.md."
+}

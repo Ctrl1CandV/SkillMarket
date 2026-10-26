@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-10-26T06:14:58.321701+00:00",
+  "existing_output_dir_refused": true,
+  "existing_files_unchanged": 6,
+  "process_exit_code": 1,
+  "expected_error": "FileExistsError",
+  "scope": "Verifies evidence overwrite protection, not application behavior."
+}

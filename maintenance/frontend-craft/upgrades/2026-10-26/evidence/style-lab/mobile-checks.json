@@ -1,0 +1,45 @@
+[
+  {
+    "theme": "neutral-cobalt",
+    "actual": {
+      "clientWidth": 375,
+      "height": 844,
+      "scrollWidth": 375,
+      "width": 390
+    }
+  },
+  {
+    "theme": "ink-cyan",
+    "actual": {
+      "clientWidth": 375,
+      "height": 844,
+      "scrollWidth": 375,
+      "width": 390
+    }
+  },
+  {
+    "theme": "paper-berry",
+    "actual": {
+      "clientWidth": 375,
+      "height": 844,
+      "scrollWidth": 375,
+      "width": 390
+    }
+  },
+  {
+    "view": "library",
+    "actual": {
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "width": 390
+    }
+  },
+  {
+    "view": "components",
+    "actual": {
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "width": 390
+    }
+  }
+]

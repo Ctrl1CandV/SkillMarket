@@ -1,0 +1,119 @@
+{
+  "notice": "技术重拍记录；不是新增构建尝试。captures.json 只指向当前最终字节。",
+  "records": [
+    {
+      "scene": "reading-evidence",
+      "label": "A",
+      "state": "desktop-initial",
+      "css_viewport": {
+        "height": 1000,
+        "pageWidth": 1440,
+        "scrollX": 0,
+        "scrollY": 0,
+        "title": "短时盐度脉冲对河口湿地幼苗恢复的影响：来自三个控制水槽的模拟观察记录 · 页间",
+        "width": 1440
+      },
+      "captured_at": "2026-10-26T03:13:29.003Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/desktop-initial.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "重置成功提示仍在画面，刷新后同状态重拍"
+    },
+    {
+      "scene": "reading-evidence",
+      "label": "B",
+      "state": "mobile-citation-s2-p2",
+      "css_viewport": {
+        "height": 844,
+        "pageWidth": 390,
+        "scrollX": 0,
+        "scrollY": 0,
+        "title": "照读 · 资料与证据",
+        "width": 390
+      },
+      "captured_at": "2026-10-26T03:16:45.758Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/mobile-citation-s2-p2.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "返回回答提示仍在画面，提示消失后同引用状态重拍"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "state": "desktop-initial",
+      "css_viewport": {
+        "height": 1000,
+        "pageWidth": 1425,
+        "scrollX": 0,
+        "scrollY": 104.8000030517578,
+        "title": "未完成的路线 · Unfinished Routes",
+        "width": 1440
+      },
+      "captured_at": "2026-10-26T03:22:02.100Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-initial.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "回到页首链接实际停于 Y=104.8；校准至 Y=0 后重拍"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "state": "mobile-initial",
+      "css_viewport": {
+        "height": 844,
+        "pageWidth": 375,
+        "scrollX": 0,
+        "scrollY": 104.8000030517578,
+        "title": "未完成的路线 · Unfinished Routes",
+        "width": 390
+      },
+      "captured_at": "2026-10-26T03:22:02.172Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/mobile-initial.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "回到页首链接实际停于 Y=104.8；校准至 Y=0 后重拍"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "state": "desktop-initial",
+      "css_viewport": {
+        "height": 1000,
+        "pageWidth": 1425,
+        "scrollX": 0,
+        "scrollY": 0,
+        "title": "未完成的路线 · Unfinished Routes",
+        "width": 1440
+      },
+      "captured_at": "2026-10-26T03:22:20.840Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-initial.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "键盘回页首留下焦点轮廓；重新导航到无 hash 页面并在 Y=0 无焦点状态重拍"
+    },
+    {
+      "scene": "public-exhibition",
+      "label": "A",
+      "state": "mobile-initial",
+      "css_viewport": {
+        "height": 844,
+        "pageWidth": 375,
+        "scrollX": 0,
+        "scrollY": 0,
+        "title": "未完成的路线 · Unfinished Routes",
+        "width": 390
+      },
+      "captured_at": "2026-10-26T03:22:20.888Z",
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/mobile-initial.jpg",
+      "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture",
+      "old_bytes_status": "同路径旧字节已被后续截图覆盖，不宣称旧原图留存",
+      "is_new_build_attempt": false,
+      "reason": "键盘回页首留下焦点轮廓；重新导航到无 hash 页面并在 Y=0 无焦点状态重拍"
+    }
+  ]
+}

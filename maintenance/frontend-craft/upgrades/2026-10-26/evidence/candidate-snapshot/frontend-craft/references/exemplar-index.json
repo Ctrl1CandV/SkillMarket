@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-26",
+  "basis": "2026-10-26: four original-interface states captured and locally viewed from three independent publishers; inherited candidates and method documents retain their recorded status.",
+  "entries": [
+    {
+      "id": "oil-reader",
+      "status": "candidate",
+      "tasks": [
+        "read",
+        "annotate"
+      ],
+      "content_shapes": [
+        "long-text",
+        "margin-notes"
+      ],
+      "source_url": "https://ui.oiloil.org/works/reader/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线范例中的描述；本轮尚未直接核验原页面或采集画面。观察连续正文与旁注关系，勿固定深底/宋体/丝带。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-minutes",
+      "status": "candidate",
+      "tasks": [
+        "compare",
+        "verify"
+      ],
+      "content_shapes": [
+        "summary",
+        "transcript"
+      ],
+      "source_url": "https://ui.oiloil.org/works/minutes/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注整理结果与原始依据的定位，不预设证据都常驻一栏。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-mail",
+      "status": "candidate",
+      "tasks": [
+        "browse",
+        "read",
+        "respond"
+      ],
+      "content_shapes": [
+        "list",
+        "detail"
+      ],
+      "source_url": "https://ui.oiloil.org/works/mail/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注列表选中、阅读与回复分工，三栏与橙色不是默认答案。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "linear-refresh",
+      "status": "documented",
+      "tasks": [
+        "operate",
+        "scan"
+      ],
+      "content_shapes": [
+        "dense-app"
+      ],
+      "source_url": "https://linear.app/now/behind-the-latest-design-refresh",
+      "evidence_kind": "primary_method_article",
+      "notes": "已核对官方改版说明：保留丰富密度，调整导航和主要工作区权重、边界与图标。本轮尚无本地截图包。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-type",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "operate",
+        "present"
+      ],
+      "content_shapes": [
+        "type-system"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/foundations/typography/style-strategies",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "已核对区域用途与 productive/expressive 排版的关系。属于方法参考，不作为完整产品画面的替代。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-grid",
+      "status": "documented",
+      "tasks": [
+        "compare",
+        "browse"
+      ],
+      "content_shapes": [
+        "grid",
+        "mixed-content"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "已核对网格中增加条目数与增加单项内容空间的区别。原尺寸属于Carbon，不直接当通用数值。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "letterform-archive",
+      "status": "documented",
+      "tasks": [
+        "browse",
+        "inspect",
+        "present"
+      ],
+      "content_shapes": [
+        "artifacts",
+        "images",
+        "metadata"
+      ],
+      "source_url": "https://letterformarchive.org/news/designing-the-online-archive/",
+      "evidence_kind": "primary_method_article",
+      "notes": "已核对档案设计说明；用于素材原貌、发现与档案信息关系。实际画面和当前页面状态需采集核验。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-folio",
+      "status": "candidate",
+      "tasks": [
+        "present",
+        "explore"
+      ],
+      "content_shapes": [
+        "artworks",
+        "captions"
+      ],
+      "source_url": "https://ui.oiloil.org/works/folio/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注作品尺度与观看顺序，不能以空网格替代真实素材。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "tufte-sidenotes",
+      "status": "verified_visual",
+      "tasks": [
+        "read",
+        "annotate"
+      ],
+      "content_shapes": [
+        "long-text",
+        "sidenotes",
+        "code"
+      ],
+      "source_url": "https://edwardtufte.github.io/tufte-css/#sidenotes",
+      "source_origin": "edwardtufte-tufte-css",
+      "release_categories": [
+        "reading-verification"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "适用于连续阅读与旁注关系；不是完整 AI 证据核验流程的参考证明。",
+      "screenshots": [
+        "assets/references/tufte-css/desktop.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "官方示例的 Sidenotes 章节；连续正文、编号 3 的短旁注和行内/块级代码；截图区域没有外部插图。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Tufte CSS 原仓库 MIT 许可允许复制和分发代码及相关文档。本图为仓库原始说明与样式的浏览器呈现，选取不含第三方插图的旁注章节；完整 MIT 文本随图保留在 assets/references/tufte-css/LICENSE.txt。",
+        "source_url": "https://github.com/edwardtufte/tufte-css/blob/gh-pages/LICENSE"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "正文占据连续左侧阅读面，较小旁注通过编号与邻近位置关联；无需把段落拆进独立卡片。",
+          "大标题、正文、旁注、代码通过尺度与字族区分，低对比纸色背景延续阅读。"
+        ],
+        "transfer_limits": [
+          "只验证英文原始说明和一条短旁注；不能据此证明长 AI 解读或多证据核验成立。",
+          "宋体/衬线、行宽与边距需随中文内容和窗口宽度重定；本图没有证明窄屏行为。"
+        ]
+      }
+    },
+    {
+      "id": "tabler-datatables",
+      "status": "verified_visual",
+      "tasks": [
+        "scan",
+        "compare",
+        "sort"
+      ],
+      "content_shapes": [
+        "dense-table",
+        "numeric-columns",
+        "progress"
+      ],
+      "source_url": "https://preview.tabler.io/datatables.html#content",
+      "source_origin": "tabler",
+      "release_categories": [
+        "dense-operation"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "无独立摄影素材的真实密集操作页；观察表格关系和已执行的排序状态。",
+      "screenshots": [
+        "assets/references/tabler/desktop.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "Tabler 1.7.1 DataTables；实际点击 Name 列升序，首行为 Eejanaika new；导航到原页 #content 锚点，工作表格占完整视口，未包含头像照片。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Tabler MIT 许可覆盖原演示页面代码、表格数据和图标。本图只含其 DataTables 工作区；不包含独立照片或 ApexCharts 图表。完整 MIT 文本随图保留在 assets/references/tabler/LICENSE.txt。",
+        "source_url": "https://github.com/tabler/tabler/blob/dev/LICENSE"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "15 行、7 列在单一连续表面呈现；轻分隔和列对齐支持横向比较，表格承担主要面积。",
+          "蓝色进度条标示数值分布，字重、徽标与稀疏强调辅助查找，未给每个数据字段独立容器。"
+        ],
+        "transfer_limits": [
+          "只实际验证列排序；不推断筛选、批量操作、错误或窄屏表现。",
+          "短英文数据与中文长名称不同，列宽、换行和数量精度需重新决定；截图锚点已滚过站点导航。"
+        ]
+      }
+    },
+    {
+      "id": "photoswipe-gallery",
+      "status": "verified_visual",
+      "tasks": [
+        "browse",
+        "present"
+      ],
+      "content_shapes": [
+        "photographs",
+        "mixed-proportions"
+      ],
+      "source_url": "https://photoswipe.com/",
+      "source_origin": "photoswipe-dmytro-semenov",
+      "release_categories": [
+        "public-display"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "素材占主导的内容展示；图片授权与组件许可分别记录。",
+      "screenshots": [
+        "assets/references/photoswipe/gallery.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "PhotoSwipe 5.4.4 官方首页的五张 Luca Bravo 图片，灯箱尚未打开；左侧大竖图、右侧四张横图和摄影署名。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "PhotoSwipe 官方演示与网页源代码为 MIT；摄影由页面署名 Luca Bravo，源码列明 Unsplash 图片 ID；Unsplash 许可允许复制和分发，禁止无实质修改单独销售照片及竞争图库。此处仅分发整体界面参考截图，保留作者署名、许可证及来源；照片不作为独立可复用素材提供。见 assets/references/photoswipe/ATTRIBUTION.md 和 LICENSE.txt。",
+        "source_url": "https://unsplash.com/license"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "一张大竖图与四张较小横图形成明确观看次序，细小白色间隔保持整体作品面。",
+          "标题、简短说明和照片署名在图像周围提供语境，不抢占主要图像面积。"
+        ],
+        "transfer_limits": [
+          "这是组件展示页，不是含完整检索和长档案元信息的展示产品。",
+          "缩略图发生裁切，不能拿缩略图裁切方式代替原图查看；需要实际作品素材才能判断整体成立。"
+        ]
+      }
+    },
+    {
+      "id": "photoswipe-lightbox",
+      "status": "verified_visual",
+      "tasks": [
+        "inspect",
+        "present"
+      ],
+      "content_shapes": [
+        "large-photograph",
+        "overlay"
+      ],
+      "source_url": "https://photoswipe.com/",
+      "source_origin": "photoswipe-dmytro-semenov",
+      "release_categories": [
+        "public-display"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "与首页画廊为同一来源的第二状态；不计为额外独立发布主体。",
+      "screenshots": [
+        "assets/references/photoswipe/lightbox.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "实际点击官方首页第一张图片，灯箱打开至 1 / 5；显示 Zoom、Close、Previous、Next 控件，保持原图纵横比。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "PhotoSwipe 官方演示与网页源代码为 MIT；摄影由页面署名 Luca Bravo，源码列明 Unsplash 图片 ID；Unsplash 许可允许复制和分发，禁止无实质修改单独销售照片及竞争图库。此处仅分发整体界面参考截图，保留作者署名、许可证及来源；照片不作为独立可复用素材提供。见 assets/references/photoswipe/ATTRIBUTION.md 和 LICENSE.txt。",
+        "source_url": "https://unsplash.com/license"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "照片按原比例占据灯箱主要高度；暗色背景与边缘控件形成图像中心和操作外围的分工。",
+          "计数、关闭和翻页入口保持轻量可见，与首页预览形成由浏览到细看的尺度变化。"
+        ],
+        "transfer_limits": [
+          "仅实际验证打开第一图；没有把截图当作键盘、关闭、缩放或移动端的全面测试。",
+          "没有长图注或复杂元数据，迁移到档案展示时需要另行组织这些信息。"
+        ]
+      }
+    }
+  ]
+}
+

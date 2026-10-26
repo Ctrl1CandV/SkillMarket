@@ -1,0 +1,280 @@
+{
+  "package_untouched": true,
+  "files": [
+    {
+      "path": "START_HERE.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/SKILL.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/cjk-typography.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/content.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/exemplars.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/layout.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/review.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/scenarios.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/frontend-craft/references/visual-style.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/product-design/SKILL.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/product-design/references/examples.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/product-design/references/new-and-redesign.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "baseline/product-design/references/product-context.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/ACCEPTANCE.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/DELIVERY_STATUS.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/PLAN.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/REQUIREMENTS.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/SOURCES.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/baseline-integrity.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/fixture-check.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/package-link-check.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/palette-contrast.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/resource-check.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/sample-static-check.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/static-check.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/delivery/static-review.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/README.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/dense-operations/brief.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/dense-operations/data.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/public-exhibition/brief.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/public-exhibition/data.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/reading-evidence/brief.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/reading-evidence/data.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/prompts/01-complete-and-evaluate.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/prompts/02-final-review.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/tools/check_package.py",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "manifest.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/SKILL.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/index.html",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/lab.js",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/assets/style-lab/styles.css",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/cjk-typography.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/content.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/exemplar-index.json",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/exemplars.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/layout.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/reference-selection.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/review.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/scenarios.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/style-samples.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/frontend-craft/references/visual-style.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/product-design/SKILL.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/product-design/references/examples.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/product-design/references/new-and-redesign.md",
+      "exists": true,
+      "matches": true
+    },
+    {
+      "path": "runtime/product-design/references/product-context.md",
+      "exists": true,
+      "matches": true
+    }
+  ]
+}

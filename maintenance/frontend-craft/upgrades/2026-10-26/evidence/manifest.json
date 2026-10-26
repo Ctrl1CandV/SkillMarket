@@ -1,0 +1,2250 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-26T14:16:17.259996+08:00",
+  "path_base": "repository root, five parents above this manifest directory",
+  "limitations": "mtime is file metadata, not an invented observation timestamp; inspect context records and raw artifacts.",
+  "entries": [
+    {
+      "path": "frontend-craft/assets/references/photoswipe/ATTRIBUTION.md",
+      "bytes": 1815,
+      "sha256": "d24cde5ca27be904f119426052a3a3d63f94f4dd3949d3dcb35f063934ffce8f",
+      "file_modified_at": "2026-10-26T10:42:43.110133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/gallery.jpg",
+      "bytes": 145742,
+      "sha256": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5",
+      "file_modified_at": "2026-10-26T10:32:27.062716+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/LICENSE.txt",
+      "bytes": 1110,
+      "sha256": "41924a489f374dcc647db30916c6de47c4eb8c9a995de6a4c08629696096db3e",
+      "file_modified_at": "2026-10-26T10:23:00.155564+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/photoswipe/lightbox.jpg",
+      "bytes": 137138,
+      "sha256": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb",
+      "file_modified_at": "2026-10-26T10:34:01.511442+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/desktop.jpg",
+      "bytes": 130969,
+      "sha256": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a",
+      "file_modified_at": "2026-10-26T10:30:40.748089+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/LICENSE.txt",
+      "bytes": 1090,
+      "sha256": "4f88a82d13be3c5c63a12c5631eae914aa4381b6dc17641bf1ab85f3f8f6c8a5",
+      "file_modified_at": "2026-10-26T13:59:49.914411+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tabler/SOURCE.md",
+      "bytes": 1021,
+      "sha256": "2e023495adf1f5d378d8c012dc2bb3a7e6a7d45f484411426063e057fbab212c",
+      "file_modified_at": "2026-10-26T10:42:43.111133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/desktop.jpg",
+      "bytes": 162899,
+      "sha256": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d",
+      "file_modified_at": "2026-10-26T10:26:29.976478+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/LICENSE.txt",
+      "bytes": 1080,
+      "sha256": "a79c7ce09a19c1d53087f053bf35ef380fe3f23d6b7c877e11b7f4ecf01fb909",
+      "file_modified_at": "2026-10-26T13:59:49.914411+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/tufte-css/SOURCE.md",
+      "bytes": 834,
+      "sha256": "372dec08df579c3fcaaeb19dda3958cb1ddd8974c6c1a6efd256a8c5d0620b49",
+      "file_modified_at": "2026-10-26T10:42:43.110133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/wikipedia-attention/ATTRIBUTION.md",
+      "bytes": 2485,
+      "sha256": "d718f6277413dbf3296f59d5bffbabddc53f14af0f138e7cb011ba19ad295ec6",
+      "file_modified_at": "2026-10-26T12:04:03.705306+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/wikipedia-attention/body-citation.jpg",
+      "bytes": 238663,
+      "sha256": "04f51b9aad28e19bba8c9e4a961bfb515413fbbc3e2f98eb6ead6ea7cab9fbe8",
+      "file_modified_at": "2026-10-26T11:51:02.656206+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/wikipedia-attention/source-location.jpg",
+      "bytes": 184507,
+      "sha256": "95fcf355acacc4e140d07c07eb1f89df5f6814fe5615a63d71bbb3ea2bfde347",
+      "file_modified_at": "2026-10-26T11:58:14.086343+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+      "bytes": 2551,
+      "sha256": "58c72d3a3611a6553972712050697948ca1adf99af3b93649d4f5886ace82a67",
+      "file_modified_at": "2026-10-26T12:06:38.539857+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/ACCEPTANCE-ADDENDUM-2026-10-26.md",
+      "bytes": 3176,
+      "sha256": "1b4dc1aaea1040ebb616564e58a7543e3c5fa7f69cf42ab22a1ab89c5ffd61f0",
+      "file_modified_at": "2026-10-26T13:37:55.560591+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/delivery/original-package-archive.json",
+      "bytes": 9038,
+      "sha256": "9c0701832fcd418338047bf068666ec443dc74587385f1f36bb63e6288bcec5b",
+      "file_modified_at": "2026-10-26T14:01:41.939034+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/delivery/original-package.zip",
+      "bytes": 209969,
+      "sha256": "1c45234c1a99fa71ed5d5cae7a4ae7e585d99e58b81286fe5e1e17f91c6fdf94",
+      "file_modified_at": "2026-10-26T14:01:41.930040+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/cjk-typography.md",
+      "bytes": 5293,
+      "sha256": "e0a4403b1e372eb9eeb49f7b9db58b2e32649d550c56051506aab42f055d499f",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/content.md",
+      "bytes": 9732,
+      "sha256": "0eb7ad8f9c2381e43fbb9f76db2bfba8397e705f6c75e990ba85c94d6f33f097",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/exemplars.md",
+      "bytes": 3706,
+      "sha256": "33b624c888fa78cfa543dcdd641a8de386b2a747044d346ecd59fc9eb720b870",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/layout.md",
+      "bytes": 5379,
+      "sha256": "6ba1241eab2dd774e5e4a4d006f129bbfb3f7b75bb503e7d1de7ac173c54e914",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/review.md",
+      "bytes": 6374,
+      "sha256": "c652f85385d98bb42fd9ca84f16b1c80d631f2be957ed17f8cd6e28d4ef0a39b",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/scenarios.md",
+      "bytes": 3654,
+      "sha256": "59b999391f07b4a91f720c99f65189a36227c0190da8619eafb56a37d08d7f97",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/references/visual-style.md",
+      "bytes": 12967,
+      "sha256": "a5c34df20c7728cefc90b69dd1bcb0bd35c8851b0e000a9ed4c6890ed1cad1ed",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/frontend-craft/SKILL.md",
+      "bytes": 7603,
+      "sha256": "715fc5d810e6951ca962243407cb11a0271552e646bfea824808430d36091992",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/product-design/references/examples.md",
+      "bytes": 6031,
+      "sha256": "839072428b3e3695eb3e47cc89e44b1b5ac639e6d0149ce98fb9fb9589283d0d",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/product-design/references/new-and-redesign.md",
+      "bytes": 3909,
+      "sha256": "a4d4011185ecb2250980e737ac7c2fc12cb7f8dab928afd0cb584b4aad77a09a",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/product-design/references/product-context.md",
+      "bytes": 4839,
+      "sha256": "e5842a69cbaac9b5ac8314e37aabe73555d349aa58542c98e41a3a7d7acb0e26",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/baseline/product-design/SKILL.md",
+      "bytes": 7896,
+      "sha256": "7a461a41420fc5463e8ed8b9de6b00f3f6da776e19f77cdff82df50096cb7e77",
+      "file_modified_at": "2026-10-26T02:01:36+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/builder-protocol.md",
+      "bytes": 2135,
+      "sha256": "db5c068dc93396a9c8e0d8770735b2083a1320873afa6eb4238c4f006bc902fa",
+      "file_modified_at": "2026-10-26T10:30:55.033240+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/photoswipe/ATTRIBUTION.md",
+      "bytes": 1815,
+      "sha256": "d24cde5ca27be904f119426052a3a3d63f94f4dd3949d3dcb35f063934ffce8f",
+      "file_modified_at": "2026-10-26T10:42:43.110133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/photoswipe/gallery.jpg",
+      "bytes": 145742,
+      "sha256": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5",
+      "file_modified_at": "2026-10-26T10:32:27.062716+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/photoswipe/LICENSE.txt",
+      "bytes": 1110,
+      "sha256": "41924a489f374dcc647db30916c6de47c4eb8c9a995de6a4c08629696096db3e",
+      "file_modified_at": "2026-10-26T10:23:00.155564+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/photoswipe/lightbox.jpg",
+      "bytes": 137138,
+      "sha256": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb",
+      "file_modified_at": "2026-10-26T10:34:01.511442+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tabler/desktop.jpg",
+      "bytes": 130969,
+      "sha256": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a",
+      "file_modified_at": "2026-10-26T10:30:40.748089+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tabler/LICENSE.txt",
+      "bytes": 1091,
+      "sha256": "21e9d21528005d3d87b46e18ccfe287ad966f9a34fc9bf248c5055e9b9ae3a98",
+      "file_modified_at": "2026-10-26T10:23:07.704477+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tabler/SOURCE.md",
+      "bytes": 1021,
+      "sha256": "2e023495adf1f5d378d8c012dc2bb3a7e6a7d45f484411426063e057fbab212c",
+      "file_modified_at": "2026-10-26T10:42:43.111133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tufte-css/desktop.jpg",
+      "bytes": 162899,
+      "sha256": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d",
+      "file_modified_at": "2026-10-26T10:26:29.976478+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tufte-css/LICENSE.txt",
+      "bytes": 1082,
+      "sha256": "7f885133d8bbdf97d8ebe75017dcc729ab34ea96bfe1be3248ad78caaa876a63",
+      "file_modified_at": "2026-10-26T10:22:50.611495+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/references/tufte-css/SOURCE.md",
+      "bytes": 834,
+      "sha256": "372dec08df579c3fcaaeb19dda3958cb1ddd8974c6c1a6efd256a8c5d0620b49",
+      "file_modified_at": "2026-10-26T10:42:43.110133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "frontend-craft/references/exemplar-index.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/style-lab/index.html",
+      "bytes": 27060,
+      "sha256": "dfd2048a3f9c0a9a51176b313999d93bc8b873e857c67971fe0ef010572f9617",
+      "file_modified_at": "2026-10-26T01:56:12+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/style-lab/lab.js",
+      "bytes": 10195,
+      "sha256": "9a22a63601ce342b592eb42b28db42a6870b548da50fe2f27367631ecf45112a",
+      "file_modified_at": "2026-10-26T02:03:52+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/assets/style-lab/styles.css",
+      "bytes": 27622,
+      "sha256": "06021a84bcca0558edf277ef967c3070866d8969d6674bb0b8330c99ae9147f0",
+      "file_modified_at": "2026-10-26T02:03:50+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/cjk-typography.md",
+      "bytes": 9019,
+      "sha256": "634a84e2d9e8dec8b81e40997cbe65fdb6800820abb393abfd3530eeb0d6fb2d",
+      "file_modified_at": "2026-10-26T01:47:46+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/content.md",
+      "bytes": 9282,
+      "sha256": "3392c602a6e2847b2c07044f4f2cb12dd503a6ec19ad23df2975d955958d10db",
+      "file_modified_at": "2026-10-26T01:47:44+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/exemplar-index.json",
+      "bytes": 14469,
+      "sha256": "0e50d1502459c87e4c1385c64861947078d0e6883d7e5268b78b474912f51db6",
+      "file_modified_at": "2026-10-26T10:41:02.890136+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/exemplars.md",
+      "bytes": 5895,
+      "sha256": "799a1198018dfe3bc849311da7b78006675b071d41c32b20505055e1366fe583",
+      "file_modified_at": "2026-10-26T10:42:43.109133+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/layout.md",
+      "bytes": 9353,
+      "sha256": "652e2adc1f91cfe8002b035bccf2dd22be3d44faf4a9ea334cd38df3a2d39a85",
+      "file_modified_at": "2026-10-26T01:48:28+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/reference-selection.md",
+      "bytes": 5586,
+      "sha256": "feb8e09cc121c9d456438a2ed34efa1afe1b66d02686e0dd9fe6433052b42076",
+      "file_modified_at": "2026-10-26T01:58:08+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/review.md",
+      "bytes": 8244,
+      "sha256": "cdacba7f1938acffed64d9710e06b625b2a4307b6ec1b96d0f551d7702e37dae",
+      "file_modified_at": "2026-10-26T01:46:22+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/scenarios.md",
+      "bytes": 7688,
+      "sha256": "20b92b4ec845de4c6593ddac18521c4cb252988afde8b8c977b2d8cdb64e3df5",
+      "file_modified_at": "2026-10-26T01:47:48+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/style-samples.md",
+      "bytes": 5087,
+      "sha256": "f05895f6dfd56df05076bc498fc1b8a21c4fd0f3d5e0beac61943ecb5fe79860",
+      "file_modified_at": "2026-10-26T01:46:22+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/references/visual-style.md",
+      "bytes": 11531,
+      "sha256": "3557df31eb34e3782e81443562edcb889aecc403c64ae1f299a36a6620583fbf",
+      "file_modified_at": "2026-10-26T01:46:20+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/frontend-craft/SKILL.md",
+      "bytes": 7910,
+      "sha256": "09ef6435eecfac863f9ddd746a973a6b5b8dbf14c7db2871c25f0dabb88f4afd",
+      "file_modified_at": "2026-10-26T01:46:44+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/product-design/references/examples.md",
+      "bytes": 7353,
+      "sha256": "e668da7366f7b5ee26d7b38f137eee37077fe1fc3b99237677a1fbc262ed11f4",
+      "file_modified_at": "2026-10-26T01:45:40+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/product-design/references/new-and-redesign.md",
+      "bytes": 4584,
+      "sha256": "43995e8e6428e33615cffd81fec0a6a121594eced024bfc10971cad9777a59d5",
+      "file_modified_at": "2026-10-26T01:52:50+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/product-design/references/product-context.md",
+      "bytes": 4621,
+      "sha256": "c6bd5701c43178d7f595d3308668a0f9f71854eaaa5885448c069408de4f3859",
+      "file_modified_at": "2026-10-26T01:52:48+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot/product-design/SKILL.md",
+      "bytes": 8539,
+      "sha256": "10143a26f2a028ae1bf867885404b238be8931412eddba18536edf63e3d5936f",
+      "file_modified_at": "2026-10-26T01:46:26+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/candidate-snapshot-hashes.json",
+      "bytes": 3460,
+      "sha256": "5d1679be49353c46e43b4b85ed9145f8236e3ab2673d02a038971d6a295ed0f1",
+      "file_modified_at": "2026-10-26T10:43:52.984827+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json",
+      "bytes": 12516,
+      "sha256": "e93f61ca280501f34445a0d29a4084fa685f5769c102779961015d10bf759cc8",
+      "file_modified_at": "2026-10-26T11:29:18.036295+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/desktop-initial.jpg",
+      "bytes": 91254,
+      "sha256": "6fd5aec35eeecb8b8f3537a57fbf57f828556aef016e892617ad7b71386165a2",
+      "file_modified_at": "2026-10-26T11:04:17.753296+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/desktop-mixed-retry.jpg",
+      "bytes": 58997,
+      "sha256": "4bdac2de2418ef68694d50d238aa95c7e0c20c7f4e195811e37622f497d3fd32",
+      "file_modified_at": "2026-10-26T11:19:22.406799+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/mobile-initial.jpg",
+      "bytes": 31316,
+      "sha256": "b4e9f679770b0760f2d7deb59f4f7c445f0fa9ba523722ff260fffad9b057bf9",
+      "file_modified_at": "2026-10-26T11:04:28.514031+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/desktop-initial.jpg",
+      "bytes": 90499,
+      "sha256": "f85dc825ba7c4dd0639424079e4dbc5c53b488b0d1ae908b343ea1a16e9d4470",
+      "file_modified_at": "2026-10-26T11:04:40.492202+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/desktop-mixed-retry.jpg",
+      "bytes": 50003,
+      "sha256": "1a8244e3c757cd4609d3d1a1c10cf597de4e9122760d40235de3e9a3c061234b",
+      "file_modified_at": "2026-10-26T11:20:47.954212+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/mobile-initial.jpg",
+      "bytes": 33311,
+      "sha256": "4c3bfecc046f07a3e6d3dccbece58e815a444856dda547e436eebfd6f0bf5d6a",
+      "file_modified_at": "2026-10-26T11:04:40.545562+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/interaction-review.md",
+      "bytes": 7306,
+      "sha256": "aed405640b3fba7da3bc4e93ff37ed7518384655f48f0a0b8024e3c02d3198d3",
+      "file_modified_at": "2026-10-26T11:30:44.484932+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-artwork-02.jpg",
+      "bytes": 47078,
+      "sha256": "7dbe10e553f4dbd30bc39e96ae699c1086751de5dfc0ab7026aa62287cb5ef32",
+      "file_modified_at": "2026-10-26T11:22:55.093473+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-gallery.jpg",
+      "bytes": 64557,
+      "sha256": "e1f5150c15d62e261ed2ba30d403e29b311219b1cbf92b4194ecd225881eeae6",
+      "file_modified_at": "2026-10-26T11:22:54.752149+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-initial.jpg",
+      "bytes": 72634,
+      "sha256": "6a726c228864111462f5b28e122d5cf650d14245dc2424cc799423bdfd5d446e",
+      "file_modified_at": "2026-10-26T11:24:55.143713+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/mobile-initial.jpg",
+      "bytes": 35274,
+      "sha256": "1eec180f4f71ca3db1bad1662b76d6c1e675af493a3c8213d559a1b5c7aa7d4e",
+      "file_modified_at": "2026-10-26T11:24:55.193310+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-artwork-02.jpg",
+      "bytes": 53806,
+      "sha256": "8268f43305f3f06fcfe3efde71b938c9e43737854b57e14160d09b627f948072",
+      "file_modified_at": "2026-10-26T11:25:31.299414+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-gallery.jpg",
+      "bytes": 64529,
+      "sha256": "e777bd720533eda707533016fb6dd6ce5a0607f3403a7c8b123e795fb56ea1b4",
+      "file_modified_at": "2026-10-26T11:25:30.983526+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-initial.jpg",
+      "bytes": 73990,
+      "sha256": "9b6fb4a5fc7388b0f42ea45f6c32de00e928e44902826870c995b8f59b4a9e02",
+      "file_modified_at": "2026-10-26T11:25:30.864722+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/mobile-initial.jpg",
+      "bytes": 35593,
+      "sha256": "cb9d28b2f80d695343f0eb16c71347f9965239885c3d53f8c6ac0cd77dad0c79",
+      "file_modified_at": "2026-10-26T11:25:30.905942+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/desktop-citation-s2-p2.jpg",
+      "bytes": 148145,
+      "sha256": "78ac3af1e2dde2b234711f0cb4c8b18d715bad5b4e86326e9aada9f36ba6c0a1",
+      "file_modified_at": "2026-10-26T11:14:08.905174+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/desktop-initial.jpg",
+      "bytes": 149713,
+      "sha256": "0ca21df6a4acac242879c7e7d06d66a0cc3ca75682472112e440bd7ec3a6cc7f",
+      "file_modified_at": "2026-10-26T11:13:52.540061+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/mobile-citation-s2-p2.jpg",
+      "bytes": 40185,
+      "sha256": "e9b611e56191a7669093ad4d946e0c6adcc25a53763e006d114238db4dc3ded9",
+      "file_modified_at": "2026-10-26T11:14:27.876630+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/mobile-initial.jpg",
+      "bytes": 48084,
+      "sha256": "07df7965868ffe96f7bf36207a398c045334d3c7dd361534e9b163ad36ad8383",
+      "file_modified_at": "2026-10-26T11:13:52.599811+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/desktop-citation-s2-p2.jpg",
+      "bytes": 150593,
+      "sha256": "b5279bae745ebee9514ac1d784ba01c444d87d2ddfd9884ed0c1e0ba455cb61f",
+      "file_modified_at": "2026-10-26T11:16:32.698787+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/desktop-initial.jpg",
+      "bytes": 157184,
+      "sha256": "db27cd36a04a396c875818ff3e9d145b3b760213909241b51bcd054b6a8f915a",
+      "file_modified_at": "2026-10-26T11:16:11.563037+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/mobile-citation-s2-p2.jpg",
+      "bytes": 40954,
+      "sha256": "0639a3385a18cf0dc3142a9287088ac9f7fa51e78e13eb442aaa593d3393bdbf",
+      "file_modified_at": "2026-10-26T11:17:58.889502+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/mobile-initial.jpg",
+      "bytes": 49500,
+      "sha256": "651d5b4dc14208f96756eb999fe5fabfce8bad414c2cdecbd9ef3c923844e137",
+      "file_modified_at": "2026-10-26T11:16:11.632144+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/superseded-capture-records.json",
+      "bytes": 5147,
+      "sha256": "75b937aa2a940bab73826d1bd1537603e931643778c646bf0b4a1d765dc2df38",
+      "file_modified_at": "2026-10-26T11:30:44.481993+08:00",
+      "purpose": "neutral paired capture or independent interaction record; consult state metadata and blind comparison",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/captures.json"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/closeout-cleanup.json",
+      "bytes": 618,
+      "sha256": "96ac12004d55bb46eb67c637e2d6f11e6ecc858466285c31919b2dfc35abb1ec",
+      "file_modified_at": "2026-10-26T14:01:59.994922+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/environment-cleanup.json",
+      "bytes": 1074,
+      "sha256": "1a4c4ffaddbe7893b3e2d1e1f2ad605623b2b6930d650c45c7032af453568e7d",
+      "file_modified_at": "2026-10-26T12:08:17.171454+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/final-candidate-hashes.json",
+      "bytes": 4041,
+      "sha256": "04dc9e20430cea0340a9ff2f3008a7d54639f68a0dd6d25e2628a2db06fd53e6",
+      "file_modified_at": "2026-10-26T12:16:58.743853+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/post-freeze-diff.json",
+      "bytes": 641,
+      "sha256": "5c48c6bb982f1cd055ed77074579ea22e3ebeac0a2d509e0a5c6974459e3371f",
+      "file_modified_at": "2026-10-26T12:16:58.743853+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/candidate-source-research/distill-feature-visualization/ATTRIBUTION.md",
+      "bytes": 1749,
+      "sha256": "7d53c3f4fc5cc643f6ee642d1018bb86203b2ad59d4595c75f199e1578395f3e",
+      "file_modified_at": "2026-10-26T11:31:15.744377+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/candidate-source-research/distill-feature-visualization/LICENSE-CC-BY-4.0.txt",
+      "bytes": 18653,
+      "sha256": "7de68a5b57fa4d3eb0e4f5ecfdb413635a8e12f1e5693e885567247e223ce57d",
+      "file_modified_at": "2026-10-26T11:18:45.366202+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/candidate-source-research/distill-feature-visualization/SOURCE.md",
+      "bytes": 783,
+      "sha256": "cc34dd87b175c05d852f1b0659c9b6c393a2fdcc6a0d79f4350641d0fe2631aa",
+      "file_modified_at": "2026-10-26T11:43:04.678013+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/capture-manifest.json",
+      "bytes": 3500,
+      "sha256": "41771687333eab2bc1b82b46b3e885a2df6ecf205e1a196938bef6a16cd72b77",
+      "file_modified_at": "2026-10-26T12:04:11.953446+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/distill-pre-capture-source-check.json",
+      "bytes": 9101,
+      "sha256": "5d8417e45bceacc41c9bc18f0bb77a224a6e0b6e97704268ac30a36639d89635",
+      "file_modified_at": "2026-10-26T11:43:05.409062+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/README.md",
+      "bytes": 3785,
+      "sha256": "34b011a4b198f9ac5d558c17009c0867ed592cc2ae9fd86b46ea425ffceae7dc",
+      "file_modified_at": "2026-10-26T12:05:49.361971+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/wikipedia-candidate-research.md",
+      "bytes": 3103,
+      "sha256": "29879c7bd7619b699e61cebf83b124bfcc5cfc6bc4fbc1591afabebfd12807cc",
+      "file_modified_at": "2026-10-26T12:04:03.706307+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/wikipedia-captures.json",
+      "bytes": 1760,
+      "sha256": "12e468e71926f9ff3d06f6be06fa4b3594f09c15ed76ec0b577287c1160a31a9",
+      "file_modified_at": "2026-10-26T12:04:11.953446+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/wikipedia-return-check.json",
+      "bytes": 656,
+      "sha256": "6f6f0686570d5fb89fc1661ca9b4149058a676f7c315bea7c8f5a1dfe9533a34",
+      "file_modified_at": "2026-10-26T12:02:32.511011+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/references/wikipedia-source-capture.json",
+      "bytes": 2136,
+      "sha256": "602e53f6e016b0542870d22f90b9dcd453f61981df795650000684cb75d8c375",
+      "file_modified_at": "2026-10-26T11:58:14.088343+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/run-manifest.json",
+      "bytes": 5413,
+      "sha256": "bbd647d5700e7a82eca56622254cb99df7288ac5b2924c89177ec8257a755a08",
+      "file_modified_at": "2026-10-26T11:15:37.201634+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/app.js",
+      "bytes": 17832,
+      "sha256": "075c38080bf1b73f935685b3b1cb6a3ee358869562ca65497c22eb02514041a0",
+      "file_modified_at": "2026-10-26T10:57:15.425802+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/brief.md",
+      "bytes": 2219,
+      "sha256": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+      "file_modified_at": "2026-10-26T01:56:18+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md",
+      "bytes": 5987,
+      "sha256": "3923b89147022e42c42c239140370bd85d76b83212486727c2c6916777307c94",
+      "file_modified_at": "2026-10-26T11:02:02.565015+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/check.mjs",
+      "bytes": 2483,
+      "sha256": "3b7ae4c7c681948e1bb245ea4438d0ff5f584c17f3c9798c32608591e02c44ba",
+      "file_modified_at": "2026-10-26T10:55:56.113825+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/data.json",
+      "bytes": 20016,
+      "sha256": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6",
+      "file_modified_at": "2026-10-26T02:07:08+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/desktop.png",
+      "bytes": 91262,
+      "sha256": "ab1c1e32485e5011a92f998481e345232bead284b21b71c0ccc4b44ebda3d648",
+      "file_modified_at": "2026-10-26T11:02:18.865615+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/index.html",
+      "bytes": 3938,
+      "sha256": "d68c85abd0f824db02e10cb1122d061e5982a694b063f1de5b784462478eb17c",
+      "file_modified_at": "2026-10-26T10:50:55.755483+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/mobile.png",
+      "bytes": 31316,
+      "sha256": "b4e9f679770b0760f2d7deb59f4f7c445f0fa9ba523722ff260fffad9b057bf9",
+      "file_modified_at": "2026-10-26T11:02:19.021738+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/store.mjs",
+      "bytes": 2685,
+      "sha256": "2189c8d8861728da0ce33096c41ff9b97851e663b09116f4c162b621e48a0aad",
+      "file_modified_at": "2026-10-26T10:50:55.754482+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/styles.css",
+      "bytes": 18191,
+      "sha256": "cea4108859f0f91f86aec9b774f6c6609ccf1147cb7bad3e8e72504688237e81",
+      "file_modified_at": "2026-10-26T11:01:56.297466+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/app.js",
+      "bytes": 22087,
+      "sha256": "ff4308205828fc4be3684ec24135501931abd10bea07a23f054b720ebd7cedc7",
+      "file_modified_at": "2026-10-26T10:32:35.320444+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/brief.md",
+      "bytes": 2219,
+      "sha256": "b0ddb369c5949205c73d79f0e5c607a3a5a71d0f4052ef0eda281005cb7de1bb",
+      "file_modified_at": "2026-10-26T01:56:18+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md",
+      "bytes": 8944,
+      "sha256": "fff28bd7bbbbb5354d739b7cd79a77eab9db7945e7270807d89a5c916424a98e",
+      "file_modified_at": "2026-10-26T10:38:06.022418+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/data.js",
+      "bytes": 20037,
+      "sha256": "347ca5d56b90923c38df621495282caff0239c045aee35aded520860c22a1e21",
+      "file_modified_at": "2026-10-26T10:25:25.855635+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/data.json",
+      "bytes": 20016,
+      "sha256": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6",
+      "file_modified_at": "2026-10-26T02:07:08+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/desktop-bottom.png",
+      "bytes": 95334,
+      "sha256": "e63d2444c3fa7f0780cf5d6904429690bf54e24dadf10606a24cba9bedec492c",
+      "file_modified_at": "2026-10-26T10:35:50.458161+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/desktop.png",
+      "bytes": 90506,
+      "sha256": "18b01bba852cf99f782732cad8e23084bb547949c941ab3d99a7ce2f9137b0e6",
+      "file_modified_at": "2026-10-26T10:35:28.743638+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/index.html",
+      "bytes": 3806,
+      "sha256": "06f9e128775635239665a7ed53e6303204d01b747834c6ba3b70c825494aa3ef",
+      "file_modified_at": "2026-10-26T10:22:35.575321+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/mobile-batch-result.png",
+      "bytes": 33509,
+      "sha256": "07f2c4305c688e7ccf460f62267bca7474618c6ce00bf889e9989ac4c8506fc8",
+      "file_modified_at": "2026-10-26T10:34:01.674587+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/mobile-detail.png",
+      "bytes": 37712,
+      "sha256": "3cf53b9384444766504e74a61ee076818c803ac1599c1bf5de391a3023f02b28",
+      "file_modified_at": "2026-10-26T10:35:27.791083+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/mobile.png",
+      "bytes": 33311,
+      "sha256": "a523d12daca75b44ff6a15691d73cd9c952d1227add36023308a85dec402520c",
+      "file_modified_at": "2026-10-26T10:35:28.389574+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/style.css",
+      "bytes": 18996,
+      "sha256": "66f615781f9d139242a1e6d6623209d74fb50a2429061d61170b4a21501c55b1",
+      "file_modified_at": "2026-10-26T10:32:11.144088+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "dense-operations",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/dense-operations/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/app.js",
+      "bytes": 10895,
+      "sha256": "b4e28d9387c8a21db9cd8dfde861d1053853eaf0cc2dedb0aec0763915d5e0c8",
+      "file_modified_at": "2026-10-26T10:48:41.044905+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/brief.md",
+      "bytes": 2139,
+      "sha256": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+      "file_modified_at": "2026-10-26T01:56:20+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md",
+      "bytes": 7784,
+      "sha256": "ba704f76de7d29b5b09a2db018f9c6b32126f22f6a07e646bf82a7d31276b123",
+      "file_modified_at": "2026-10-26T10:53:48.544069+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/data.json",
+      "bytes": 17901,
+      "sha256": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d",
+      "file_modified_at": "2026-10-26T02:06:00+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-01.svg",
+      "bytes": 781,
+      "sha256": "43ad3c8bcfec61ede57ab656b102ffd202d97f5a5819a7bd88bc56775d78227e",
+      "file_modified_at": "2026-10-26T10:42:43.008080+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-02.svg",
+      "bytes": 545,
+      "sha256": "8b04f295dbe09f70f5e2269144a551b41a4a4c722928b871d00a913f24aeebcd",
+      "file_modified_at": "2026-10-26T10:42:43.008080+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-03.svg",
+      "bytes": 621,
+      "sha256": "a9e2b48a8797159fb88a9e3665f8efc202a49fe689890924b997ea436a717bff",
+      "file_modified_at": "2026-10-26T10:42:43.009081+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-04.svg",
+      "bytes": 589,
+      "sha256": "5390d7ff4b984aa6ac09718317d450720d9a9a2a54178b5e01977178e1a5f3fa",
+      "file_modified_at": "2026-10-26T10:42:43.009081+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-05.svg",
+      "bytes": 569,
+      "sha256": "66b746d208c8695f260f9c3efb6e203319113612142738adb287a7ed36948691",
+      "file_modified_at": "2026-10-26T10:42:43.009081+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-06.svg",
+      "bytes": 501,
+      "sha256": "127f73e7ca985d3e02ee30f9e71e040d429fa482299fb0d20698efc6f23021c9",
+      "file_modified_at": "2026-10-26T10:42:43.010109+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-07.svg",
+      "bytes": 535,
+      "sha256": "316c53fde6312db1cbd1e65479fbce0a0f6a8fec8179eccd263964e7e9eb6ef8",
+      "file_modified_at": "2026-10-26T10:42:43.011117+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/images/work-08.svg",
+      "bytes": 828,
+      "sha256": "4d877402c275c285a7767aa39c5d708c12b408a7fdd799e1a1675a255d9bdfd2",
+      "file_modified_at": "2026-10-26T10:42:43.012110+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/index.html",
+      "bytes": 7714,
+      "sha256": "d029989b7594759e663f3e19ab42d387998386120f6d94baccf2876bcabbba61",
+      "file_modified_at": "2026-10-26T10:45:28.413447+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/style.css",
+      "bytes": 16973,
+      "sha256": "110bca715ea62cfab9d9d941e5f859ec8462489cf7be06fb22e6232f53ec850d",
+      "file_modified_at": "2026-10-26T10:50:48.720107+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/app.js",
+      "bytes": 12180,
+      "sha256": "faf3addbcafdda26fd6a51983ec65593e09c9b1a2e7d2bab50a0a6017fc151fc",
+      "file_modified_at": "2026-10-26T11:04:25.197097+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/brief.md",
+      "bytes": 2139,
+      "sha256": "f5a1c2af303e956e00ff99b4a1e0f15b425b6c64df908bfb74b2a0ed04f362b5",
+      "file_modified_at": "2026-10-26T01:56:20+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md",
+      "bytes": 6573,
+      "sha256": "e8571373c89d74ef8a9a6d52acaba9e63101f228024ffacffd96edb66179b3b0",
+      "file_modified_at": "2026-10-26T11:13:06.898122+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/data.json",
+      "bytes": 17901,
+      "sha256": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d",
+      "file_modified_at": "2026-10-26T02:06:00+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/desktop-confirmation.jpg",
+      "bytes": 66911,
+      "sha256": "633112f60793947faccc914c8ae9d532c122da9b78e45d7dccbf76ac1b91e979",
+      "file_modified_at": "2026-10-26T11:07:38.330620+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/desktop-home.jpg",
+      "bytes": 73990,
+      "sha256": "17ad39cb0cbd67116cfa15adeb2ab25108aebaa7aff2013f4b4eeed9bcfc885b",
+      "file_modified_at": "2026-10-26T11:06:28.489547+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/desktop-lightbox.jpg",
+      "bytes": 53806,
+      "sha256": "8268f43305f3f06fcfe3efde71b938c9e43737854b57e14160d09b627f948072",
+      "file_modified_at": "2026-10-26T11:06:57.101871+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/desktop-visit.jpg",
+      "bytes": 69815,
+      "sha256": "3e77ea77256dab3ef1520bd2badca1c5885c89f634596f71b1c42248b9afbc77",
+      "file_modified_at": "2026-10-26T11:07:15.128258+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/desktop-works.jpg",
+      "bytes": 64529,
+      "sha256": "e777bd720533eda707533016fb6dd6ce5a0607f3403a7c8b123e795fb56ea1b4",
+      "file_modified_at": "2026-10-26T11:06:42.269992+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/index.html",
+      "bytes": 7868,
+      "sha256": "6d7a97d240aa4596534d50469cc4714ffdb79854affd07322b459d32a6da46b3",
+      "file_modified_at": "2026-10-26T11:04:25.195036+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/mobile-confirmation.jpg",
+      "bytes": 26749,
+      "sha256": "bd9ef8b2d9d89e6e52d7b84891ae8a6e27c2e738ec2019f2d886da94ccbf5fbb",
+      "file_modified_at": "2026-10-26T11:10:28.825818+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/mobile-home.jpg",
+      "bytes": 35593,
+      "sha256": "cb9d28b2f80d695343f0eb16c71347f9965239885c3d53f8c6ac0cd77dad0c79",
+      "file_modified_at": "2026-10-26T11:08:55.798563+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/mobile-lightbox.jpg",
+      "bytes": 33057,
+      "sha256": "a9e47854c5133d9ff3113f3083a4026308f86f9f877a4e215cdf377ccb782734",
+      "file_modified_at": "2026-10-26T11:09:19.472455+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/mobile-visit.jpg",
+      "bytes": 29901,
+      "sha256": "eefe9ac495dd0c10741bcc167e82349e2b2c8aae2ecd32553360d3ff780238f8",
+      "file_modified_at": "2026-10-26T11:10:27.899901+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/mobile-works.jpg",
+      "bytes": 34071,
+      "sha256": "a6c8c6cb1c16077008acf28b63a55d8f62417589f160e4fa98c20d3e2105d294",
+      "file_modified_at": "2026-10-26T11:09:19.152377+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/style.css",
+      "bytes": 17000,
+      "sha256": "1eeeccd84df7776acd25c8496485b8c11324e02b91aec44f47c624fd7b6dca7c",
+      "file_modified_at": "2026-10-26T11:08:42.012047+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "public-exhibition",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/public-exhibition/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/app.js",
+      "bytes": 18773,
+      "sha256": "82f4a229da69a378aa0f538a9fabd7c18d5ce6ea54bb87759ce00fd118bd0382",
+      "file_modified_at": "2026-10-26T10:37:44.614936+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/brief.md",
+      "bytes": 2392,
+      "sha256": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+      "file_modified_at": "2026-10-26T01:56:16+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md",
+      "bytes": 7514,
+      "sha256": "3862b8efef8d13aaaacfb69f8e067a224a6d53a52cf85904ac02b9fba24c2f89",
+      "file_modified_at": "2026-10-26T10:40:40.328082+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/data.js",
+      "bytes": 32211,
+      "sha256": "8b04e636da72de5a791a6b3dbd2d2fb14639d71495b8368a92ddbe438830b3d0",
+      "file_modified_at": "2026-10-26T10:24:11.223176+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/data.json",
+      "bytes": 32188,
+      "sha256": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198",
+      "file_modified_at": "2026-10-26T02:04:02+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/desktop-evidence.jpg",
+      "bytes": 148145,
+      "sha256": "78ac3af1e2dde2b234711f0cb4c8b18d715bad5b4e86326e9aada9f36ba6c0a1",
+      "file_modified_at": "2026-10-26T10:35:41.704926+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/desktop-reading.jpg",
+      "bytes": 149713,
+      "sha256": "0ca21df6a4acac242879c7e7d06d66a0cc3ca75682472112e440bd7ec3a6cc7f",
+      "file_modified_at": "2026-10-26T10:35:41.275446+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/index.html",
+      "bytes": 3997,
+      "sha256": "6240cefd9db140b3e514577b76719d3681936994b88e83563ccf220f304a610a",
+      "file_modified_at": "2026-10-26T10:21:35.688188+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/mobile-evidence.jpg",
+      "bytes": 48122,
+      "sha256": "91d24b05f5be6787e348d165719dc98d8ecb0c0843e9070ae669bfad42b1bd13",
+      "file_modified_at": "2026-10-26T10:30:22.021831+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 390,
+      "pixel_height": 843,
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/storage-failure.jpg",
+      "bytes": 156558,
+      "sha256": "2fe4ba6b768caffb36d80edd6044d98f7f9e5ecafa3c8ea2994ac439ed432532",
+      "file_modified_at": "2026-10-26T10:34:48.376627+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1440,
+      "pixel_height": 1000,
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/styles.css",
+      "bytes": 16092,
+      "sha256": "531cb44e3b7c87990de4581cf51a25effa980812f330e568d2e845f8423c150f",
+      "file_modified_at": "2026-10-26T10:33:43.968745+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "A",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/A/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/app.js",
+      "bytes": 16706,
+      "sha256": "bac5dbf1fb1123b7f72ad2c5088429944b130375f81381f97246b7db0a0caada",
+      "file_modified_at": "2026-10-26T10:57:24.458017+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/brief.md",
+      "bytes": 2392,
+      "sha256": "3c6974c9816aa0e93b051bd14f980636580b53f0baf9a747db160ddec3590d5c",
+      "file_modified_at": "2026-10-26T01:56:16+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md",
+      "bytes": 8368,
+      "sha256": "994d32e959c42711c447c84ecccfda042e6c5b33845d42ce887d2d999fd30a92",
+      "file_modified_at": "2026-10-26T11:02:59.834809+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/data.js",
+      "bytes": 32210,
+      "sha256": "1b83454b4be545f10f75f3e7368ca89fe5d53c87ef1f992a1d4ef899312d32eb",
+      "file_modified_at": "2026-10-26T10:51:21.250400+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/data.json",
+      "bytes": 32188,
+      "sha256": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198",
+      "file_modified_at": "2026-10-26T02:04:02+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/index.html",
+      "bytes": 2966,
+      "sha256": "4d8e7155e39d8b618a90786707b36c90478b7f7c37fbe4441c083ec04d06adea",
+      "file_modified_at": "2026-10-26T10:51:20.544298+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/storage-check.html",
+      "bytes": 304,
+      "sha256": "a3e619726a6f7e2043d4fefe7dd3a83fffaf754ad52eb4fb63fa83fe56e3b8bb",
+      "file_modified_at": "2026-10-26T11:00:11.099186+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/styles.css",
+      "bytes": 15744,
+      "sha256": "6ed10f5a1ea19068ccaa30e52dceb3582d00c834203cd2b119ba08a8a4a20b3c",
+      "file_modified_at": "2026-10-26T10:57:23.743573+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "scene": "reading-evidence",
+      "label": "B",
+      "attempt": 1,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/runs/reading-evidence/B/BUILD.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/browser-request.json",
+      "bytes": 223,
+      "sha256": "da59b5de7566558cd992b46e52c99f0bd745ee5af7e5259cf70195b33ec634c3",
+      "file_modified_at": "2026-10-26T10:34:43.044994+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/contrast-check.json",
+      "bytes": 9968,
+      "sha256": "10020c93f69a099fffbc71de4ba5cf1620ef8238b8ccf69ceb25d37a3424d1d3",
+      "file_modified_at": "2026-10-26T10:25:43.664604+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/environment.json",
+      "bytes": 1945,
+      "sha256": "02e2ea65f051111031c57aa7882d7e6369e14514f96c6cb0766d4af314bb6137",
+      "file_modified_at": "2026-10-26T10:37:23.149894+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/ink-cyan-combined-focus.jpg",
+      "bytes": 89837,
+      "sha256": "6a0d545505073334e5af83f850e25e36a20291a7b77ba1ac71ab243b1cab1c8e",
+      "file_modified_at": "2026-10-26T10:23:03.476970+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/ink-cyan-components.jpg",
+      "bytes": 88507,
+      "sha256": "0f006f9191859c54e5317e05a8ea0aa7e2ea68f9240e533a30ae20eec48f5bcd",
+      "file_modified_at": "2026-10-26T10:35:53.351598+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/ink-cyan-desktop.jpg",
+      "bytes": 130049,
+      "sha256": "c22398e00a41c50f1906fa35ed5cd2422bde6a74a37862aa988362316868bc79",
+      "file_modified_at": "2026-10-26T10:20:36.145861+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/ink-cyan-library.jpg",
+      "bytes": 100751,
+      "sha256": "5cb655761192b3211155f55e66f1589ec0f5f993f6e43cab1792d8c049c68025",
+      "file_modified_at": "2026-10-26T10:35:52.725635+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/ink-cyan-mobile.jpg",
+      "bytes": 47504,
+      "sha256": "7d0be44d9b71f2468103e7d2682d0de64c5a68dd83e04f526910d311f458a465",
+      "file_modified_at": "2026-10-26T10:22:10.328971+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/interaction-checks.json",
+      "bytes": 2335,
+      "sha256": "6df610bf82965d01357dfd4fad04d1cb9c6b1bc34146f4f70a386179064e2257",
+      "file_modified_at": "2026-10-26T10:35:53.353596+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/mobile-checks.json",
+      "bytes": 708,
+      "sha256": "49814f70a2a8f3421363b2c059ea1a6c230061aaa9ebb16fdb1fbed607c9dcde",
+      "file_modified_at": "2026-10-26T10:22:43.090842+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/neutral-cobalt-components.jpg",
+      "bytes": 90057,
+      "sha256": "620ec3f3b42e052e74a2e472740bdd1e6402c13abdae00fc5b6d17b0be48cb00",
+      "file_modified_at": "2026-10-26T10:23:04.066607+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/neutral-cobalt-desktop.jpg",
+      "bytes": 128826,
+      "sha256": "3491803fab609c67f977e6e47345ec4011bbd4749bf6d0e588e0842ae54e06ec",
+      "file_modified_at": "2026-10-26T10:20:17.220424+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/neutral-cobalt-library.jpg",
+      "bytes": 100795,
+      "sha256": "14b882fdb7b7ce5391e0b26b748bc7b6da841eb581bc0d540647e2dc4c4ec005",
+      "file_modified_at": "2026-10-26T10:35:52.130235+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/neutral-cobalt-mobile.jpg",
+      "bytes": 46797,
+      "sha256": "85c6cc30e2310934d810b5c69366e119f875a2157cfbcc501135222c3b788e8a",
+      "file_modified_at": "2026-10-26T10:22:10.013451+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-combined-focus.jpg",
+      "bytes": 84751,
+      "sha256": "67ee9d9a05d08ea721a42d3f714c26ef1940a9f0ef7edbc798b5f9c6af922bc8",
+      "file_modified_at": "2026-10-26T10:21:32.989139+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-desktop.jpg",
+      "bytes": 118746,
+      "sha256": "4dc3103f2aeaa1738ff25661232c484ed71aa05c6e8c578d9170edef6ae53292",
+      "file_modified_at": "2026-10-26T10:20:36.475039+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-library.jpg",
+      "bytes": 94947,
+      "sha256": "6ca2cbda3da0995cc37eaa1222d1ae57f34b6be3e94923f974b1fe69ed713a3e",
+      "file_modified_at": "2026-10-26T10:21:14.771542+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1425,
+      "pixel_height": 990,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-mobile-evidence.jpg",
+      "bytes": 37440,
+      "sha256": "bfe29a5a80334b3cdda6335003707656b45dbb28fdaf3f079c43c0b667954de1",
+      "file_modified_at": "2026-10-26T10:22:42.201181+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-mobile-source.jpg",
+      "bytes": 50149,
+      "sha256": "b765e00199956a02dff4434f60d742779ddf7f557531f24b037ede0e584a4717",
+      "file_modified_at": "2026-10-26T10:22:42.510416+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/style-lab/paper-berry-mobile.jpg",
+      "bytes": 45451,
+      "sha256": "8af1e87a3912ae545e27f10bf3deb66164932bc08bd4f64a827fc3bd2fddce8c",
+      "file_modified_at": "2026-10-26T10:22:10.645342+08:00",
+      "purpose": "original browser capture; CSS viewport/state belongs to the associated record",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 375,
+      "pixel_height": 811,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/user-review/browser-checks.json",
+      "bytes": 10025,
+      "sha256": "e1aead900e9eef3efc596dc0bcddbd6c7f2f1ffba8815ba08cc0f45c614dcb1a",
+      "file_modified_at": "2026-10-26T13:19:50.644505+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/user-review/overview.jpg",
+      "bytes": 116769,
+      "sha256": "b79dc1d6ef99f764a19d6816a7e85ca014587e4a497be412daca529105cfdc6e",
+      "file_modified_at": "2026-10-26T13:20:02.834121+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "kind": "screenshot",
+      "encoding": "JPEG",
+      "pixel_width": 1014,
+      "pixel_height": 1084,
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/user-review-server.json",
+      "bytes": 272,
+      "sha256": "8989b830d586e7578da4542bbf5d48ac7e1244f30fe8988ea0aae026032c917f",
+      "file_modified_at": "2026-10-26T13:08:39.210728+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/version-map.json",
+      "bytes": 229,
+      "sha256": "eb7b419383b04d1c4514844470c7895f9491c326db256d218c3ef9f7682ac9fc",
+      "file_modified_at": "2026-10-26T10:14:58.766529+08:00",
+      "purpose": "retained source or execution record; not itself a pass assertion"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/acceptance-reassessment.md",
+      "bytes": 9351,
+      "sha256": "dc10c0d0a16f9ce821bdd66341589a4d167f522514fe03e9b8c4ee1c7cb479dd",
+      "file_modified_at": "2026-10-26T13:12:18.271371+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/blind-comparison.md",
+      "bytes": 8339,
+      "sha256": "26a0d9ef5a16e87af1fe3362445396acd061741cf95ffd33a780dbee55c19c5e",
+      "file_modified_at": "2026-10-26T11:30:44.482994+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/audit-diff.json",
+      "bytes": 401,
+      "sha256": "8e12312cdf01d8aa50167e4367ec43be96d44a9b262b0372da8124f1d1c55d30",
+      "file_modified_at": "2026-10-26T14:10:35.579461+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/final-integrity.json",
+      "bytes": 12025,
+      "sha256": "3065c3dce73e8811c9b38e94c6cb6b482ca486d5d63deb9595c6a85101c886eb",
+      "file_modified_at": "2026-10-26T14:08:47.891139+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/post-freeze-diff.json",
+      "bytes": 764,
+      "sha256": "3b35e5be5c4ac669939d24326a5eb69659ac700d252e75f98ed250cacf29474e",
+      "file_modified_at": "2026-10-26T14:08:47.821135+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/resource-check.json",
+      "bytes": 10849,
+      "sha256": "bac787c4d9beac787e3304a09a1a5adb2a29f2489d5b13820381e2dcbb9f288a",
+      "file_modified_at": "2026-10-26T14:08:47.803133+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/runtime-hashes.json",
+      "bytes": 4041,
+      "sha256": "169298fdb4ca334c54fa18c0db0d9ce75153f6e7c28f1cc4bea08acb5eaa69ae",
+      "file_modified_at": "2026-10-26T14:08:47.821135+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/static-check.json",
+      "bytes": 10807,
+      "sha256": "608dd7fce33b71fe9cbb1b06b882fbb653ddf9e5f56dc94e35ba0098e84b5aeb",
+      "file_modified_at": "2026-10-26T14:08:47.636914+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout-checks/tool-behavior.json",
+      "bytes": 278,
+      "sha256": "af484c8722a2b40282d2ef6391ccb8de3040978bd9f0609475ea10b5f0f92602",
+      "file_modified_at": "2026-10-26T14:14:58.321701+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/closeout.md",
+      "bytes": 4792,
+      "sha256": "73d1ae5bd5dce7fc30c64d056b6c1703f8a7516b3ec6868ff8f3dfc5635fd108",
+      "file_modified_at": "2026-10-26T14:16:16.536135+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/comparison-report.md",
+      "bytes": 6550,
+      "sha256": "0488d4081f0521ac05bd0546dfb13d7deb672dbcd866ce9270aba58cd3cd9ff0",
+      "file_modified_at": "2026-10-26T11:40:47.568521+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/execution-report.md",
+      "bytes": 6610,
+      "sha256": "b9d3508ebb6ac8fcb630ae4b846eceb36f04916306c5291e1e51a07648c479d2",
+      "file_modified_at": "2026-10-26T14:08:46.783870+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/final-integrity.json",
+      "bytes": 11901,
+      "sha256": "ce25e0ad7194fb5bc57c88839bfdf8c2c87493d22738af2cafc54acb4e699399",
+      "file_modified_at": "2026-10-26T12:16:58.826418+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/final-review.md",
+      "bytes": 23255,
+      "sha256": "7c3358102a22dfd4ab87678e7f11ac171456d5ad5fe4605cfddd8446b7015e5f",
+      "file_modified_at": "2026-10-26T12:14:59.354372+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/input-integrity.json",
+      "bytes": 2647,
+      "sha256": "164bd7446aaf0aa736c4db30a3d5c0ddbc1b40ca71019f4a0934233f1965a387",
+      "file_modified_at": "2026-10-26T10:49:19.988828+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/merge-check.json",
+      "bytes": 3857,
+      "sha256": "c4a1ef3aac45a5ee21a8b3ce06724335e10cc7525b910a3d88b7e885c759dcf1",
+      "file_modified_at": "2026-10-26T10:28:53.518322+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/package-integrity.json",
+      "bytes": 7736,
+      "sha256": "ae812ece4dbd61d0368a1bb9a2896abc3c5d3ea86eaa7f5fbb374b5904a64058",
+      "file_modified_at": "2026-10-26T10:28:53.106827+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/post-freeze-resource-supplement.md",
+      "bytes": 3076,
+      "sha256": "6ec78bf2e0baaeb22beca191ea12dc86fc26f8f5eadd16546d6c91fd1ebb3727",
+      "file_modified_at": "2026-10-26T12:05:49.359969+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/reading-cause-analysis.md",
+      "bytes": 10520,
+      "sha256": "1bae451b675f594e0e830f6e27ed5ff4b885d3bea253dce5f84a317d12d5a2e3",
+      "file_modified_at": "2026-10-26T13:12:35.096162+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/remaining-work.md",
+      "bytes": 2545,
+      "sha256": "8e212980c4bdd702004a5925ae142721b64b978e11615340601f0fc60cebc910",
+      "file_modified_at": "2026-10-26T14:08:01.077049+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/report-link-check.json",
+      "bytes": 342,
+      "sha256": "171adf1fa79a5f61f665d174cd20c113b709609dc12a4d11fa1d94075cb95d3a",
+      "file_modified_at": "2026-10-26T12:17:58.736253+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/requirements-status.md",
+      "bytes": 8408,
+      "sha256": "e220fb8cc42e778ed6b59cf409a95449ace0a6af150aa2f3758859f5c5a45757",
+      "file_modified_at": "2026-10-26T14:08:46.782873+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/resource-check.json",
+      "bytes": 10849,
+      "sha256": "4528fc1194ce41c3b217db1c1d1e011f11b06b9a54e5da97f2d9292b3407b6e5",
+      "file_modified_at": "2026-10-26T12:16:58.726539+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/static-check.json",
+      "bytes": 10807,
+      "sha256": "73d1ae60343194d4b8dac962345749a4a81e104922dc5a106cb271777c5a4bc5",
+      "file_modified_at": "2026-10-26T12:16:58.551533+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/static-rule-review.md",
+      "bytes": 1425,
+      "sha256": "9f4e20026b4b4a4f0d37fa18d0a4519762226366c4bc95bf3c9f5184ae8e4607",
+      "file_modified_at": "2026-10-26T10:48:44.446009+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/style-lab-review.md",
+      "bytes": 4632,
+      "sha256": "23bed7d4660c2a4b4aabf1af37bed76835a627f9ac90d64947d5d8341a96aa86",
+      "file_modified_at": "2026-10-26T10:35:02.817914+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/supplementary-checks.json",
+      "bytes": 969,
+      "sha256": "9e97a956e19bd7dcb78a1428eeb26f9a923c66addcfcae332581953ef813c22c",
+      "file_modified_at": "2026-10-26T10:37:23.390646+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-feedback-2026-10-26.md",
+      "bytes": 4127,
+      "sha256": "57c7fe7c04abaa616e6bd2412df15019d3490cbde969efd5a2c87c2f1060ce94",
+      "file_modified_at": "2026-10-26T13:40:17.166049+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-integrity.json",
+      "bytes": 2139,
+      "sha256": "f8bfc4ae831844b9d1a176bda0f25ed61ed53e3e976ebfa1c92e0c2d0d91723d",
+      "file_modified_at": "2026-10-26T13:22:07.676779+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md",
+      "bytes": 4785,
+      "sha256": "83b768dbc508a2524466122d68721bd4e2eba555ec22bd510358917df9f62783",
+      "file_modified_at": "2026-10-26T14:08:01.076422+08:00",
+      "purpose": "review or execution record; inspect stated scope and raw evidence rather than infer pass"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/user-review/app.js",
+      "bytes": 5453,
+      "sha256": "69569ee9a7bf5453e859ddfb1376eea73620a1ff04df073cace62c08c2aa04bb",
+      "file_modified_at": "2026-10-26T13:12:29.419987+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/user-review/index.html",
+      "bytes": 4868,
+      "sha256": "2c061c424de3027bc51583cd23384d64ad051037dda97b7660d74fdf9ea3c0c5",
+      "file_modified_at": "2026-10-26T13:12:29.418987+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/user-review/mapping.json",
+      "bytes": 872,
+      "sha256": "73742ed09ed3b8c448736906c675397e40c810c6028ce6bf912e45cb046cca34",
+      "file_modified_at": "2026-10-26T13:12:29.419987+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/user-review/README.md",
+      "bytes": 1777,
+      "sha256": "bb7c4afb72e686cf604ebd430f82f664809a1c5230083be4f62da14dd8cadd2d",
+      "file_modified_at": "2026-10-26T13:12:29.419987+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    },
+    {
+      "path": "maintenance/frontend-craft/upgrades/2026-10-26/user-review/styles.css",
+      "bytes": 3297,
+      "sha256": "a68cea5cc209375efab74d99c4fca3da01f4cd72baa2fe76bec8f71fd093419e",
+      "file_modified_at": "2026-10-26T13:13:57.895882+08:00",
+      "purpose": "user comparison viewer or its verification; no user preference or acceptance is inferred",
+      "context_record": "maintenance/frontend-craft/upgrades/2026-10-26/reports/user-review-status.md"
+    }
+  ]
+}

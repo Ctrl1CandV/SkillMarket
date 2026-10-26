@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-10-26T04:02:32.509Z",
+  "action": "Clicked first actual backlink from source [21], not direct URL navigation",
+  "state": {
+    "height": 1000,
+    "scrollY": 3815.199951171875,
+    "targetRect": {
+      "bottom": 18.975000753998756,
+      "top": -0.22500000894069672
+    },
+    "targetText": "The idea of encoder–decoder sequence transduction had been developed in the early 2010s; commonly cited as the originators that produced seq2seq are two concurrently published papers from 2014.[21][22][original research?]",
+    "url": "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#cite_ref-:22_23-0",
+    "width": 1440
+  }
+}

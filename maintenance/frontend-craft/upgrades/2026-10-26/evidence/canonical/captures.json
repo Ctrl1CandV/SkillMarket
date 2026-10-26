@@ -1,0 +1,354 @@
+[
+  {
+    "scene": "dense-operations",
+    "label": "A",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "序流 · 导入作业",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:04:17.753Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "dense-operations",
+    "label": "A",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 375,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "序流 · 导入作业",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:04:28.513Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "dense-operations",
+    "label": "B",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "录集 · 导入作业",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:04:40.491Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "dense-operations",
+    "label": "B",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 375,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "录集 · 导入作业",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:04:40.545Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "A",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "短时盐度脉冲对河口湿地幼苗恢复的影响：来自三个控制水槽的模拟观察记录 · 页间",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:13:52.539Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "A",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 390,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "短时盐度脉冲对河口湿地幼苗恢复的影响：来自三个控制水槽的模拟观察记录 · 页间",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:13:52.599Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "A",
+    "state": "desktop-citation-s2-p2",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "短时盐度脉冲对河口湿地幼苗恢复的影响：来自三个控制水槽的模拟观察记录 · 页间",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:14:08.904Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/desktop-citation-s2-p2.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "A",
+    "state": "mobile-citation-s2-p2",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 390,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "短时盐度脉冲对河口湿地幼苗恢复的影响：来自三个控制水槽的模拟观察记录 · 页间",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:14:27.876Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/A/mobile-citation-s2-p2.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "B",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "照读 · 资料与证据",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:16:11.563Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "B",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 390,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "照读 · 资料与证据",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:16:11.632Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "B",
+    "state": "desktop-citation-s2-p2",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "照读 · 资料与证据",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:16:32.698Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/desktop-citation-s2-p2.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "reading-evidence",
+    "label": "B",
+    "state": "mobile-citation-s2-p2",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 390,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "照读 · 资料与证据",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:17:58.889Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/reading-evidence/B/mobile-citation-s2-p2.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "dense-operations",
+    "label": "A",
+    "state": "desktop-mixed-retry",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "序流 · 导入作业",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:19:22.407Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/A/desktop-mixed-retry.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "dense-operations",
+    "label": "B",
+    "state": "desktop-mixed-retry",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "录集 · 导入作业",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:20:47.954Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/dense-operations/B/desktop-mixed-retry.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "A",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:24:55.143Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "A",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 375,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:24:55.192Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "A",
+    "state": "desktop-gallery",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 1527.199951171875,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:22:54.751Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-gallery.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "A",
+    "state": "desktop-artwork-02",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 1686.4000244140625,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:22:55.092Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/A/desktop-artwork-02.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "B",
+    "state": "desktop-initial",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:25:30.864Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "B",
+    "state": "mobile-initial",
+    "css_viewport": {
+      "height": 844,
+      "pageWidth": 375,
+      "scrollX": 0,
+      "scrollY": 0,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 390
+    },
+    "captured_at": "2026-10-26T03:25:30.905Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/mobile-initial.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "B",
+    "state": "desktop-gallery",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1425,
+      "scrollX": 0,
+      "scrollY": 1454.4000244140625,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:25:30.983Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-gallery.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  },
+  {
+    "scene": "public-exhibition",
+    "label": "B",
+    "state": "desktop-artwork-02",
+    "css_viewport": {
+      "height": 1000,
+      "pageWidth": 1440,
+      "scrollX": 0,
+      "scrollY": 1600.800048828125,
+      "title": "未完成的路线 · Unfinished Routes",
+      "width": 1440
+    },
+    "captured_at": "2026-10-26T03:25:31.299Z",
+    "path": "maintenance/frontend-craft/upgrades/2026-10-26/evidence/canonical/public-exhibition/B/desktop-artwork-02.jpg",
+    "method": "cua_repl tab.screenshot; unmodified bytes; viewport verified immediately before capture"
+  }
+]

@@ -1,0 +1,316 @@
+{
+  "scope": "Opaque hex role pairs only; no opacity compositing, rendered text, focus interaction, or overall accessibility/visual judgment.",
+  "method": "sRGB relative luminance with (L1+0.05)/(L2+0.05)",
+  "themes": [
+    {
+      "theme": "neutral-cobalt",
+      "pairs": [
+        {
+          "foreground": "ink",
+          "background": "surface",
+          "ratio": 15.221,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "canvas",
+          "ratio": 13.685,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-soft",
+          "ratio": 14.166,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-inset",
+          "ratio": 13.277,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "surface",
+          "ratio": 5.935,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "canvas",
+          "ratio": 5.336,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "surface",
+          "ratio": 6.972,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "accent-soft",
+          "ratio": 6.061,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "on-accent",
+          "background": "accent",
+          "ratio": 6.972,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "good",
+          "background": "good-soft",
+          "ratio": 6.225,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "warning",
+          "background": "warning-soft",
+          "ratio": 6.314,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "danger",
+          "background": "danger-soft",
+          "ratio": 6.434,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "surface",
+          "ratio": 3.559,
+          "static_threshold": 3,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "canvas",
+          "ratio": 3.2,
+          "static_threshold": 3,
+          "meets_threshold": true
+        }
+      ]
+    },
+    {
+      "theme": "ink-cyan",
+      "pairs": [
+        {
+          "foreground": "ink",
+          "background": "surface",
+          "ratio": 13.463,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "canvas",
+          "ratio": 15.43,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-soft",
+          "ratio": 11.931,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-inset",
+          "ratio": 10.565,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "surface",
+          "ratio": 7.997,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "canvas",
+          "ratio": 9.166,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "surface",
+          "ratio": 10.544,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "accent-soft",
+          "ratio": 7.442,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "on-accent",
+          "background": "accent",
+          "ratio": 10.559,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "good",
+          "background": "good-soft",
+          "ratio": 8.044,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "warning",
+          "background": "warning-soft",
+          "ratio": 9.046,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "danger",
+          "background": "danger-soft",
+          "ratio": 8.185,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "surface",
+          "ratio": 4.457,
+          "static_threshold": 3,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "canvas",
+          "ratio": 5.108,
+          "static_threshold": 3,
+          "meets_threshold": true
+        }
+      ]
+    },
+    {
+      "theme": "paper-berry",
+      "pairs": [
+        {
+          "foreground": "ink",
+          "background": "surface",
+          "ratio": 14.147,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "canvas",
+          "ratio": 11.938,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-soft",
+          "ratio": 12.867,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "ink",
+          "background": "surface-inset",
+          "ratio": 11.656,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "surface",
+          "ratio": 5.956,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "muted",
+          "background": "canvas",
+          "ratio": 5.026,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "surface",
+          "ratio": 7.598,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "accent",
+          "background": "accent-soft",
+          "ratio": 6.164,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "on-accent",
+          "background": "accent",
+          "ratio": 7.561,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "good",
+          "background": "good-soft",
+          "ratio": 5.905,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "warning",
+          "background": "warning-soft",
+          "ratio": 5.851,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "danger",
+          "background": "danger-soft",
+          "ratio": 5.734,
+          "static_threshold": 4.5,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "surface",
+          "ratio": 3.83,
+          "static_threshold": 3,
+          "meets_threshold": true
+        },
+        {
+          "foreground": "control-line",
+          "background": "canvas",
+          "ratio": 3.232,
+          "static_threshold": 3,
+          "meets_threshold": true
+        }
+      ]
+    }
+  ],
+  "all_listed_pairs_meet_threshold": true
+}

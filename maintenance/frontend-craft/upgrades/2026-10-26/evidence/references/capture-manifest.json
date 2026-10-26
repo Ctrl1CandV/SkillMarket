@@ -1,0 +1,108 @@
+[
+  {
+    "path": "frontend-craft/assets/references/tufte-css/desktop.jpg",
+    "sha256": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d",
+    "bytes": 162899,
+    "css_viewport": {
+      "height": 1000,
+      "width": 1440
+    },
+    "saved_image_pixels": {
+      "height": 990,
+      "width": 1425
+    },
+    "captured_at": "2026-10-26",
+    "visually_viewed": true,
+    "modified_image": false
+  },
+  {
+    "path": "frontend-craft/assets/references/tabler/desktop.jpg",
+    "sha256": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a",
+    "bytes": 130969,
+    "css_viewport": {
+      "height": 1000,
+      "width": 1440
+    },
+    "saved_image_pixels": {
+      "height": 990,
+      "width": 1425
+    },
+    "captured_at": "2026-10-26",
+    "visually_viewed": true,
+    "modified_image": false
+  },
+  {
+    "path": "frontend-craft/assets/references/photoswipe/gallery.jpg",
+    "sha256": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5",
+    "bytes": 145742,
+    "css_viewport": {
+      "height": 1000,
+      "width": 1440
+    },
+    "saved_image_pixels": {
+      "height": 990,
+      "width": 1425
+    },
+    "captured_at": "2026-10-26",
+    "visually_viewed": true,
+    "modified_image": false
+  },
+  {
+    "path": "frontend-craft/assets/references/photoswipe/lightbox.jpg",
+    "sha256": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb",
+    "bytes": 137138,
+    "css_viewport": {
+      "height": 1000,
+      "width": 1440
+    },
+    "saved_image_pixels": {
+      "height": 990,
+      "width": 1425
+    },
+    "captured_at": "2026-10-26",
+    "visually_viewed": true,
+    "modified_image": false
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/body-citation.jpg",
+    "sha256": "04f51b9aad28e19bba8c9e4a961bfb515413fbbc3e2f98eb6ead6ea7cab9fbe8",
+    "bytes": 238663,
+    "css_viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "saved_image_pixels": {
+      "width": 1425,
+      "height": 990
+    },
+    "captured_at": "2026-10-26",
+    "saved_at_utc_from_file_mtime": "2026-10-26T03:51:02.656206+00:00",
+    "visually_viewed": true,
+    "modified_image": false,
+    "post_build_freeze": true,
+    "observed_scroll_y": 3647.199951171875,
+    "page_state": "实际点击目录 Attention with seq2seq；正文首段旁有 [21][22] 与原页提示，尚未跳至文末来源。",
+    "timestamp_limit": "File mtime is save time, not a separately instrumented capture start time; original body per-call metadata was lost in a later browser kernel timeout."
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/source-location.jpg",
+    "sha256": "95fcf355acacc4e140d07c07eb1f89df5f6814fe5615a63d71bbb3ea2bfde347",
+    "bytes": 184507,
+    "css_viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "saved_image_pixels": {
+      "width": 1425,
+      "height": 990
+    },
+    "captured_at": "2026-10-26",
+    "saved_at_utc_from_file_mtime": "2026-10-26T03:58:14.086343+00:00",
+    "visually_viewed": true,
+    "modified_image": false,
+    "post_build_freeze": true,
+    "observed_scroll_y": 8487.2001953125,
+    "page_state": "实际点击正文第一次 [21] 后，Cho 等 2014 文献条目高亮，显示作者、论文题目、ACL/DOI 及两个回链。",
+    "timestamp_limit": "Exact saved record is in wikipedia-source-capture.json."
+  }
+]

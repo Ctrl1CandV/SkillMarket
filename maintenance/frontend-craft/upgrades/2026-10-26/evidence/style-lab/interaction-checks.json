@@ -1,0 +1,98 @@
+[
+  {
+    "test": "locate source 2",
+    "actual": {
+      "active": "source-2",
+      "text": "已定位到对应原文。段末引用可返回核对说明。"
+    }
+  },
+  {
+    "test": "return evidence 2",
+    "actual": {
+      "active": "evidence-2"
+    }
+  },
+  {
+    "test": "empty note validation",
+    "actual": "true"
+  },
+  {
+    "test": "temporary note preview",
+    "actual": "当前批注\n\n核对往返位置与长中文批注。"
+  },
+  {
+    "test": "view library focus",
+    "actual": "library-heading"
+  },
+  {
+    "test": "empty filter",
+    "actual": "筛选结果 0 篇，共 8 篇样稿"
+  },
+  {
+    "test": "clear filter",
+    "actual": "当前显示 8 篇"
+  },
+  {
+    "test": "status filter",
+    "actual": "筛选结果 3 篇，共 8 篇样稿"
+  },
+  {
+    "test": "summary expand",
+    "actual": 1
+  },
+  {
+    "test": "empty title",
+    "actual": "true"
+  },
+  {
+    "test": "valid input",
+    "actual": "本页输入检查通过。未提交数据，也未执行保存。"
+  },
+  {
+    "test": "manual state loading",
+    "actual": "内容加载中 · 演示\n返回可开始状态"
+  },
+  {
+    "test": "manual state success",
+    "actual": "✓\n示例内容已呈现\n\n这是预置的完成状态样张，没有执行上传、分析或保存。\n\n返回可开始状态"
+  },
+  {
+    "test": "manual state error",
+    "actual": "!\n样例输入需要补充\n\n示例：资料标题为空。保留已输入内容，让用户在原处修正。\n\n查看恢复后的状态"
+  },
+  {
+    "test": "manual state ready",
+    "actual": "↗\n准备查看内容\n\n此处展示状态反馈，不连接外部资料。\n\n查看加载样式"
+  },
+  {
+    "test": "keyboard combined focus",
+    "actual": {
+      "active": "combined-item",
+      "description": "combined-warning-message",
+      "outline": "rgb(143, 45, 89) solid 2.4px",
+      "selected": "true"
+    }
+  },
+  {
+    "test": "mobile panel navigation",
+    "actual": {
+      "active": "evidence-panel",
+      "top": 90.1624984741211
+    }
+  },
+  {
+    "test": "mobile source return",
+    "actual": {
+      "active": "source-2",
+      "top": 90.0999984741211
+    }
+  },
+  {
+    "test": "refresh removes temporary preview",
+    "actual": false
+  },
+  {
+    "test": "reset form restores title",
+    "actual": "当一条解释需要回到原文"
+  }
+]

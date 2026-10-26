@@ -1,0 +1,31 @@
+{
+  "scope": "Input fixture consistency only; no generated frontend, browser run or visual comparison.",
+  "json_datasets": 3,
+  "reading": {
+    "papers": 6,
+    "passages": 36,
+    "tables": 5,
+    "questions": 6,
+    "citation_links": 24,
+    "initial_notes": 2
+  },
+  "operations": {
+    "jobs": 12,
+    "statuses": 6,
+    "owners": 5,
+    "activity_records": 24
+  },
+  "exhibition": {
+    "artists": 4,
+    "works": 8,
+    "parseable_original_svgs": 8,
+    "visit_slots": 6
+  },
+  "checked": "JSON, IDs, ownership references, citation targets, table row widths, job fields/states/progress/times, allowed operation states, SVG dimensions and no active/external content, slot date/hours/capacity, brief input/viewport declarations",
+  "status": "pass",
+  "input_sha256": {
+    "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/dense-operations/data.json": "5deb5f8dd527587eebf47c3130d61d7b772d2b6f88fef74899323972ee5a20d6",
+    "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/public-exhibition/data.json": "b1ad7ca72fb9d9035006f3fbcc55e30fe77677223acb106a03b59e7b40fcc33d",
+    "dev-only/maintenance/frontend-craft/upgrades/2026-10-26/evals/reading-evidence/data.json": "c79553046642307fb0e888b370ac24f92d99622cea0f554878d1a94f27437198"
+  }
+}

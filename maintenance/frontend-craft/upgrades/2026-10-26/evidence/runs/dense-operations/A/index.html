@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183c35"><title>序流 · 导入作业</title>
+  <link rel="stylesheet" href="styles.css"><script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><strong>序流</strong><span class="brand-sub">团队数据工作台</span></a>
+    <div class="workspace-label"><span class="demo-dot"></span>本地演示<span class="avatar">演</span></div>
+  </header>
+  <main>
+    <div class="breadcrumb">工作台 <span>/</span> 数据导入</div>
+    <section class="page-heading"><div><div class="eyebrow">IMPORT OPERATIONS</div><h1>导入作业</h1><p>检查队列、核对问题，继续处理团队的导入任务。</p></div><button class="button subtle" id="reset">↺ <span>恢复演示队列</span></button></section>
+    <div class="demo-notice"><span aria-hidden="true">◈</span><span>虚构演示数据，操作仅保存在当前浏览器，不连接生产系统。</span><span id="save-status">本地已就绪</span></div>
+    <section class="queue" aria-label="作业队列">
+      <div class="queue-top"><div><h2>作业队列 <span id="total-count">—</span></h2><span class="snapshot">初始快照 · 2026.10.26 09:35</span></div><span class="timezone">时间为北京时间</span></div>
+      <div id="status-tabs" class="status-tabs" role="group" aria-label="按作业状态筛选"></div>
+      <div class="filters">
+        <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索编号、作业名称或源文件" aria-label="搜索编号、作业名称或源文件"><kbd>/</kbd></label>
+        <label class="field"><span>负责人</span><select id="owner" aria-label="按负责人筛选"><option value="">全部成员</option></select></label>
+        <label class="field sort-field"><span>排序</span><select id="sort" aria-label="排序字段"><option value="submitted_at">提交时间</option><option value="priority">优先级</option><option value="records_total">记录总数</option></select></label>
+        <button class="button direction" id="direction" aria-label="切换升降序">↓ 最新优先</button>
+      </div>
+      <div class="result-line"><span id="result-count" aria-live="polite">正在读取本地演示队列…</span><button class="text-button" id="clear-filters" hidden>清除筛选</button></div>
+      <div class="selection-bar" id="selection-bar" hidden></div>
+      <div id="error" role="alert" hidden></div>
+      <div id="table-wrap" class="table-wrap">
+        <table><caption class="sr-only">数据导入作业：可比较状态、负责人、处理记录数、优先级及提交时间。</caption><thead><tr><th class="check-col"><input type="checkbox" id="select-all" aria-label="选择当前结果中的全部作业"></th><th class="job-col">作业 / 源文件</th><th>状态</th><th>负责人</th><th class="number-heading">已处理 / 记录总数</th><th>优先级</th><th>提交时间</th><th><span class="sr-only">详情</span></th></tr></thead><tbody id="jobs"></tbody></table>
+      </div>
+      <div id="empty" class="empty" hidden></div>
+      <div class="queue-footer"><span id="footer-count"></span><span>所有变更可在作业活动中追溯</span></div>
+    </section>
+    <footer class="page-footer"><span>序流 / 本地演示工作区</span><span>数据版本 1.0</span></footer>
+  </main>
+  <dialog id="detail" class="detail-dialog" aria-labelledby="detail-title"><div id="detail-content"></div></dialog>
+  <dialog id="operation" class="operation-dialog" aria-labelledby="operation-title"><div id="operation-content"></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body></html>
