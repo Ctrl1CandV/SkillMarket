@@ -17,6 +17,7 @@
 | [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；真实研究验收待补 |
 | [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
+| [docvision](docvision/) | [0.1.0-rc.1 初版设计与调研](docvision/reports/initial-design-2026-10-28.md)：本地 MinerU/PaddleOCR 实测、远程适配器 mock、统一输出、环境引导；真实远程 token、8 GB 与准确率待补 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
 | [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办 |
@@ -29,6 +30,7 @@
 - **product-design / frontend-craft**：0.2.0-rc.1 / 0.5.0-rc.1 的实施、比较、用户反馈和核查已收尾，按用户随后授权将运行变更提交到 main/dev、维护归档仅留 dev，见[收尾记录](frontend-craft/upgrades/2026-10-26/reports/closeout.md)。[阅读反馈](frontend-craft/upgrades/2026-10-26/reports/user-feedback-2026-10-26.md)认可两版布局、认为差距不明显，略偏向旧版标题层级；原终审 INSUFFICIENT_EVIDENCE 与整体视觉提升未证实的事实保留。原包已归档、临时服务与日志已清理，完整入口见[本轮归档](frontend-craft/upgrades/2026-10-26/README.md)和 [TODO](frontend-craft/TODO.md)。
 - **grad-companion-plugin**：三项阅读优化已实施，真实使用与其余旧方案待办见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
+- **docvision**：用真实 MinerU Standard token、GLM/Mistral/Gemini key 和 8 GB 机器补验，并建立 5 类真实样本评测；见 [TODO](docvision/TODO.md)。旧 `mineru` 副本由 docvision 取代，历史报告保留。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
 - **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。
 - **presentation-craft**：原生动画的实际放映验证、真实任务风格观察及按需 Slidev 导出验证，见 [TODO](presentation-craft/TODO.md)。

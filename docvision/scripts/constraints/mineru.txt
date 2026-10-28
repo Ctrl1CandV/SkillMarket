@@ -1,0 +1,3 @@
+# MinerU local runtime (tested 2026-10-28)
+# Python 3.12; install into an isolated conda env or uv venv.
+mineru>=4.0,<4.1

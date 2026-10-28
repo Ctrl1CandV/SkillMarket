@@ -1,3 +1,5 @@
+> 2026-10-28：新技能 `docvision` 已承接本地/远程 OCR，旧的 mineru 副本不再继续修；本目录保留核验历史。
+
 # mineru 待办
 
 已安装副本（3.3.1）核验发现以下问题（详见 [reports/mineru-assessment.md](reports/mineru-assessment.md)），修复并重验前不作为可直接使用的包收录：

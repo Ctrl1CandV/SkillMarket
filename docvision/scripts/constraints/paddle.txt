@@ -1,0 +1,8 @@
+# PaddleOCR-VL local runtime (tested 2026-10-28)
+# GPU (CUDA 12.6) on Windows/Linux:
+#   pip install paddlepaddle-gpu==3.2.1 -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
+# CPU:
+#   pip install paddlepaddle==3.2.1
+paddleocr[doc-parser]>=3.7,<3.8
+python-docx>=1.1,<2
+pypdf>=5,<7
