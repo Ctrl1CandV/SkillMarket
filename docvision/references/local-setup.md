@@ -1,162 +1,90 @@
-# 本地环境：一次装好，长期可用
+# 首次使用与长期环境
 
-目标不是“装一个能跑的包”，而是让 OCR 在半年后、换项目后、系统更新后仍然能定位、能复现、能回滚。做法是：**技能目录只放代码；运行时放独立环境；模型放用户缓存；版本写进约束；每次升级先小样本验收。**
+先运行 `doctor --json`，根据硬件建议和已有引擎选择路线，再安装。这里的容量门槛是规划建议；没有测过的设备不能仅凭显存数字宣称可用。
 
-## 推荐布局
+## 路线选择
+
+| 条件 | 首次建议 |
+|---|---|
+| 8/16 GB 显存，内存充足 | MinerU standard，先单页单并发，再测批量；8 GB 未经本技能真机验证 |
+| 无 GPU、内存较少 | 数字 PDF 用 fast；扫描件先试 economy/basic，CPU 可能很慢 |
+| Apple/AMD/检测不到 GPU | 不把 NVIDIA 检测失败当作没有任何加速；先确认上游平台支持并单页试跑，不自动装 CUDA |
+| 不想装模型/磁盘不足 | 只装 core 制作精读包；需要 OCR 时可另选已授权的 Paddle API |
+| 无 Python/conda/uv | 先安装 Python 3.10+ 及 conda 或 uv；skill 不修改全局 Python |
+
+core 只提供 PDF 渲染、拆页和图片裁剪，不是 OCR 引擎。没有 API 账号也能读文字层、使用本地 OCR 或由当前对话看精读包。Paddle 账号注册由用户完成，不要求在聊天里交密钥。
+
+## 固定布局
 
 ```text
-技能目录（只读运行资源）
-  docvision/
-    SKILL.md
-    references/
-    scripts/            # 本技能代码，无第三方依赖
-    scripts/constraints/ # 版本约束
-
-用户环境（不随仓库提交）
-  conda env docvision-mineru    # MinerU 4，默认本地引擎
-  conda env docvision-paddle    # PaddleOCR-VL，可选 GPU
-  conda env docvision-core      # pypdfium2/Pillow/pypdf，页码渲染/裁剪
-  ~/.mineru/                    # MinerU 模型与配置
-  ~/.paddlex/                   # PaddleOCR 模型缓存
-  %APPDATA%/docvision/config.json  # 只存路径，不存密钥
+技能目录：SKILL.md、references/、scripts/、.gitignore
+          .credentials.env（可选，仅本机用户，不能打包分享）
+用户数据目录：
+  Windows %LOCALAPPDATA%/docvision/
+  Linux/macOS ${XDG_DATA_HOME:-~/.local/share}/docvision/
+    envs/docvision-core/        # 新建独立 conda/uv 环境
+    envs/docvision-mineru/
+    envs/docvision-paddle/      # 可选
+    models/mineru/
+    models/paddlex/
+用户配置：Windows %APPDATA%/docvision/config.json
+          Linux/macOS ${XDG_CONFIG_HOME:-~/.config}/docvision/config.json
+项目目录：docvision-out/ 或 --output 指定目录
+          .staging/、页图、初稿、refinements/ 都在输出内
 ```
 
-Windows 的 conda 环境 Python 在 `<env>\python.exe`；venv 在 `<env>\Scripts\python.exe`。技能会两种都识别。
+每个系统账号使用自己的环境、配置和凭据。不修改未知的同名共享 conda 环境；已有独立环境可在配置中显式指定 Python/exe 复用。Windows conda 的 Python 在 `<env>/python.exe`，uv venv 在 `<env>/Scripts/python.exe`，入口会识别两种布局。
 
-## 一键安装
+模型根优先级为配置 `models_dir` → `DOCVISION_MODELS` → 默认用户数据目录；显式全局根优先于旧的引擎专用路径。没有显式全局根时才复用已有 `MINERU_HOME`/`PADDLE_PDX_CACHE_HOME`、引擎配置或 `~/.mineru`、`~/.paddlex`。`doctor` 显示实际引擎目录；环境变量路径应为绝对路径，`setup --models-dir` 会把输入解析为绝对路径保存。不要把模型设在临时项目或技能目录。
 
-在用户同意下载后运行（不加 `--yes` 只打印计划）：
+## 安装与验收
+
+把 `{SKILL_DIR}` 换成安装目录。从项目目录运行：
 
 ```text
-python "{SKILL_DIR}/scripts/docvision.py" setup --profile mineru --yes
-python "{SKILL_DIR}/scripts/docvision.py" setup --profile paddle --device cuda --yes
+python "{SKILL_DIR}/scripts/docvision.py" doctor --json
+python "{SKILL_DIR}/scripts/docvision.py" setup --profile core --dry-run
 python "{SKILL_DIR}/scripts/docvision.py" setup --profile core --yes
+python "{SKILL_DIR}/scripts/docvision.py" setup --profile mineru --yes
 ```
 
-行为：
+`--manager auto` 优先 conda，否则 uv；新环境都放用户数据目录 `envs/`。没有管理器时清楚报错，不安装到全局。`--dry-run` 仅打印计划，不保存配置或下载。可指定固定模型根：
 
-- `--manager auto`：有 conda 用 conda，否则用 uv。
-- `--manager conda`：创建 `docvision-*` 环境，Python 3.12；不碰现有 `mineru`、`comfyui-h3` 等环境。
-- MinerU：安装 `mineru>=4.0,<5`，然后下载 standard 档模型（约 2 GB）。基础包已含 ONNX 小模型和 llama.cpp Vulkan，不强制 CUDA。
-- Paddle：GPU 时安装 `paddlepaddle-gpu==3.2.1`（Baidu cu126 源）和 `paddleocr[doc-parser]>=3.7,<3.8`；CPU 时安装 `paddlepaddle==3.2.1`。同时装 `python-docx`（Paddle OCR 的 DOCX 导出依赖）和 `pypdf`。
-- Core：只装页面渲染/裁剪需要的 `pypdfium2`、`pillow`、`pypdf`，不装 OCR 模型。
-- 配置会写入 `%APPDATA%/docvision/config.json` 或 `~/.config/docvision/config.json`，记录可执行文件路径；不写任何 key。
-
-如果 conda 的默认 channel 配置损坏（例如镜像 404），`setup` 用 `-c conda-forge --override-channels` 建环境；也可以用 `--conda-channel` 指定可用 channel。
-
-## 手动安装（审计/离线时）
-
-### MinerU（推荐默认）
-
-```bash
-conda create -y -n docvision-mineru python=3.12 -c conda-forge --override-channels
-conda activate docvision-mineru
-python -m pip install -U "mineru>=4.0,<5"
-mineru --version
-mineru-kit parse --help
-mineru-kit models download --tier standard
-mineru-kit models verify --tier standard
+```text
+python "{SKILL_DIR}/scripts/docvision.py" setup --profile mineru --models-dir "D:/OCR-models" --yes
 ```
 
-Windows 上不需要先装 CUDA 就能用基础包；它会用 ONNX 做小模型、llama.cpp Vulkan 做 VLM。想要更高吞吐，官方提供 `mineru[full]`（vLLM/LMDeploy），但 Windows 的 GPU torch 要单独装，且 vLLM 原生 Windows 支持有限；优先在 Linux/WSL2 上尝试。不要为了“更快”在生产任务当天换引擎。
+MinerU 默认下载 standard 档模型，下载失败会报告未完成。仅安装环境可加 `--no-models`，但这不代表模型就绪。economy/basic 需要对应模型：在 doctor 显示的 MinerU 环境中，对同一个 `MINERU_HOME` 执行 `mineru-kit models download --tier basic`。可用 `--mineru-home` 显式指定 MinerU 路径；不要同时给冲突的全局根。
 
-### PaddleOCR-VL（可选，GPU）
+Paddle 是可选路线：
 
-```bash
-conda create -y -n docvision-paddle python=3.12 -c conda-forge --override-channels
-conda activate docvision-paddle
-
-# Windows/Linux，CUDA 12.6；如用其他 CUDA 版本，换官方 index
-python -m pip install "paddlepaddle-gpu==3.2.1" \
-  -i https://www.paddlepaddle.org.cn/packages/stable/cu126/ \
-  --extra-index-url https://pypi.org/simple
-python -m pip install "paddleocr[doc-parser]>=3.7,<3.8" python-docx pypdf
-
-python -c "import paddle; print(paddle.__version__, paddle.device.get_device(), paddle.device.is_compiled_with_cuda())"
-paddleocr doc_parser --help
+```text
+python "{SKILL_DIR}/scripts/docvision.py" setup --profile paddle --device auto --dry-run
+python "{SKILL_DIR}/scripts/docvision.py" setup --profile paddle --device cpu --yes
 ```
 
-CPU 机器把 `paddlepaddle-gpu` 换成 `paddlepaddle==3.2.1`，不要加 CUDA index。
+自动 GPU 安装仅在检测到合适的 NVIDIA/平台条件时选择。GPU 轮子使用官方 CUDA 12.6 源；CUDA/cuDNN、驱动和平台仍须匹配，未知平台先用计划检查，不把 pip 成功当成 GPU 推理成功。Paddle GPU 多索引使用与 pip 一致的候选策略，避免 PyPI 旧版本遮蔽官方版本。
 
-Paddle 的 cuDNN 编译版本和安装的 NVIDIA 运行库可能不一致，出现类似 “compiled with CUDNN 9.9, but CUDNN version ... 9.5” 的警告时，先跑一页真实样本；能稳定跑再批量。若报错，优先改用 CPU 单页验证，再按 Paddle 官方安装页匹配 CUDA/cuDNN，不要混装多个 Paddle 版本。
-
-### Core（页面图/裁剪）
-
-```bash
-conda create -y -n docvision-core python=3.12 -c conda-forge --override-channels
-conda activate docvision-core
-python -m pip install "pypdfium2>=4,<6" "pillow>=10,<13" "pypdf>=5,<7"
-```
-
-`pypdfium2` 用于把 PDF 页渲染成 PNG；`Pillow` 用于裁剪/总览图；`pypdf` 用于按页拆分给 PaddleOCR。没有它们时，文本转换仍可工作，但 `read --format image`、`crop`、`pages` 会提示安装。
-
-## 版本基线（2026-10-28 实测）
-
-| 组件 | 实测/约束 | 说明 |
-|---|---|---|
-| Python | 3.12 | 技能要求 >=3.10；3.12 兼容性最好 |
-| MinerU | 4.0.12 | `mineru>=4.0,<5`；模型 standard 档约 2 GB |
-| PaddleOCR | 3.7.0 | `paddleocr[doc-parser]>=3.7,<3.8` |
-| PaddlePaddle GPU | 3.2.1 | cu126；Windows 可用 |
-| PaddleOCR-VL | 1.6 | 0.9B，首次运行自动下载 |
-| python-docx | 1.2.0 | Paddle `save_all` 的 DOCX 导出 |
-| pypdfium2 | 5.13.0 | 页面渲染 |
-| Pillow | 12.3.0 | 裁剪/总览 |
-| pypdf | 6.1.1 | 拆页 |
-
-约束文件在 `scripts/constraints/`，给离线/审计用；`setup` 使用范围约束而不是死锁，方便安全更新。若需要完全可复现，安装后执行 `pip freeze > lock.txt`，下次用同一 lock 重建。
-
-## 验收
-
-装完不要只看“导入成功”：
+安装后：
 
 ```text
 python "{SKILL_DIR}/scripts/docvision.py" doctor --probe --json
-python "{SKILL_DIR}/scripts/docvision.py" convert "一页真实样本.pdf" --provider mineru-local --json
-python "{SKILL_DIR}/scripts/docvision.py" verify <输出目录> --json
-python "{SKILL_DIR}/scripts/docvision.py" read <输出目录> --page 1
+python "{SKILL_DIR}/scripts/docvision.py" convert "一页真实样本.pdf" --provider mineru-local --output ./_docvision --json
+python "{SKILL_DIR}/scripts/docvision.py" verify ./_docvision/一页真实样本 --json
 ```
 
-至少检查：正文是否完整、公式是否可读、表格列是否对齐、图片是否落盘、页码是否正确、耗时是否可接受。Paddle 还要单页跑一次 `--provider paddleocr-local`，确认 GPU 真的在用（`doctor` 会显示 `gpu:0`，但真正证据是速度和显存）。
+核对正文、公式、表格列、页码、图片和耗时。Paddle 还需真实跑一页 `--provider paddleocr-local`；导入检查不等于管线与模型已经验证。core/Paddle 子进程禁用用户 site，避免全局包混入；已有 MinerU 的用户包策略保持兼容。
 
-## 更新
+## 版本、升级与恢复
 
-升级是显式动作，不在任务中途自动发生：
+2026-10-28 的本机验收基线：Python 3.12、MinerU 4.0.12、PaddleOCR 3.7.0、PaddlePaddle GPU 3.2.1、PaddleOCR-VL 1.6、pypdfium2 5.13.0、Pillow 12.3.0、pypdf 6.1.1。完整实际推理仅在 Windows/NVIDIA 16 GB 机器验证；全新机器、8 GB 和其他平台未做真机验收。
 
-```bash
-conda activate docvision-mineru
-python -m pip install -U "mineru>=4.0,<4.1"   # 先小版本
-mineru-kit models verify --tier standard
-# 用 3-5 页真实样本重跑，比较输出和速度
-```
+`setup` 使用兼容范围，约束文件在 `scripts/constraints/`；并非完全锁定的跨平台安装包。需复现时在 doctor 显示的独立环境执行 `python -m pip freeze > lock.txt`，记录 Python、驱动、模型版本和配置。升级是显式动作，先用 3–5 页样本比对；不要在同一轮同时更换 OCR、CUDA 和模型。备份配置与锁文件，出问题新建独立环境回滚，不反复卸载全局包。
 
-Paddle 同理，先固定 `paddleocr==3.7.x` 和 `paddlepaddle-gpu==3.2.1`，确认新版本再改约束。更新后跑 `doctor`、`verify` 和至少一个含公式/表格的样本。不要在同一环境里同时升级 Paddle、CUDA 和 OCR 模型，否则出问题无法定位。
+## 清理与隐私
 
-## 回滚
+预留 10 GB 以上只是基础规划，轮子、多个档位和下载缓存会增加占用。模型与运行环境长期保留，不随项目清理；卸载或移动它们后需更新配置。
 
-- conda：`conda env export --from-history > environment.yml`；出问题用 `conda env create -f environment.yml` 重建，不要在原环境里反复卸载。
-- 记录 `python -m pip freeze > lock.txt`；回滚时按 lock 重装。
-- 模型与代码分离：删/换 `~/.mineru/models` 或 `~/.paddlex` 不会破坏代码；换模型前保留旧目录名。
-- 技能配置在 `config.json`，只存路径；路径失效时改配置或重跑 `setup`，不要删模型缓存。
+转换临时目录在输出 `.staging/`，精读临时文件在对应记录的 `work/`，完成或报错后清理；`DOCVISION_KEEP_TEMP=1` 保留诊断现场。页图、原始响应和精读记录是输出证据，保留在项目中。结束后可自行删除整个项目输出目录，用户级模型/环境不受影响。输出包含原文，放入共享仓库前也要忽略。
 
-## 磁盘与缓存
-
-- MinerU 标准档模型约 2 GB；PaddleOCR-VL-1.6 加布局模型约 1-2 GB；CUDA/cuDNN 轮子约 1.5 GB。预留 10 GB 以上。
-- 转换中间文件在系统临时目录；输出目录由用户指定。模型缓存不要放进技能目录或 Git。
-- 换机器时只需重装环境；不要把 `~/.mineru`、`~/.paddlex` 或 conda 环境打包进仓库。
-
-## 安全
-
-- 密钥只放环境变量：`MINERU_TOKEN`、`ZHIPU_API_KEY`、`MISTRAL_API_KEY`、`GEMINI_API_KEY`。`doctor` 只显示 set/not set，不打印值。
-- 不把 `.env`、token、真实文档、转换输出提交到任何分支。
-- 远程转换需要 `--allow-remote`；本地引擎失败不会自动上传。
-
-## 0.2 环境补充
-
-uv 安装 Paddle GPU 使用官方 CUDA wheel 源与 PyPI 两个索引；多索引时显式采用与pip一致的候选选择策略，避免PyPI旧版本遮蔽官方指定版本。core/MinerU 单索引安装行为保持原样。此安装路径验证了命令与本地索引解析；本轮实际GPU推理使用已有隔离conda环境。
-
-`setup --profile core` 现在保存 core.python；CLI 当前解释器缺渲染/裁剪依赖时，入口切到该 Python 执行。可用 `python -S scripts/docvision.py pages <pdf> --pages 1` 检验干净入口。core 与 Paddle 子进程禁用用户 site，避免把全局依赖误当隔离环境已有包；既有 MinerU 的用户包策略保持兼容。
-
-Paddle 的 doctor 可检查 OCR extras、导入和 CUDA，但管线/模型推理未运行时显示未验证。安装完成后必须真实试一页；仅有 exe 或 import 成功不足以证明可推理。本轮曾修复本机 docvision-paddle 缺失依赖，环境本体 pip check 和实际 PDF/PNG 已补验，换机仍需运行相同检查。
-
-MinerU `economy` 映射 basic；`fast` 的单独图片也走 basic OCR，不把图片当文字层。若缺 basic 模型，先对已配置 MINERU_HOME 运行 `mineru-kit models download --tier basic`。`--device` 目前不能直接透传至 MinerU4 CLI，显式指定会提示使用其运行时配置；Paddle 支持设备参数。
+凭据录入、权限和远程同意见 [远程接口](remote-apis.md)。开发实验只使用忽略的 `maintenance/docvision/.env` 并显式 `--env-file` 读取，任何分支都不上传密钥、模型或真实文档。

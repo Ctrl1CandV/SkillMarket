@@ -13,8 +13,8 @@ from .detect import describe_route
 from .output import write_document
 from .providers import PROVIDERS, run as run_provider
 
-VISION = {'gemini', 'openai', 'local-vlm'}
-OCR = {'paddleocr-cloud', 'mineru-cloud', 'glm-cloud', 'mistral', 'mineru-local', 'paddleocr-local'}
+VISION = {'local-vlm'}
+OCR = {'paddleocr-cloud', 'mineru-local', 'paddleocr-local'}
 
 
 def _error_text(exc: Exception) -> str:
@@ -69,22 +69,22 @@ def choose_provider(provider: str, task: str, allow_remote: bool) -> str:
             raise DocVisionError(f'Unsupported refinement provider: {provider}')
         if task in {'figure', 'chart'} and provider in OCR:
             raise DocVisionError('Diagram/chart interpretation requires a vision provider or packet. Use --task transcribe for OCR only.')
-        if provider != 'packet' and describe_route(provider)['remote'] and not allow_remote:
-            raise DocVisionError('Remote refinement requires --allow-remote after upload authorization.')
+        if provider != 'packet' and describe_route(provider)['remote']:
+            if config.remote_consent() == 'local-only':
+                raise DocVisionError('Remote refinement was declined for this installation.',
+                                     hint='Run `docvision setup --remote` to re-enable it, or use --provider packet.')
+            if config.remote_consent() != 'remote':
+                raise DocVisionError('Remote refinement consent has not been recorded for this OS user.',
+                                     hint='Confirm upload is acceptable and run `docvision setup --remote`; each call still needs --allow-remote.')
+            if not allow_remote:
+                raise DocVisionError('Remote refinement requires --allow-remote after upload authorization.')
         return provider
     keys = config.remote_keys() if allow_remote else {}
     if task in {'figure', 'chart'}:
-        if keys.get('gemini'):
-            return 'gemini'
         if config.discover_vlm().available:
             return 'local-vlm'
-    else:
-        if keys.get('paddle'):
-            return 'paddleocr-cloud'
-        if keys.get('mineru'):
-            return 'mineru-cloud'
-        if keys.get('gemini'):
-            return 'gemini'
+    elif keys.get('paddle') and config.remote_consent() == 'remote':
+        return 'paddleocr-cloud'
     # No implicit paid provider, repeated model initialization or document upload.
     return 'packet'
 
@@ -93,8 +93,8 @@ def _selector(provider: str, extra: dict) -> dict:
     cfg = config.load()
     # Hash configuration so URLs with credentials and arbitrary extra options are not persisted.
     selected = cfg.get('remote', {}) if describe_route(provider)['remote'] else cfg.get('engines', {})
-    env_model = util.env_value('DOCVISION_GEMINI_MODEL') if provider == 'gemini' else util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL') if provider == 'openai' else None
-    endpoint = util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL') if provider == 'openai' else None
+    env_model = util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL') if provider == 'local-vlm' else None
+    endpoint = util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL') if provider == 'local-vlm' else None
     engine = config.discover_mineru() if provider == 'mineru-local' else config.discover_paddle() if provider == 'paddleocr-local' else None
     engine_version = engine.version if engine else None
     blob = json.dumps({'config': selected, 'extra': extra, 'env_model': env_model,
@@ -224,7 +224,7 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
         record['state'] = 'submitted'
         util.write_json(record_path, record)
         opts = Options(provider=provider, mode='ocr', tier='quality', allow_remote=allow_remote,
-                       timeout=timeout, keep_raw=True,
+                       timeout=timeout, keep_raw=True, staging=directory / 'work',
                        extra={**extra, 'refine_task': task, 'refine_is_region': box is not None,
                               'refine_context': context, 'question': question})
         try:

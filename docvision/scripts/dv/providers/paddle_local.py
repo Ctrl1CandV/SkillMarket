@@ -3,13 +3,19 @@
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
 from .. import config, util
 from ..base import DocVisionError, Options, RawBlock, RawDoc, RawPage, block_markdown
 from ..detect import inspect_input
 from .common import map_block_type, page_markdown
+
+
+def _subprocess_env(engine) -> dict[str, str]:
+    """Isolated interpreter plus the fixed model cache so weights never float."""
+    env = dict(util.isolated_python_env())
+    env["PADDLE_PDX_CACHE_HOME"] = str(engine.extra.get("paddlex_home") or config.model_home("paddlex"))
+    return env
 
 
 def _device(engine, opts: Options) -> str:
@@ -144,7 +150,14 @@ def convert(source: str, opts: Options) -> tuple:
     if info["suffix"] not in util.SUPPORTED_EXT:
         raise DocVisionError(f"PaddleOCR does not accept {info['suffix']} here.")
     device = _device(engine, opts)
-    tmp = Path(tempfile.mkdtemp(prefix="docvision-paddle-"))
+    tmp = util.staging_dir("paddle", base=opts.staging)
+    try:
+        return _parse(engine, source, opts, info, device, tmp)
+    finally:
+        util.release_staging(tmp)
+
+
+def _parse(engine, source: str, opts, info: dict, device: str, tmp: Path):
     work_source = Path(source)
     page_map: list[int] | None = None
     if opts.pages and info["is_pdf"]:
@@ -154,7 +167,7 @@ def convert(source: str, opts: Options) -> tuple:
     if opts.dry_run:
         return None, {"command": cmd, "provider": "paddleocr-local", "engine": engine.exe,
                       "device": device}
-    proc = util.run(cmd, timeout=opts.timeout, env=util.isolated_python_env())
+    proc = util.run(cmd, timeout=opts.timeout, env=_subprocess_env(engine))
     pages = _read_pages(out_dir, page_map=page_map, source=work_source)
     if not pages:
         raise DocVisionError(

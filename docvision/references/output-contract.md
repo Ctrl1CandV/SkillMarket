@@ -126,10 +126,10 @@
 - `assets/` 是扁平命名，避免路径穿越和 provider 子目录差异。
 - 图片引用会从 `images/...`、`imgs/...`、`assets/...` 重写为 `assets/...`。
 - 远程 provider 返回 base64 图片时，会落盘为文件；只有 URL 且下载失败时保留原 URL，并在 `qa` 里提示。
-- 不是所有 provider 都给图片：MinerU Agent、Gemini 纯文本输出、部分 OpenAI 兼容端点没有资产；`content.json` 会如实缺失，不伪造。
+- 不是所有 provider 都给图片：本地视觉模型或纯文本输出端点没有资产；`content.json` 会如实缺失，不伪造。
 
 ## 兼容与版本
 
 - `schema` 目前为 `docvision.content/1`；未来变更会提升版本，不静默改字段含义。
 - `meta.schema` 为 `docvision.meta/1`，`qa.schema` 为 `docvision.qa/1`。
-- 旧的 provider 输出（MinerU 4 `middle_json`、MinerU 云 `layout.json/content_list.json`）在适配层转换，不直接暴露给下游。
+- 上游输出（MinerU 4 `middle_json`、Paddle 的逐页结果）在适配层转换，不直接暴露给下游。

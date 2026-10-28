@@ -1,110 +1,68 @@
-# 远程接口
+# 远程接口：只有 PaddleOCR 官方 API
 
-远程是“复杂情况”的出口，不是默认。使用前确认：文件是否可以上传、账号额度是否足够、服务条款是否允许。价格/额度为 2026-10-28 调研值，随时可能变；`docvision usage` 只是提示，不是账单依据。
+远程是“关键页复核”的出口，不是默认。本技能只保留一条云端路线：**PaddleOCR 官网 / AI Studio 官方 API**。原因很直接：它是本项目唯一用真实账号验证过公式与合并表格的远程服务，其余云端 OCR（GLM、Mistral、Gemini、MinerU 云端）没有验证过的 key，代码与文档都成了无法证实的承诺，已移除。删掉代码比留着“看起来支持”更诚实。
 
-## 选择顺序
+价格/额度为 2026-10-28 调研值，随时可能变；`docvision usage` 只是提示，不是账单依据。
 
-0. **PaddleOCR 官网 / AI Studio 官方 API**：关键区域独立 OCR，官网公布免费额度；下文有专节。不要与百度传统收费 OCR 或第三方同名网站混淆。
-1. **MinerU Standard**：有 token、需要完整 zip（Markdown/JSON/图片）、整本报告；最接近本地 MinerU 的结果。
-2. **GLM-OCR**：中文、表格、手写、印章、票据；同步接口，单文件 100 页，便宜。
-3. **Mistral OCR**：需要结构化块/bbox、图表密集文档；按页计费。
-4. **Gemini**：版面复杂、需要跨页推理/图表解释；输出结构不保证，需自己校验。
-5. **MinerU Agent**：没有 token 的小文件预览；只给 Markdown，不保证公式/表格。
-6. **OpenAI 兼容**：已有 Ollama/vLLM/SiliconFlow/OpenRouter 等端点时复用；适合单页/截图，不适合整本结构。
+## 两道开关
 
-## PaddleOCR 官网免费额度 API
+1. **当前用户的持久同意**（`config.json` 的 `remote.consent`）：初始为 `unset`，询问后记为 `remote` 或 `local-only`。只有 `remote` 可以上传；未回答或拒绝时，即使加 `--allow-remote` 也不能上传。已有选择沿用，不重复询问。
+2. **每次调用同意**（`--allow-remote`）：即使安装级已允许，单次上传仍要显式加这个参数。
+
+没有任何路径会在本地失败后自动上传，也不会在失败后切换 provider。额度耗尽或 401 时明确报错、不重试。
+
+## 凭据位置
+
+固定一个文件：`{SKILL_DIR}/.credentials.env`（技能目录内，随附 `.gitignore` 已屏蔽）。写入方式：
+
+```text
+python "{SKILL_DIR}/scripts/docvision.py" credentials set --prompt  # 用户在自己的终端隐藏输入
+python "{SKILL_DIR}/scripts/docvision.py" credentials show      # 只显示名字与 set/not set
+python "{SKILL_DIR}/scripts/docvision.py" credentials remove    # 删除密钥并回到 local-only
+```
+
+- 解析顺序：`--env-file` → `DOCVISION_ENV_FILE` → `{SKILL_DIR}/.credentials.env` → 当前目录 `.env`。进程环境变量优先于文件。
+- 凭据绑定当前机器与系统用户；自动加载只接受匹配绑定。旧未绑定文件请重新 `credentials set --prompt`，开发测试可显式 `--env-file` 选择。进程环境变量可独立使用。
+- POSIX 从创建时使用 0600；Windows 写入并核对当前用户的私有 DACL。权限设置失败就拒绝保存；不写符号链接/重解析点。文件权限与 Git 忽略各自处理不同问题。
+- 写入前检查 `git check-ignore`：若技能目录位于某个 git 仓库且该文件未被忽略，直接拒绝写入，并提示应添加的忽略行。
+- 拷贝/分享技能目录会一并带走密钥；分发前先 `credentials remove`。
+- 推荐每个系统账号安装自己的技能目录。共享/只读安装用 `DOCVISION_CREDENTIALS` 指定私有文件路径，仍需该用户单独授权。多人共用同一个系统账号没有可靠的相互隔离。
+- `--prompt` 与 `--stdin` 二选一；只想存 key 可加 `--local-only`。开发仓库的测试 key 只留在被忽略的 `maintenance/docvision/.env`，不上传 main 或 dev。
+
+## PaddleOCR 官方免费额度 API
 
 2026-10-28 核验：[官方首页](https://www.paddleocr.ai/main/index.html)公布免费 API 每日文档解析上限 20,000 页；资格与实际额度以 AI Studio 账号为准，不承诺永久免费。
 
-- provider：`paddleocr-cloud`；密钥环境变量 `PADDLEOCR_ACCESS_TOKEN`，兼容 `DOCVISION_PADDLE_TOKEN`、`PADDLEOCR_API_TOKEN`、`AI_STUDIO_TOKEN`、`PADDLEAPIKEY`。可用全局 `--env-file <路径>` 加载私有凭据文件，参数放在子命令前。
+- provider：`paddleocr-cloud`；密钥名 `PADDLEOCR_ACCESS_TOKEN`，兼容 `DOCVISION_PADDLE_TOKEN`、`PADDLEOCR_API_TOKEN`、`AI_STUDIO_TOKEN`、`PADDLEAPIKEY`。
 - HTTP：POST `https://paddleocr.aistudio-app.com/api/v2/ocr/jobs`，Bearer 鉴权；本地 multipart 文件，URL 用 JSON fileUrl；默认模型 PaddleOCR-VL-1.6，可显式覆盖。
 - GET `/jobs/{jobId}` 轮询，下载 resultUrl.jsonUrl 的 JSONL，保留逐页 Markdown、图片和可用 bbox。资源下载不携带 API token。
 - 本地上传 50 MB、每文件 1000 页；本客户端拒绝可能被服务静默截断的请求。未知页数 PDF URL 必须限定页范围，超过限制先本地拆分。
 - 单次提交，不自动重传；选页映射回原页。`refine` 只提交裁图，随精读记录保存原页与 bbox。
-- 0.2.0 已用真实 token 验证公式/合并表格与原页定位，覆盖本地初稿→裁块→云端精读→缓存复用。公式/表格裁块直接指定 `promptLabel` 并关闭重复版面检测；整页保留版面分析。Markdown 格式和公式编号输出显式开启，但仍须回看原图核对。
-- 云端排队时间会变化；本轮区域请求约4–64秒，不能承诺云端总比本地快或更准确。未实测账号额度耗尽响应，不为测试而耗尽额度。
+- 已用真实 token 验证公式/合并表格与原页定位，覆盖本地初稿→裁块→云端精读→缓存复用；云端与本地 Paddle 的合并表格 HTML 逐字节一致。
+- 公式/表格裁块直接指定 `promptLabel` 并关闭重复版面检测；整页保留版面分析。Markdown 格式和公式编号输出显式开启，但仍须回看原图核对。
+- 云端排队时间会变化；区域请求实测约 4–64 秒，不能承诺云端总比本地快或更准确。真实额度耗尽响应未捕获，错误映射由 mock 覆盖，不靠耗尽额度做测试。
 - 依据：[官方 API](https://ai.baidu.com/ai-doc/AISTUDIO/fml7mozw5)、[官方 SDK](https://github.com/PaddlePaddle/PaddleOCR/tree/main/paddleocr/_api_client)、[官方 CLI](https://www.paddleocr.ai/latest/en/version3.x/inference_deployment/serving/paddleocr_official_api/cli.html)。
 
-## MinerU Standard API
+## 本地视觉服务（不是云端）
 
-- 入口：`https://mineru.net/api/v4`
-- 鉴权：`Authorization: Bearer <MINERU_TOKEN>`；token 在 <https://mineru.net/apiManage/token> 创建。
-- 本地文件：`POST /file-urls/batch` 申请上传链接 → `PUT` 上传 → 轮询 `GET /extract-results/batch/{batch_id}` → 下载 `full_zip_url`。
-- URL：`POST /extract/task` → 轮询 `GET /extract/task/{task_id}`。
-- 参数：`model_version=pipeline|vlm|MinerU-HTML`（推荐 `vlm`）、`is_ocr`、`enable_formula`、`enable_table`、`language`、`page_ranges`（如 `2,4-6`）、`extra_formats`（docx/html/latex）。
-- 限制：单文件 ≤200 MB、≤200 页；批量单次 ≤50 个上传链接（文档另有 200 个的说法，按 50 保守使用）。
-- 额度：每账号每天 1000 页最高优先级解析额度，超出后降低优先级；这不是“每天只能免费 1000 页”的等价表述，也不是永久免费承诺。
-- 输出 zip：`full.md`、`layout.json`（中间结果）、`*_content_list.json`、`*_model.json`、图片；MinerU 4 自建 zip 则是 `markdown.md`、`middle_json.json`、`structured_content.json`。本技能两种都解析。
-- 注意：`data_id` 只允许 ASCII 字母/数字/`_-.`，≤128 字符；本技能用哈希生成。`PUT` 上传不要带 `Content-Type`，否则 OSS 签名可能不匹配。
-- 隐私：文件会上传到 MinerU 的对象存储/CDN；不要上传敏感材料，除非用户明确同意并确认条款。
+图表与架构图的语义解释没有云端路线了。可选：
 
-## MinerU Agent API
+1. `refine --provider packet`：生成裁图 + 上下文包，由**当前对话的视觉能力**实际看图（推荐，零上传）。
+2. `refine --provider local-vlm`：本机 Ollama/vLLM 的 OpenAI 兼容端点，必须是 loopback（`127.0.0.1`/`localhost`），否则拒绝。
 
-- 入口：`https://mineru.net/api/v1/agent`
-- 无 token，按 IP 限频；`POST /parse/file`（签名上传）或 `/parse/url`，轮询 `GET /parse/{task_id}`。
-- 限制：≤10 MB、≤20 页；`page_range` 只支持单页或连续范围，不支持逗号；输出只有 `markdown_url`，没有图片、bbox、页结构。
-- 适合快速预览/小截图；不要用它承诺公式、表格、图表质量。复杂页码会直接报错，不会静默截断。
-
-## 智谱 GLM-OCR
-
-- 入口：`POST https://open.bigmodel.cn/api/paas/v4/layout_parsing`
-- 鉴权：`Authorization: <ZHIPU_API_KEY>`（不是 Bearer；按官方示例）。
-- 请求：`{"model":"glm-ocr","file":"<URL 或 data:...base64>"}`；可选 `start_page_id`、`end_page_id`、`return_crop_images`、`need_layout_visualization`。
-- 限制：图片 ≤10 MB、PDF ≤50 MB、≤100 页；中文、英文、日韩、法德俄西等；同步请求。
-- 返回：`md_results`（整篇 Markdown）、`layout_details`（逐页数组，元素含 `label`、`bbox_2d` 归一化坐标、`content`、`width/height`）、`usage`。
-- 价格：输入输出同价 0.2 元/百万 tokens；官方称 1 元约 2000 张 A4 扫描图或 200 份 10 页简单 PDF；以账单为准。
-- 适合：中文表格、手写、印章、票据、代码文档；不适合超过 100 页或超大 PDF。
-- 密钥：`ZHIPU_API_KEY`（也接受 `GLM_API_KEY`）；本技能不写配置文件。
-
-## Mistral OCR
-
-- 入口：`POST https://api.mistral.ai/v1/ocr`
-- 鉴权：`Authorization: Bearer <MISTRAL_API_KEY>`。
-- 请求：`{"model":"mistral-ocr-latest","document":{"type":"document_url","document_url":"<URL 或 data URI>"},"table_format":"html","include_image_base64":true,"include_blocks":true}`。
-- 返回：`pages[]`，每页 `markdown`、`images`、`tables`、`hyperlinks`、`dimensions`、`blocks`（OCR 4+）、可选 `confidence_scores`；图片/表格用占位符，需要按字段映射。
-- 限制/价格：OCR 4.1 $4/1000 页，OCR 3 $2/1000 页；具体大小/页数上限按官方文档和账号。
-- 适合：图表/表格密集、需要 bbox 和块结构的文档；中文能力可用但不如中文专用模型稳。
-- 密钥：`MISTRAL_API_KEY`。
-
-## Google Gemini
-
-- 入口：`POST https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent?key=<GEMINI_API_KEY>`
-- 原生 PDF：inline_data `application/pdf`；也支持图片。PDF 可到 1000 页（模型/账号为准），inline 请求约 18 MB 上限；更大文件用 Files API（本技能未封装）。
-- 本技能使用可配置的 Flash 基线（当前 `gemini-3.8-flash`）；`--extra model=...`、配置或 `DOCVISION_GEMINI_MODEL` 可覆盖。不按模型列表排序任意选型号，不失败后切收费 Pro。
-- 输出：模型生成的 Markdown；本技能要求页标记 `<!-- page: N -->`，但模型可能不遵守，页映射可能退化为单页并给出警告。
-- 价格/免费层：按输入/输出 token 计费；免费层和“是否用于改进产品”随账号/地区变化，不能默认免费。敏感文档优先本地。
-- 密钥：`GEMINI_API_KEY` 或 `GOOGLE_API_KEY`。
-
-## OpenAI 兼容 / 本地 VLM
-
-- 端点：`POST <base_url>/chat/completions`，`Authorization: Bearer <key>`（本地 Ollama 可任意/空 key）。
-- 示例 base URL：
-  - Ollama：`http://127.0.0.1:11434/v1`，模型如 `glm-ocr`、`qwen3-vl`（以实际拉取为准）。
-  - vLLM/SGLang：`http://127.0.0.1:8000/v1`。
-  - SiliconFlow/OpenRouter 等：按服务商给的 base URL 和模型名。
-- 本技能对 PDF 会逐页渲染成 PNG 再请求；没有布局管线，阅读顺序/跨页表格需自己检查。适合截图、单页图表、已有视觉模型的环境。
-- 配置：`DOCVISION_OPENAI_BASE_URL`、`DOCVISION_OPENAI_MODEL`、`DOCVISION_OPENAI_API_KEY`；本地 VLM 也可写入 `config.json` 的 `engines.vlm`（不写 key）。
-- 免费模型/额度会变；不要因为“免费”就上传敏感文档。
-
-## 百度 PaddleOCR 云 API（了解，不默认）
-
-百度智能云也提供文档解析（PaddleOCR-VL）异步 API：`aip.baidubce.com/rest/2.0/brain/online/v2/paddle-vl-parser/...`，需要 API Key/Secret 换 access_token；个人认证 200 页、企业认证 1000 页免费测试资源，之后约 0.05-0.09 元/页（2026-10 价格页）。本技能默认走**本地 PaddleOCR**；如果你确实需要百度云，按官方文档接，不要把它的额度和本地模型混为一谈。
+配置：`config.json` 的 `engines.vlm`（`base_url`、`model`）或 `DOCVISION_OPENAI_BASE_URL` / `DOCVISION_OPENAI_MODEL`；key 用 `DOCVISION_VLM_API_KEY`（本地 Ollama 可留空）。没有布局管线，阅读顺序与跨页表格需自己检查。
 
 ## 上传前检查清单
 
 - 文件是否含个人信息、未发表数据、客户资料、医疗/法务/财务内容？
-- 用户是否明确说“可以上传”？
-- 是否可以先本地跑 3 页看看？本地失败是否只是页码/显存/模型未下载？
-- 选的服务是否在用户所在地区可用？token 是否过期？
-- 输出是否需要图片/bbox/页结构？如果只需要纯文本，Agent 或本地 fast 档就够。
-- 失败重试是否会重复计费？不要在未知结果时自动重传大文件。
+- 用户是否明确说“可以上传”（而不只是“配个 key”）？
+- 是否可以先本地跑 3 页、只在关键区域上传裁图？
+- 该次调用是否同时满足 `consent=remote` 与 `--allow-remote`？
+- 输出是否需要图片/bbox/页结构？只需要纯文本就先试本地。
+- 失败重试是否会重复计费？结果未知时不要自动重传。
 
 ## 依据
 
-- MinerU API：<https://mineru.net/apiManage/docs>
-- GLM-OCR：<https://docs.bigmodel.cn/cn/guide/models/vlm/glm-ocr>、<https://docs.bigmodel.cn/api-reference/模型-api/文档解析>
-- Mistral OCR：<https://docs.mistral.ai/capabilities/document_ai/basic_ocr>、<https://docs.mistral.ai/inference/pricing>
-- Gemini 文档理解：<https://ai.google.dev/gemini-api/docs/document-processing>
-- 百度 PaddleOCR-VL 价格：<https://ai.baidu.com/ai-doc/OCR/tlrzzplc1>
-
-Gemini 当前 Flash 免费层与数据使用政策见 [官方价格](https://ai.google.dev/gemini-api/docs/pricing)；仅有 key 不证明账号仍在免费额度内。refine 按任务传入公式/表格/图表/架构解释指令，截断响应不当完成。
+- PaddleOCR 官方 API 与额度：<https://www.paddleocr.ai/main/index.html>、<https://ai.baidu.com/ai-doc/AISTUDIO/fml7mozw5>
+- PaddleOCR SDK/CLI：<https://github.com/PaddlePaddle/PaddleOCR/tree/main/paddleocr/_api_client>
+- 百度 PaddleOCR-VL 云价格（了解，不默认）：<https://ai.baidu.com/ai-doc/OCR/tlrzzplc1>

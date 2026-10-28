@@ -181,7 +181,7 @@ def map_block_type(value: str) -> str:
 
 
 def split_markdown_pages(markdown: str) -> list[tuple[int, str]]:
-    """Split Gemini/Paddle-style page markers into (1-based page, text)."""
+    """Split page markers (<!-- page: N -->) into (1-based page, text)."""
     pattern = re.compile(r"<!--\s*page\s*:\s*(\d+)\s*-->", re.I)
     matches = list(pattern.finditer(markdown or ""))
     if not matches:

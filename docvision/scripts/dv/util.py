@@ -34,20 +34,28 @@ SUPPORTED_NATIVE_EXT = {
 SUPPORTED_EXT = SUPPORTED_IMAGE_EXT | SUPPORTED_DOC_EXT | SUPPORTED_NATIVE_EXT
 
 
+def _absolute_storage(value: str | Path, setting: str) -> Path:
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        raise DocVisionError(f"{setting} must be an absolute path.",
+                             hint="Use a fixed directory outside projects and the skill folder.")
+    return path.resolve()
+
+
 def app_dir() -> Path:
     if IS_WINDOWS:
         base = os.environ.get("LOCALAPPDATA") or os.environ.get("APPDATA")
-        return Path(base or (HOME / "AppData" / "Local")) / "docvision"
+        return _absolute_storage(base or (HOME / "AppData" / "Local"), "LOCALAPPDATA/APPDATA") / "docvision"
     base = os.environ.get("XDG_DATA_HOME")
-    return Path(base or (HOME / ".local" / "share")) / "docvision"
+    return _absolute_storage(base or (HOME / ".local" / "share"), "XDG_DATA_HOME") / "docvision"
 
 
 def config_dir() -> Path:
     if IS_WINDOWS:
         base = os.environ.get("APPDATA")
-        return Path(base or (HOME / "AppData" / "Roaming")) / "docvision"
+        return _absolute_storage(base or (HOME / "AppData" / "Roaming"), "APPDATA") / "docvision"
     base = os.environ.get("XDG_CONFIG_HOME")
-    return Path(base or (HOME / ".config")) / "docvision"
+    return _absolute_storage(base or (HOME / ".config"), "XDG_CONFIG_HOME") / "docvision"
 
 
 def cache_dir() -> Path:
@@ -59,7 +67,58 @@ def cache_dir() -> Path:
 
 
 def config_path() -> Path:
-    return Path(os.environ.get("DOCVISION_CONFIG") or (config_dir() / "config.json"))
+    override = os.environ.get("DOCVISION_CONFIG")
+    return _absolute_storage(override, "DOCVISION_CONFIG") if override else config_dir() / "config.json"
+
+
+def skill_dir() -> Path:
+    """The installed skill folder (holds SKILL.md, references/, scripts/)."""
+    return Path(__file__).resolve().parents[2]
+
+
+def credentials_path() -> Path:
+    """One fixed credential location, next to the skill, not inside a project."""
+    override = os.environ.get("DOCVISION_CREDENTIALS")
+    if not override:
+        return skill_dir() / ".credentials.env"
+    path = Path(override).expanduser()
+    if not path.is_absolute():
+        raise DocVisionError("DOCVISION_CREDENTIALS must be an absolute path.")
+    # Keep links visible until credentials checks the target and every parent.
+    return path
+
+
+def models_dir() -> Path:
+    """Fixed model root: never inside the skill folder or a project."""
+    override = os.environ.get("DOCVISION_MODELS")
+    return _absolute_storage(override, "DOCVISION_MODELS") if override else app_dir() / "models"
+
+
+def model_home(name: str) -> Path:
+    return models_dir() / name
+
+
+def staging_dir(prefix: str, *, base: Path | None = None) -> Path:
+    """Create a per-run scratch directory for one provider call.
+
+    Defaults to the app cache, but a conversion or refinement passes the
+    project-local `.staging` folder so intermediates never leak into a system
+    temp directory the user cannot find later.
+    """
+    root = Path(base) if base else (cache_dir() / "staging")
+    root.mkdir(parents=True, exist_ok=True)
+    return Path(tempfile.mkdtemp(prefix=f"{prefix}-", dir=str(root)))
+
+
+def release_staging(path: Path) -> None:
+    """Remove scratch output; DOCVISION_KEEP_TEMP=1 retains it for debugging."""
+    if os.environ.get("DOCVISION_KEEP_TEMP") == "1":
+        return
+    shutil.rmtree(path, ignore_errors=True)
+    try:
+        path.parent.rmdir()  # succeeds only when no sibling run is still active
+    except OSError:
+        pass
 
 
 def isolated_python_env() -> dict[str, str]:

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-import tempfile
 from pathlib import Path
 
 from .. import config, util
@@ -50,12 +49,19 @@ def convert(source: str, opts: Options) -> tuple:
     if util.is_url(source):
         raise DocVisionError("The local MinerU adapter expects a local file; download the URL first.")
     info = inspect_input(source, opts)
-    tmp = Path(tempfile.mkdtemp(prefix="docvision-mineru-"))
+    tmp = util.staging_dir("mineru", base=opts.staging)
+    try:
+        return _parse(engine, source, opts, info, tmp)
+    finally:
+        util.release_staging(tmp)
+
+
+def _parse(engine, source: str, opts, info: dict, tmp: Path):
     out_dir = util.ensure_dir(tmp / "out")
     cmd = _command(engine, source, out_dir, opts, info)
     if opts.dry_run:
         return None, {"command": cmd, "provider": "mineru-local", "engine": engine.exe}
-    env = {"MINERU_HOME": str(engine.extra.get("mineru_home") or (Path.home() / ".mineru"))}
+    env = {"MINERU_HOME": str(engine.extra.get("mineru_home") or config.model_home("mineru"))}
     proc = util.run(cmd, timeout=opts.timeout, env=env)
     zips = sorted(out_dir.glob("*.zip"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not zips:

@@ -1,7 +1,7 @@
 """Configuration and engine discovery.
 
-Only paths and public settings live in config.json.  API keys stay in
-environment variables; the skill never writes credentials to disk.
+Only paths and public settings live in config.json. API keys are managed
+separately by the credentials module and environment variables.
 """
 
 from __future__ import annotations
@@ -20,20 +20,20 @@ from . import util
 DEFAULT_CONFIG = {
     "version": 1,
     "core": {"env": "docvision-core", "python": None},
+    "models_dir": None,
     "engines": {
         "mineru": {"env": "docvision-mineru", "exe": None, "python": None,
                    "mineru_home": None, "tier": "standard"},
         "paddleocr": {"env": "docvision-paddle", "exe": None, "python": None,
-                      "device": "gpu:0"},
+                      "device": None},
         "vlm": {"base_url": "http://127.0.0.1:11434/v1", "model": "",
                 "api_key_env": "DOCVISION_VLM_API_KEY"},
     },
+    # consent: unset | remote | local-only. Local-only is sticky: it refuses
+    # every remote call until the user explicitly re-enables it.
     "remote": {
-        "default": "mineru-cloud",
-        "glm_base": "https://open.bigmodel.cn/api/paas/v4",
-        "mistral_base": "https://api.mistral.ai/v1",
-        "gemini_base": "https://generativelanguage.googleapis.com/v1beta",
-        "gemini_model": "gemini-3.8-flash",
+        "default": "paddleocr-cloud",
+        "consent": "unset",
         "paddle_base": "https://paddleocr.aistudio-app.com/api/v2/ocr/jobs",
     },
     "output": {"default_dir": "docvision-out"},
@@ -61,7 +61,8 @@ PADDLE_PIPELINE_VERSION = "v1.6"
 
 def _cached(name, cfg, refresh, discover):
     key = (name, json.dumps(cfg, sort_keys=True), os.environ.get("PATH"),
-           os.environ.get("MINERU_HOME"), os.environ.get("PYTHONNOUSERSITE"))
+           str(util.config_path()), str(model_home("mineru", cfg)),
+           str(model_home("paddlex", cfg)), os.environ.get("PYTHONNOUSERSITE"))
     now = time.monotonic()
     previous = _DISCOVERY.get(key)
     if not refresh and previous and now - previous[0] < DISCOVERY_TTL:
@@ -107,6 +108,49 @@ def env_value(*names: str) -> str | None:
         if value:
             return value
     return None
+
+
+def _stored_path(value: str) -> Path:
+    """Old relative settings are anchored to the configuration, never the project."""
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = util.config_path().parent / path
+    return path.resolve()
+
+
+def models_root(cfg: dict | None = None) -> Path:
+    """Fixed model root: config override, then DOCVISION_MODELS, then app data."""
+    cfg = load() if cfg is None else cfg
+    configured = (cfg.get("models_dir") or "").strip()
+    return _stored_path(configured) if configured else util.models_dir()
+
+
+def model_home(name: str, cfg: dict | None = None) -> Path:
+    """Fixed per-engine model folder, reusing an existing legacy install.
+
+    A machine that already downloaded weights to ~/.mineru or ~/.paddlex keeps
+    using them instead of re-downloading gigabytes; a fresh install gets the
+    fixed application-data path.  An explicit models_dir/DOCVISION_MODELS
+    always wins and disables the legacy fallback.
+    """
+    cfg = load() if cfg is None else cfg
+    configured = (cfg.get("models_dir") or "").strip()
+    explicit = bool(configured) or bool(os.environ.get("DOCVISION_MODELS"))
+    root = models_root(cfg) / name
+    if explicit:
+        return root
+    if name == "mineru":
+        engine_home = cfg.get("engines", {}).get("mineru", {}).get("mineru_home")
+        if engine_home:
+            return _stored_path(engine_home)
+    variable = {"mineru": "MINERU_HOME", "paddlex": "PADDLE_PDX_CACHE_HOME"}.get(name)
+    inherited = os.environ.get(variable) if variable else None
+    if inherited:
+        return util._absolute_storage(inherited, variable)
+    legacy = {"mineru": Path.home() / ".mineru", "paddlex": Path.home() / ".paddlex"}.get(name)
+    if legacy and not root.exists() and legacy.exists():
+        return legacy
+    return root
 
 
 def _exe_version(exe: str, *, args: list[str] | None = None) -> tuple[str | None, str]:
@@ -160,8 +204,7 @@ def _discover_mineru(cfg: dict) -> Engine:
         version=version,
         available=bool(exe and detail == "ok"),
         detail=detail if exe else "mineru-kit not found",
-        extra={"mineru_home": ecfg.get("mineru_home") or os.environ.get("MINERU_HOME")
-               or str(Path.home() / ".mineru")},
+        extra={"mineru_home": str(model_home("mineru", cfg))},
     )
 
 
@@ -266,7 +309,8 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
     if python and detailed:
         try:
             proc = util.run([python, "-s", "-c", PADDLE_CHECK], timeout=120,
-                            env=util.isolated_python_env())
+                            env={**util.isolated_python_env(),
+                                 "PADDLE_PDX_CACHE_HOME": str(model_home("paddlex", cfg))})
             if proc.returncode == 0:
                 payload = json.loads((proc.stdout or "").strip().splitlines()[-1])
                 version, gpu = payload.get("version"), payload.get("gpu")
@@ -292,6 +336,7 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
         detail=detail if exe else "paddleocr not found",
         extra={"gpu": gpu, "installed": bool(exe), "dependencies": dependencies,
                "isolation": "user site disabled for Paddle subprocess only",
+               "paddlex_home": str(model_home("paddlex", cfg)),
                "device": ecfg.get("device") or ("gpu:0" if gpu and gpu.get("cuda") == "True" else "cpu")},
     )
 
@@ -319,15 +364,25 @@ def engine_status(cfg: dict | None = None, *, refresh: bool = False) -> dict[str
 
 
 def remote_keys() -> dict[str, str | None]:
+    """Only PaddleOCR is a remote OCR route; local VLM stays local."""
     return {
         "paddle": util.env_value("DOCVISION_PADDLE_TOKEN", "PADDLEOCR_ACCESS_TOKEN",
                                  "PADDLEOCR_API_TOKEN", "AI_STUDIO_TOKEN", "PADDLEAPIKEY"),
-        "mineru": util.env_value("DOCVISION_MINERU_TOKEN", "MINERU_TOKEN", "MINERU_API_KEY"),
-        "glm": util.env_value("DOCVISION_GLM_API_KEY", "ZHIPU_API_KEY", "GLM_API_KEY"),
-        "mistral": util.env_value("DOCVISION_MISTRAL_API_KEY", "MISTRAL_API_KEY"),
-        "gemini": util.env_value("DOCVISION_GEMINI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"),
-        "openai": util.env_value("DOCVISION_OPENAI_API_KEY", "OPENAI_API_KEY"),
     }
+
+
+def remote_consent() -> str:
+    """unset | remote | local-only; an unrecognized value is treated as unset."""
+    value = (load().get("remote", {}) or {}).get("consent")
+    return value if value in {"remote", "local-only"} else "unset"
+
+
+def set_consent(mode: str) -> Path:
+    if mode not in {"remote", "local-only"}:
+        raise ValueError(f"unsupported consent mode: {mode}")
+    data = load()
+    data.setdefault("remote", {})["consent"] = mode
+    return save(data)
 
 
 def masked_keys() -> dict[str, str]:
