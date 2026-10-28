@@ -128,6 +128,7 @@ def _save_engine(name: str, prefix: Path, *, extra: dict | None = None) -> None:
 def _verify_mineru(prefix: Path, *, models: bool, timeout: int, dry_run: bool, home: str | None = None) -> list[str]:
     exe = util.env_bin(prefix) / ("mineru-kit.exe" if util.IS_WINDOWS else "mineru-kit")
     mineru = util.env_bin(prefix) / ("mineru.exe" if util.IS_WINDOWS else "mineru")
+    home = home or str(config.model_home("mineru"))
     notes = []
     if dry_run:
         notes.append(f"verify: {exe} --help")
@@ -142,8 +143,8 @@ def _verify_mineru(prefix: Path, *, models: bool, timeout: int, dry_run: bool, h
         notes.append((proc.stdout or proc.stderr).strip().splitlines()[0])
     if models:
         notes.append("Downloading MinerU standard models (~2 GB, first run only)...")
-        env = {"MINERU_HOME": home} if home else None
-        proc = util.run([str(exe), "models", "download", "--tier", "standard"], timeout=timeout, env=env)
+        proc = util.run([str(exe), "models", "download", "--tier", "standard"], timeout=timeout,
+                        env={"MINERU_HOME": home})
         if proc.returncode != 0:
             notes.append("Model download failed: " + util.tail_text(proc, 1200))
         else:
@@ -156,8 +157,9 @@ def _verify_paddle(prefix: Path, *, timeout: int, dry_run: bool) -> list[str]:
     if dry_run:
         return [f"verify: {python} -s -c <Paddle imports and OCR extra dependency checks>",
                 "Pipeline/model readiness requires a real single-page conversion."]
-    proc = util.run([str(python), "-s", "-c", config.PADDLE_CHECK], timeout=min(timeout, 120),
-                    env=util.isolated_python_env())
+    env = dict(util.isolated_python_env())
+    env["PADDLE_PDX_CACHE_HOME"] = str(config.model_home("paddlex"))
+    proc = util.run([str(python), "-s", "-c", config.PADDLE_CHECK], timeout=min(timeout, 120), env=env)
     if proc.returncode != 0:
         return ["PaddleOCR import check failed: " + util.tail_text(proc, 1200)]
     lines = [x.strip() for x in (proc.stdout or "").splitlines() if x.strip()]
@@ -168,9 +170,14 @@ def _verify_paddle(prefix: Path, *, timeout: int, dry_run: bool) -> list[str]:
 def run(profile: str, *, manager: str = "auto", device: str = "auto",
         models: bool = True, yes: bool = False, dry_run: bool = False,
         channel: str = "conda-forge", index: str | None = None,
-        timeout: int = 3600, home: str | None = None) -> int:
+        timeout: int = 3600, home: str | None = None,
+        models_dir: str | None = None) -> int:
     if profile not in {"core", "mineru", "paddle", "all"}:
         raise SystemExit(f"Unknown profile: {profile}")
+    if models_dir:
+        data = config.load()
+        data["models_dir"] = str(Path(models_dir).expanduser())
+        config.save(data)
     if manager == "auto":
         manager = "conda" if _conda() else ("uv" if _uv() else "none")
     if manager == "none":
@@ -206,7 +213,7 @@ def run(profile: str, *, manager: str = "auto", device: str = "auto",
                                         timeout=timeout)
         all_commands.extend(commands)
         if not dry_run:
-            _save_engine("mineru", prefix, extra={"mineru_home": home or str(Path.home() / ".mineru"),
+            _save_engine("mineru", prefix, extra={"mineru_home": home or str(config.model_home("mineru")),
                                                   "tier": "standard"})
         notes.extend(_verify_mineru(prefix, models=models, timeout=timeout, dry_run=dry_run, home=home))
         notes.append(f"mineru env: {prefix}")
@@ -235,6 +242,8 @@ def run(profile: str, *, manager: str = "auto", device: str = "auto",
     print("\n".join(notes))
     if not dry_run:
         print(f"\nConfig: {util.config_path()}")
+        print(f"Models: {config.models_root()}")
         print("Next: docvision doctor --probe")
         print("First real test: docvision convert <file> --provider auto --json")
+        print("Optional remote quota: docvision credentials set --stdin (or setup --local-only to stay local)")
     return 0

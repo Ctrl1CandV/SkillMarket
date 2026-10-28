@@ -72,38 +72,34 @@ def _page_images(source: str, opts: Options) -> list[tuple[int, bytes, str]]:
     return out
 
 
-def convert(source: str, opts: Options, *, local: bool = False) -> tuple:
+def convert(source: str, opts: Options) -> tuple:
+    """Local-only OpenAI-compatible vision (Ollama, vLLM on this machine)."""
     cfg = config.load()
-    if local:
-        vcfg = cfg.get("engines", {}).get("vlm", {})
-        base_url = opts.extra.get("base_url") or vcfg.get("base_url")
-        model = opts.extra.get("model") or vcfg.get("model")
-        key = _key(vcfg.get("api_key_env") or "DOCVISION_VLM_API_KEY")
-        provider = "local-vlm"
-    else:
-        base_url = (opts.extra.get("base_url") or util.env_value("DOCVISION_OPENAI_BASE_URL", "OPENAI_BASE_URL")
-                    or "https://api.openai.com/v1")
-        model = opts.extra.get("model") or util.env_value("DOCVISION_OPENAI_MODEL", "OPENAI_MODEL")
-        key = _key("DOCVISION_OPENAI_API_KEY")
-        provider = "openai"
+    vcfg = cfg.get("engines", {}).get("vlm", {})
+    base_url = opts.extra.get("base_url") or vcfg.get("base_url")
+    model = opts.extra.get("model") or vcfg.get("model")
+    key = _key(vcfg.get("api_key_env") or "DOCVISION_VLM_API_KEY")
+    provider = "local-vlm"
     if not base_url:
         raise DocVisionError("No OpenAI-compatible base URL is configured.",
                              hint="Set DOCVISION_OPENAI_BASE_URL or configure engines.vlm.base_url.")
     if not model:
         raise DocVisionError("No vision model is configured.",
                              hint="Set DOCVISION_OPENAI_MODEL or configure engines.vlm.model.")
-    if local:
-        host = urlparse(base_url).hostname or ''
-        try:
-            loopback = ipaddress.ip_address(host).is_loopback
-        except ValueError:
-            loopback = host.lower() == 'localhost'
-        if not loopback:
-            raise DocVisionError('local-vlm must use a loopback endpoint. For another host use --provider openai --allow-remote.')
+    host = urlparse(base_url).hostname or ''
+    try:
+        loopback = ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        loopback = host.lower() == 'localhost'
+    if not loopback:
+        raise DocVisionError(
+            'local-vlm must use a loopback endpoint; this skill has no remote vision route.',
+            hint='Point engines.vlm.base_url at 127.0.0.1, or use --provider packet and inspect the crop yourself.',
+        )
     info = inspect_input(source, opts)
     if opts.dry_run:
         return None, {"provider": provider, "endpoint": _endpoint(base_url), "model": model,
-                      "local": local}
+                      "local": True}
     images = _page_images(source, opts)
     if not images:
         raise DocVisionError("No pages were selected.")

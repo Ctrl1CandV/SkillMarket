@@ -62,6 +62,50 @@ def config_path() -> Path:
     return Path(os.environ.get("DOCVISION_CONFIG") or (config_dir() / "config.json"))
 
 
+def skill_dir() -> Path:
+    """The installed skill folder (holds SKILL.md, references/, scripts/)."""
+    return Path(__file__).resolve().parents[2]
+
+
+def credentials_path() -> Path:
+    """One fixed credential location, next to the skill, not inside a project."""
+    override = os.environ.get("DOCVISION_CREDENTIALS")
+    return Path(override).expanduser() if override else skill_dir() / ".credentials.env"
+
+
+def models_dir() -> Path:
+    """Fixed model root: never inside the skill folder or a project."""
+    override = os.environ.get("DOCVISION_MODELS")
+    return Path(override).expanduser() if override else app_dir() / "models"
+
+
+def model_home(name: str) -> Path:
+    return models_dir() / name
+
+
+def staging_dir(prefix: str, *, base: Path | None = None) -> Path:
+    """Create a per-run scratch directory for one provider call.
+
+    Defaults to the app cache, but a conversion or refinement passes the
+    project-local `.staging` folder so intermediates never leak into a system
+    temp directory the user cannot find later.
+    """
+    root = Path(base) if base else (cache_dir() / "staging")
+    root.mkdir(parents=True, exist_ok=True)
+    return Path(tempfile.mkdtemp(prefix=f"{prefix}-", dir=str(root)))
+
+
+def release_staging(path: Path) -> None:
+    """Remove scratch output; DOCVISION_KEEP_TEMP=1 retains it for debugging."""
+    if os.environ.get("DOCVISION_KEEP_TEMP") == "1":
+        return
+    shutil.rmtree(path, ignore_errors=True)
+    try:
+        path.parent.rmdir()  # succeeds only when no sibling run is still active
+    except OSError:
+        pass
+
+
 def isolated_python_env() -> dict[str, str]:
     """Use only for setup/Paddle subprocesses, never globally or for MinerU."""
     return {"PYTHONNOUSERSITE": "1", "PIP_USER": "0"}

@@ -41,6 +41,7 @@ class Options:
     workers: int = 1
     max_mb: int = 200
     output: Path | None = None
+    staging: Path | None = None  # scratch root for this run; removed after the call
     extra: dict[str, Any] = field(default_factory=dict)
 
 

@@ -7,9 +7,10 @@ import json
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import replace
 from pathlib import Path
 
-from . import cache, config, detect, doctor, read as read_mod, refine, setup_cmd, util, verify as verify_mod
+from . import cache, config, credentials, detect, doctor, read as read_mod, refine, setup_cmd, util, verify as verify_mod
 from .base import DocVisionError, Options
 from .output import write_document
 from .providers import PROVIDERS, run as run_provider
@@ -53,9 +54,24 @@ def _cache_context(provider: str) -> dict:
     # request_signature persists hashes of these values, not credentials.
     return {'configuration': cfg, 'provider': provider, 'engine_version': engine.version if engine else None,
             'engine_fingerprint': engine.extra.get('cache_fingerprint') if engine else None,
-            'gemini_model': util.env_value('DOCVISION_GEMINI_MODEL'),
-            'openai_model': util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL'),
-            'openai_base': util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL')}
+            'vlm_model': util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL'),
+            'vlm_base': util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL')}
+
+
+def _guard_remote(provider: str, allow_remote: bool) -> None:
+    """Two independent gates: a stored install-level consent and a per-call flag."""
+    if provider not in REMOTE:
+        return
+    if config.remote_consent() == 'local-only':
+        raise DocVisionError(
+            f"{provider} uploads the document to a remote service, and remote upload was declined for this installation.",
+            hint="Run `docvision setup --remote` to re-enable it after confirming the document is not sensitive.",
+        )
+    if not allow_remote:
+        raise DocVisionError(
+            f"{provider} uploads the document to a remote service, which was not authorized.",
+            hint="Re-run with --allow-remote only after confirming the document is not sensitive.",
+        )
 
 
 def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = False) -> dict:
@@ -64,18 +80,13 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
               "output_dir": None, "markdown_path": None, "pages": None,
               "elapsed": None, "error": None, "warnings": []}
     try:
+        opts = replace(opts, staging=out_root / '.staging')
         info = detect.inspect_input(source, opts)
         provider = detect.choose_provider(source, opts, info)
         route = detect.describe_route(provider)
         result["provider"] = provider
         result["privacy"] = route["privacy"]
-        if provider in REMOTE and not opts.allow_remote:
-            raise DocVisionError(
-                f"{provider} uploads the document to a remote service, which was not authorized.",
-                hint="Re-run with --allow-remote only after confirming the document is not sensitive.",
-            )
-        if opts.pages and provider in {"mineru-agent"} and "," in opts.pages:
-            raise DocVisionError("This provider cannot handle comma-separated page ranges.")
+        _guard_remote(provider, opts.allow_remote)
         if opts.dry_run:
             doc, raw_meta = run_provider(provider, source, opts)
             result.update({"state": "planned", "raw": raw_meta,
@@ -309,6 +320,7 @@ def cmd_doctor(args) -> int:
 def cmd_providers(args) -> int:
     engines = config.engine_status()
     keys = config.remote_keys()
+    consent = config.remote_consent()
     rows = []
     for name, meta in PROVIDERS.items():
         if name == "local-vlm":
@@ -316,26 +328,19 @@ def cmd_providers(args) -> int:
         elif name.endswith("-local"):
             key = "mineru" if name.startswith("mineru") else "paddleocr"
             available = engines[key].available
-        elif name == "mineru-cloud" or name == "mineru-agent":
-            available = bool(keys["mineru"])
-        elif name == "glm-cloud":
-            available = bool(keys["glm"])
-        elif name == 'paddleocr-cloud':
-            available = bool(keys.get('paddle'))
-        elif name == "mistral":
-            available = bool(keys["mistral"])
-        elif name == "gemini":
-            available = bool(keys["gemini"])
-        elif name == "openai":
-            available = bool(keys["openai"])
         else:
-            available = False
+            # A remote provider is only usable with a key and without a
+            # recorded local-only refusal.
+            available = bool(keys.get("paddle")) and consent != "local-only"
         rows.append({**meta, "name": name, "ready": available})
+    payload = {"consent": consent, "credentials_file": str(util.credentials_path()),
+               "providers": rows}
     if args.json:
-        _out(json.dumps(rows, ensure_ascii=False, indent=2))
+        _out(json.dumps(payload, ensure_ascii=False, indent=2))
     else:
         for row in rows:
-            _out(f"[{'OK' if row['ready'] else '--'}] {row['name']:15} {row['layer']:6} {row['label']}")
+            _out(f"[{'OK' if row['ready'] else '--'}] {row['name']:16} {row['layer']:6} {row['label']}")
+        _out(f"remote consent: {consent} (credentials: {payload['credentials_file']})")
     return 0
 
 
@@ -346,6 +351,10 @@ def cmd_env(args) -> int:
         "config": str(util.config_path()),
         "app_dir": str(util.app_dir()),
         "cache_dir": str(util.cache_dir()),
+        "skill_dir": str(util.skill_dir()),
+        "credentials": str(util.credentials_path()),
+        "models_dir": str(config.models_root()),
+        "remote_consent": config.remote_consent(),
         "engines": {name: {"available": e.available, "exe": e.exe, "python": e.python,
                            "version": e.version, "env": e.env, "detail": e.detail}
                     for name, e in engines.items()},
@@ -354,11 +363,13 @@ def cmd_env(args) -> int:
     if args.json:
         _out(json.dumps(info, ensure_ascii=False, indent=2))
     else:
-        _out(f"config: {info['config']}")
-        _out(f"app:    {info['app_dir']}")
+        _out(f"config:      {info['config']}")
+        _out(f"credentials: {info['credentials']} ({'present' if Path(info['credentials']).is_file() else 'not created'})")
+        _out(f"models:      {info['models_dir']}")
+        _out(f"consent:     {info['remote_consent']}")
         for name, item in info["engines"].items():
             _out(f"{name}: {'ready' if item['available'] else 'not installed'}"
-                 + (f" · {item['exe']}" if item.get("exe") else ""))
+                 + (f" - {item['exe']}" if item.get("exe") else ""))
         for name, value in info["remote_keys"].items():
             _out(f"{name} key: {value}")
     return 0
@@ -366,15 +377,6 @@ def cmd_env(args) -> int:
 
 def cmd_usage(args) -> int:
     data = {
-        "mineru": {"free": "1000 pages/day highest-priority quota; beyond that lower priority, not a permanent free guarantee",
-                   "limits": "200 MB / 200 pages per file; batch up to 50 files (docs say up to 200)",
-                   "source": "https://mineru.net/apiManage/docs"},
-        "glm": {"price": "0.2 CNY per million tokens (input/output), as of 2026-10",
-                "limits": "10 MB image / 50 MB PDF / 100 pages",
-                "source": "https://docs.bigmodel.cn/cn/guide/models/vlm/glm-ocr"},
-        "mistral": {"price": "OCR 4.1 $4 / 1,000 pages; OCR 3 $2 / 1,000 pages",
-                    "limits": "per provider docs",
-                    "source": "https://docs.mistral.ai/inference/pricing"},
         "paddleocr-cloud": {"free": "Official website API advertises 20,000 pages/day (checked 2026-10-28); account quota and service rules apply",
                             "token_env": "PADDLEOCR_ACCESS_TOKEN", "limits": "local upload 50 MB; up to 1000 pages; no automatic resubmission",
                             "source": "https://www.paddleocr.ai/main/index.html"},
@@ -391,11 +393,61 @@ def cmd_usage(args) -> int:
     return 0
 
 
+def cmd_credentials(args) -> int:
+    path = util.credentials_path()
+    if args.action == "path":
+        _out(str(path))
+        return 0
+    if args.action == "show":
+        found = credentials.read_credentials()
+        if args.json:
+            _out(json.dumps({"path": str(path), "present": path.is_file(),
+                             "names": sorted(found), "consent": config.remote_consent()},
+                            ensure_ascii=False, indent=2))
+        else:
+            _out(f"path: {path} ({'present' if path.is_file() else 'not created'})")
+            for name in sorted(found):
+                _out(f"  {name}: set")
+            if not found:
+                _out("  no credential set")
+            _out(f"remote consent: {config.remote_consent()}")
+        return 0
+    if args.action == "remove":
+        removed = credentials.remove_credentials()
+        config.set_consent("local-only")
+        _out(f"removed {removed} credential(s) from {path}" if removed else f"no credential present in {path}")
+        _out("remote consent: local-only (uploads stay disabled until re-enabled)")
+        return 0
+
+    # set: never accept the secret as an argv value (it would land in shell history).
+    if not args.stdin:
+        _err("Refusing to read the token from arguments; pipe it on stdin with --stdin.")
+        return 2
+    value = (sys.stdin.readline() or "").strip()
+    if not value:
+        _err("No token received on stdin.")
+        return 2
+    name = args.name or "PADDLEOCR_ACCESS_TOKEN"
+    saved = credentials.save_credentials({name: value})
+    if not args.local_only:
+        config.set_consent("remote")
+    _out(f"saved {name} to {saved}")
+    _out(f"remote consent: {'local-only' if args.local_only else 'remote'}")
+    _out("Uploads still require --allow-remote on each call.")
+    return 0
+
+
 def cmd_setup(args) -> int:
+    if args.remote or args.local_only:
+        mode = "local-only" if args.local_only else "remote"
+        config.set_consent(mode)
+        _out(f"remote consent: {mode}")
+        return 0
     return setup_cmd.run(args.profile, manager=args.manager, device=args.device,
                          models=args.models, yes=args.yes, dry_run=args.dry_run,
                          channel=args.conda_channel, index=args.index,
-                         timeout=args.timeout, home=args.mineru_home)
+                         timeout=args.timeout, home=args.mineru_home,
+                         models_dir=args.models_dir)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -430,7 +482,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     d = sub.add_parser("doctor", help="check engines, models, GPU and credentials")
     d.add_argument("--json", action="store_true")
-    d.add_argument("--probe", action="store_true", help="make free authentication checks (MinerU/Mistral/Gemini/OpenAI)")
+    d.add_argument("--probe", action="store_true", help="make free authentication checks where a service offers one")
 
     s = sub.add_parser("setup", help="build a long-lived isolated environment")
     s.add_argument("--profile", choices=["core", "mineru", "paddle", "all"], default="mineru")
@@ -442,8 +494,20 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--dry-run", action="store_true")
     s.add_argument("--conda-channel", default="conda-forge")
     s.add_argument("--index", help="pip index URL (optional mirror)")
-    s.add_argument("--mineru-home", help="MinerU model/config home (default: ~/.mineru)")
+    s.add_argument("--mineru-home", help="MinerU model/config home (default: <models_dir>/mineru)")
+    s.add_argument("--models-dir", help="fixed model root (default: app data dir/models)")
+    s.add_argument("--remote", action="store_true",
+                   help="record consent for remote PaddleOCR uploads (no install)")
+    s.add_argument("--local-only", action="store_true",
+                   help="record that remote uploads must stay disabled (no install)")
     s.add_argument("--timeout", type=int, default=3600)
+
+    crd = sub.add_parser("credentials", help="write/read the fixed credential file (values never printed)")
+    crd.add_argument("action", choices=["set", "show", "remove", "path"])
+    crd.add_argument("--name", default="PADDLEOCR_ACCESS_TOKEN")
+    crd.add_argument("--stdin", action="store_true", help="read the secret from stdin (required for set)")
+    crd.add_argument("--local-only", action="store_true", help="store the key but keep uploads disabled")
+    crd.add_argument("--json", action="store_true")
 
     r = sub.add_parser("read", help="read a converted document by page/block")
     r.add_argument("path")
@@ -465,7 +529,7 @@ def build_parser() -> argparse.ArgumentParser:
     rf.add_argument('--block')
     rf.add_argument('--bbox', help='normalized x0,y0,x1,y1; otherwise selected block or whole page')
     rf.add_argument('--task', choices=['auto', 'transcribe', 'formula', 'table', 'chart', 'figure'], default='auto')
-    rf.add_argument('--provider', choices=['auto', 'packet'] + [n for n in PROVIDERS if n != 'mineru-agent'], default='auto')
+    rf.add_argument('--provider', choices=['auto', 'packet'] + list(PROVIDERS), default='auto')
     rf.add_argument('--allow-remote', action='store_true')
     rf.add_argument('--dpi', type=int, default=300)
     rf.add_argument('--question', default='', help='what to inspect in the selected region')
@@ -520,6 +584,8 @@ def main(argv=None) -> int:
             return cmd_doctor(args)
         if args.command == "setup":
             return cmd_setup(args)
+        if args.command == "credentials":
+            return cmd_credentials(args)
         if args.command == "read":
             return cmd_read(args)
         if args.command == 'triage':

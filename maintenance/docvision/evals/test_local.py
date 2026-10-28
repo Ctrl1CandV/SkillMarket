@@ -123,7 +123,7 @@ class LocalTests(unittest.TestCase):
         (out / 'sample.md').write_text('![diagram](imgs/diagram.jpg)\n\nRecognized chart: 42', encoding='utf-8')
         engine = config.Engine('paddleocr', exe='paddleocr', available=True, extra={})
         with patch.object(config, 'discover_paddle', return_value=engine), \
-             patch.object(paddle_local.tempfile, 'mkdtemp', return_value=str(self.tmp)), \
+             patch.object(paddle_local.util, 'staging_dir', return_value=self.tmp), patch.object(paddle_local.util, 'release_staging'), \
              patch.object(util, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')):
             doc, _ = paddle_local.convert(str(source), Options())
         self.assertIn('imgs/diagram.jpg', doc.assets)
@@ -202,7 +202,7 @@ class LocalTests(unittest.TestCase):
                                   'block_bbox': [0, 0, 20, 20]}]}), encoding='utf-8')
         engine = config.Engine('paddleocr', exe='paddleocr', available=True)
         with patch.object(config, 'discover_paddle', return_value=engine), \
-             patch.object(paddle_local.tempfile, 'mkdtemp', return_value=str(self.tmp)), \
+             patch.object(paddle_local.util, 'staging_dir', return_value=self.tmp), patch.object(paddle_local.util, 'release_staging'), \
              patch.object(util, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')):
             doc, _ = paddle_local.convert(str(source), Options())
         self.assertNotIn('![image]()', doc.markdown)

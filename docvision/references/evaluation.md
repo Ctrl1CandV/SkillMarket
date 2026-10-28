@@ -49,17 +49,18 @@
 - PaddleOCR 3.7.0 + PaddlePaddle GPU 3.2.1（conda，RTX 4070 Ti SUPER）：单页 PNG、2 页 PDF，GPU 单页约 1.4 秒推理；逐页 JSON/Markdown 合并、页码映射、中文文件名可跑通。
 - MinerU Agent API：2 页合成 PDF 上传、轮询、下载 Markdown 成功；确认它只返回 Markdown、无图片/bbox。
 - 输出契约、`verify`、`read`、`crop`、`pages`、`resume`、`dry-run`、中文输出名。
-- 单元级 mock 覆盖远程 GLM/Mistral/Gemini/OpenAI 适配器的解析路径（不调用真实服务）。
+- 单元级 mock 覆盖 PaddleOCR 云端适配器的协议解析与错误映射（不调用真实服务）。
 
 **未验证/不能声称**：
 
 - `MINERU_TOKEN` 当前无效（401/A0202），**Standard 云 API 未做真实端到端**；Agent 成功不代表 Standard 成功。
-- 没有 GLM、Mistral、Gemini、OpenAI 的真实 key，远程适配器只做了 schema/mock 验证；真实响应字段、限流、计费未验证。
+- 云端只有 PaddleOCR 一条路线，且有真实 token 的公式/合并表格验证记录；其他云端 OCR 已移除，不是“未验证但保留”。
+- 没有验证真实额度耗尽的服务端响应（mock 覆盖了错误映射）；没有验证极低额度账号的限频行为。
 - 没有做大规模准确率评测；合成样本只证明流程可跑，不证明论文/扫描件质量。
 - 没有验证 8 GB 显存机器上的峰值显存/长文档稳定性；只验证了 16 GB 机器。
 - 没有验证所有 PDF 变体（加密、旋转、混合语言、超大页、跨页表）。
 - 没有验证 PaddleOCR 的图表/印章/手写质量；只验证了基础文本+公式+表格。
-- 没有验证 Gemini 的页标记遵守率、免费层、长 PDF；没有验证 Files API。
+- 没有验证本地视觉模型（Ollama/vLLM）对图形的解释质量；没有 8 GB 真机与长文档基准。
 
 ## 真实任务验收
 

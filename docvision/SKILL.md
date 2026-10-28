@@ -1,8 +1,8 @@
 ---
 name: docvision
-description: 读取 PDF、扫描件、截图和论文中的正文、公式、表格、图表与架构图，生成带页码和区域定位的内容。适用于本地批量 OCR、按页阅读、关键区域精读和公式/表格复核；可用 PaddleOCR 官方免费额度 API 独立识别、Gemini 或当前对话视觉能力解释图形。不用于 PDF 编辑、图片生成或普通纯文本阅读。
+description: 读取 PDF、扫描件、截图和论文中的正文、公式、表格、图表与架构图，生成带页码和区域定位的内容。默认完全本地 OCR；用户明确同意后可选用 PaddleOCR 官方免费额度 API 复核关键公式/表格，图表与架构图由当前对话视觉能力看图解释。不用于 PDF 编辑、图片生成或普通纯文本阅读。
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Docvision
@@ -29,16 +29,25 @@ python "{SKILL_DIR}/scripts/docvision.py" setup --profile mineru --yes
 python "{SKILL_DIR}/scripts/docvision.py" setup --profile core --yes
 ```
 
-环境在技能目录外，模型在用户缓存。core 提供渲染、拆页和裁剪；入口在当前解释器缺这些依赖时切到已配置的 core Python。安装前沿用用户授权，不重复要求确认；环境细节见 [本地环境](references/local-setup.md)。
+环境在技能目录外（独立 conda/uv 环境）；模型固定在用户数据目录，不在技能目录：Windows `%LOCALAPPDATA%\docvision\models`，Linux/macOS `~/.local/share/docvision/models`；`doctor` 与 `env` 显示实际路径。core 提供渲染、拆页和裁剪；入口在当前解释器缺这些依赖时切到已配置的 core Python。安装前沿用用户授权，不重复要求确认；环境细节见 [本地环境](references/local-setup.md)。
 
-远程凭据可以放在私有 `.env` 文件，兼容 `PADDLEAPIKEY=...` 与官方 `PADDLEOCR_ACCESS_TOKEN=...`。`--env-file` 是全局参数，放在子命令前：
+### 首次使用必须先问远程 API
 
-```text
-python "{SKILL_DIR}/scripts/docvision.py" --env-file "D:/private/docvision.env" providers --json
-python "{SKILL_DIR}/scripts/docvision.py" --env-file "D:/private/docvision.env" refine ./_docvision/paper --page 4 --block p4-b5 --task formula --provider paddleocr-cloud --allow-remote --json
-```
+本技能是“本地 OCR + 可选云端 API”两层结构，用户通常不知道有云端。**在第一次 `convert`/`refine` 之前，必须显式问一次**，例如：
 
-未显式指定时，依次使用 `DOCVISION_ENV_FILE` 指定的路径、当前工作目录的 `.env`；不递归搜索。已有进程环境变量优先，文件内容只按字面解析，不执行命令。凭据文件不随技能复制或提交。
+> 是否配置 PaddleOCR 官方 API 的 token？它有免费额度，适合在本地结果存疑时复核关键公式/表格；会把选中的页面图上传到 PaddleOCR 服务器。不配置则全部在本机完成。
+
+按回答执行，不要替用户决定，也不要自行 `export` 或写入任何密钥：
+
+- 用户提供 token：让它用 stdin 写入固定凭据文件（不进 argv、不回显），例如
+  `printf '%s' "$TOKEN" | python "{SKILL_DIR}/scripts/docvision.py" credentials set --stdin`。
+  写入位置固定为 `{SKILL_DIR}/.credentials.env`（技能目录内、被随附 `.gitignore` 屏蔽、POSIX 上 0600），同时把 `remote.consent` 记为 `remote`。
+- 用户不填：执行 `setup --local-only`，把 `remote.consent` 记为 `local-only`。此后任何云端调用都会被拒绝——即使有人加了 `--allow-remote`——直到用户明确执行 `setup --remote`。
+- 用户改变主意：`credentials set` / `setup --remote` 重新开启；`credentials remove` 删除密钥并回到 `local-only`。
+
+凭据解析顺序：`--env-file` → `DOCVISION_ENV_FILE` → `{SKILL_DIR}/.credentials.env` → 当前目录 `.env`（不递归搜索）。进程环境变量优先于文件，文件内容只按字面解析，不执行命令。`credentials show` 只显示名字与 set/not set，永不打印值。
+
+**拷贝或分享技能目录会一并带走 `.credentials.env`**；发给别人前先 `credentials remove`。
 
 ## 本地初稿与按页读
 
@@ -70,8 +79,8 @@ python "{SKILL_DIR}/scripts/docvision.py" refine ./_docvision/paper --page 4 --b
 # 获准上传后，用官方免费额度 API 独立识别关键公式/表格
 python "{SKILL_DIR}/scripts/docvision.py" refine ./_docvision/paper --page 4 --block p4-b5 --task formula --provider paddleocr-cloud --allow-remote --json
 
-# 架构图解释：附选中块和邻近正文
-python "{SKILL_DIR}/scripts/docvision.py" refine ./_docvision/paper --page 3 --block p3-b0 --task figure --provider gemini --allow-remote --question "核对模块连接和箭头方向" --json
+# 架构图解释：附选中块和邻近正文；没有本机视觉服务时 AI 自己打开裁图
+python "{SKILL_DIR}/scripts/docvision.py" refine ./_docvision/paper --page 3 --block p3-b0 --task figure --provider packet --question "核对模块连接和箭头方向" --json
 ```
 
 块 ID 以实际输出为准；没有 bbox 时选整页或显式给 bbox。默认 300 DPI，可用 `--dpi 400`；位图截图放大不会创造细节。
@@ -91,16 +100,13 @@ Paddle 云端会把已选中的公式/表格裁图直接交给相应识别任务
 
 ### 3. 自动路线与免费额度
 
-`refine --provider auto` 默认生成本地精读包；只有带 `--allow-remote` 且存在相应凭据时，公式/表格/转写按 PaddleOCR 官方 API → MinerU Standard → Gemini 选择；图形解释选 Gemini，或已配置的本机视觉服务，再退为精读包。不自动选择 GLM/Mistral/其他付费端点；这些仍可显式指定。
+`refine --provider auto` 默认生成本地精读包；只有带 `--allow-remote`、`remote.consent` 不是 `local-only` 且存在 Paddle token 时，公式/表格/转写才走 PaddleOCR 官方 API；图形解释只选已配置的本机视觉服务（`local-vlm`，必须是 loopback 端点），否则退回精读包由当前对话看图。不存在其他云端 provider，也不会在失败后切换。
 
 ```text
-PADDLEOCR_ACCESS_TOKEN=... # PaddleOCR 官网 / AI Studio 官方 API
-MINERU_TOKEN=...           # MinerU Standard，可选
-GEMINI_API_KEY=...         # 图形语义解释，可选
-DOCVISION_GEMINI_MODEL=gemini-3.8-flash
+PADDLEOCR_ACCESS_TOKEN=...  # PaddleOCR 官网 / AI Studio；或 credentials set --stdin
 ```
 
-密钥只放环境变量或私有凭据文件，不写进技能/仓库或聊天。2026-10-28 核验：PaddleOCR 官方首页公布免费 API 每日 20,000 页，Gemini Flash 有免费层；账号资格、限频与实际计费状态以控制台为准。MinerU 的每日 1000 页是最高优先级额度，不能解释为永久免费。详见 [远程接口](references/remote-apis.md)。
+密钥只放固定凭据文件或环境变量，不写进配置、仓库或聊天。2026-10-28 核验：PaddleOCR 官方首页公布免费 API 每日 20,000 页；账号资格、限频与实际计费状态以控制台为准，额度耗尽时明确报错、不重试、不静默换付费服务。详见 [远程接口](references/remote-apis.md)。
 
 远程仅在用户同意的范围内使用；本轮已授权时沿用，不逐块反复询问。敏感或未授权文件保持本地，公开样本不能代替私人材料授权。
 

@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 from . import config, util
-from .providers.mineru_cloud import probe_token
 
 
 def _module(name: str) -> dict:
@@ -29,14 +28,14 @@ def _module(name: str) -> dict:
 
 def _models(engine) -> dict:
     if engine.name == "mineru":
-        home = Path(engine.extra.get("mineru_home") or (Path.home() / ".mineru"))
+        home = Path(engine.extra.get("mineru_home") or config.model_home("mineru"))
         std = [home / "models" / "MinerU2.5-Pro-2605-1.2B-GGUF",
                home / "models" / "MinerU-4_models_onnx"]
         present = [p.name for p in std if p.exists()]
         return {"dir": str(home / "models"), "standard_present": len(present) == len(std),
                 "detail": ", ".join(present) if present else "standard models not downloaded"}
     if engine.name == "paddleocr":
-        cache = Path.home() / ".paddlex" / "official_models"
+        cache = Path(engine.extra.get("paddlex_home") or config.model_home("paddlex")) / "official_models"
         found = []
         if cache.is_dir():
             found = [p.name for p in cache.iterdir() if p.is_dir()]
@@ -49,33 +48,9 @@ def _models(engine) -> dict:
 def _remote_probe(name: str, key: str | None) -> dict:
     if not key:
         return {"ok": False, "detail": "key not set"}
-    try:
-        if name == "paddle":
-            return {"ok": None, "detail": "key present; authentication and inference not tested (no non-billable probe)"}
-        if name == "mineru":
-            return probe_token(key)
-        if name == "mistral":
-            base = (config.load().get("remote", {}).get("mistral_base")
-                    or "https://api.mistral.ai/v1").rstrip("/")
-            status, body = util.get_json(base + "/models", timeout=20,
-                                         headers={"Authorization": "Bearer " + key})
-            return {"ok": status < 400, "detail": f"HTTP {status}"}
-        if name == "gemini":
-            base = (config.load().get("remote", {}).get("gemini_base")
-                    or "https://generativelanguage.googleapis.com/v1beta").rstrip("/")
-            status, body = util.get_json(base + "/models?key=" + key, timeout=20)
-            return {"ok": status < 400, "detail": f"HTTP {status}"}
-        if name == "openai":
-            base = util.env_value("DOCVISION_OPENAI_BASE_URL", "OPENAI_BASE_URL") or "https://api.openai.com/v1"
-            status, body = util.get_json(base.rstrip("/") + "/models", timeout=20,
-                                         headers={"Authorization": "Bearer " + key})
-            return {"ok": status < 400, "detail": f"HTTP {status}"}
-        if name == "glm":
-            # Zhipu has no free models endpoint; presence is the only non-billable check.
-            return {"ok": True, "detail": "key present (not called)"}
-    except Exception as exc:
-        return {"ok": False, "detail": str(exc)[:200]}
-    return {"ok": False, "detail": "unknown provider"}
+    # PaddleOCR has no non-billable authentication probe; a real conversion is
+    # the only honest check, so presence is all that can be reported here.
+    return {"ok": None, "detail": "key present; authentication and inference not tested (no non-billable probe)"}
 
 
 def collect(*, probe: bool = False) -> dict:
@@ -129,7 +104,9 @@ def collect(*, probe: bool = False) -> dict:
     if not all(item.get("ok") for item in core.values()):
         actions.append("For page rendering/cropping: docvision setup --profile core --yes")
     if not remote_available:
-        actions.append("Optional region refinement: set PADDLEOCR_ACCESS_TOKEN for official OCR quota, or GEMINI_API_KEY for diagram interpretation (never commit keys).")
+        actions.append("Optional region refinement: `docvision credentials set --stdin` for the PaddleOCR official API, or stay local with `docvision setup --local-only` (never commit keys).")
+    elif config.remote_consent() == "local-only":
+        actions.append("Remote uploads are disabled by your earlier choice; run `docvision setup --remote` only if that changed.")
     elif probe and not remote_usable:
         actions.append("No configured remote route has a successful authentication probe; inspect probe details or use local OCR.")
     paddle = engines["paddleocr"]
@@ -143,6 +120,14 @@ def collect(*, probe: bool = False) -> dict:
         "ram_gb": util.total_ram_gb(),
         "gpu": gpu,
         "config_path": str(util.config_path()),
+        "credentials_path": str(util.credentials_path()),
+        "credentials_present": util.credentials_path().is_file(),
+        "models_dir": str(config.models_root()),
+        "models_effective": {
+            "mineru": str(config.model_home("mineru")),
+            "paddlex": str(config.model_home("paddlex")),
+        },
+        "remote_consent": config.remote_consent(),
         "core_python_modules": core,
         "configured_core_python": core_python,
         "engines": engine_data,
@@ -181,6 +166,9 @@ def render(report: dict) -> str:
         if models:
             label = "cache present; pipeline/inference not validated" if models.get("standard_present") else models.get("detail")
             lines.append(f"         models: {label}")
+    lines.append(f"  models root: {report.get('models_dir')}")
+    for engine_name, path in (report.get("models_effective") or {}).items():
+        lines.append(f"    {engine_name}: {path}")
     lines.append("  remote keys (values never printed):")
     for name, item in report["remote"].items():
         probe = item.get("probe") or {}
@@ -188,6 +176,7 @@ def render(report: dict) -> str:
         if probe.get("detail"):
             detail += f"; probe: {probe.get('detail')}"
         lines.append(f"    [{mark(item['configured'])}] {name}: {detail}")
+    lines.append(f"  remote consent: {report.get('remote_consent')}  (file: {report.get('credentials_path')})")
     lines.append(f"  health: {'OK' if report['healthy'] else 'NOT READY'}")
     if report.get("next_actions"):
         lines.append("  next actions:")

@@ -76,26 +76,21 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
     if config.discover_vlm().available:
         return "local-vlm"
 
-    if opts.allow_remote:
-        keys = remote_keys()
-        if keys["paddle"]:
+    if opts.allow_remote and config.remote_consent() != "local-only":
+        if remote_keys()["paddle"]:
             return "paddleocr-cloud"
-        if keys["mineru"]:
-            return "mineru-cloud"
-        if keys["glm"]:
-            return "glm-cloud"
-        if keys["mistral"]:
-            return "mistral"
-        if keys["gemini"]:
-            return "gemini"
-        if keys["openai"]:
-            return "openai"
 
     from .base import DocVisionError
+    if config.remote_consent() == "local-only":
+        raise DocVisionError(
+            "No local OCR engine is installed, and remote upload was declined for this installation.",
+            hint=("Install a local engine with `docvision setup --profile mineru --yes`, "
+                  "or re-enable the remote route with `docvision setup --remote`."),
+        )
     raise DocVisionError(
         "No local OCR engine is installed, and remote upload was not authorized.",
         hint=("Install a local engine with `docvision setup --profile mineru --yes`, "
-              "or pass `--allow-remote --provider mineru-cloud` after checking that "
+              "or pass `--allow-remote --provider paddleocr-cloud` after checking that "
               "uploading the document is acceptable."),
     )
 
@@ -106,13 +101,7 @@ def describe_route(provider: str) -> dict:
         "mineru-local": "MinerU 4 local",
         "paddleocr-local": "PaddleOCR-VL local",
         "local-vlm": "Local OpenAI-compatible VLM",
-        "mineru-cloud": "MinerU Standard API",
         "paddleocr-cloud": "PaddleOCR hosted API",
-        "mineru-agent": "MinerU Agent API (preview)",
-        "glm-cloud": "Zhipu GLM-OCR API",
-        "mistral": "Mistral OCR API",
-        "gemini": "Google Gemini",
-        "openai": "OpenAI-compatible vision API",
     }
     return {"provider": provider, "label": labels.get(provider, provider),
             "privacy": "local" if local else "uploaded", "remote": not local}

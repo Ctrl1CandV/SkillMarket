@@ -50,7 +50,7 @@ class HybridTests(unittest.TestCase):
     def test_remote_requires_authorization_before_request(self):
         with patch.object(refine, 'run_provider') as call:
             with self.assertRaises(DocVisionError):
-                refine.run(self.docdir, page=1, provider='gemini')
+                refine.run(self.docdir, page=1, provider='paddleocr-cloud')
         call.assert_not_called()
 
     def test_remote_only_receives_region_and_keeps_base(self):
@@ -63,7 +63,7 @@ class HybridTests(unittest.TestCase):
             self.assertEqual(opts.extra['refine_task'], 'formula')
             return RawDoc(markdown='$$x^2$$', provider=provider, model='test'), {}
         with patch.object(refine, 'run_provider', side_effect=recognize):
-            result = refine.run(self.docdir, page=1, block_id='p1-b0', provider='gemini',
+            result = refine.run(self.docdir, page=1, block_id='p1-b0', provider='paddleocr-cloud',
                                 allow_remote=True, extra={'model': 'test'})
         self.assertEqual(result['state'], 'recognized')
         self.assertFalse(result['accuracy_verified'])
@@ -74,7 +74,7 @@ class HybridTests(unittest.TestCase):
         def recognize(provider, source, opts):
             return RawDoc(markdown='result', provider=provider, model=opts.extra.get('model')), {}
         with patch.object(refine, 'run_provider', side_effect=recognize) as call:
-            kw = dict(page=1, provider='gemini', allow_remote=True)
+            kw = dict(page=1, provider='paddleocr-cloud', allow_remote=True)
             a = refine.run(self.docdir, **kw, extra={'model': 'one'})
             b = refine.run(self.docdir, **kw, extra={'model': 'one'})
             c = refine.run(self.docdir, **kw, extra={'model': 'two'})
@@ -86,7 +86,7 @@ class HybridTests(unittest.TestCase):
 
     def test_failure_is_recorded_without_retry_or_provider_fallback(self):
         with patch.object(refine, 'run_provider', side_effect=DocVisionError('quota exhausted')) as call:
-            result = refine.run(self.docdir, page=1, provider='gemini', allow_remote=True)
+            result = refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
         self.assertEqual(result['state'], 'failed')
         self.assertEqual(call.call_count, 1)
         self.assertTrue(Path(result['image_path']).is_file())
@@ -125,38 +125,33 @@ class HybridTests(unittest.TestCase):
     def test_error_record_does_not_expose_configured_token(self):
         with patch.object(refine.config, 'remote_keys', return_value={'gemini': 'SECRET_FAKE_KEY'}), \
              patch.object(refine, 'run_provider', side_effect=DocVisionError('bad URL ?key=SECRET_FAKE_KEY')):
-            result = refine.run(self.docdir, page=1, provider='gemini', allow_remote=True)
+            result = refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
         self.assertNotIn('SECRET_FAKE_KEY', Path(result['record_path']).read_text('utf-8'))
 
     def test_submitted_attempt_is_never_automatically_resubmitted(self):
         with patch.object(refine, 'run_provider', side_effect=KeyboardInterrupt):
             with self.assertRaises(KeyboardInterrupt):
-                refine.run(self.docdir, page=1, provider='gemini', allow_remote=True)
+                refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
         with patch.object(refine, 'run_provider') as call:
-            result = refine.run(self.docdir, page=1, provider='gemini', allow_remote=True)
+            result = refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
         self.assertEqual(result['state'], 'submitted')
         call.assert_not_called()
 
-    def test_vision_adapters_reject_truncated_responses(self):
-        from dv.providers import openai_compat, gemini_cloud
-        from dv import config, util
-        opts = Options(extra={'model': 'test', 'refine_task': 'figure'})
+    def test_vision_adapter_rejects_truncated_responses(self):
+        from dv.providers import openai_compat
+        from dv import util
+        opts = Options(extra={'model': 'test', 'refine_task': 'figure',
+                              'base_url': 'http://127.0.0.1:11434/v1'})
         with patch.object(util, 'post_json', return_value=(200, json.dumps({
-                'choices': [{'finish_reason': 'length', 'message': {'content': 'partial'}}]}).encode())), \
-             patch.object(util, 'env_value', return_value=None):
+                'choices': [{'finish_reason': 'length', 'message': {'content': 'partial'}}]}).encode())),              patch.object(util, 'env_value', return_value=None):
             with self.assertRaises(DocVisionError):
                 openai_compat.convert(str(self.source), opts)
-        with patch.object(config, 'remote_keys', return_value={'gemini': 'FAKE'}), \
-             patch.object(util, 'post_json', return_value=(200, json.dumps({
-                'candidates': [{'finishReason': 'MAX_TOKENS', 'content': {'parts': [{'text': 'partial'}]}}]}).encode())):
-            with self.assertRaises(DocVisionError):
-                gemini_cloud.convert(str(self.source), opts)
 
-    def test_local_vlm_cannot_bypass_remote_authorization(self):
+    def test_local_vlm_cannot_use_a_remote_endpoint(self):
         from dv.providers import openai_compat
         with self.assertRaises(DocVisionError):
             openai_compat.convert(str(self.source), Options(extra={
-                'model': 'test', 'base_url': 'https://external.example/v1'}), local=True)
+                'model': 'test', 'base_url': 'https://external.example/v1'}))
 
     def test_endpoint_change_invalidates_refinement_cache(self):
         import os
@@ -164,23 +159,34 @@ class HybridTests(unittest.TestCase):
             return RawDoc(markdown='result', provider=provider), {}
         with patch.object(refine, 'run_provider', side_effect=recognize) as call:
             with patch.dict(os.environ, {'DOCVISION_OPENAI_BASE_URL': 'https://a.example/v1'}):
-                a = refine.run(self.docdir, page=1, provider='openai', allow_remote=True)
+                a = refine.run(self.docdir, page=1, provider='local-vlm')
             with patch.dict(os.environ, {'DOCVISION_OPENAI_BASE_URL': 'https://b.example/v1'}):
-                b = refine.run(self.docdir, page=1, provider='openai', allow_remote=True)
+                b = refine.run(self.docdir, page=1, provider='local-vlm')
         self.assertNotEqual(a['id'], b['id'])
         self.assertEqual(call.call_count, 2)
+
+    def test_local_only_consent_refuses_remote_even_with_flag(self):
+        with patch.object(refine.config, 'remote_consent', return_value='local-only'),              patch.object(refine, 'run_provider') as call:
+            with self.assertRaises(DocVisionError) as error:
+                refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
+        self.assertIn('declined', str(error.exception))
+        call.assert_not_called()
+
+    def test_auto_route_skips_remote_when_consent_is_local_only(self):
+        with patch.object(refine.config, 'remote_consent', return_value='local-only'),              patch.object(refine.config, 'remote_keys', return_value={'paddle': 'FAKE'}):
+            self.assertEqual(refine.choose_provider('auto', 'formula', allow_remote=True), 'packet')
 
     def test_cloud_provider_config_endpoint_changes_invalidate_cache(self):
         def recognize(provider, source, opts):
             return RawDoc(markdown='result', provider=provider), {}
-        for provider, key in [('mistral', 'mistral_base'), ('glm-cloud', 'glm_base')]:
-            with self.subTest(provider=provider), patch.object(refine, 'run_provider', side_effect=recognize) as call:
-                with patch.object(refine.config, 'load', return_value={'remote': {key: 'https://a.example/v1'}}):
-                    first = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
-                with patch.object(refine.config, 'load', return_value={'remote': {key: 'https://b.example/v1'}}):
-                    second = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
-                self.assertNotEqual(first['id'], second['id'])
-                self.assertEqual(call.call_count, 2)
+        provider = 'paddleocr-cloud'
+        with patch.object(refine, 'run_provider', side_effect=recognize) as call:
+            with patch.object(refine.config, 'load', return_value={'remote': {'paddle_base': 'https://a.example/v1'}}):
+                first = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
+            with patch.object(refine.config, 'load', return_value={'remote': {'paddle_base': 'https://b.example/v1'}}):
+                second = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
+        self.assertNotEqual(first['id'], second['id'])
+        self.assertEqual(call.call_count, 2)
 
     def test_block_context_excludes_distant_page_text(self):
         p = self.docdir / 'content.json'
@@ -208,7 +214,7 @@ class HybridTests(unittest.TestCase):
             return RawDoc(markdown='result', provider=provider), {}
         def job():
             try:
-                return refine.run(self.docdir, page=1, provider='gemini', allow_remote=True)
+                return refine.run(self.docdir, page=1, provider='paddleocr-cloud', allow_remote=True)
             except DocVisionError as exc:
                 return {'state': 'busy', 'error': str(exc)}
         with patch.object(refine.util, 'read_json', side_effect=read_json), \
@@ -218,13 +224,6 @@ class HybridTests(unittest.TestCase):
                 results = list(pool.map(lambda _: job(), range(2)))
         self.assertEqual(call.call_count, 1)
         self.assertEqual(sum(r['state'] == 'recognized' for r in results), 1)
-
-    def test_gemini_environment_model_overrides_default_config(self):
-        import os
-        from dv.providers import gemini_cloud
-        with patch.dict(os.environ, {'DOCVISION_GEMINI_MODEL': 'my-flash-model'}), \
-             patch.object(gemini_cloud.config, 'load', return_value={'remote': {'gemini_model': 'gemini-3.8-flash'}}):
-            self.assertEqual(gemini_cloud._resolve_model('FAKE', Options()), 'my-flash-model')
 
     def test_figure_context_preserves_caption_stored_in_block_text(self):
         p = self.docdir / 'content.json'

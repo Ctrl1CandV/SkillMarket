@@ -4,17 +4,14 @@
 
 ## 本轮优先路线
 
-本地批量用 MinerU economy/basic 或 standard；关键区域用 `triage` + `refine`。公式/表格的远程自动路线优先 PaddleOCR 官方免费额度 API；图形解释用 Gemini 或当前对话模型实际看图。见 [混合精读](hybrid-reading.md)。
+本地批量用 MinerU economy/basic 或 standard；关键区域用 `triage` + `refine`。公式/表格的远程路线只有 PaddleOCR 官方免费额度 API（需安装级同意 + 每次 `--allow-remote`）；图形解释由当前对话视觉能力实际看图，或使用本机 loopback 视觉服务。见 [混合精读](hybrid-reading.md)。
 
 ## 一句话路线
 
 - **默认本地 MinerU**：完整文档、公式、表格、图片、长期使用，8 GB 只是规划起点，需用真实文档验证标准档。
 - **本地 PaddleOCR-VL**：更轻（0.9B）、元素级准确率高、适合单页/截图/图表；需要 PaddlePaddle GPU 环境，安装比 MinerU 重。
-- **远程 MinerU Standard**：本机没有环境、或需要稳定吞吐；每日 1000 页最高优先级额度，超出降优先级。
-- **远程 GLM-OCR**：便宜、同步接口、中文/表格/手写好；0.2 元/百万 tokens，单文件 100 页。
-- **Mistral OCR**：结构化块、bbox、图表/文档密集场景；$4/1000 页（OCR 4.1）。
-- **Gemini**：复杂版面、图表理解、跨页推理强；原生 PDF 输入，但免费层和保留策略需按账号确认。
-- **本地 OpenAI 兼容 VLM**：Ollama/vLLM 上的 GLM-OCR、Qwen3-VL 等，适合截图和单页；没有布局管线时不要期待整本论文的稳定结构。
+- **远程 PaddleOCR 官方 API**：唯一云端 OCR。只用于关键公式/表格裁图复核；官网公布每日 20,000 页免费额度，以账号为准。
+- **本地 OpenAI 兼容 VLM**：Ollama/vLLM 上的视觉模型，适合截图和单页图形解释；没有布局管线时不要期待整本论文的稳定结构。
 
 ## 为什么默认 MinerU
 
@@ -47,12 +44,8 @@ PaddleOCR 的 CLI 在缺少 `python-docx` 时可能在 `save_all` 导出 DOCX �
 |---|---|---|---|---|
 | MinerU 4 本地 | 1.2B VLM + 小模型 | 论文、报告、扫描件、公式/表格/图片、整本 | 标准档约 2 GB 模型；8 GB+ VRAM；复杂版式仍需看图 | 免费，占本机算力 |
 | PaddleOCR-VL 1.6 本地 | 0.9B | 单页/截图、图表、印章、多语言、元素级 | Paddle GPU 环境较重；跨页结构需合并 | 免费，占本机算力 |
-| MinerU Standard API | 云端 VLM | 无本地环境、批量、需要 zip/JSON | 上传；200 MB/200 页；额度 | 每日 1000 页最高优先级，超出降优先级 |
-| MinerU Agent API | 轻量 pipeline | 小文件快速预览 | 10 MB/20 页；仅 Markdown；结构弱 | 免 token，IP 限频 |
-| GLM-OCR API | 0.9B | 中文、表格、手写、印章、票据 | 同步请求；100 页/50 MB；复杂版式 | 0.2 元/百万 tokens（输入输出同价） |
-| Mistral OCR | 云端 OCR 4.x | 结构化块、bbox、图表密集文档 | 上传；按页计费 | OCR 4.1 $4/1000 页；OCR 3 $2/1000 页 |
-| Gemini | 通用多模态 | 复杂版面、图表推理、跨页问答 | 上传；输出结构不保证；免费层会变 | 按模型 token 计费，免费层以账号为准 |
-| 本地 OpenAI 兼容 VLM | 任意 | 截图、单页、已有 Ollama/vLLM | 无布局/阅读顺序；整本弱 | 免费，占本机算力 |
+| PaddleOCR 官方 API | 云端 PaddleOCR-VL | 关键公式/表格裁图复核、无本地环境时 | 需上传 + 安装级同意 + `--allow-remote` | 官网公布每日 20,000 页，账号为准 |
+| 本地 OpenAI 兼容 VLM | 任意 | 截图、单页图形解释、已有 Ollama/vLLM | 仅 loopback；无布局/阅读顺序；整本弱 | 免费，占本机算力 |
 
 ## 按硬件选
 
@@ -60,8 +53,8 @@ PaddleOCR 的 CLI 在缺少 `python-docx` 时可能在 `save_all` 导出 DOCX �
 |---|---|
 | 8 GB VRAM / 16 GB RAM | MinerU 标准档（llama.cpp Vulkan）或 PaddleOCR-VL GPU；不要同时开两个引擎；复杂文档优先单页/分段 |
 | 16 GB VRAM / 32 GB RAM | MinerU 标准/高级档；PaddleOCR-VL GPU；先单并发，测量后再决定双并发 |
-| 无 NVIDIA GPU | MinerU 基础/标准档 CPU（慢）或远程；不要为了跑 OCR 强行装 CUDA |
-| 只有 8 GB 内存 | 优先远程或 MinerU 基础档；标准档要求 16 GB 内存 |
+| 无 NVIDIA GPU | MinerU 基础/标准档 CPU（慢），或用户同意后走 PaddleOCR 官方 API 的裁图复核 |
+| 只有 8 GB 内存 | 优先本地 MinerU 基础档；标准档要求 16 GB 内存 |
 
 “能加载模型”不等于“能稳定跑完整本”。先用 3-5 页真实样本测速度、显存和输出质量，再决定批量。
 
@@ -80,6 +73,4 @@ OmniDocBench v1.6（2026-09 榜单）上，TeleOCR 1.2B 96.91、OvisOCR2 0.8B 96
 - MinerU 4.0.12 README/文档：<https://github.com/opendatalab/MinerU>、<https://opendatalab.github.io/MinerU/>
 - PaddleOCR 3.7.0 / PaddleOCR-VL-1.6：<https://github.com/PaddlePaddle/PaddleOCR>、<https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.6>
 - OmniDocBench v1.6 榜单：<https://github.com/opendatalab/OmniDocBench>
-- GLM-OCR：<https://github.com/zai-org/GLM-OCR>、<https://docs.bigmodel.cn/cn/guide/models/vlm/glm-ocr>
-- Mistral OCR 价格：<https://docs.mistral.ai/inference/pricing>
-- MinerU API 文档：<https://mineru.net/apiManage/docs>
+- PaddleOCR 官方 API 与额度：<https://www.paddleocr.ai/main/index.html>

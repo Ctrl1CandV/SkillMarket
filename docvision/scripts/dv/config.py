@@ -20,6 +20,7 @@ from . import util
 DEFAULT_CONFIG = {
     "version": 1,
     "core": {"env": "docvision-core", "python": None},
+    "models_dir": None,
     "engines": {
         "mineru": {"env": "docvision-mineru", "exe": None, "python": None,
                    "mineru_home": None, "tier": "standard"},
@@ -28,12 +29,11 @@ DEFAULT_CONFIG = {
         "vlm": {"base_url": "http://127.0.0.1:11434/v1", "model": "",
                 "api_key_env": "DOCVISION_VLM_API_KEY"},
     },
+    # consent: unset | remote | local-only. Local-only is sticky: it refuses
+    # every remote call until the user explicitly re-enables it.
     "remote": {
-        "default": "mineru-cloud",
-        "glm_base": "https://open.bigmodel.cn/api/paas/v4",
-        "mistral_base": "https://api.mistral.ai/v1",
-        "gemini_base": "https://generativelanguage.googleapis.com/v1beta",
-        "gemini_model": "gemini-3.8-flash",
+        "default": "paddleocr-cloud",
+        "consent": "unset",
         "paddle_base": "https://paddleocr.aistudio-app.com/api/v2/ocr/jobs",
     },
     "output": {"default_dir": "docvision-out"},
@@ -109,6 +109,29 @@ def env_value(*names: str) -> str | None:
     return None
 
 
+def models_root() -> Path:
+    """Fixed model root: config override, then DOCVISION_MODELS, then app data."""
+    configured = (load().get("models_dir") or "").strip()
+    return Path(configured).expanduser() if configured else util.models_dir()
+
+
+def model_home(name: str) -> Path:
+    """Fixed per-engine model folder, reusing an existing legacy install.
+
+    A machine that already downloaded weights to ~/.mineru or ~/.paddlex keeps
+    using them instead of re-downloading gigabytes; a fresh install gets the
+    fixed application-data path.  An explicit models_dir/DOCVISION_MODELS
+    always wins and disables the legacy fallback.
+    """
+    configured = (load().get("models_dir") or "").strip()
+    explicit = bool(configured) or bool(os.environ.get("DOCVISION_MODELS"))
+    root = models_root() / name
+    legacy = {"mineru": Path.home() / ".mineru", "paddlex": Path.home() / ".paddlex"}.get(name)
+    if not explicit and legacy and not root.exists() and legacy.exists():
+        return legacy
+    return root
+
+
 def _exe_version(exe: str, *, args: list[str] | None = None) -> tuple[str | None, str]:
     if not exe or not Path(exe).is_file():
         return None, "not found"
@@ -161,7 +184,7 @@ def _discover_mineru(cfg: dict) -> Engine:
         available=bool(exe and detail == "ok"),
         detail=detail if exe else "mineru-kit not found",
         extra={"mineru_home": ecfg.get("mineru_home") or os.environ.get("MINERU_HOME")
-               or str(Path.home() / ".mineru")},
+               or str(model_home("mineru"))},
     )
 
 
@@ -292,6 +315,7 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
         detail=detail if exe else "paddleocr not found",
         extra={"gpu": gpu, "installed": bool(exe), "dependencies": dependencies,
                "isolation": "user site disabled for Paddle subprocess only",
+               "paddlex_home": os.environ.get("PADDLE_PDX_CACHE_HOME") or str(model_home("paddlex")),
                "device": ecfg.get("device") or ("gpu:0" if gpu and gpu.get("cuda") == "True" else "cpu")},
     )
 
@@ -319,15 +343,25 @@ def engine_status(cfg: dict | None = None, *, refresh: bool = False) -> dict[str
 
 
 def remote_keys() -> dict[str, str | None]:
+    """Only PaddleOCR is a remote OCR route; local VLM stays local."""
     return {
         "paddle": util.env_value("DOCVISION_PADDLE_TOKEN", "PADDLEOCR_ACCESS_TOKEN",
                                  "PADDLEOCR_API_TOKEN", "AI_STUDIO_TOKEN", "PADDLEAPIKEY"),
-        "mineru": util.env_value("DOCVISION_MINERU_TOKEN", "MINERU_TOKEN", "MINERU_API_KEY"),
-        "glm": util.env_value("DOCVISION_GLM_API_KEY", "ZHIPU_API_KEY", "GLM_API_KEY"),
-        "mistral": util.env_value("DOCVISION_MISTRAL_API_KEY", "MISTRAL_API_KEY"),
-        "gemini": util.env_value("DOCVISION_GEMINI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"),
-        "openai": util.env_value("DOCVISION_OPENAI_API_KEY", "OPENAI_API_KEY"),
     }
+
+
+def remote_consent() -> str:
+    """unset | remote | local-only; an unrecognized value is treated as unset."""
+    value = (load().get("remote", {}) or {}).get("consent")
+    return value if value in {"remote", "local-only"} else "unset"
+
+
+def set_consent(mode: str) -> Path:
+    if mode not in {"remote", "local-only"}:
+        raise ValueError(f"unsupported consent mode: {mode}")
+    data = load()
+    data.setdefault("remote", {})["consent"] = mode
+    return save(data)
 
 
 def masked_keys() -> dict[str, str]:

@@ -5,21 +5,25 @@
 ## 推荐布局
 
 ```text
-技能目录（只读运行资源）
+技能目录（只读运行资源 + 一个被忽略的凭据文件）
   docvision/
     SKILL.md
     references/
     scripts/            # 本技能代码，无第三方依赖
     scripts/constraints/ # 版本约束
+    .gitignore          # 屏蔽 .credentials.env / .staging
+    .credentials.env    # 可选；本地凭据，永不提交
 
 用户环境（不随仓库提交）
   conda env docvision-mineru    # MinerU 4，默认本地引擎
   conda env docvision-paddle    # PaddleOCR-VL，可选 GPU
   conda env docvision-core      # pypdfium2/Pillow/pypdf，页码渲染/裁剪
-  ~/.mineru/                    # MinerU 模型与配置
-  ~/.paddlex/                   # PaddleOCR 模型缓存
-  %APPDATA%/docvision/config.json  # 只存路径，不存密钥
+  <models_dir>/mineru/          # 固定模型根，默认 %LOCALAPPDATA%/docvision/models
+  <models_dir>/paddlex/         # 同上；已存在 ~/.paddlex 时自动复用旧安装
+  %APPDATA%/docvision/config.json  # 只存路径与 remote.consent，不存密钥
 ```
+
+模型根固定、可覆盖：`DOCVISION_MODELS` 环境变量或 `setup --models-dir <path>`，也可写 `config.json` 的 `models_dir`。解析优先级：`models_dir` → `DOCVISION_MODELS` → 默认应用数据目录。显式指定时会关闭对 `~/.mineru`、`~/.paddlex` 旧路径的自动复用。
 
 Windows 的 conda 环境 Python 在 `<env>\python.exe`；venv 在 `<env>\Scripts\python.exe`。技能会两种都识别。
 
@@ -40,7 +44,7 @@ python "{SKILL_DIR}/scripts/docvision.py" setup --profile core --yes
 - MinerU：安装 `mineru>=4.0,<5`，然后下载 standard 档模型（约 2 GB）。基础包已含 ONNX 小模型和 llama.cpp Vulkan，不强制 CUDA。
 - Paddle：GPU 时安装 `paddlepaddle-gpu==3.2.1`（Baidu cu126 源）和 `paddleocr[doc-parser]>=3.7,<3.8`；CPU 时安装 `paddlepaddle==3.2.1`。同时装 `python-docx`（Paddle OCR 的 DOCX 导出依赖）和 `pypdf`。
 - Core：只装页面渲染/裁剪需要的 `pypdfium2`、`pillow`、`pypdf`，不装 OCR 模型。
-- 配置会写入 `%APPDATA%/docvision/config.json` 或 `~/.config/docvision/config.json`，记录可执行文件路径；不写任何 key。
+- 配置会写入 `%APPDATA%/docvision/config.json` 或 `~/.config/docvision/config.json`，记录可执行文件路径、`models_dir` 与 `remote.consent`；不写任何 key。
 
 如果 conda 的默认 channel 配置损坏（例如镜像 404），`setup` 用 `-c conda-forge --override-channels` 建环境；也可以用 `--conda-channel` 指定可用 channel。
 
@@ -136,20 +140,22 @@ Paddle 同理，先固定 `paddleocr==3.7.x` 和 `paddlepaddle-gpu==3.2.1`，确
 
 - conda：`conda env export --from-history > environment.yml`；出问题用 `conda env create -f environment.yml` 重建，不要在原环境里反复卸载。
 - 记录 `python -m pip freeze > lock.txt`；回滚时按 lock 重装。
-- 模型与代码分离：删/换 `~/.mineru/models` 或 `~/.paddlex` 不会破坏代码；换模型前保留旧目录名。
+- 模型与代码分离：删/换 `<models_dir>/mineru` 或 `<models_dir>/paddlex` 不会破坏代码；换模型前保留旧目录名。
 - 技能配置在 `config.json`，只存路径；路径失效时改配置或重跑 `setup`，不要删模型缓存。
 
 ## 磁盘与缓存
 
 - MinerU 标准档模型约 2 GB；PaddleOCR-VL-1.6 加布局模型约 1-2 GB；CUDA/cuDNN 轮子约 1.5 GB。预留 10 GB 以上。
-- 转换中间文件在系统临时目录；输出目录由用户指定。模型缓存不要放进技能目录或 Git。
-- 换机器时只需重装环境；不要把 `~/.mineru`、`~/.paddlex` 或 conda 环境打包进仓库。
+- 转换中间文件写在输出目录的 `.staging/`，成功即删；保留现场用 `DOCVISION_KEEP_TEMP=1`。模型缓存不要放进技能目录或 Git。
+- 换机器时只需重装环境；不要把模型目录或 conda 环境打包进仓库。
 
 ## 安全
 
-- 密钥只放环境变量：`MINERU_TOKEN`、`ZHIPU_API_KEY`、`MISTRAL_API_KEY`、`GEMINI_API_KEY`。`doctor` 只显示 set/not set，不打印值。
-- 不把 `.env`、token、真实文档、转换输出提交到任何分支。
-- 远程转换需要 `--allow-remote`；本地引擎失败不会自动上传。
+- 密钥只放 `{SKILL_DIR}/.credentials.env`（`credentials set --stdin` 写入）或环境变量：`PADDLEOCR_ACCESS_TOKEN`、`DOCVISION_VLM_API_KEY`。`doctor`/`credentials show` 只显示 set/not set，不打印值。
+- 凭据文件被随附的 `docvision/.gitignore` 屏蔽；写入前会用 `git check-ignore` 复查，未忽略则拒绝写入。
+- POSIX 上写入后 `chmod 600`；Windows 上 `chmod` 不等价于 POSIX 权限，实际保护来自用户目录 ACL 与 `.gitignore`。
+- 不把 `.credentials.env`、token、真实文档、转换输出提交到任何分支；分发技能前先 `credentials remove`。
+- 远程转换需要安装级 `remote.consent != local-only` **和** 每次 `--allow-remote`；本地引擎失败不会自动上传。
 
 ## 0.2 环境补充
 

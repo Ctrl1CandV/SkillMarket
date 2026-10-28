@@ -11,13 +11,13 @@
 
 | 任务 | 输入重点 | 核对内容 | 默认自动精读路线（已授权远程） |
 |---|---|---|---|
-| formula | 包含完整表达式和编号的裁图 | 下标、幂、求和边界、括号、希腊字母 | Paddle 官方 → MinerU Standard → Gemini |
-| table | 完整表头、脚注与所有列 | rowspan/colspan、单位、负号、空值、数字 | Paddle 官方 → MinerU Standard → Gemini |
-| chart | 轴、图例、单位与曲线 | 趋势、可读数值、尺度、误差棒 | Gemini → 本地视觉服务 → packet |
-| figure | 完整图块与相关图注/邻近正文 | 模块名、箭头方向、分支、循环、数据流 | Gemini → 本地视觉服务 → packet |
-| transcribe | 局部正文或整页 | 忠实转写、阅读顺序 | Paddle 官方 → MinerU Standard → Gemini |
+| formula | 包含完整表达式和编号的裁图 | 下标、幂、求和边界、括号、希腊字母 | Paddle 官方 → packet（宿主看图） |
+| table | 完整表头、脚注与所有列 | rowspan/colspan、单位、负号、空值、数字 | Paddle 官方 → packet（宿主看图） |
+| chart | 轴、图例、单位与曲线 | 趋势、可读数值、尺度、误差棒 | 本地视觉服务 → packet |
+| figure | 完整图块与相关图注/邻近正文 | 模块名、箭头方向、分支、循环、数据流 | 本地视觉服务 → packet |
+| transcribe | 局部正文或整页 | 忠实转写、阅读顺序 | Paddle 官方 → packet（宿主看图） |
 
-无密钥/未授权时 auto 输出 packet；不自动选择 GLM/Mistral/OpenAI 兼容付费服务。显式 provider 的费用由账号决定，免费额度不是识别正确性保证。
+无密钥/未授权/`local-only` 时 auto 输出 packet。云端只有 PaddleOCR 一条路线；不存在付费备用 provider，也不会在失败后切换。
 
 ## 精读包与证据
 

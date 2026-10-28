@@ -126,7 +126,7 @@
 - `assets/` 是扁平命名，避免路径穿越和 provider 子目录差异。
 - 图片引用会从 `images/...`、`imgs/...`、`assets/...` 重写为 `assets/...`。
 - 远程 provider 返回 base64 图片时，会落盘为文件；只有 URL 且下载失败时保留原 URL，并在 `qa` 里提示。
-- 不是所有 provider 都给图片：MinerU Agent、Gemini 纯文本输出、部分 OpenAI 兼容端点没有资产；`content.json` 会如实缺失，不伪造。
+- 不是所有 provider 都给图片：本地视觉模型或纯文本输出端点没有资产；`content.json` 会如实缺失，不伪造。
 
 ## 兼容与版本
 

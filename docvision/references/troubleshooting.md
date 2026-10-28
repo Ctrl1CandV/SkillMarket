@@ -84,30 +84,30 @@ The installed Paddle is compiled with CUDNN 9.9, but CUDNN version in your machi
 
 Paddle CLI 对 PDF 输出 `*_0.md`、`*_0_res.json` 等逐页文件；本技能按 `page_index` 合并并映射回原页。若页码不对，检查是否用了 `--pages` 拆分（拆分后 page_index 是局部的，本技能会映射回原页）。
 
-## 远程
+## 远程（只有 PaddleOCR 官方 API）
 
-### 401/403
+### 401/403 或“额度耗尽”
 
-- MinerU：token 过期/错误；`doctor --probe` 会给出 rejected。重新生成 `MINERU_TOKEN`。
-- GLM：`Authorization` 是 key 本身，不要加 `Bearer`（按官方示例）。
-- Mistral/OpenAI/Gemini：Bearer/key 参数按各家文档；不要复制错。
+- token 过期/错误/额度用尽：重新生成或更换账号，然后
+  `printf '%s' "$TOKEN" | docvision credentials set --stdin` 重写固定凭据文件。
+- 没有不扣费的鉴权探测入口，`doctor --probe` 只能报告“key present”；真实转换才是验证。
+- 额度耗尽不要立即重试同一批；错误会明确报出，不会自动重传或换付费 provider。
 
-### 429/额度
+### 被拒绝上传
 
-- MinerU 每日最高优先级额度用完会降优先级；不要立即重试同一批。
-- GLM/Mistral 按账号限流/计费；先减少页数。
-- 远程失败不要自动重传大文件；先看是否已经扣费/创建任务。
+- “remote upload was declined for this installation”：安装级同意是 `local-only`。只有用户改变主意时才 `docvision setup --remote`。
+- “which was not authorized”：缺 `--allow-remote`。两者同时满足才会真正上传。
+- 删掉密钥后会回到 `local-only`；再想用云端需重新 `credentials set`。
 
 ### 文件太大
 
-- MinerU Standard 200 MB/200 页；Agent 10 MB/20 页；GLM 50 MB/100 页；Gemini inline 约 18 MB。
-- 用 `--pages` 分段，或本地 MinerU 整本；不要把 500 页 PDF 直接塞给 Agent。
+- 本机上传递交 50 MB / 1000 页；超过先本地拆分或只提交关键裁图。
+- 只上传 `refine` 的裁图通常已经够用，不要为几个区域上传整篇。
 
 ### 网络/代理
 
-- 国外 URL 在 MinerU 可能超时；先下载到本地再上传。
 - 公司代理需要 `HTTPS_PROXY`；不要把代理凭据写进仓库。
-- 超时先看 `meta.usage`/`raw_meta`，不要盲目加 `--timeout` 到很大。
+- 超时先看 `meta.usage`/`raw_meta`，不要盲目加 `--timeout` 到很大；结果未知时不要重复提交。
 
 ### 复杂页码
 
@@ -120,14 +120,19 @@ Paddle CLI 对 PDF 输出 `*_0.md`、`*_0_res.json` 等逐页文件；本技能�
 ### 图片引用失效
 
 - `verify` 会列 missing refs；检查 `assets/` 是否存在。
-- 远程 Agent 没有图片，这是预期；不要伪造 `assets/`。
+- 本地视觉模型没有布局资产时，这是预期；不要伪造 `assets/`。
 - 重新转换时用 `--force` 或新输出目录，避免新旧文件混在一起。
 
 ### 页号缺失/重复
 
-- 某些 provider 不给页结构（Agent、Gemini 无页标记）；`content.json` 会退化为一页并警告。
+- 某些 provider 不给完整页结构（本地视觉模型无布局管线）；`content.json` 会退化并警告。
 - 重复页文本可能是缓存/页循环错误；用 `--force` 重跑，或换 provider。
 - Paddle 拆页后页码错：确认 `--pages` 映射；本技能会把局部 page_index 映射回原页。
+
+### 临时文件
+
+- 中间文件写在输出目录的 `.staging/`（不是系统临时目录），成功后自动删除。
+- 需要保留现场时设 `DOCVISION_KEEP_TEMP=1`；删掉整个 `docvision-out/` 即可清干净。
 
 ### 中文文件名/路径
 
