@@ -1,0 +1,4 @@
+# Core rendering/verification dependencies (tested 2026-10-28)
+pypdfium2==5.13.0
+pillow==12.3.0
+pypdf==6.1.1

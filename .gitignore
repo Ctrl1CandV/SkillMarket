@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+.env
+.env.*
+!.env.example
+/_docvision/
+/docvision-out/
+/docvision-pages/
+/dist/
