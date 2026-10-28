@@ -124,9 +124,11 @@ def render_page(docdir: Path, page: int, *, meta: dict | None = None,
     if not source:
         raise DocVisionError("The original file is not available locally; cannot render a page.",
                              hint="Re-run conversion from a local file, or use the provider's page images.")
-    # Old page-only names do not record their resolution and are deliberately
-    # ignored. Each requested DPI gets its own cache entry.
-    out = util.ensure_dir(docdir / "pages") / f"page-{page:04d}-{dpi}dpi.png"
+    # Read the actual source: force reconversion can update meta.json while old
+    # renders remain, and the local file may also have changed since conversion.
+    # Legacy names lack a source fingerprint and are deliberately ignored.
+    source_sha = util.sha256_file(source)
+    out = util.ensure_dir(docdir / "pages") / f"page-{page:04d}-{dpi}dpi-{source_sha}.png"
     if out.is_file():
         return out
     suffix = source.suffix.lower()

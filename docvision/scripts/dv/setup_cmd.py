@@ -91,7 +91,17 @@ def _install_env(name: str, packages: list[str], *, manager: str,
     install = [uv, "pip", "install", "--python", str(python)]
     if index:
         install += ["--index-url", index]
+    if extra_args:
+        has_extra_index = any(arg == "--extra-index-url" or arg.startswith("--extra-index-url=")
+                              for arg in extra_args)
+        has_strategy = any(arg == "--index-strategy" or arg.startswith("--index-strategy=")
+                           for arg in extra_args)
+        if has_extra_index and not has_strategy:
+            # Match pip's candidate selection across the configured indexes.
+            install += ["--index-strategy", "unsafe-best-match"]
     install += packages
+    if extra_args:
+        install += extra_args
     commands.append(install)
     if not dry_run:
         proc = util.run(install, timeout=timeout, env=util.isolated_python_env())

@@ -153,6 +153,8 @@ Paddle 同理，先固定 `paddleocr==3.7.x` 和 `paddlepaddle-gpu==3.2.1`，确
 
 ## 0.2 环境补充
 
+uv 安装 Paddle GPU 使用官方 CUDA wheel 源与 PyPI 两个索引；多索引时显式采用与pip一致的候选选择策略，避免PyPI旧版本遮蔽官方指定版本。core/MinerU 单索引安装行为保持原样。此安装路径验证了命令与本地索引解析；本轮实际GPU推理使用已有隔离conda环境。
+
 `setup --profile core` 现在保存 core.python；CLI 当前解释器缺渲染/裁剪依赖时，入口切到该 Python 执行。可用 `python -S scripts/docvision.py pages <pdf> --pages 1` 检验干净入口。core 与 Paddle 子进程禁用用户 site，避免把全局依赖误当隔离环境已有包；既有 MinerU 的用户包策略保持兼容。
 
 Paddle 的 doctor 可检查 OCR extras、导入和 CUDA，但管线/模型推理未运行时显示未验证。安装完成后必须真实试一页；仅有 exe 或 import 成功不足以证明可推理。本轮曾修复本机 docvision-paddle 缺失依赖，环境本体 pip check 和实际 PDF/PNG 已补验，换机仍需运行相同检查。

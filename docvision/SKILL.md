@@ -2,7 +2,7 @@
 name: docvision
 description: 读取 PDF、扫描件、截图和论文中的正文、公式、表格、图表与架构图，生成带页码和区域定位的内容。适用于本地批量 OCR、按页阅读、关键区域精读和公式/表格复核；可用 PaddleOCR 官方免费额度 API 独立识别、Gemini 或当前对话视觉能力解释图形。不用于 PDF 编辑、图片生成或普通纯文本阅读。
 metadata:
-  version: "0.2.0-rc.1"
+  version: "0.2.0"
 ---
 
 # Docvision
@@ -30,6 +30,15 @@ python "{SKILL_DIR}/scripts/docvision.py" setup --profile core --yes
 ```
 
 环境在技能目录外，模型在用户缓存。core 提供渲染、拆页和裁剪；入口在当前解释器缺这些依赖时切到已配置的 core Python。安装前沿用用户授权，不重复要求确认；环境细节见 [本地环境](references/local-setup.md)。
+
+远程凭据可以放在私有 `.env` 文件，兼容 `PADDLEAPIKEY=...` 与官方 `PADDLEOCR_ACCESS_TOKEN=...`。`--env-file` 是全局参数，放在子命令前：
+
+```text
+python "{SKILL_DIR}/scripts/docvision.py" --env-file "D:/private/docvision.env" providers --json
+python "{SKILL_DIR}/scripts/docvision.py" --env-file "D:/private/docvision.env" refine ./_docvision/paper --page 4 --block p4-b5 --task formula --provider paddleocr-cloud --allow-remote --json
+```
+
+未显式指定时，依次使用 `DOCVISION_ENV_FILE` 指定的路径、当前工作目录的 `.env`；不递归搜索。已有进程环境变量优先，文件内容只按字面解析，不执行命令。凭据文件不随技能复制或提交。
 
 ## 本地初稿与按页读
 
@@ -78,6 +87,8 @@ python "{SKILL_DIR}/scripts/docvision.py" refine ./_docvision/paper --page 3 --b
 
 公式逐符号核对上下标、求和边界、括号与编号；表格核对表头、单位、合并单元格、空值和负号；图表核对轴/图例/单位；架构图核对模块、箭头、分支和数据流，区分可见事实与推断。详见 [阅读与引用](references/reading.md)。
 
+Paddle 云端会把已选中的公式/表格裁图直接交给相应识别任务，避免重新分类为普通文本；整页继续做版面分析。专业任务仍可能读错下标、漏公式编号，API成功与结构pass都不能替代这一步看图核对。
+
 ### 3. 自动路线与免费额度
 
 `refine --provider auto` 默认生成本地精读包；只有带 `--allow-remote` 且存在相应凭据时，公式/表格/转写按 PaddleOCR 官方 API → MinerU Standard → Gemini 选择；图形解释选 Gemini，或已配置的本机视觉服务，再退为精读包。不自动选择 GLM/Mistral/其他付费端点；这些仍可显式指定。
@@ -89,7 +100,7 @@ GEMINI_API_KEY=...         # 图形语义解释，可选
 DOCVISION_GEMINI_MODEL=gemini-3.8-flash
 ```
 
-密钥只放环境变量，不写进技能/仓库或聊天。2026-10-28 核验：PaddleOCR 官方首页公布免费 API 每日 20,000 页，Gemini Flash 有免费层；账号资格、限频与实际计费状态以控制台为准。MinerU 的每日 1000 页是最高优先级额度，不能解释为永久免费。详见 [远程接口](references/remote-apis.md)。
+密钥只放环境变量或私有凭据文件，不写进技能/仓库或聊天。2026-10-28 核验：PaddleOCR 官方首页公布免费 API 每日 20,000 页，Gemini Flash 有免费层；账号资格、限频与实际计费状态以控制台为准。MinerU 的每日 1000 页是最高优先级额度，不能解释为永久免费。详见 [远程接口](references/remote-apis.md)。
 
 远程仅在用户同意的范围内使用；本轮已授权时沿用，不逐块反复询问。敏感或未授权文件保持本地，公开样本不能代替私人材料授权。
 

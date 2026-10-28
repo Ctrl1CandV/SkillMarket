@@ -1,7 +1,7 @@
 """Task instructions shared by remote vision adapters and host review packets."""
 
 TASKS = ('transcribe', 'formula', 'table', 'chart', 'figure')
-PROMPT_VERSION = '1'
+PROMPT_VERSION = '2'
 INSTRUCTIONS = {
     'transcribe': 'Transcribe the supplied region faithfully to Markdown, preserving reading order, captions, LaTeX formulas and HTML tables.',
     'formula': 'Transcribe every formula exactly as LaTeX. Check subscripts, superscripts, sums, limits, Greek letters, signs, brackets and equation numbers. Do not solve, simplify, or repair the author\'s mathematics. Mark unreadable symbols explicitly.',

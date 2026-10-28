@@ -16,12 +16,13 @@
 
 2026-10-28 核验：[官方首页](https://www.paddleocr.ai/main/index.html)公布免费 API 每日文档解析上限 20,000 页；资格与实际额度以 AI Studio 账号为准，不承诺永久免费。
 
-- provider：`paddleocr-cloud`；密钥环境变量 `PADDLEOCR_ACCESS_TOKEN`，兼容 `DOCVISION_PADDLE_TOKEN`、`PADDLEOCR_API_TOKEN`、`AI_STUDIO_TOKEN`。
+- provider：`paddleocr-cloud`；密钥环境变量 `PADDLEOCR_ACCESS_TOKEN`，兼容 `DOCVISION_PADDLE_TOKEN`、`PADDLEOCR_API_TOKEN`、`AI_STUDIO_TOKEN`、`PADDLEAPIKEY`。可用全局 `--env-file <路径>` 加载私有凭据文件，参数放在子命令前。
 - HTTP：POST `https://paddleocr.aistudio-app.com/api/v2/ocr/jobs`，Bearer 鉴权；本地 multipart 文件，URL 用 JSON fileUrl；默认模型 PaddleOCR-VL-1.6，可显式覆盖。
 - GET `/jobs/{jobId}` 轮询，下载 resultUrl.jsonUrl 的 JSONL，保留逐页 Markdown、图片和可用 bbox。资源下载不携带 API token。
 - 本地上传 50 MB、每文件 1000 页；本客户端拒绝可能被服务静默截断的请求。未知页数 PDF URL 必须限定页范围，超过限制先本地拆分。
 - 单次提交，不自动重传；选页映射回原页。`refine` 只提交裁图，随精读记录保存原页与 bbox。
-- 当前客户端通过官方协议形状的本地 HTTP 测试；没有真实 token 时不宣称云端识别质量已验证。
+- 0.2.0 已用真实 token 验证公式/合并表格与原页定位，覆盖本地初稿→裁块→云端精读→缓存复用。公式/表格裁块直接指定 `promptLabel` 并关闭重复版面检测；整页保留版面分析。Markdown 格式和公式编号输出显式开启，但仍须回看原图核对。
+- 云端排队时间会变化；本轮区域请求约4–64秒，不能承诺云端总比本地快或更准确。未实测账号额度耗尽响应，不为测试而耗尽额度。
 - 依据：[官方 API](https://ai.baidu.com/ai-doc/AISTUDIO/fml7mozw5)、[官方 SDK](https://github.com/PaddlePaddle/PaddleOCR/tree/main/paddleocr/_api_client)、[官方 CLI](https://www.paddleocr.ai/latest/en/version3.x/inference_deployment/serving/paddleocr_official_api/cli.html)。
 
 ## MinerU Standard API

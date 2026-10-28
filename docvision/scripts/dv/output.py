@@ -2,30 +2,84 @@
 
 from __future__ import annotations
 
+import hashlib
+import os
 import re
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 from . import util
-from .base import Options, RawDoc, RawPage
+from .base import DocVisionError, Options, RawDoc, RawPage
 from .detect import describe_route
 from .providers.common import assemble_markdown, page_markdown, remap_assets, remap_links
 
 
+def _source_identity(source: str) -> str:
+    if util.is_url(source):
+        return source
+    return os.path.normcase(str(Path(source).expanduser().resolve()))
+
+
+def _same_source(docdir: Path, source: str) -> bool:
+    meta = util.read_json(docdir / "meta.json", {})
+    saved = meta.get("source") if isinstance(meta, dict) else None
+    path = saved.get("path") if isinstance(saved, dict) else None
+    return (isinstance(path, str) and bool(path)
+            and _source_identity(path) == _source_identity(source))
+
+
+@contextmanager
+def _exclusive_write_lock(lock: Path, message: str):
+    try:
+        handle = lock.open("x", encoding="utf-8")
+    except FileExistsError as exc:
+        raise DocVisionError(
+            message,
+            hint=f"Wait for it to finish. If the writer stopped, remove its stale lock: {lock}") from exc
+    try:
+        with handle:
+            yield
+    finally:
+        lock.unlink()
+
+
+@contextmanager
+def _force_write_lock(out_root: Path, source: str, *, force: bool):
+    if not force:
+        yield
+        return
+    key = hashlib.sha256(_source_identity(source).encode("utf-8")).hexdigest()
+    lock = out_root / f".docvision-force-{key}.lock"
+    with _exclusive_write_lock(lock, f"A forced conversion of this source is already in progress: {source}"):
+        yield
+
+
 def document_dir(out_root: Path, source: str, *, force: bool = False) -> Path:
+    """Reserve a directory before returning it to a writer."""
+    out_root = util.ensure_dir(out_root)
     slug = util.safe_slug(source)
-    candidate = out_root / slug
-    if force or not candidate.exists():
-        return candidate
-    # Never share a directory for a different input.  A stable hash suffix is
-    # preferable to overwriting or to a silently skipped resume.
-    candidate = out_root / f"{slug}-{util.short_hash(source, 8)}"
-    if not candidate.exists():
-        return candidate
-    n = 2
-    while (out_root / f"{slug}-{util.short_hash(source, 8)}-{n}").exists():
+    if force:
+        # Older suffixes may hash a relative path or another spelling of the
+        # same source. Inspect provenance rather than assuming a suffix owns it.
+        for candidate in sorted(out_root.iterdir(), key=lambda p: (p.name != slug, p.name)):
+            if ((candidate.name == slug or candidate.name.startswith(f"{slug}-"))
+                    and _same_source(candidate, source)):
+                return candidate
+    suffix = f"{slug}-{util.short_hash(source, 8)}"
+    n = 0
+    while True:
+        name = slug if n == 0 else suffix if n == 1 else f"{suffix}-{n}"
+        candidate = out_root / name
+        try:
+            candidate.mkdir()
+            return candidate
+        except FileExistsError:
+            if force and _same_source(candidate, source):
+                return candidate
+        # Another writer may claim any suffix too; mkdir is the authority at
+        # every step rather than an earlier, racy existence check.
         n += 1
-    return out_root / f"{slug}-{util.short_hash(source, 8)}-{n}"
 
 
 def _asset_lookup(mapping: dict[str, str], name: str | None) -> str | None:
@@ -57,11 +111,21 @@ def _header(source: str, raw: RawDoc, route: dict, pages: int) -> str:
 def write_document(raw: RawDoc, source: str, opts: Options, *, out_root: Path,
                    route: dict | None = None, elapsed: float | None = None,
                    info: dict | None = None, raw_meta: dict | None = None) -> Path:
+    out_root = util.ensure_dir(out_root)
+    with _force_write_lock(out_root, source, force=opts.force):
+        docdir = document_dir(out_root, source, force=opts.force)
+        with _exclusive_write_lock(docdir / ".docvision-write.lock",
+                                   f"A conversion is already in progress for this document: {docdir}"):
+            return _write_document(raw, source, opts, docdir=docdir, route=route,
+                                   elapsed=elapsed, info=info, raw_meta=raw_meta)
+
+
+def _write_document(raw: RawDoc, source: str, opts: Options, *, docdir: Path,
+                    route: dict | None = None, elapsed: float | None = None,
+                    info: dict | None = None, raw_meta: dict | None = None) -> Path:
     route = route or describe_route(raw.provider)
     if not raw.provider:
         raw.provider = route.get("provider", "")
-    out_root = util.ensure_dir(out_root)
-    docdir = document_dir(out_root, source, force=opts.force)
     assets_dir = util.ensure_dir(docdir / "assets")
 
     markdown, assets, mapping = remap_assets(raw.markdown, raw.assets)

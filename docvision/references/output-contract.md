@@ -110,7 +110,9 @@
 
 状态为 planned、review_required、submitted、recognized、failed。planned 不联网；review_required 是图包已准备；recognized 只代表识别返回且结构未失败。submitted 中断状态需检查远程任务，默认不自动重传。`--force` 保留旧记录并新建尝试。
 
-主 Markdown 不会被精读覆盖；`read` 另列关联记录。图片缓存名含 DPI，不复用旧无 DPI 缓存来满足高清请求。
+主 Markdown 不会被精读覆盖；`read` 另列关联记录。图片缓存名含实际源文件SHA、页码与DPI；源内容改变或强制重转后不会复用旧图。
+
+批量输出目录以原子操作预留，同名输入也独立保存。`--force` 只复用来源路径相同的已有文档；已有写入占用时明确拒绝，避免覆盖正在生成的结果。异常终止遗留锁时，先确认没有写入进程，再按错误提示清理该锁。
 
 ## 页与引用
 

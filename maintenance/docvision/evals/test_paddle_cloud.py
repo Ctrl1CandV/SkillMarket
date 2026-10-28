@@ -146,6 +146,24 @@ class PaddleCloudTests(unittest.TestCase):
         self.assertEqual(fields["model"].get_content().strip(), "PaddleOCR-VL-1.5")
         self.assertFalse(json.loads(fields["optionalPayload"].get_content())["useDocUnwarping"])
 
+    def test_cropped_formula_and_table_use_specialist_prompt(self):
+        for task in ('formula', 'table'):
+            with self.subTest(task=task):
+                _, plan = self.module.convert(str(self.image), self.opts(dry_run=True,
+                    extra={'refine_task': task, 'refine_is_region': True}))
+                options = plan['payload_summary']['optionalPayload']
+                self.assertFalse(options['useLayoutDetection'])
+                self.assertEqual(options['promptLabel'], task)
+                self.assertTrue(options['formatBlockContent'])
+                self.assertTrue(options['showFormulaNumber'])
+
+    def test_whole_page_formula_review_preserves_layout_detection(self):
+        _, plan = self.module.convert(str(self.image), self.opts(dry_run=True,
+            extra={'refine_task': 'formula', 'refine_is_region': False}))
+        options = plan['payload_summary']['optionalPayload']
+        self.assertNotEqual(options.get('useLayoutDetection'), False)
+        self.assertTrue(options['showFormulaNumber'])
+
     def test_original_page_indices_are_preserved(self):
         self.server.pages = [self.page(1), self.page(3)]
         doc, _ = self.module.convert("https://example.org/a.pdf", self.opts(pages="2,4"))

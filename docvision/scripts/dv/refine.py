@@ -92,7 +92,7 @@ def choose_provider(provider: str, task: str, allow_remote: bool) -> str:
 def _selector(provider: str, extra: dict) -> dict:
     cfg = config.load()
     # Hash configuration so URLs with credentials and arbitrary extra options are not persisted.
-    selected = cfg.get('remote', {}) if provider in {'gemini', 'paddleocr-cloud'} else cfg.get('engines', {})
+    selected = cfg.get('remote', {}) if describe_route(provider)['remote'] else cfg.get('engines', {})
     env_model = util.env_value('DOCVISION_GEMINI_MODEL') if provider == 'gemini' else util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL') if provider == 'openai' else None
     endpoint = util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL') if provider == 'openai' else None
     engine = config.discover_mineru() if provider == 'mineru-local' else config.discover_paddle() if provider == 'paddleocr-local' else None
@@ -225,7 +225,8 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
         util.write_json(record_path, record)
         opts = Options(provider=provider, mode='ocr', tier='quality', allow_remote=allow_remote,
                        timeout=timeout, keep_raw=True,
-                       extra={**extra, 'refine_task': task, 'refine_context': context, 'question': question})
+                       extra={**extra, 'refine_task': task, 'refine_is_region': box is not None,
+                              'refine_context': context, 'question': question})
         try:
             raw, raw_meta = run_provider(provider, str(image_path), opts)
             if raw is None or not raw.markdown.strip():

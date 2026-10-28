@@ -229,7 +229,13 @@ def convert(source: str, opts: Options) -> tuple:
         raise DocVisionError("remote.paddle_base must be the full PaddleOCR jobs HTTP endpoint without a query.")
     model = str(opts.extra.get("model") or "PaddleOCR-VL-1.6")
     options = {"useDocOrientationClassify": False, "useDocUnwarping": False,
-               "useChartRecognition": opts.mode == "chart"}
+               "useChartRecognition": opts.mode == "chart",
+               "formatBlockContent": True, "showFormulaNumber": True}
+    task = opts.extra.get('refine_task')
+    # A known region should go directly to its specialist recognizer. Re-running
+    # layout detection can misclassify a two-line equation as ordinary text.
+    if opts.extra.get('refine_is_region') and task in {'formula', 'table'}:
+        options.update(useLayoutDetection=False, promptLabel=task)
     payload = {"model": model, "optionalPayload": options}
     if opts.pages and opts.pages.strip().lower() != "all":
         payload["pageRanges"] = ",".join(str(i + 1) for i in expected)

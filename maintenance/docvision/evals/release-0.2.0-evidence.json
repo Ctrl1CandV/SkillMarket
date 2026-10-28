@@ -1,0 +1,102 @@
+{
+  "version": "0.2.0",
+  "date": "2026-10-28",
+  "source_url": "https://arxiv.org/abs/1706.03762",
+  "original_pages": [
+    5,
+    9
+  ],
+  "source_sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+  "device": "RTX 4070 Ti SUPER 16 GB",
+  "local": {
+    "provider": "mineru-local",
+    "tier": "standard",
+    "mode": "ocr",
+    "pages": [
+      5,
+      9
+    ],
+    "elapsed_seconds": 16.39,
+    "qa": "pass"
+  },
+  "cloud": [
+    {
+      "case": "multihead",
+      "state": "recognized",
+      "wall_seconds": 50.75,
+      "qa": "pass",
+      "model": "PaddleOCR-VL-1.6",
+      "original_page": 5,
+      "block": "p5-b2",
+      "input_sha256": "8347d4145224f4469d6d817ab7ce26051e4c813e17896b45fab7f9cafe063c23"
+    },
+    {
+      "case": "sparse-table",
+      "state": "recognized",
+      "wall_seconds": 59.33,
+      "qa": "pass",
+      "model": "PaddleOCR-VL-1.6",
+      "original_page": 9,
+      "block": "p9-b0",
+      "input_sha256": "4d051e9eb138d46c80fa54d451611f5cb5d9f1295b6b71775805c27f1b3df03c"
+    },
+    {
+      "case": "multihead-specialist",
+      "state": "recognized",
+      "wall_seconds": 64.25,
+      "qa": "pass",
+      "model": "PaddleOCR-VL-1.6",
+      "original_page": 5,
+      "block": "p5-b2",
+      "input_sha256": "8347d4145224f4469d6d817ab7ce26051e4c813e17896b45fab7f9cafe063c23"
+    },
+    {
+      "case": "table-specialist",
+      "state": "recognized",
+      "wall_seconds": 6.78,
+      "qa": "pass",
+      "model": "PaddleOCR-VL-1.6",
+      "original_page": 9,
+      "block": "p9-b0",
+      "input_sha256": "4d051e9eb138d46c80fa54d451611f5cb5d9f1295b6b71775805c27f1b3df03c"
+    },
+    {
+      "case": "numbered-formula",
+      "state": "recognized",
+      "wall_seconds": 4.02,
+      "qa": "pass",
+      "model": "PaddleOCR-VL-1.6",
+      "original_page": 5,
+      "block": "p5-b12",
+      "input_sha256": "1a449b643f512d27cc38b97bf2843481ecf82e7c42f55963c4dd8fc1dbaffc06"
+    }
+  ],
+  "manual_checks": {
+    "multihead_before": "auto-layout used ordinary text and misread head_i as head1",
+    "multihead_after": "aligned LaTeX; head_i, projection subscripts/superscripts preserved",
+    "numbered_formula": "FFN expression and tag{2} match original image",
+    "sparse_table": {
+      "rows": 21,
+      "header_cells": 13,
+      "rowspans": [
+        4,
+        2,
+        7,
+        4
+      ],
+      "colspan": 8,
+      "base_ppl": "4.92",
+      "base_bleu": "25.8",
+      "big_ppl": "4.33",
+      "big_bleu": "26.4",
+      "big_params_millions": "213"
+    },
+    "cache_repeated_requests": "both specialist formula/table cached=true; no extra submission"
+  },
+  "limits": [
+    "No 8 GB machine, peak VRAM or corpus accuracy benchmark",
+    "Gemini real key not tested; host visual packet is available",
+    "Single service observations, no statistical speed ranking",
+    "No real quota exhaustion observed"
+  ]
+}

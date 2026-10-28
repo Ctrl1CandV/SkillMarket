@@ -170,6 +170,18 @@ class HybridTests(unittest.TestCase):
         self.assertNotEqual(a['id'], b['id'])
         self.assertEqual(call.call_count, 2)
 
+    def test_cloud_provider_config_endpoint_changes_invalidate_cache(self):
+        def recognize(provider, source, opts):
+            return RawDoc(markdown='result', provider=provider), {}
+        for provider, key in [('mistral', 'mistral_base'), ('glm-cloud', 'glm_base')]:
+            with self.subTest(provider=provider), patch.object(refine, 'run_provider', side_effect=recognize) as call:
+                with patch.object(refine.config, 'load', return_value={'remote': {key: 'https://a.example/v1'}}):
+                    first = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
+                with patch.object(refine.config, 'load', return_value={'remote': {key: 'https://b.example/v1'}}):
+                    second = refine.run(self.docdir, page=1, provider=provider, allow_remote=True)
+                self.assertNotEqual(first['id'], second['id'])
+                self.assertEqual(call.call_count, 2)
+
     def test_block_context_excludes_distant_page_text(self):
         p = self.docdir / 'content.json'
         data = json.loads(p.read_text('utf-8'))
