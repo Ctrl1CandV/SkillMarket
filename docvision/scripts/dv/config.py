@@ -1,7 +1,7 @@
 """Configuration and engine discovery.
 
-Only paths and public settings live in config.json.  API keys stay in
-environment variables; the skill never writes credentials to disk.
+Only paths and public settings live in config.json. API keys are managed
+separately by the credentials module and environment variables.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ DEFAULT_CONFIG = {
         "mineru": {"env": "docvision-mineru", "exe": None, "python": None,
                    "mineru_home": None, "tier": "standard"},
         "paddleocr": {"env": "docvision-paddle", "exe": None, "python": None,
-                      "device": "gpu:0"},
+                      "device": None},
         "vlm": {"base_url": "http://127.0.0.1:11434/v1", "model": "",
                 "api_key_env": "DOCVISION_VLM_API_KEY"},
     },
@@ -61,7 +61,8 @@ PADDLE_PIPELINE_VERSION = "v1.6"
 
 def _cached(name, cfg, refresh, discover):
     key = (name, json.dumps(cfg, sort_keys=True), os.environ.get("PATH"),
-           os.environ.get("MINERU_HOME"), os.environ.get("PYTHONNOUSERSITE"))
+           str(util.config_path()), str(model_home("mineru", cfg)),
+           str(model_home("paddlex", cfg)), os.environ.get("PYTHONNOUSERSITE"))
     now = time.monotonic()
     previous = _DISCOVERY.get(key)
     if not refresh and previous and now - previous[0] < DISCOVERY_TTL:
@@ -109,13 +110,22 @@ def env_value(*names: str) -> str | None:
     return None
 
 
-def models_root() -> Path:
+def _stored_path(value: str) -> Path:
+    """Old relative settings are anchored to the configuration, never the project."""
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = util.config_path().parent / path
+    return path.resolve()
+
+
+def models_root(cfg: dict | None = None) -> Path:
     """Fixed model root: config override, then DOCVISION_MODELS, then app data."""
-    configured = (load().get("models_dir") or "").strip()
-    return Path(configured).expanduser() if configured else util.models_dir()
+    cfg = load() if cfg is None else cfg
+    configured = (cfg.get("models_dir") or "").strip()
+    return _stored_path(configured) if configured else util.models_dir()
 
 
-def model_home(name: str) -> Path:
+def model_home(name: str, cfg: dict | None = None) -> Path:
     """Fixed per-engine model folder, reusing an existing legacy install.
 
     A machine that already downloaded weights to ~/.mineru or ~/.paddlex keeps
@@ -123,11 +133,22 @@ def model_home(name: str) -> Path:
     fixed application-data path.  An explicit models_dir/DOCVISION_MODELS
     always wins and disables the legacy fallback.
     """
-    configured = (load().get("models_dir") or "").strip()
+    cfg = load() if cfg is None else cfg
+    configured = (cfg.get("models_dir") or "").strip()
     explicit = bool(configured) or bool(os.environ.get("DOCVISION_MODELS"))
-    root = models_root() / name
+    root = models_root(cfg) / name
+    if explicit:
+        return root
+    if name == "mineru":
+        engine_home = cfg.get("engines", {}).get("mineru", {}).get("mineru_home")
+        if engine_home:
+            return _stored_path(engine_home)
+    variable = {"mineru": "MINERU_HOME", "paddlex": "PADDLE_PDX_CACHE_HOME"}.get(name)
+    inherited = os.environ.get(variable) if variable else None
+    if inherited:
+        return util._absolute_storage(inherited, variable)
     legacy = {"mineru": Path.home() / ".mineru", "paddlex": Path.home() / ".paddlex"}.get(name)
-    if not explicit and legacy and not root.exists() and legacy.exists():
+    if legacy and not root.exists() and legacy.exists():
         return legacy
     return root
 
@@ -183,8 +204,7 @@ def _discover_mineru(cfg: dict) -> Engine:
         version=version,
         available=bool(exe and detail == "ok"),
         detail=detail if exe else "mineru-kit not found",
-        extra={"mineru_home": ecfg.get("mineru_home") or os.environ.get("MINERU_HOME")
-               or str(model_home("mineru"))},
+        extra={"mineru_home": str(model_home("mineru", cfg))},
     )
 
 
@@ -289,7 +309,8 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
     if python and detailed:
         try:
             proc = util.run([python, "-s", "-c", PADDLE_CHECK], timeout=120,
-                            env=util.isolated_python_env())
+                            env={**util.isolated_python_env(),
+                                 "PADDLE_PDX_CACHE_HOME": str(model_home("paddlex", cfg))})
             if proc.returncode == 0:
                 payload = json.loads((proc.stdout or "").strip().splitlines()[-1])
                 version, gpu = payload.get("version"), payload.get("gpu")
@@ -315,7 +336,7 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
         detail=detail if exe else "paddleocr not found",
         extra={"gpu": gpu, "installed": bool(exe), "dependencies": dependencies,
                "isolation": "user site disabled for Paddle subprocess only",
-               "paddlex_home": os.environ.get("PADDLE_PDX_CACHE_HOME") or str(model_home("paddlex")),
+               "paddlex_home": str(model_home("paddlex", cfg)),
                "device": ecfg.get("device") or ("gpu:0" if gpu and gpu.get("cuda") == "True" else "cpu")},
     )
 

@@ -8,13 +8,12 @@ python maintenance/docvision/evals/check.py
 
 起一个本地 mock HTTP 服务器，覆盖：
 
-- GLM-OCR：`layout_details` -> 页/块/formula，`md_results`。
-- Mistral OCR：页、blocks、base64 图片、table 占位符替换。
-- Gemini：`candidates[].content.parts[].text` 与页标记。
-- OpenAI 兼容 / local-vlm：`chat/completions` 内容。
-- MinerU Standard：`file-urls/batch` -> PUT -> 轮询 -> zip -> middle_json。
+- PaddleOCR 官方 API：提交任务、轮询、下载 JSONL，解析页/块/formula/table 并验证输出。
+- 本地 loopback VLM：`chat/completions` 图片请求、成功响应、Markdown 落盘与结构检查。
+- 远程请求必须带每次上传授权；安装级 `local-only` 设置即使有上传标志也拒绝远程。
+- 固定凭据文件中的虚假 token 不写入 `config.json`。
 
-不调用真实 OCR 服务，不消耗额度，不验证真实响应/限流/计费。2026-10-28 运行结果：5 项通过。
+不调用真实 OCR 服务，不消耗额度，不验证真实响应/限流/计费。当前共 5 项；临时夹具在测试结束后自动清理。
 
 ## Real smoke (manual)
 

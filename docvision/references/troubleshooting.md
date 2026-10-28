@@ -89,7 +89,7 @@ Paddle CLI 对 PDF 输出 `*_0.md`、`*_0_res.json` 等逐页文件；本技能�
 ### 401/403 或“额度耗尽”
 
 - token 过期/错误/额度用尽：重新生成或更换账号，然后
-  `printf '%s' "$TOKEN" | docvision credentials set --stdin` 重写固定凭据文件。
+  `python "{SKILL_DIR}/scripts/docvision.py" credentials set --prompt` 在用户终端重写固定凭据文件。
 - 没有不扣费的鉴权探测入口，`doctor --probe` 只能报告“key present”；真实转换才是验证。
 - 额度耗尽不要立即重试同一批；错误会明确报出，不会自动重传或换付费 provider。
 
@@ -98,6 +98,7 @@ Paddle CLI 对 PDF 输出 `*_0.md`、`*_0_res.json` 等逐页文件；本技能�
 - “remote upload was declined for this installation”：安装级同意是 `local-only`。只有用户改变主意时才 `docvision setup --remote`。
 - “which was not authorized”：缺 `--allow-remote`。两者同时满足才会真正上传。
 - 删掉密钥后会回到 `local-only`；再想用云端需重新 `credentials set`。
+- `unset` 也不能上传；先确认用户选择，再执行 `setup --remote`。旧未绑定凭据或从其他用户复制的凭据不自动加载，用户应在自己的账号重新录入；不要绕过权限检查。
 
 ### 文件太大
 

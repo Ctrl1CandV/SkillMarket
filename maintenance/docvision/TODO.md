@@ -33,4 +33,5 @@ Gemin/GLM/Mistral/MinerU 云端适配器已在 0.3.0 删除（无法验证的 ke
 - [x] 模型固定到 `%LOCALAPPDATA%/docvision/models`（Linux `~/.local/share/docvision/models`），`models_dir` / `DOCVISION_MODELS` / `setup --models-dir` 可覆盖，旧 `~/.mineru`、`~/.paddlex` 自动复用。
 - [x] 中间文件改到输出目录 `.staging/` 并在成功后删除；`DOCVISION_KEEP_TEMP=1` 保留现场。
 - [ ] 全新机器上从头跑一次 `setup`（本机环境已存在，未实测冷启动）。
-- [ ] Windows 下凭据文件的 ACL 收紧（当前依赖用户目录继承，`chmod` 不等价 POSIX 0600）。
+- [x] Windows 凭据创建时设置私有 DACL，并验证所有者与访问规则；真实假密钥/共享目录回归通过。
+- [x] 最终审查补齐未记录同意时拒绝上传、`--local-only` 落盘、密钥身份绑定、绝对模型根与失败安装状态；恢复本地 VLM 正常响应回归。见 [最终发布报告](reports/release-0.3.0-2026-10-28.md)。

@@ -153,4 +153,4 @@ def convert(source: str, opts: Options) -> tuple:
     doc = RawDoc(markdown=markdown, pages=pages, provider=provider, model=model,
                  warnings=warnings, usage={"elapsed_seconds": round(time.monotonic() - started, 2)})
     return doc, {"provider": provider, "model": model, "endpoint": _endpoint(base_url),
-                 "pages": len(pages), "local": local}
+                 "pages": len(pages), "local": True}

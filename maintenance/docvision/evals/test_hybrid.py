@@ -17,6 +17,11 @@ from dv.output import write_document
 class HybridTests(unittest.TestCase):
     def setUp(self):
         from PIL import Image
+        # Cloud behavior tests assume an installation whose user already opted
+        # in. Individual refusal tests override this; unset is covered separately.
+        consent = patch.object(refine.config, 'remote_consent', return_value='remote')
+        consent.start()
+        self.addCleanup(consent.stop)
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.source = self.root / 'source.png'

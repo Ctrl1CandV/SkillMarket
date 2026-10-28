@@ -6,7 +6,7 @@
 
 ## 两道开关
 
-1. **安装级同意**（`config.json` 的 `remote.consent`）：`remote` 或 `local-only`。首次使用时技能必须询问用户；用户不配置就写 `local-only`，此后**任何**云端调用直接拒绝，即使命令行加了 `--allow-remote`。
+1. **当前用户的持久同意**（`config.json` 的 `remote.consent`）：初始为 `unset`，询问后记为 `remote` 或 `local-only`。只有 `remote` 可以上传；未回答或拒绝时，即使加 `--allow-remote` 也不能上传。已有选择沿用，不重复询问。
 2. **每次调用同意**（`--allow-remote`）：即使安装级已允许，单次上传仍要显式加这个参数。
 
 没有任何路径会在本地失败后自动上传，也不会在失败后切换 provider。额度耗尽或 401 时明确报错、不重试。
@@ -16,15 +16,18 @@
 固定一个文件：`{SKILL_DIR}/.credentials.env`（技能目录内，随附 `.gitignore` 已屏蔽）。写入方式：
 
 ```text
-printf '%s' "$TOKEN" | python "{SKILL_DIR}/scripts/docvision.py" credentials set --stdin
+python "{SKILL_DIR}/scripts/docvision.py" credentials set --prompt  # 用户在自己的终端隐藏输入
 python "{SKILL_DIR}/scripts/docvision.py" credentials show      # 只显示名字与 set/not set
 python "{SKILL_DIR}/scripts/docvision.py" credentials remove    # 删除密钥并回到 local-only
 ```
 
 - 解析顺序：`--env-file` → `DOCVISION_ENV_FILE` → `{SKILL_DIR}/.credentials.env` → 当前目录 `.env`。进程环境变量优先于文件。
-- POSIX 上写入即 `chmod 600`；Windows 的 `chmod` 只切换只读位，实际保护来自用户目录 ACL 与 `.gitignore`，不要宣称它在 Windows 上等价于 0600。
+- 凭据绑定当前机器与系统用户；自动加载只接受匹配绑定。旧未绑定文件请重新 `credentials set --prompt`，开发测试可显式 `--env-file` 选择。进程环境变量可独立使用。
+- POSIX 从创建时使用 0600；Windows 写入并核对当前用户的私有 DACL。权限设置失败就拒绝保存；不写符号链接/重解析点。文件权限与 Git 忽略各自处理不同问题。
 - 写入前检查 `git check-ignore`：若技能目录位于某个 git 仓库且该文件未被忽略，直接拒绝写入，并提示应添加的忽略行。
 - 拷贝/分享技能目录会一并带走密钥；分发前先 `credentials remove`。
+- 推荐每个系统账号安装自己的技能目录。共享/只读安装用 `DOCVISION_CREDENTIALS` 指定私有文件路径，仍需该用户单独授权。多人共用同一个系统账号没有可靠的相互隔离。
+- `--prompt` 与 `--stdin` 二选一；只想存 key 可加 `--local-only`。开发仓库的测试 key 只留在被忽略的 `maintenance/docvision/.env`，不上传 main 或 dev。
 
 ## PaddleOCR 官方免费额度 API
 
@@ -54,7 +57,7 @@ python "{SKILL_DIR}/scripts/docvision.py" credentials remove    # 删除密钥�
 - 文件是否含个人信息、未发表数据、客户资料、医疗/法务/财务内容？
 - 用户是否明确说“可以上传”（而不只是“配个 key”）？
 - 是否可以先本地跑 3 页、只在关键区域上传裁图？
-- 该次调用是否同时满足 `consent != local-only` 与 `--allow-remote`？
+- 该次调用是否同时满足 `consent=remote` 与 `--allow-remote`？
 - 输出是否需要图片/bbox/页结构？只需要纯文本就先试本地。
 - 失败重试是否会重复计费？结果未知时不要自动重传。
 

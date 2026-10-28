@@ -76,7 +76,7 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
     if config.discover_vlm().available:
         return "local-vlm"
 
-    if opts.allow_remote and config.remote_consent() != "local-only":
+    if opts.allow_remote and config.remote_consent() == "remote":
         if remote_keys()["paddle"]:
             return "paddleocr-cloud"
 
@@ -86,6 +86,11 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
             "No local OCR engine is installed, and remote upload was declined for this installation.",
             hint=("Install a local engine with `docvision setup --profile mineru --yes`, "
                   "or re-enable the remote route with `docvision setup --remote`."),
+        )
+    if config.remote_consent() != "remote":
+        raise DocVisionError(
+            "No local OCR engine is installed, and remote upload consent has not been recorded for this OS user.",
+            hint="Install a local engine, or confirm upload is acceptable and run `docvision setup --remote` before using --allow-remote.",
         )
     raise DocVisionError(
         "No local OCR engine is installed, and remote upload was not authorized.",

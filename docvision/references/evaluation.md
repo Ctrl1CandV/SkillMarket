@@ -88,4 +88,4 @@ python -m unittest discover -s maintenance/docvision/evals -p "test_*.py"
 
 新增完整性/请求缓存、DPI、Paddle环境与资源、官方托管API契约、选区精读/授权/中断/并发与缓存身份测试。云API的mock不证明真实额度、账号可用性或识别质量。真实样本同时保留原图和两种模式结果；架构图额外核对模块与箭头，不能用OCR平均分代替。
 
-本轮最新验证、环境修改和遗留项见 `maintenance/docvision/reports/hybrid-optimization-2026-10-28.md`，历史首版数据仍保留，不覆盖成新版成绩。
+0.3 增加首次设备建议、跨项目固定目录、凭据隔离与显式上传同意的回归。开发仓库的 `maintenance/docvision/reports/release-0.3.0-2026-10-28.md` 记录本轮结果和未实测范围；安装包不包含维护报告。历史识别质量/性能数据仍保留，不能把环境与权限测试当作新的识别成绩。

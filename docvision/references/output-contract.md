@@ -132,4 +132,4 @@
 
 - `schema` 目前为 `docvision.content/1`；未来变更会提升版本，不静默改字段含义。
 - `meta.schema` 为 `docvision.meta/1`，`qa.schema` 为 `docvision.qa/1`。
-- 旧的 provider 输出（MinerU 4 `middle_json`、MinerU 云 `layout.json/content_list.json`）在适配层转换，不直接暴露给下游。
+- 上游输出（MinerU 4 `middle_json`、Paddle 的逐页结果）在适配层转换，不直接暴露给下游。

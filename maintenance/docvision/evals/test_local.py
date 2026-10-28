@@ -19,7 +19,9 @@ from dv.output import write_document
 
 class LocalTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = Path(tempfile.mkdtemp(prefix='docvision-local-test-'))
+        self.temp = tempfile.TemporaryDirectory(prefix='docvision-local-test-')
+        self.addCleanup(self.temp.cleanup)
+        self.tmp = Path(self.temp.name)
 
     def test_auto_short_circuits_when_mineru_is_installed(self):
         engine = config.Engine('mineru', available=True)

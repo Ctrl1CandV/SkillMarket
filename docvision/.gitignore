@@ -2,5 +2,5 @@
 # .credentials.env holds the PaddleOCR API token written by
 # `docvision credentials set --stdin`; it is local to this installation.
 .credentials.env
-.credentials.env.tmp
+.credentials.env.*
 .staging/

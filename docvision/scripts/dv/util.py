@@ -34,20 +34,28 @@ SUPPORTED_NATIVE_EXT = {
 SUPPORTED_EXT = SUPPORTED_IMAGE_EXT | SUPPORTED_DOC_EXT | SUPPORTED_NATIVE_EXT
 
 
+def _absolute_storage(value: str | Path, setting: str) -> Path:
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        raise DocVisionError(f"{setting} must be an absolute path.",
+                             hint="Use a fixed directory outside projects and the skill folder.")
+    return path.resolve()
+
+
 def app_dir() -> Path:
     if IS_WINDOWS:
         base = os.environ.get("LOCALAPPDATA") or os.environ.get("APPDATA")
-        return Path(base or (HOME / "AppData" / "Local")) / "docvision"
+        return _absolute_storage(base or (HOME / "AppData" / "Local"), "LOCALAPPDATA/APPDATA") / "docvision"
     base = os.environ.get("XDG_DATA_HOME")
-    return Path(base or (HOME / ".local" / "share")) / "docvision"
+    return _absolute_storage(base or (HOME / ".local" / "share"), "XDG_DATA_HOME") / "docvision"
 
 
 def config_dir() -> Path:
     if IS_WINDOWS:
         base = os.environ.get("APPDATA")
-        return Path(base or (HOME / "AppData" / "Roaming")) / "docvision"
+        return _absolute_storage(base or (HOME / "AppData" / "Roaming"), "APPDATA") / "docvision"
     base = os.environ.get("XDG_CONFIG_HOME")
-    return Path(base or (HOME / ".config")) / "docvision"
+    return _absolute_storage(base or (HOME / ".config"), "XDG_CONFIG_HOME") / "docvision"
 
 
 def cache_dir() -> Path:
@@ -59,7 +67,8 @@ def cache_dir() -> Path:
 
 
 def config_path() -> Path:
-    return Path(os.environ.get("DOCVISION_CONFIG") or (config_dir() / "config.json"))
+    override = os.environ.get("DOCVISION_CONFIG")
+    return _absolute_storage(override, "DOCVISION_CONFIG") if override else config_dir() / "config.json"
 
 
 def skill_dir() -> Path:
@@ -70,13 +79,19 @@ def skill_dir() -> Path:
 def credentials_path() -> Path:
     """One fixed credential location, next to the skill, not inside a project."""
     override = os.environ.get("DOCVISION_CREDENTIALS")
-    return Path(override).expanduser() if override else skill_dir() / ".credentials.env"
+    if not override:
+        return skill_dir() / ".credentials.env"
+    path = Path(override).expanduser()
+    if not path.is_absolute():
+        raise DocVisionError("DOCVISION_CREDENTIALS must be an absolute path.")
+    # Keep links visible until credentials checks the target and every parent.
+    return path
 
 
 def models_dir() -> Path:
     """Fixed model root: never inside the skill folder or a project."""
     override = os.environ.get("DOCVISION_MODELS")
-    return Path(override).expanduser() if override else app_dir() / "models"
+    return _absolute_storage(override, "DOCVISION_MODELS") if override else app_dir() / "models"
 
 
 def model_home(name: str) -> Path:

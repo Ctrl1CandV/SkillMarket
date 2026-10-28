@@ -67,6 +67,11 @@ def _guard_remote(provider: str, allow_remote: bool) -> None:
             f"{provider} uploads the document to a remote service, and remote upload was declined for this installation.",
             hint="Run `docvision setup --remote` to re-enable it after confirming the document is not sensitive.",
         )
+    if config.remote_consent() != 'remote':
+        raise DocVisionError(
+            'Remote upload consent has not been recorded for this OS user.',
+            hint='After confirming remote upload is acceptable, run `docvision setup --remote`; each call still needs --allow-remote.',
+        )
     if not allow_remote:
         raise DocVisionError(
             f"{provider} uploads the document to a remote service, which was not authorized.",
@@ -329,9 +334,8 @@ def cmd_providers(args) -> int:
             key = "mineru" if name.startswith("mineru") else "paddleocr"
             available = engines[key].available
         else:
-            # A remote provider is only usable with a key and without a
-            # recorded local-only refusal.
-            available = bool(keys.get("paddle")) and consent != "local-only"
+            # A key alone does not authorize this OS user to upload.
+            available = bool(keys.get("paddle")) and consent == "remote"
         rows.append({**meta, "name": name, "ready": available})
     payload = {"consent": consent, "credentials_file": str(util.credentials_path()),
                "providers": rows}
@@ -420,17 +424,27 @@ def cmd_credentials(args) -> int:
         return 0
 
     # set: never accept the secret as an argv value (it would land in shell history).
-    if not args.stdin:
-        _err("Refusing to read the token from arguments; pipe it on stdin with --stdin.")
+    if not args.stdin and not args.prompt:
+        _err("Choose --prompt to enter the token privately, or pipe it on stdin with --stdin.")
         return 2
-    value = (sys.stdin.readline() or "").strip()
+    if args.prompt:
+        import getpass
+        import warnings
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter('error', getpass.GetPassWarning)
+                value = getpass.getpass('PaddleOCR API token (hidden): ').strip()
+        except (getpass.GetPassWarning, EOFError):
+            raise DocVisionError('A private interactive terminal is required for --prompt.',
+                                 hint='Run this command in your terminal, or use --stdin without putting the key in argv.') from None
+    else:
+        value = (sys.stdin.readline() or "").strip()
     if not value:
         _err("No token received on stdin.")
         return 2
     name = args.name or "PADDLEOCR_ACCESS_TOKEN"
     saved = credentials.save_credentials({name: value})
-    if not args.local_only:
-        config.set_consent("remote")
+    config.set_consent("local-only" if args.local_only else "remote")
     _out(f"saved {name} to {saved}")
     _out(f"remote consent: {'local-only' if args.local_only else 'remote'}")
     _out("Uploads still require --allow-remote on each call.")
@@ -505,7 +519,9 @@ def build_parser() -> argparse.ArgumentParser:
     crd = sub.add_parser("credentials", help="write/read the fixed credential file (values never printed)")
     crd.add_argument("action", choices=["set", "show", "remove", "path"])
     crd.add_argument("--name", default="PADDLEOCR_ACCESS_TOKEN")
-    crd.add_argument("--stdin", action="store_true", help="read the secret from stdin (required for set)")
+    secret_source = crd.add_mutually_exclusive_group()
+    secret_source.add_argument("--stdin", action="store_true", help="read the secret from stdin")
+    secret_source.add_argument("--prompt", action="store_true", help="enter the secret privately in an interactive terminal")
     crd.add_argument("--local-only", action="store_true", help="store the key but keep uploads disabled")
     crd.add_argument("--json", action="store_true")
 
@@ -577,7 +593,10 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         from .credentials import load_env_file
-        load_env_file(args.env_file)
+        # Credential repair/removal and consent changes must work even if an
+        # old or foreign installation credential file cannot be loaded safely.
+        if args.command not in {'credentials', 'setup'}:
+            load_env_file(args.env_file)
         if args.command == "convert":
             return cmd_convert(args)
         if args.command == "doctor":

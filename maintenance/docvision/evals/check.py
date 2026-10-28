@@ -50,7 +50,12 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
-        self.rfile.read(int(self.headers.get("Content-Length", "0")))
+        body = self.rfile.read(int(self.headers.get("Content-Length", "0")))
+        if self.path == "/v1/chat/completions":
+            self.server.vlm_requests.append(json.loads(body))
+            self._send(200, {"choices": [{"finish_reason": "stop", "message": {
+                "content": "Mock VLM page text with $a+b$."}}]})
+            return
         self._send(200, {"code": 0, "data": {"jobId": "job-check"}})
 
     def do_GET(self):
@@ -67,8 +72,11 @@ class Handler(BaseHTTPRequestHandler):
 class CheckTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.tmp = Path(tempfile.mkdtemp(prefix="docvision-eval-"))
+        cls.temp = tempfile.TemporaryDirectory(prefix="docvision-eval-")
+        cls.addClassCleanup(cls.temp.cleanup)
+        cls.tmp = Path(cls.temp.name)
         cls.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        cls.server.vlm_requests = []
         cls.base = f"http://127.0.0.1:{cls.server.server_port}"
         cls.server.jsonl = b"\n".join(json.dumps({"result": {"layoutParsingResults": [
             {"markdown": {"text": "# Mock Paddle\n\nFormula $E=mc^2$.\n\n<table><tr><td>a</td><td>b</td></tr></table>",
@@ -86,6 +94,7 @@ class CheckTests(unittest.TestCase):
         os.environ["DOCVISION_CONFIG"] = str(cls.tmp / "config.json")
         os.environ["DOCVISION_CREDENTIALS"] = str(cls.tmp / "credentials.env")
         cfg = config.load()
+        cfg["remote"]["consent"] = "remote"
         cfg["remote"]["paddle_base"] = cls.base + "/api/v2/ocr/jobs"
         cfg["engines"]["vlm"]["base_url"] = cls.base + "/v1"
         cfg["engines"]["vlm"]["model"] = "mock-vl"
@@ -122,9 +131,27 @@ class CheckTests(unittest.TestCase):
     def test_remote_requires_explicit_upload_flag(self):
         from dv.base import DocVisionError
         from dv import cli
-        with self.assertRaises(DocVisionError) as error:
-            cli._guard_remote("paddleocr-cloud", False)
+        with patch.object(config, "remote_consent", return_value="remote"):
+            with self.assertRaises(DocVisionError) as error:
+                cli._guard_remote("paddleocr-cloud", False)
         self.assertIn("not authorized", str(error.exception))
+
+    def test_local_vlm_loopback_response_parses_to_output(self):
+        opts = Options(provider="local-vlm", timeout=60,
+                       extra={"base_url": self.base + "/v1", "model": "mock-vl"})
+        with patch.dict(os.environ, {"DOCVISION_VLM_API_KEY": "fixture-local-key"}):
+            doc, meta = run_provider("local-vlm", str(self.source), opts)
+        self.assertEqual(doc.provider, "local-vlm")
+        self.assertEqual(doc.model, "mock-vl")
+        self.assertIn("Mock VLM", doc.markdown)
+        self.assertIs(meta["local"], True)
+        request = self.server.vlm_requests[-1]
+        self.assertEqual(request["model"], "mock-vl")
+        image = request["messages"][1]["content"][1]["image_url"]["url"]
+        self.assertEqual(image, "data:image/png;base64," + base64.b64encode(PNG_1PX).decode())
+        out = write_document(doc, str(self.source), opts,
+                             out_root=self.tmp / "out-vlm", info={"pages": 1})
+        self.assertEqual(verify_document(out)["status"], "pass")
 
     def test_local_only_consent_blocks_remote(self):
         from dv.base import DocVisionError

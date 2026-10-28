@@ -11,6 +11,14 @@ from . import mineru_local, openai_compat, paddle_cloud, paddle_local
 
 
 def run(provider: str, source: str, opts):
+    if (PROVIDERS.get(provider) or {}).get('layer') == 'remote':
+        from .. import config
+        from ..base import DocVisionError
+        if config.remote_consent() != 'remote':
+            raise DocVisionError('Remote upload is not enabled for this OS user.',
+                                 hint='Confirm upload is acceptable and run `docvision setup --remote`.')
+        if not opts.allow_remote:
+            raise DocVisionError('Remote upload requires --allow-remote on this call.')
     if provider == "mineru-local":
         return mineru_local.convert(source, opts)
     if provider == "paddleocr-local":

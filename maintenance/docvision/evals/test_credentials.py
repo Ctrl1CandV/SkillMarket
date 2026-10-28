@@ -79,7 +79,7 @@ class CredentialTests(unittest.TestCase):
 
     def test_default_order_is_skill_file_then_cwd_dotenv(self):
         # No skill file yet: the working-directory .env is the fallback.
-        self.write_env('.env', 'PADDLEAPIKEY=cwd-fake')
+        self.credentials().save_credentials({'PADDLEAPIKEY': 'cwd-fake'}, self.root / '.env')
         env = {}
         self.credentials().load_env_file(environ=env, cwd=self.root)
         self.assertEqual(env['PADDLEAPIKEY'], 'cwd-fake')
@@ -109,7 +109,7 @@ class CredentialTests(unittest.TestCase):
         with self.assertRaises(DocVisionError) as error:
             self.credentials().save_credentials({'PADDLEOCR_ACCESS_TOKEN': 'fake-token'}, target)
         self.assertIn('.gitignore', error.exception.hint or '')
-        (repo / '.gitignore').write_text('.credentials.env\n', encoding='utf-8')
+        (repo / '.gitignore').write_text('.credentials.env\n.credentials.env.*\n', encoding='utf-8')
         self.assertTrue(self.credentials().save_credentials({'PADDLEOCR_ACCESS_TOKEN': 'fake-token'}, target).is_file())
 
     def test_remove_deletes_file_and_reports_count(self):

@@ -73,6 +73,9 @@ def choose_provider(provider: str, task: str, allow_remote: bool) -> str:
             if config.remote_consent() == 'local-only':
                 raise DocVisionError('Remote refinement was declined for this installation.',
                                      hint='Run `docvision setup --remote` to re-enable it, or use --provider packet.')
+            if config.remote_consent() != 'remote':
+                raise DocVisionError('Remote refinement consent has not been recorded for this OS user.',
+                                     hint='Confirm upload is acceptable and run `docvision setup --remote`; each call still needs --allow-remote.')
             if not allow_remote:
                 raise DocVisionError('Remote refinement requires --allow-remote after upload authorization.')
         return provider
@@ -80,7 +83,7 @@ def choose_provider(provider: str, task: str, allow_remote: bool) -> str:
     if task in {'figure', 'chart'}:
         if config.discover_vlm().available:
             return 'local-vlm'
-    elif keys.get('paddle') and config.remote_consent() != 'local-only':
+    elif keys.get('paddle') and config.remote_consent() == 'remote':
         return 'paddleocr-cloud'
     # No implicit paid provider, repeated model initialization or document upload.
     return 'packet'
