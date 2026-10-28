@@ -41,6 +41,7 @@ def _models(engine) -> dict:
         if cache.is_dir():
             found = [p.name for p in cache.iterdir() if p.is_dir()]
         return {"dir": str(cache), "standard_present": any("PaddleOCR-VL" in n for n in found),
+                "ready": None, "validation": "not run",
                 "detail": ", ".join(found[:8]) if found else "models download on first run"}
     return {}
 
@@ -49,6 +50,8 @@ def _remote_probe(name: str, key: str | None) -> dict:
     if not key:
         return {"ok": False, "detail": "key not set"}
     try:
+        if name == "paddle":
+            return {"ok": None, "detail": "key present; authentication and inference not tested (no non-billable probe)"}
         if name == "mineru":
             return probe_token(key)
         if name == "mistral":
@@ -76,8 +79,21 @@ def _remote_probe(name: str, key: str | None) -> dict:
 
 
 def collect(*, probe: bool = False) -> dict:
-    engines = config.engine_status()
+    engines = config.engine_status(refresh=True)
     core = {name: _module(name) for name in ("pypdfium2", "PIL", "pypdf")}
+    core_python = config.load().get("core", {}).get("python")
+    if not all(item.get("ok") for item in core.values()) and core_python and Path(core_python).is_file():
+        try:
+            script = ("import importlib.util,json; "
+                      "print(json.dumps({name: {'ok': importlib.util.find_spec(name) is not None, "
+                      "'detail': 'configured core Python'} for name in ('pypdfium2','PIL','pypdf')}))")
+            proc = util.run([core_python, "-s", "-c", script], timeout=20,
+                            env=util.isolated_python_env())
+            checked_core = json.loads(proc.stdout.strip()) if proc.returncode == 0 else {}
+            if checked_core and all(item.get("ok") for item in checked_core.values()):
+                core = checked_core
+        except Exception:
+            pass
     keys = config.remote_keys()
     remotes = {}
     for name, key in keys.items():
@@ -110,12 +126,15 @@ def collect(*, probe: bool = False) -> dict:
         actions.append("Install the default local engine: docvision setup --profile mineru --yes")
     if engines["mineru"].available and not (engine_data["mineru"]["models"] or {}).get("standard_present"):
         actions.append("Download MinerU standard models: mineru-kit models download --tier standard")
-    if not any(core.values()):
+    if not all(item.get("ok") for item in core.values()):
         actions.append("For page rendering/cropping: docvision setup --profile core --yes")
     if not remote_available:
-        actions.append("Optional remote fallback: set MINERU_TOKEN or ZHIPU_API_KEY (never commit it).")
+        actions.append("Optional region refinement: set PADDLEOCR_ACCESS_TOKEN for official OCR quota, or GEMINI_API_KEY for diagram interpretation (never commit keys).")
     elif probe and not remote_usable:
-        actions.append("Configured remote keys did not authenticate; refresh them or use local OCR.")
+        actions.append("No configured remote route has a successful authentication probe; inspect probe details or use local OCR.")
+    paddle = engines["paddleocr"]
+    if paddle.extra.get("installed") and not paddle.available:
+        actions.append("Repair Paddle's isolated dependencies: docvision setup --profile paddle --yes; then test one page.")
     if not local_available and not remote_available:
         actions.append("No OCR route is ready; install a local engine or configure one remote key.")
     return {
@@ -125,6 +144,7 @@ def collect(*, probe: bool = False) -> dict:
         "gpu": gpu,
         "config_path": str(util.config_path()),
         "core_python_modules": core,
+        "configured_core_python": core_python,
         "engines": engine_data,
         "remote": remotes,
         "local_available": local_available,
@@ -159,12 +179,13 @@ def render(report: dict) -> str:
             lines.append(f"         {item['exe']}")
         models = item.get("models") or {}
         if models:
-            lines.append(f"         models: {'ready' if models.get('standard_present') else models.get('detail')}")
+            label = "cache present; pipeline/inference not validated" if models.get("standard_present") else models.get("detail")
+            lines.append(f"         models: {label}")
     lines.append("  remote keys (values never printed):")
     for name, item in report["remote"].items():
         probe = item.get("probe") or {}
         detail = "set" if item["configured"] else "not set"
-        if probe.get("ok") is not None:
+        if probe.get("detail"):
             detail += f"; probe: {probe.get('detail')}"
         lines.append(f"    [{mark(item['configured'])}] {name}: {detail}")
     lines.append(f"  health: {'OK' if report['healthy'] else 'NOT READY'}")

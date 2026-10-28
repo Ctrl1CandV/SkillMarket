@@ -16,6 +16,8 @@ def _device(engine, opts: Options) -> str:
     if opts.device and opts.device != "auto":
         return opts.device
     gpu = (engine.extra.get("gpu") or {})
+    if engine.extra.get("device"):
+        return engine.extra["device"]
     if gpu.get("cuda") == "True":
         return engine.extra.get("device") or "gpu:0"
     return "cpu"
@@ -23,7 +25,7 @@ def _device(engine, opts: Options) -> str:
 
 def _command(engine, source: Path, out_dir: Path, opts: Options, device: str) -> list[str]:
     cmd = [engine.exe, "doc_parser", "-i", str(source), "--save_path", str(out_dir),
-           "--pipeline_version", "v1.6", "--device", device,
+           "--pipeline_version", config.PADDLE_PIPELINE_VERSION, "--device", device,
            "--use_doc_orientation_classify", "False",
            "--use_doc_unwarping", "False"]
     if opts.mode == "chart":
@@ -65,7 +67,16 @@ def _read_pages(out_dir: Path, *, page_map: list[int] | None, source: Path,
                 type=mapped, markdown=md, text=text, page=page_no, bbox=bbox,
                 meta={"provider_type": label, "local_page_index": local_idx},
             ))
-        rp.markdown = page_md.strip() if page_md.strip() else "\n\n".join(b.markdown for b in rp.blocks if b.markdown)
+        # Defer block-based assembly until crops have received their asset URLs.
+        rp.markdown = page_md.strip()
+        if rp.markdown:
+            # Paddle's Markdown export can omit a recognized footnote or chart
+            # table. Keep the original layout and append only missing content.
+            for block in rp.blocks:
+                if block.type == "chart" or block.meta.get("provider_type") == "footnote":
+                    content = block.markdown.strip()
+                    if content and "".join(content.split()) not in "".join(rp.markdown.split()):
+                        rp.markdown += "\n\n" + content
         pages.append(rp)
     pages.sort(key=lambda p: p.page)
     return pages
@@ -100,8 +111,24 @@ def _crop_image_blocks(pages: list[RawPage], source: Path, out_dir: Path,
             if util.crop_image(page_png, block.bbox, tmp):
                 assets[name] = tmp.read_bytes()
                 block.asset = name
-                block.markdown = f"![{block.type}]({name})"
+                image_md = f"![{block.type}]({name})"
+                # A chart may contain recognized HTML/data; retain it beside
+                # the source crop rather than replacing the recognition.
+                content = block.markdown.strip()
+                if content == "![image]()":
+                    content = ""
+                block.markdown = "\n\n".join(x for x in (content, image_md) if x)
     return assets
+
+
+def _export_images(out_dir: Path) -> dict[str, bytes]:
+    """Keep Paddle's original relative links; the output writer remaps them."""
+    root = out_dir.resolve()
+    return {path.relative_to(out_dir).as_posix(): path.read_bytes()
+            for path in out_dir.rglob("*")
+            if path.is_file() and path.suffix.lower() in util.SUPPORTED_IMAGE_EXT
+            and not path.stem.endswith("_layout_det_res")
+            and path.resolve().is_relative_to(root)}
 
 
 def convert(source: str, opts: Options) -> tuple:
@@ -127,7 +154,7 @@ def convert(source: str, opts: Options) -> tuple:
     if opts.dry_run:
         return None, {"command": cmd, "provider": "paddleocr-local", "engine": engine.exe,
                       "device": device}
-    proc = util.run(cmd, timeout=opts.timeout)
+    proc = util.run(cmd, timeout=opts.timeout, env=util.isolated_python_env())
     pages = _read_pages(out_dir, page_map=page_map, source=work_source)
     if not pages:
         raise DocVisionError(
@@ -140,7 +167,8 @@ def convert(source: str, opts: Options) -> tuple:
     if proc.returncode != 0:
         warnings.append("PaddleOCR exited non-zero after writing page results; inspect the tail below.")
         warnings.append(util.tail_text(proc, 1000))
-    assets = _crop_image_blocks(pages, work_source, out_dir, page_map)
+    assets = _export_images(out_dir)
+    assets.update(_crop_image_blocks(pages, work_source, out_dir, page_map))
     markdown = "\n\n".join(
         f"<!-- page: {p.page} -->\n\n{page_markdown(p)}".strip()
         for p in pages if page_markdown(p).strip()

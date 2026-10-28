@@ -4,12 +4,25 @@
 
 ## 选择顺序
 
+0. **PaddleOCR 官网 / AI Studio 官方 API**：关键区域独立 OCR，官网公布免费额度；下文有专节。不要与百度传统收费 OCR 或第三方同名网站混淆。
 1. **MinerU Standard**：有 token、需要完整 zip（Markdown/JSON/图片）、整本报告；最接近本地 MinerU 的结果。
 2. **GLM-OCR**：中文、表格、手写、印章、票据；同步接口，单文件 100 页，便宜。
 3. **Mistral OCR**：需要结构化块/bbox、图表密集文档；按页计费。
 4. **Gemini**：版面复杂、需要跨页推理/图表解释；输出结构不保证，需自己校验。
 5. **MinerU Agent**：没有 token 的小文件预览；只给 Markdown，不保证公式/表格。
 6. **OpenAI 兼容**：已有 Ollama/vLLM/SiliconFlow/OpenRouter 等端点时复用；适合单页/截图，不适合整本结构。
+
+## PaddleOCR 官网免费额度 API
+
+2026-10-28 核验：[官方首页](https://www.paddleocr.ai/main/index.html)公布免费 API 每日文档解析上限 20,000 页；资格与实际额度以 AI Studio 账号为准，不承诺永久免费。
+
+- provider：`paddleocr-cloud`；密钥环境变量 `PADDLEOCR_ACCESS_TOKEN`，兼容 `DOCVISION_PADDLE_TOKEN`、`PADDLEOCR_API_TOKEN`、`AI_STUDIO_TOKEN`。
+- HTTP：POST `https://paddleocr.aistudio-app.com/api/v2/ocr/jobs`，Bearer 鉴权；本地 multipart 文件，URL 用 JSON fileUrl；默认模型 PaddleOCR-VL-1.6，可显式覆盖。
+- GET `/jobs/{jobId}` 轮询，下载 resultUrl.jsonUrl 的 JSONL，保留逐页 Markdown、图片和可用 bbox。资源下载不携带 API token。
+- 本地上传 50 MB、每文件 1000 页；本客户端拒绝可能被服务静默截断的请求。未知页数 PDF URL 必须限定页范围，超过限制先本地拆分。
+- 单次提交，不自动重传；选页映射回原页。`refine` 只提交裁图，随精读记录保存原页与 bbox。
+- 当前客户端通过官方协议形状的本地 HTTP 测试；没有真实 token 时不宣称云端识别质量已验证。
+- 依据：[官方 API](https://ai.baidu.com/ai-doc/AISTUDIO/fml7mozw5)、[官方 SDK](https://github.com/PaddlePaddle/PaddleOCR/tree/main/paddleocr/_api_client)、[官方 CLI](https://www.paddleocr.ai/latest/en/version3.x/inference_deployment/serving/paddleocr_official_api/cli.html)。
 
 ## MinerU Standard API
 
@@ -56,7 +69,7 @@
 
 - 入口：`POST https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent?key=<GEMINI_API_KEY>`
 - 原生 PDF：inline_data `application/pdf`；也支持图片。PDF 可到 1000 页（模型/账号为准），inline 请求约 18 MB 上限；更大文件用 Files API（本技能未封装）。
-- 本技能自动从 `/v1beta/models` 选择可用的 Flash 模型；也可用 `DOCVISION_GEMINI_MODEL` 固定。
+- 本技能使用可配置的 Flash 基线（当前 `gemini-3.8-flash`）；`--extra model=...`、配置或 `DOCVISION_GEMINI_MODEL` 可覆盖。不按模型列表排序任意选型号，不失败后切收费 Pro。
 - 输出：模型生成的 Markdown；本技能要求页标记 `<!-- page: N -->`，但模型可能不遵守，页映射可能退化为单页并给出警告。
 - 价格/免费层：按输入/输出 token 计费；免费层和“是否用于改进产品”随账号/地区变化，不能默认免费。敏感文档优先本地。
 - 密钥：`GEMINI_API_KEY` 或 `GOOGLE_API_KEY`。
@@ -92,3 +105,5 @@
 - Mistral OCR：<https://docs.mistral.ai/capabilities/document_ai/basic_ocr>、<https://docs.mistral.ai/inference/pricing>
 - Gemini 文档理解：<https://ai.google.dev/gemini-api/docs/document-processing>
 - 百度 PaddleOCR-VL 价格：<https://ai.baidu.com/ai-doc/OCR/tlrzzplc1>
+
+Gemini 当前 Flash 免费层与数据使用政策见 [官方价格](https://ai.google.dev/gemini-api/docs/pricing)；仅有 key 不证明账号仍在免费额度内。refine 按任务传入公式/表格/图表/架构解释指令，截断响应不当完成。

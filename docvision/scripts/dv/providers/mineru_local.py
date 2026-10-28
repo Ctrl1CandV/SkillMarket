@@ -13,12 +13,19 @@ from .common import raw_from_mineru_zip
 
 
 def _command(engine, source: str, out_dir: Path, opts: Options, info: dict) -> list[str]:
-    tier = {"fast": "flash", "standard": "standard", "quality": "advanced"}.get(opts.tier, "standard")
+    if opts.device and opts.device != "auto":
+        raise DocVisionError("MinerU 4 mineru-kit does not expose a device option; --device cannot be honored.",
+                             hint="Use --device auto for MinerU, or choose paddleocr-local to select CPU/GPU.")
+    tier = {"fast": "flash", "economy": "basic", "standard": "standard", "quality": "advanced"}.get(opts.tier, "standard")
+    ocr_requested = opts.mode in {"ocr", "formula", "table", "chart"}
+    if opts.mode == "text" and info.get("is_image"):
+        raise DocVisionError("An image has no embedded text layer for --mode text.",
+                             hint="Use --mode ocr with --tier economy, standard or quality.")
     if opts.mode == "text" and info.get("is_pdf"):
         tier = "flash"
-    if info.get("is_image") and tier == "flash":
+    if tier == "flash" and (info.get("is_image") or ocr_requested):
         # Flash is text-layer extraction; a standalone image needs the OCR model.
-        tier = "standard"
+        tier = "basic"
     cmd = [engine.exe, "parse", source, "-o", str(out_dir),
            "--format", "zip", "--tier", tier]
     if opts.pages:
@@ -26,8 +33,10 @@ def _command(engine, source: str, out_dir: Path, opts: Options, info: dict) -> l
     if opts.mode == "text" or (tier == "flash" and opts.mode != "ocr"):
         # Flash is the text-layer path; do not silently run the OCR model.
         cmd += ["--ocr-mode", "txt"]
-    elif opts.mode == "ocr" or info.get("needs_ocr"):
+    elif ocr_requested or info.get("needs_ocr"):
         cmd += ["--ocr-mode", "ocr"]
+    else:
+        cmd += ["--ocr-mode", "auto"]
     return cmd
 
 

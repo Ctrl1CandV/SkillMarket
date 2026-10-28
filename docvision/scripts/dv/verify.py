@@ -12,11 +12,13 @@ import re
 from pathlib import Path
 
 from . import util
+from .base import DocVisionError
 
 
 IMG_RE = re.compile(r"!\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 HTML_IMG_RE = re.compile(r"<img[^>]+src=[\"']([^\"']+)[\"']", re.I)
 PAGE_RE = re.compile(r"<!--\s*page\s*:\s*(\d+)\s*-->", re.I)
+COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 
 
 def _read(path: Path) -> str:
@@ -24,6 +26,39 @@ def _read(path: Path) -> str:
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return ""
+
+
+def _has_body(markdown: str, docdir: Path) -> bool:
+    """Ignore generated metadata/markers but retain real image-only content."""
+    body = COMMENT_RE.sub("", str(markdown or ""))
+    refs = IMG_RE.findall(body) + HTML_IMG_RE.findall(body)
+    for ref in refs:
+        if ref.startswith(("http://", "https://", "data:")):
+            return True
+        if _has_asset(docdir, ref):
+            return True
+    body = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", body)
+    body = re.sub(r"<[^>]*>", "", body)
+    return bool(body.strip(" \t\r\n#*_`~|$-"))
+
+
+def _has_asset(docdir: Path, ref: str) -> bool:
+    target = (docdir / ref).resolve()
+    try:
+        target.relative_to(docdir.resolve())
+        return target.is_file() and target.stat().st_size > 0
+    except (ValueError, OSError):
+        return False
+
+
+def _page_has_body(page: dict, docdir: Path) -> bool:
+    if _has_body(page.get("markdown") or "", docdir):
+        return True
+    for block in page.get("blocks") or []:
+        if (_has_body(block.get("markdown") or block.get("text") or "", docdir)
+                or (block.get("asset") and _has_asset(docdir, block["asset"]))):
+            return True
+    return False
 
 
 def verify_document(docdir: Path, *, source: str | None = None) -> dict:
@@ -44,18 +79,40 @@ def verify_document(docdir: Path, *, source: str | None = None) -> dict:
     if not pages:
         add("fail", "no_pages", "content.json contains no pages.")
     else:
-        blank = [p.get("page") for p in pages if not (p.get("blocks") or p.get("markdown_chars"))]
+        blank = [p.get("page") for p in pages if not _page_has_body(p, docdir)]
         if blank:
-            add("warn", "blank_pages", f"Pages without blocks: {blank[:20]}")
+            add("warn", "blank_pages", f"Pages without body or image assets: {blank[:20]}")
+    if not _has_body(markdown, docdir) and not any(_page_has_body(p, docdir) for p in pages):
+        add("fail", "empty_body", "The result has no document body or usable image assets; metadata does not count as content.")
 
-    page_numbers = [p.get("page") for p in pages if isinstance(p.get("page"), int)]
+    page_numbers = [p.get("page") for p in pages if type(p.get("page")) is int and p["page"] > 0]
+    if len(page_numbers) != len(pages):
+        add("fail", "invalid_page_numbers", "Every result page must have a positive integer page number.")
     selected = (meta.get("options") or {}).get("pages")
+    total = (meta.get("source") or {}).get("pages")
+    if type(total) is not int or total < 1:
+        total = None
+        add("warn", "source_page_count_unknown", "The source page count is unknown; full-document completeness cannot be verified.")
+    expected = None
+    try:
+        indices = util.parse_pages(selected, total)
+        if indices is not None:
+            expected = {index + 1 for index in indices}
+        elif total is not None:
+            expected = set(range(1, total + 1))
+    except DocVisionError as exc:
+        # Reverse page ranges need a known count; forward selections can still
+        # be checked even when full-document completeness is unknown.
+        add("warn" if total is None else "fail", "page_selection_unverified", str(exc))
+    if expected is not None:
+        actual = set(page_numbers)
+        missing = sorted(expected - actual)
+        unexpected = sorted(actual - expected)
+        if missing:
+            add("fail", "missing_pages", f"Expected original pages are missing: {missing[:20]}")
+        if unexpected:
+            add("fail", "unexpected_pages", f"Result contains unrequested or out-of-range pages: {unexpected[:20]}")
     if page_numbers:
-        if not selected:
-            expected = list(range(1, max(page_numbers) + 1))
-            missing = [n for n in expected if n not in page_numbers]
-            if missing:
-                add("warn", "page_gaps", f"Page numbers are missing from the result: {missing[:20]}")
         duplicates = sorted({n for n in page_numbers if page_numbers.count(n) > 1})
         if duplicates:
             add("fail", "duplicate_pages", f"Duplicate page numbers in content.json: {duplicates}")

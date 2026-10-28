@@ -7,7 +7,7 @@ import re
 import time
 from pathlib import Path
 
-from .. import config, util
+from .. import config, focus, util
 from ..base import DocVisionError, Options, RawDoc
 from ..detect import inspect_input
 from .common import pages_from_markdown
@@ -39,27 +39,15 @@ def _base() -> str:
 
 
 def _resolve_model(key: str, opts: Options) -> str:
-    configured = opts.extra.get("model") or config.load().get("remote", {}).get("gemini_model")
+    configured = opts.extra.get("model")
     if configured:
         return configured
     env = util.env_value("DOCVISION_GEMINI_MODEL")
     if env:
         return env
-    # Choose a currently available Flash model rather than hard-coding a
-    # generation that may be retired.  This call is free.
-    try:
-        status, body = util.get_json(f"{_base()}/models?key={key}", timeout=30)
-        data = json.loads(body.decode("utf-8", errors="replace"))
-        names = [m.get("name", "").split("/")[-1] for m in data.get("models", [])
-                 if "generateContent" in (m.get("supportedGenerationMethods") or [])]
-        flash = [n for n in names if "flash" in n and "image" not in n and "lite" not in n]
-        if flash:
-            return sorted(flash, key=lambda n: (("preview" in n), n))[0]
-        if names:
-            return names[0]
-    except Exception:
-        pass
-    return "gemini-2.5-flash"
+    # Dated, configurable Flash baseline; never silently select an arbitrary
+    # paid/old model by lexicographic ordering or retry another model on failure.
+    return config.load().get('remote', {}).get('gemini_model') or "gemini-3.8-flash"
 
 
 def convert(source: str, opts: Options) -> tuple:
@@ -86,7 +74,8 @@ def convert(source: str, opts: Options) -> tuple:
         raise DocVisionError(f"Gemini adapter supports PDF/images, not {path.suffix}.")
     payload = {
         "contents": [{"role": "user", "parts": [
-            {"text": PROMPT},
+            {"text": focus.prompt(opts.extra['refine_task'], opts.extra.get('refine_context', ''),
+                                  opts.extra.get('question', '')) if opts.extra.get('refine_task') else PROMPT},
             {"inline_data": {"mime_type": mime, "data": util.data_uri(data, mime).split(",", 1)[1]}},
         ]}],
         "generationConfig": {"temperature": 0, "maxOutputTokens": 65536},
@@ -112,6 +101,9 @@ def convert(source: str, opts: Options) -> tuple:
     if not candidates:
         reason = (result.get("promptFeedback") or {}).get("blockReason")
         raise DocVisionError(f"Gemini returned no candidate{f' (blocked: {reason})' if reason else ''}.")
+    finish = candidates[0].get('finishReason')
+    if finish and finish != 'STOP':
+        raise DocVisionError(f'Gemini did not complete the response ({finish}); result was not accepted.')
     parts = ((candidates[0].get("content") or {}).get("parts") or [])
     markdown = "".join(p.get("text") or "" for p in parts if isinstance(p, dict)).strip()
     if markdown.startswith("```") and markdown.endswith("```"):

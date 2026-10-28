@@ -14,9 +14,10 @@
   pages/           按需生成的页面 PNG
   crops/           按需生成的局部图
   raw/             --keep-raw 时的 provider 原始 JSON/Markdown
+  refinements/     独立精读请求、原页/bbox、裁图、上下文与结果
 ```
 
-目录名来自原文件名（保留中文，替换 Windows 非法字符）；同名输入会加短哈希，不覆盖已有结果。`--resume` 用 `meta.source.sha256` 判断已转换。
+目录名来自原文件名（保留中文，替换 Windows 非法字符）；同名输入会加短哈希，不覆盖已有结果。`--resume` 比较源指纹、请求签名和 QA；改变档位、mode、页范围、provider、model/配置等会重跑。旧版无签名输出不直接复用。
 
 ## `content.json` 字段
 
@@ -82,6 +83,7 @@
 - `pages`、`assets`、`warnings`
 - `usage`：provider 返回的 token/耗时/command（视引擎）
 - `raw_meta`：任务 ID、命令、endpoint 等排障信息
+- `raw_meta.cache_request`：影响输出的请求签名；extra/context 只存哈希，避免意外存入密钥。
 
 不记录 API key、token、cookie。
 
@@ -91,8 +93,8 @@
 
 检查项：
 
-- 主 Markdown 是否存在且非空
-- `content.json` 是否有页、页号是否连续/重复
+- 主 Markdown 是否有实际正文/图片，只有元信息头不算内容
+- 实际页集合是否与源页数/选页集合一致；未知源页数明确 warn，不能宣称完整
 - Markdown 图片引用是否能在 `assets/` 找到
 - HTML `<table>` 开闭是否平衡
 - 未转义 `$` 是否为偶数
@@ -101,6 +103,14 @@
 - 页标记覆盖（若有页标记）
 
 `pass` 不代表 OCR 正确；`fail` 必须修或换引擎。`warn` 要人看页面图。
+
+## 精读记录
+
+`refinements/<签名>/record.json` 使用 `docvision.refinement/1`，保存 `source.page/block/bbox/sha256`、task、provider、dpi、输入/上下文路径、模型、状态、结果路径与 `accuracy_verified=false`。独立结果的页 1 表示裁图输入，引用论文时必须使用 record.source.page，不能写成原文第 1 页。
+
+状态为 planned、review_required、submitted、recognized、failed。planned 不联网；review_required 是图包已准备；recognized 只代表识别返回且结构未失败。submitted 中断状态需检查远程任务，默认不自动重传。`--force` 保留旧记录并新建尝试。
+
+主 Markdown 不会被精读覆盖；`read` 另列关联记录。图片缓存名含 DPI，不复用旧无 DPI 缓存来满足高清请求。
 
 ## 页与引用
 

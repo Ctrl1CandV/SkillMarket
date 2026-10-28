@@ -1,0 +1,24 @@
+{
+  "reviewed_commit": "4e4cf77",
+  "date": "2026-10-28",
+  "source": "https://arxiv.org/pdf/1706.03762",
+  "source_sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+  "original_pages_selected": [3, 4, 8],
+  "selected_pdf_sha256": "ccdd3a6432da6571715a6e1c1444f75c1669cb52788273574586b00e8d121a27",
+  "device": "RTX 4070 Ti SUPER 16 GB",
+  "real_runs": [
+    {"provider": "mineru-local", "version": "4.0.12", "tier": "standard", "mode": "auto", "elapsed_seconds": 19.47, "pages": 3, "qa": "pass", "manual_findings": ["footnote summation formula order corrupted", "last two table rows lose colspan=2"]},
+    {"provider": "mineru-local", "version": "4.0.12", "tier": "standard", "mode": "ocr", "elapsed_seconds": 15.92, "pages": 3, "qa": "pass", "manual_findings": ["same footnote formula restored to LaTeX", "last two table rows restore colspan=2"]},
+    {"provider": "paddleocr-local", "version": "3.7.0", "elapsed_seconds": 8.76, "state": "failed", "error": "PaddleX OCR extra dependency check failed; beautifulsoup4 metadata missing"}
+  ],
+  "reproductions": [
+    {"case": "missing_tail", "source_pages": 12, "selected": null, "returned_pages": [1], "actual_qa": "pass"},
+    {"case": "wrong_selection", "source_pages": 12, "selected": "3-5", "returned_pages": [1], "actual_qa": "pass"},
+    {"case": "empty_body", "actual_qa": "warn", "issues": ["blank_pages"]},
+    {"case": "dpi_cache", "requested_dpi": [150, 400], "actual_render_calls_dpi": [150], "method": "temporary renderer stub"},
+    {"case": "resume_mode_change", "existing_mode": "auto", "requested_mode": "ocr", "actual_state": "skipped", "method": "real CLI using existing auto output"},
+    {"case": "paddle_asset_links", "actual_page_markdown_ref": "imgs/img_in_image_box_0_0_1_1.jpg", "actual_available_asset": "assets/page-0001-image-1.png", "qa": "warn", "issues": ["missing_image_refs"], "method": "offline adapter fixture"}
+  ],
+  "existing_mock_tests": {"passed": 5, "failed": 0},
+  "limits": ["single run per real mode", "no controlled cold/warm comparison", "no peak VRAM measurement", "no 8 GB test", "no remote OCR calls", "no full accuracy benchmark"]
+}

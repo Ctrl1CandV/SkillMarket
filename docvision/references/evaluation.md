@@ -75,3 +75,14 @@
 ## 维护评测
 
 把每次真实任务的失败页、错误类型、引擎版本记录到 `maintenance/docvision/evals/`（dev 分支），不要放真实敏感原文。下一次升级后先重跑这些失败页，确认没有回归，再扩大样本。
+
+## 0.2 混合精读回归
+
+```text
+python maintenance/docvision/evals/check.py
+python -m unittest discover -s maintenance/docvision/evals -p "test_*.py"
+```
+
+新增完整性/请求缓存、DPI、Paddle环境与资源、官方托管API契约、选区精读/授权/中断/并发与缓存身份测试。云API的mock不证明真实额度、账号可用性或识别质量。真实样本同时保留原图和两种模式结果；架构图额外核对模块与箭头，不能用OCR平均分代替。
+
+本轮最新验证、环境修改和遗留项见 `maintenance/docvision/reports/hybrid-optimization-2026-10-28.md`，历史首版数据仍保留，不覆盖成新版成绩。

@@ -47,7 +47,7 @@ def _install_env(name: str, packages: list[str], *, manager: str,
                    "-c", channel, "--override-channels"]
             commands.append(cmd)
             if not dry_run:
-                proc = util.run(cmd, timeout=timeout)
+                proc = util.run(cmd, timeout=timeout, env=util.isolated_python_env())
                 if proc.returncode != 0:
                     raise SystemExit(f"conda create failed:\n{util.tail_text(proc)}")
             prefix = _prefix_for(name) or Path.home() / ".conda" / "envs" / name
@@ -56,22 +56,22 @@ def _install_env(name: str, packages: list[str], *, manager: str,
             if dry_run:
                 # The env does not exist yet; still print the commands that
                 # would run after `conda create`.
-                pip = [str(python), "-m", "pip", "install", "--upgrade", "pip"]
-                install = [str(python), "-m", "pip", "install"] + (["-i", index] if index else []) + packages
+                pip = [str(python), "-s", "-m", "pip", "install", "--no-user", "--upgrade", "pip"]
+                install = [str(python), "-s", "-m", "pip", "install", "--no-user"] + (["-i", index] if index else []) + packages
                 if extra_args:
                     install += extra_args
                 return prefix, commands + [pip, install]
             raise SystemExit(f"Could not find Python in conda env {name}: {prefix}")
-        pip = [str(python), "-m", "pip", "install", "--upgrade", "pip"]
+        pip = [str(python), "-s", "-m", "pip", "install", "--no-user", "--upgrade", "pip"]
         commands.append(pip)
         if not dry_run:
-            util.run(pip, timeout=600)
-        install = [str(python), "-m", "pip", "install"] + (["-i", index] if index else []) + packages
+            util.run(pip, timeout=600, env=util.isolated_python_env())
+        install = [str(python), "-s", "-m", "pip", "install", "--no-user"] + (["-i", index] if index else []) + packages
         if extra_args:
             install += extra_args
         commands.append(install)
         if not dry_run:
-            proc = util.run(install, timeout=timeout)
+            proc = util.run(install, timeout=timeout, env=util.isolated_python_env())
             if proc.returncode != 0:
                 raise SystemExit(f"pip install failed for {name}:\n{util.tail_text(proc, 4000)}")
         return prefix, commands
@@ -84,7 +84,7 @@ def _install_env(name: str, packages: list[str], *, manager: str,
         cmd = [uv, "venv", "--python", "3.12", str(prefix)]
         commands.append(cmd)
         if not dry_run:
-            proc = util.run(cmd, timeout=timeout)
+            proc = util.run(cmd, timeout=timeout, env=util.isolated_python_env())
             if proc.returncode != 0:
                 raise SystemExit(f"uv venv failed:\n{util.tail_text(proc)}")
     python = util.env_python(prefix)
@@ -94,7 +94,7 @@ def _install_env(name: str, packages: list[str], *, manager: str,
     install += packages
     commands.append(install)
     if not dry_run:
-        proc = util.run(install, timeout=timeout)
+        proc = util.run(install, timeout=timeout, env=util.isolated_python_env())
         if proc.returncode != 0:
             raise SystemExit(f"uv pip install failed for {name}:\n{util.tail_text(proc, 4000)}")
     return prefix, commands
@@ -144,14 +144,15 @@ def _verify_mineru(prefix: Path, *, models: bool, timeout: int, dry_run: bool, h
 def _verify_paddle(prefix: Path, *, timeout: int, dry_run: bool) -> list[str]:
     python = util.env_python(prefix)
     if dry_run:
-        return [f"verify: {python} -c \"import paddle; print(paddle.device.get_device())\""]
-    proc = util.run([str(python), "-c",
-                     "import paddle, paddleocr; print(paddle.__version__); print(paddle.device.get_device()); print(paddle.device.is_compiled_with_cuda())"],
-                    timeout=120)
+        return [f"verify: {python} -s -c <Paddle imports and OCR extra dependency checks>",
+                "Pipeline/model readiness requires a real single-page conversion."]
+    proc = util.run([str(python), "-s", "-c", config.PADDLE_CHECK], timeout=min(timeout, 120),
+                    env=util.isolated_python_env())
     if proc.returncode != 0:
         return ["PaddleOCR import check failed: " + util.tail_text(proc, 1200)]
     lines = [x.strip() for x in (proc.stdout or "").splitlines() if x.strip()]
-    return ["paddle " + " / ".join(lines[:3])]
+    return ["Paddle isolated dependency check: " + " / ".join(lines[-1:]),
+            "Pipeline/model readiness is unverified; run a real single-page conversion."]
 
 
 def run(profile: str, *, manager: str = "auto", device: str = "auto",
@@ -183,6 +184,10 @@ def run(profile: str, *, manager: str = "auto", device: str = "auto",
                                         channel=channel, index=index, dry_run=dry_run,
                                         timeout=timeout)
         all_commands.extend(commands)
+        if not dry_run:
+            data = config.load()
+            data["core"] = {"env": prefix.name, "python": str(util.env_python(prefix))}
+            config.save(data)
         notes.append(f"core env: {prefix}")
 
     if "mineru" in profiles:

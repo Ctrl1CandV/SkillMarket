@@ -2,9 +2,13 @@
 
 本文记录 2026-10-28 的调研与实测。模型、价格、额度会变；把这里当“怎么选”的依据，不要当永久承诺。实测机器：RTX 4070 Ti SUPER 16 GB、32 GB RAM、Windows 10、Python 3.12。其他机器速度会不同。
 
+## 本轮优先路线
+
+本地批量用 MinerU economy/basic 或 standard；关键区域用 `triage` + `refine`。公式/表格的远程自动路线优先 PaddleOCR 官方免费额度 API；图形解释用 Gemini 或当前对话模型实际看图。见 [混合精读](hybrid-reading.md)。
+
 ## 一句话路线
 
-- **默认本地 MinerU**：完整文档、公式、表格、图片、长期使用，8 GB 显存可跑标准档。
+- **默认本地 MinerU**：完整文档、公式、表格、图片、长期使用，8 GB 只是规划起点，需用真实文档验证标准档。
 - **本地 PaddleOCR-VL**：更轻（0.9B）、元素级准确率高、适合单页/截图/图表；需要 PaddlePaddle GPU 环境，安装比 MinerU 重。
 - **远程 MinerU Standard**：本机没有环境、或需要稳定吞吐；每日 1000 页最高优先级额度，超出降优先级。
 - **远程 GLM-OCR**：便宜、同步接口、中文/表格/手写好；0.2 元/百万 tokens，单文件 100 页。
@@ -21,7 +25,7 @@ MinerU 4.0 把“解析、文档库、服务”合成一套 CLI，`mineru-kit pa
 - `structured_content.json`
 - `images/`（表格/图表区域图）
 
-这正好是 AI 需要的“可读正文 + 可定位结构 + 可看图”的组合。官方文档给出的硬件门槛是标准/高级档 8 GB+ VRAM、16 GB 内存；基础档可 CPU。Windows 上基础安装用 ONNX + llama.cpp Vulkan，不强制 CUDA；`[full]` 才装 vLLM/LMDeploy，Windows 的 GPU torch 需要单独处理。我们实测在 16 GB 机器上标准档 2 页约 13 秒（含模型加载），日常论文可接受；批量时用 `--workers 2` 更划算。
+这正好是 AI 需要的“可读正文 + 可定位结构 + 可看图”的组合。官方文档给出的硬件门槛是标准/高级档 8 GB+ VRAM、16 GB 内存；基础档可 CPU。Windows 上基础安装用 ONNX + llama.cpp Vulkan，不强制 CUDA；`[full]` 才装 vLLM/LMDeploy，Windows 的 GPU torch 需要单独处理。我们实测在 16 GB 机器上标准档 2 页约 13 秒（含模型加载），日常论文可接受；批量先用 `--workers 1`，测峰值显存与吞吐后再考虑并发。
 
 注意 MinerU 仓库是“Apache 2.0 + 附加条件”的自定义许可证，模型卡为 Apache 2.0；商用/再分发前读 [LICENSE.md](https://github.com/opendatalab/MinerU/blob/master/LICENSE.md)。
 
@@ -55,7 +59,7 @@ PaddleOCR 的 CLI 在缺少 `python-docx` 时可能在 `save_all` 导出 DOCX �
 | 机器 | 推荐 |
 |---|---|
 | 8 GB VRAM / 16 GB RAM | MinerU 标准档（llama.cpp Vulkan）或 PaddleOCR-VL GPU；不要同时开两个引擎；复杂文档优先单页/分段 |
-| 16 GB VRAM / 32 GB RAM | MinerU 标准/高级档；PaddleOCR-VL GPU；可批量 2 并发 |
+| 16 GB VRAM / 32 GB RAM | MinerU 标准/高级档；PaddleOCR-VL GPU；先单并发，测量后再决定双并发 |
 | 无 NVIDIA GPU | MinerU 基础/标准档 CPU（慢）或远程；不要为了跑 OCR 强行装 CUDA |
 | 只有 8 GB 内存 | 优先远程或 MinerU 基础档；标准档要求 16 GB 内存 |
 

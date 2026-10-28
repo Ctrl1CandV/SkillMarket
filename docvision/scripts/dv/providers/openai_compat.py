@@ -6,8 +6,10 @@ import json
 import re
 import time
 from pathlib import Path
+from urllib.parse import urlparse
+import ipaddress
 
-from .. import config, util
+from .. import config, focus, util
 from ..base import DocVisionError, Options, RawDoc, RawPage, RawBlock
 from ..detect import inspect_input
 from .common import pages_from_markdown
@@ -90,6 +92,14 @@ def convert(source: str, opts: Options, *, local: bool = False) -> tuple:
     if not model:
         raise DocVisionError("No vision model is configured.",
                              hint="Set DOCVISION_OPENAI_MODEL or configure engines.vlm.model.")
+    if local:
+        host = urlparse(base_url).hostname or ''
+        try:
+            loopback = ipaddress.ip_address(host).is_loopback
+        except ValueError:
+            loopback = host.lower() == 'localhost'
+        if not loopback:
+            raise DocVisionError('local-vlm must use a loopback endpoint. For another host use --provider openai --allow-remote.')
     info = inspect_input(source, opts)
     if opts.dry_run:
         return None, {"provider": provider, "endpoint": _endpoint(base_url), "model": model,
@@ -108,7 +118,9 @@ def convert(source: str, opts: Options, *, local: bool = False) -> tuple:
             "messages": [
                 {"role": "system", "content": SYSTEM},
                 {"role": "user", "content": [
-                    {"type": "text", "text": PROMPT.format(page=page_no, total=len(images))},
+                    {"type": "text", "text": focus.prompt(opts.extra['refine_task'], opts.extra.get('refine_context', ''),
+                                                         opts.extra.get('question', '')) if opts.extra.get('refine_task')
+                     else PROMPT.format(page=page_no, total=len(images))},
                     {"type": "image_url", "image_url": {"url": uri}},
                 ]},
             ],
@@ -131,6 +143,8 @@ def convert(source: str, opts: Options, *, local: bool = False) -> tuple:
                 hint=util.error_hint_for_http(status, text),
             )
         choices = data.get("choices") or []
+        if choices and choices[0].get('finish_reason') not in (None, 'stop'):
+            raise DocVisionError(f"{provider} did not complete the response ({choices[0].get('finish_reason')}); result was not accepted.")
         page_md = _strip_fence(_content_text(choices[0].get("message") if choices else {}))
         pages.append(RawPage(page=page_no, markdown=page_md, blocks=[
             RawBlock(type="text", markdown=page_md, text=page_md, page=page_no)

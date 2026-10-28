@@ -180,7 +180,7 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(doc.pages[0].blocks[0].type, "text")
         self.assertEqual(doc.pages[0].blocks[1].type, "formula")
         self.assertIn("E=mc^2", doc.pages[0].blocks[1].markdown)
-        out = write_document(doc, str(self.source), self.opts("glm-cloud"), out_root=self.tmp / "out-glm")
+        out = write_document(doc, str(self.source), self.opts("glm-cloud"), out_root=self.tmp / "out-glm", info={"pages": 1})
         self.assertTrue((out / "content.json").is_file())
         self.assertEqual(verify_document(out)["status"], "pass")
 
@@ -190,7 +190,7 @@ class ProviderTests(unittest.TestCase):
         self.assertIn("img-0.png", doc.assets)
         self.assertIn("<table>", doc.pages[0].markdown)
         self.assertTrue(any("x" in b.markdown for b in doc.pages[0].blocks))
-        out = write_document(doc, str(self.source), self.opts("mistral"), out_root=self.tmp / "out-mistral")
+        out = write_document(doc, str(self.source), self.opts("mistral"), out_root=self.tmp / "out-mistral", info={"pages": 1})
         self.assertTrue((out / "assets" / "img-0.png").is_file())
         self.assertEqual(verify_document(out)["status"], "pass")
 
@@ -198,7 +198,7 @@ class ProviderTests(unittest.TestCase):
         doc, meta = run_provider("gemini", str(self.source), self.opts("gemini"))
         self.assertEqual(len(doc.pages), 1)
         self.assertIn("Mock Gemini", doc.markdown)
-        out = write_document(doc, str(self.source), self.opts("gemini"), out_root=self.tmp / "out-gemini")
+        out = write_document(doc, str(self.source), self.opts("gemini"), out_root=self.tmp / "out-gemini", info={"pages": 1})
         self.assertEqual(verify_document(out)["status"], "pass")
 
     def test_mineru_standard_parse(self):
@@ -213,14 +213,14 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(doc.provider, "mineru-cloud")
         self.assertEqual(len(doc.pages), 1)
         self.assertEqual(doc.pages[0].blocks[0].type, "heading")
-        out = write_document(doc, str(self.source), self.opts("mineru-cloud"), out_root=self.tmp / "out-standard")
+        out = write_document(doc, str(self.source), self.opts("mineru-cloud"), out_root=self.tmp / "out-standard", info={"pages": 1})
         self.assertEqual(verify_document(out)["status"], "pass")
 
     def test_local_vlm_parse(self):
         doc, meta = run_provider("local-vlm", str(self.source), self.opts("local-vlm"))
         self.assertEqual(doc.provider, "local-vlm")
         self.assertIn("Mock VLM", doc.markdown)
-        out = write_document(doc, str(self.source), self.opts("local-vlm"), out_root=self.tmp / "out-vlm")
+        out = write_document(doc, str(self.source), self.opts("local-vlm"), out_root=self.tmp / "out-vlm", info={"pages": 1})
         self.assertEqual(verify_document(out)["status"], "pass")
 
 

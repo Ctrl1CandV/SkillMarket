@@ -65,7 +65,7 @@ def read(docdir: Path, *, page: int | None = None, block_id: str | None = None,
          as_json: bool = False) -> str:
     meta, content = load(docdir)
     pages = content.get("pages") or []
-    if not page and not block_id:
+    if page is None and not block_id:
         if as_json:
             return json.dumps({"meta": meta, "pages": [
                 {"page": p.get("page"), "heading": _heading(p), "blocks": len(p.get("blocks") or [])}
@@ -90,6 +90,7 @@ def read(docdir: Path, *, page: int | None = None, block_id: str | None = None,
         raise DocVisionError(f"Block not found: {block_id}")
 
     assert page is not None
+    _page(content, page)
     numbers = [page]
     for delta in range(1, context + 1):
         numbers = [page - delta] + numbers + [page + delta]
@@ -116,11 +117,16 @@ def render_page(docdir: Path, page: int, *, meta: dict | None = None,
     docdir = Path(docdir)
     if meta is None or content is None:
         meta, content = load(docdir)
+    _page(content, page)
+    if dpi <= 0:
+        raise DocVisionError("Render DPI must be positive.")
     source = _source_path(meta)
     if not source:
         raise DocVisionError("The original file is not available locally; cannot render a page.",
                              hint="Re-run conversion from a local file, or use the provider's page images.")
-    out = util.ensure_dir(docdir / "pages") / f"page-{page:04d}.png"
+    # Old page-only names do not record their resolution and are deliberately
+    # ignored. Each requested DPI gets its own cache entry.
+    out = util.ensure_dir(docdir / "pages") / f"page-{page:04d}-{dpi}dpi.png"
     if out.is_file():
         return out
     suffix = source.suffix.lower()

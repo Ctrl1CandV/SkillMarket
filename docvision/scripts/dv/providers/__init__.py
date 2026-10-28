@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from . import gemini_cloud, glm_cloud, mineru_cloud, mineru_local, mistral_cloud, openai_compat, paddle_local
+from . import gemini_cloud, glm_cloud, mineru_cloud, mineru_local, mistral_cloud, openai_compat, paddle_local, paddle_cloud
 
 
 def run(provider: str, source: str, opts):
@@ -10,6 +10,8 @@ def run(provider: str, source: str, opts):
         return mineru_local.convert(source, opts)
     if provider == "paddleocr-local":
         return paddle_local.convert(source, opts)
+    if provider == 'paddleocr-cloud':
+        return paddle_cloud.convert(source, opts)
     if provider == "mineru-cloud":
         return mineru_cloud.convert_standard(source, opts)
     if provider == "mineru-agent":
@@ -31,6 +33,7 @@ def run(provider: str, source: str, opts):
 PROVIDERS = {
     "mineru-local": {"layer": "local", "label": "MinerU 4 local", "quality": "high"},
     "paddleocr-local": {"layer": "local", "label": "PaddleOCR-VL 1.6 local", "quality": "high"},
+    'paddleocr-cloud': {'layer': 'remote', 'label': 'PaddleOCR official API (account free quota)', 'quality': 'high'},
     "local-vlm": {"layer": "local", "label": "Local OpenAI-compatible VLM", "quality": "medium"},
     "mineru-cloud": {"layer": "remote", "label": "MinerU Standard API", "quality": "high"},
     "mineru-agent": {"layer": "remote", "label": "MinerU Agent API (preview)", "quality": "preview"},

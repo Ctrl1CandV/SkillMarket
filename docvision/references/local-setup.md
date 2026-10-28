@@ -150,3 +150,11 @@ Paddle 同理，先固定 `paddleocr==3.7.x` 和 `paddlepaddle-gpu==3.2.1`，确
 - 密钥只放环境变量：`MINERU_TOKEN`、`ZHIPU_API_KEY`、`MISTRAL_API_KEY`、`GEMINI_API_KEY`。`doctor` 只显示 set/not set，不打印值。
 - 不把 `.env`、token、真实文档、转换输出提交到任何分支。
 - 远程转换需要 `--allow-remote`；本地引擎失败不会自动上传。
+
+## 0.2 环境补充
+
+`setup --profile core` 现在保存 core.python；CLI 当前解释器缺渲染/裁剪依赖时，入口切到该 Python 执行。可用 `python -S scripts/docvision.py pages <pdf> --pages 1` 检验干净入口。core 与 Paddle 子进程禁用用户 site，避免把全局依赖误当隔离环境已有包；既有 MinerU 的用户包策略保持兼容。
+
+Paddle 的 doctor 可检查 OCR extras、导入和 CUDA，但管线/模型推理未运行时显示未验证。安装完成后必须真实试一页；仅有 exe 或 import 成功不足以证明可推理。本轮曾修复本机 docvision-paddle 缺失依赖，环境本体 pip check 和实际 PDF/PNG 已补验，换机仍需运行相同检查。
+
+MinerU `economy` 映射 basic；`fast` 的单独图片也走 basic OCR，不把图片当文字层。若缺 basic 模型，先对已配置 MINERU_HOME 运行 `mineru-kit models download --tier basic`。`--device` 目前不能直接透传至 MinerU4 CLI，显式指定会提示使用其运行时配置；Paddle 支持设备参数。

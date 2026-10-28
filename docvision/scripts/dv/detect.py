@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import util
+from . import config, util
 from .base import Options
-from .config import engine_status, load, remote_keys
+from .config import remote_keys
 
 
 def inspect_input(source: str, opts: Options) -> dict:
@@ -52,6 +52,10 @@ def inspect_input(source: str, opts: Options) -> dict:
                     )
         elif info["is_image"]:
             info["needs_ocr"] = True
+            if info["suffix"] not in {".tif", ".tiff", ".gif"}:
+                info["pages"] = 1
+            else:
+                info["warnings"].append("Multi-frame images are not fully supported; page count is unverified.")
         elif info["suffix"] in util.SUPPORTED_NATIVE_EXT:
             info["needs_ocr"] = False
     else:
@@ -63,18 +67,19 @@ def inspect_input(source: str, opts: Options) -> dict:
 def choose_provider(source: str, opts: Options, info: dict | None = None) -> str:
     if opts.provider and opts.provider != "auto":
         return opts.provider
-    engines = engine_status()
-    keys = remote_keys()
 
     # Local first, always.  A local failure never silently becomes an upload.
-    if engines["mineru"].available:
+    if config.discover_mineru().available:
         return "mineru-local"
-    if engines["paddleocr"].available:
+    if config.discover_paddle().available:
         return "paddleocr-local"
-    if engines["vlm"].available:
+    if config.discover_vlm().available:
         return "local-vlm"
 
     if opts.allow_remote:
+        keys = remote_keys()
+        if keys["paddle"]:
+            return "paddleocr-cloud"
         if keys["mineru"]:
             return "mineru-cloud"
         if keys["glm"]:
@@ -102,6 +107,7 @@ def describe_route(provider: str) -> dict:
         "paddleocr-local": "PaddleOCR-VL local",
         "local-vlm": "Local OpenAI-compatible VLM",
         "mineru-cloud": "MinerU Standard API",
+        "paddleocr-cloud": "PaddleOCR hosted API",
         "mineru-agent": "MinerU Agent API (preview)",
         "glm-cloud": "Zhipu GLM-OCR API",
         "mistral": "Mistral OCR API",
@@ -113,6 +119,6 @@ def describe_route(provider: str) -> dict:
 
 
 def tier_for(opts: Options, info: dict) -> str:
-    if opts.tier in {"fast", "standard", "quality"}:
+    if opts.tier in {"fast", "economy", "standard", "quality"}:
         return opts.tier
     return "standard"

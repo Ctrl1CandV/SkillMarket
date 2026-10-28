@@ -9,7 +9,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from . import config, detect, doctor, read as read_mod, setup_cmd, util, verify as verify_mod
+from . import cache, config, detect, doctor, read as read_mod, refine, setup_cmd, util, verify as verify_mod
 from .base import DocVisionError, Options
 from .output import write_document
 from .providers import PROVIDERS, run as run_provider
@@ -47,15 +47,15 @@ def _options(args) -> Options:
     )
 
 
-def _find_existing(out_root: Path, info: dict) -> Path | None:
-    sha = info.get("sha256")
-    if not sha or not out_root.is_dir():
-        return None
-    for meta_file in out_root.glob("*/meta.json"):
-        meta = util.read_json(meta_file, {}) or {}
-        if (meta.get("source") or {}).get("sha256") == sha:
-            return meta_file.parent
-    return None
+def _cache_context(provider: str) -> dict:
+    cfg = config.load()
+    engine = config.discover_mineru() if provider == 'mineru-local' else config.discover_paddle() if provider == 'paddleocr-local' else None
+    # request_signature persists hashes of these values, not credentials.
+    return {'configuration': cfg, 'provider': provider, 'engine_version': engine.version if engine else None,
+            'engine_fingerprint': engine.extra.get('cache_fingerprint') if engine else None,
+            'gemini_model': util.env_value('DOCVISION_GEMINI_MODEL'),
+            'openai_model': util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL'),
+            'openai_base': util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL')}
 
 
 def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = False) -> dict:
@@ -82,7 +82,9 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
                            "route": route, "info": info})
             return result
         if getattr(opts, "resume", False):
-            existing = _find_existing(out_root, info)
+            context = _cache_context(provider)
+            existing = None if provider == 'paddleocr-local' and not context['engine_version'] else cache.find_existing(
+                out_root, info, opts, provider=provider, context=context)
             if existing:
                 result.update({"state": "skipped", "output_dir": str(existing),
                                "markdown_path": str(existing / f"{existing.name}.md")})
@@ -92,6 +94,9 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
             result.update({"state": "failed", "error": "Provider did not return a document."})
             return result
         elapsed = time.monotonic() - started
+        raw_meta = dict(raw_meta or {})
+        raw_meta['cache_request'] = cache.request_signature(info, opts, provider=provider,
+                                                          context=_cache_context(provider))
         docdir = write_document(doc, source, opts, out_root=out_root, route=route,
                                 elapsed=elapsed, info=info, raw_meta=raw_meta)
         result.update({
@@ -102,6 +107,10 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
             "elapsed": round(elapsed, 2),
             "warnings": list(doc.warnings),
         })
+        qa = util.read_json(docdir / 'qa.json', {}) or {}
+        result['qa'] = qa.get('status')
+        if qa.get('status') == 'fail':
+            result.update({'state': 'failed', 'error': 'Output failed structural verification; inspect qa.json.'})
     except DocVisionError as exc:
         result["error"] = str(exc)
         if exc.hint:
@@ -184,8 +193,52 @@ def cmd_read(args) -> int:
         fmt=args.format, context=args.context, max_chars=args.max_chars,
         as_json=args.json,
     )
+    records = refine.list_results(docdir, page=args.page, block_id=args.block)
+    if records and args.format != 'image':
+        summaries = [{k: r.get(k) for k in ('id', 'state', 'provider', 'task', 'source',
+                     'accuracy_verified', 'image_path', 'context_path', 'markdown_path', 'record_path')}
+                     for r in records]
+        if args.json:
+            data = json.loads(text)
+            data['refinements'] = summaries
+            text = json.dumps(data, ensure_ascii=False, indent=2)
+        else:
+            text += '\n\nSeparate region reviews (compare with original image before adopting):\n'
+            for r in summaries:
+                text += f"  {r['state']} | {r['task']} | {r['provider']} | {r.get('markdown_path') or r.get('context_path')}\n"
     _out(text)
     return 0
+
+
+def cmd_triage(args) -> int:
+    result = refine.triage(read_mod.resolve_docdir(args.path))
+    if args.json:
+        _out(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        _out(result['note'])
+        for item in result['candidates']:
+            _out(f"[{item['priority']}] page {item['page']} {item['block']} {item['task']}: {item['reason']}")
+        for issue in result['structural_issues']:
+            _out(f"[{issue['severity']}] {issue['code']}: {issue['message']}")
+    return 0
+
+
+def cmd_refine(args) -> int:
+    result = refine.run(read_mod.resolve_docdir(args.path), page=args.page, block_id=args.block,
+                        bbox=args.bbox, task=args.task, provider=args.provider,
+                        allow_remote=args.allow_remote, dpi=args.dpi,
+                        extra=util.parse_kv_list(args.extra), question=args.question,
+                        timeout=args.timeout, dry_run=args.dry_run, force=args.force)
+    if args.json:
+        _out(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        _out(f"{result['state']} | {result['provider']} | {result['task']} | source page {result['source']['page']}")
+        for key in ('image_path', 'context_path', 'markdown_path', 'record_path', 'error'):
+            if result.get(key):
+                _out(f"{key}: {result[key]}")
+        if result['state'] == 'review_required':
+            _out('Open the image with an actual image viewing tool and follow context.md. No visual review has been completed yet.')
+    return 1 if result['state'] in {'failed', 'submitted'} else 0
 
 
 def cmd_pages(args) -> int:
@@ -267,6 +320,8 @@ def cmd_providers(args) -> int:
             available = bool(keys["mineru"])
         elif name == "glm-cloud":
             available = bool(keys["glm"])
+        elif name == 'paddleocr-cloud':
+            available = bool(keys.get('paddle'))
         elif name == "mistral":
             available = bool(keys["mistral"])
         elif name == "gemini":
@@ -320,8 +375,9 @@ def cmd_usage(args) -> int:
         "mistral": {"price": "OCR 4.1 $4 / 1,000 pages; OCR 3 $2 / 1,000 pages",
                     "limits": "per provider docs",
                     "source": "https://docs.mistral.ai/inference/pricing"},
-        "paddle": {"free": "200 pages personal / 1000 pages enterprise trial; then about 0.05-0.09 CNY/page",
-                   "source": "https://ai.baidu.com/ai-doc/OCR/tlrzzplc1"},
+        "paddleocr-cloud": {"free": "Official website API advertises 20,000 pages/day (checked 2026-10-28); account quota and service rules apply",
+                            "token_env": "PADDLEOCR_ACCESS_TOKEN", "limits": "local upload 50 MB; up to 1000 pages; no automatic resubmission",
+                            "source": "https://www.paddleocr.ai/main/index.html"},
         "local": {"mineru": "MinerU 4 standard: ~2 GB models, 8 GB+ VRAM recommended for standard/advanced",
                   "paddle": "PaddleOCR-VL-1.6: 0.9B, tested on RTX 4070 Ti SUPER; CPU is much slower"},
     }
@@ -347,13 +403,14 @@ def build_parser() -> argparse.ArgumentParser:
         prog="docvision",
         description="Turn PDFs, scans and screenshots into AI-readable Markdown with local OCR or remote APIs.",
     )
+    p.add_argument('--env-file', help='credential file path (before the subcommand); default: DOCVISION_ENV_FILE or cwd/.env')
     sub = p.add_subparsers(dest="command", required=True)
 
     c = sub.add_parser("convert", help="convert files/directories/URLs")
     c.add_argument("inputs", nargs="+")
     c.add_argument("-o", "--output", help="output directory (default: ./docvision-out)")
     c.add_argument("--provider", choices=PROVIDER_CHOICES, default="auto")
-    c.add_argument("--tier", choices=["fast", "standard", "quality"], default="standard")
+    c.add_argument("--tier", choices=["fast", "economy", "standard", "quality"], default="standard")
     c.add_argument("--mode", choices=["auto", "text", "ocr", "formula", "table", "chart"], default="auto")
     c.add_argument("--pages", help="1-based page ranges, e.g. 1-5,8 or r3-r1")
     c.add_argument("--lang", default="ch", help="language hint (default: ch)")
@@ -398,6 +455,26 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--max-chars", type=int, default=12000)
     r.add_argument("--json", action="store_true")
 
+    tr = sub.add_parser('triage', help='list regions worth reviewing (not an accuracy score)')
+    tr.add_argument('path')
+    tr.add_argument('--json', action='store_true')
+
+    rf = sub.add_parser('refine', help='review one page/region; retain the local draft and provenance')
+    rf.add_argument('path')
+    rf.add_argument('--page', required=True, type=int)
+    rf.add_argument('--block')
+    rf.add_argument('--bbox', help='normalized x0,y0,x1,y1; otherwise selected block or whole page')
+    rf.add_argument('--task', choices=['auto', 'transcribe', 'formula', 'table', 'chart', 'figure'], default='auto')
+    rf.add_argument('--provider', choices=['auto', 'packet'] + [n for n in PROVIDERS if n != 'mineru-agent'], default='auto')
+    rf.add_argument('--allow-remote', action='store_true')
+    rf.add_argument('--dpi', type=int, default=300)
+    rf.add_argument('--question', default='', help='what to inspect in the selected region')
+    rf.add_argument('--extra', help='provider options, e.g. model=...')
+    rf.add_argument('--timeout', type=int, default=900)
+    rf.add_argument('--dry-run', action='store_true')
+    rf.add_argument('--force', action='store_true', help='explicitly create a new attempt, retaining prior evidence')
+    rf.add_argument('--json', action='store_true')
+
     pg = sub.add_parser("pages", help="render PDF pages / copy an image")
     pg.add_argument("input")
     pg.add_argument("-o", "--output")
@@ -435,6 +512,8 @@ def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
+        from .credentials import load_env_file
+        load_env_file(args.env_file)
         if args.command == "convert":
             return cmd_convert(args)
         if args.command == "doctor":
@@ -443,6 +522,10 @@ def main(argv=None) -> int:
             return cmd_setup(args)
         if args.command == "read":
             return cmd_read(args)
+        if args.command == 'triage':
+            return cmd_triage(args)
+        if args.command == 'refine':
+            return cmd_refine(args)
         if args.command == "pages":
             return cmd_pages(args)
         if args.command == "crop":

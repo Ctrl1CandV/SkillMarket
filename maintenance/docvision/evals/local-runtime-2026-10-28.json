@@ -1,0 +1,187 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Shanghai",
+  "device": "Windows 10 / RTX 4070 Ti SUPER 16 GB / 31.8 GB RAM",
+  "engine_versions": {
+    "httpx": "0.28.1",
+    "networkx": "3.7",
+    "paddleocr": "3.7.0",
+    "paddlex": "3.7.2",
+    "paddlepaddle-gpu": "3.2.1"
+  },
+  "machine_changes": {
+    "paddle_prefix": "C:\\Users\\11487\\.conda\\envs\\docvision-paddle",
+    "paddle_packages_installed": {
+      "Jinja2": "3.1.6",
+      "MarkupSafe": "3.0.4",
+      "anyio": "4.15.1",
+      "attrs": "26.1.0",
+      "beautifulsoup4": "4.15.0",
+      "cffi": "2.1.1",
+      "click": "8.5.0",
+      "cssselect": "1.6.0",
+      "et-xmlfile": "2.0.0",
+      "filelock": "4.2.4",
+      "fsspec": "2026.9.0",
+      "h11": "0.16.0",
+      "httpcore2": "2.16.0",
+      "httpx2": "2.16.0",
+      "idna": "3.20",
+      "lxml": "6.1.3",
+      "openpyxl": "3.1.5",
+      "pandas": "3.1.0",
+      "pillow": "13.0.0",
+      "pyclipper": "1.4.0",
+      "pydantic": "2.14.1",
+      "pydantic-core": "2.50.1",
+      "pypdf": "6.21.3",
+      "pypdfium2": "5.14.0",
+      "python-bidi": "0.6.12",
+      "python-dateutil": "3.0.0",
+      "python-docx": "1.2.0",
+      "scipy": "1.18.1",
+      "shapely": "2.2.0",
+      "six": "1.17.0",
+      "sniffio": "1.3.1",
+      "soupsieve": "3.0.4",
+      "typing-extensions": "4.16.0",
+      "typing-inspection": "0.4.4",
+      "tzdata": "2026.5",
+      "httpx": "0.28.1",
+      "networkx": "3.7"
+    },
+    "paddle_install_log": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-paddle-isolated-repair.log",
+    "paddle_pip_check": "No broken requirements found (python -s -m pip check)",
+    "core_prefix": "C:/Users/11487/AppData/Local/docvision/envs/docvision-core",
+    "core_packages": {
+      "pypdf": "6.21.3",
+      "pypdfium2": "5.14.0",
+      "pillow": "12.3.0"
+    },
+    "core_config_saved": "C:/Users/11487/AppData/Roaming/docvision/config.json:core.python",
+    "global_packages_modified": false,
+    "mineru_packages_modified": false,
+    "isolation_scope": "setup/Paddle subprocesses only use PYTHONNOUSERSITE=1 and PIP_USER=0; core entry uses -s only. MinerU inherits original user-site policy."
+  },
+  "core_clean_entry": {
+    "command": "python -S docvision/scripts/docvision.py pages attention-selected.pdf --pages 1 --dpi 90",
+    "result": "success",
+    "png": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-core-clean-render\\page-0001.png"
+  },
+  "discovery_seconds": {
+    "first_auto_route": 1.332,
+    "second_same_process_auto_route": 0.0,
+    "note": "one observation; MinerU short-circuits Paddle; discovery TTL=60s; doctor always refreshes"
+  },
+  "runs": [
+    {
+      "name": "paddle-pdf-final",
+      "input_kind": "PDF page 2 of selected 3-page sample",
+      "source": {
+        "name": "attention-selected.pdf",
+        "path": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-review-s3g45_cb\\attention-selected.pdf",
+        "sha256": "ccdd3a6432da6571715a6e1c1444f75c1669cb52788273574586b00e8d121a27",
+        "bytes": 430990,
+        "pages": 3
+      },
+      "provider": "paddleocr-local",
+      "model": "PaddleOCR-VL-1.6",
+      "options": {
+        "tier": "standard",
+        "mode": "ocr",
+        "pages": "2",
+        "lang": "ch",
+        "provider": "paddleocr-local",
+        "device": "auto"
+      },
+      "output_dir": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-paddle-repaired-final\\attention-selected",
+      "elapsed_seconds": 16.77,
+      "qa_status": "pass",
+      "missing_image_refs": [],
+      "pages": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "name": "paddle-png",
+      "input_kind": "PNG rendered from sample page 1 at 200 DPI",
+      "source": {
+        "name": "page-0001.png",
+        "path": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-paddle-png-input\\page-0001.png",
+        "sha256": "883f3fd1b6d6af13e39229ea7d556385866fe7c8a059e93252f67ab617207103",
+        "bytes": 408945,
+        "pages": 1
+      },
+      "provider": "paddleocr-local",
+      "model": "PaddleOCR-VL-1.6",
+      "options": {
+        "tier": "standard",
+        "mode": "auto",
+        "pages": null,
+        "lang": "ch",
+        "provider": "paddleocr-local",
+        "device": "auto"
+      },
+      "output_dir": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-paddle-repaired-png\\page-0001",
+      "elapsed_seconds": 14.41,
+      "qa_status": "pass",
+      "missing_image_refs": [],
+      "pages": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "name": "mineru-economy",
+      "input_kind": "PDF page 2 of selected 3-page sample",
+      "source": {
+        "name": "attention-selected.pdf",
+        "path": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-review-s3g45_cb\\attention-selected.pdf",
+        "sha256": "ccdd3a6432da6571715a6e1c1444f75c1669cb52788273574586b00e8d121a27",
+        "bytes": 430990,
+        "pages": 3
+      },
+      "provider": "mineru-local",
+      "model": "MinerU 4 (4.0.12)",
+      "options": {
+        "tier": "economy",
+        "mode": "ocr",
+        "pages": "2",
+        "lang": "ch",
+        "provider": "mineru-local",
+        "device": "auto"
+      },
+      "output_dir": "C:\\Users\\11487\\AppData\\Local\\Temp\\docvision-mineru-economy-single\\attention-selected",
+      "elapsed_seconds": 15.98,
+      "qa_status": "pass",
+      "missing_image_refs": [],
+      "pages": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "visual_checks": [
+    "Viewed original sample page 2 and exported Transformer architecture JPG from PNG run.",
+    "Paddle main Attention formula preserves QK^T/sqrt(d_k) and V; original image is present.",
+    "Paddle misreads one inline scaling factor d_k as d_x. QA pass does not catch OCR symbol errors.",
+    "Paddle recognizes the footnote sum correctly in content.json. Upstream Markdown omitted it; adapter now appends recognized footnotes/chart tables without deleting original images.",
+    "MinerU economy/basic preserves the main Attention formula and inline d_k, but mangles footnote summation structure.",
+    "Architecture image retains modules/arrows. Preservation is not verified graph interpretation."
+  ],
+  "validation": {
+    "local_regression_tests": 20,
+    "all_docvision_unittest_discovery": "82 tests passed (python -m unittest discover -s maintenance/docvision/evals -p test*.py)",
+    "existing_mock_provider_suite": "5 tests passed (python maintenance/docvision/evals/check.py)",
+    "paddle_cache_identity": "Normal discovery reads isolated dist-info without runtime imports; version includes PaddleOCR/PaddleX/Paddle/pipeline; metadata mtime/size/version fingerprint invalidates detailed discovery and request context. Missing accurate metadata yields version=None/fingerprint=None.",
+    "paddle_second_same_process_discovery_seconds": 0.0009,
+    "git_commit_or_push": false,
+    "remote_uploads": false
+  },
+  "limitations": [
+    "Single runs with preexisting model caches; no controlled cold/warm comparison or speed ranking.",
+    "No 8 GB test, peak VRAM measurement, long-document benchmark, real chart-recognition benchmark or remote inference.",
+    "Doctor checks dependencies/cache presence freshly and leaves model ready=None; it never treats import-only checks as completed inference."
+  ]
+}

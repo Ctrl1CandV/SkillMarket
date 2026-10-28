@@ -62,6 +62,35 @@ def config_path() -> Path:
     return Path(os.environ.get("DOCVISION_CONFIG") or (config_dir() / "config.json"))
 
 
+def isolated_python_env() -> dict[str, str]:
+    """Use only for setup/Paddle subprocesses, never globally or for MinerU."""
+    return {"PYTHONNOUSERSITE": "1", "PIP_USER": "0"}
+
+
+def missing_core_modules() -> list[str]:
+    import importlib.util
+    return [name for name in ("pypdfium2", "PIL", "pypdf")
+            if importlib.util.find_spec(name) is None]
+
+
+def core_reexec_command(argv: list[str]) -> list[str] | None:
+    """Return the configured isolated core entrypoint only when needed.
+
+    -s is deliberately a Python argument: setting PYTHONNOUSERSITE on the
+    whole CLI would leak isolation into an existing MinerU runtime.
+    """
+    if not argv or argv[0] in {"setup", "doctor", "version", "--version", "-h", "--help"}:
+        return None
+    if os.environ.get("DOCVISION_CORE_ACTIVE") == "1" or not missing_core_modules():
+        return None
+    data = read_json(config_path(), {})
+    python = data.get("core", {}).get("python")
+    if not python or not Path(python).is_file():
+        return None
+    script = Path(__file__).resolve().parents[1] / "docvision.py"
+    return [str(python), "-s", str(script)] + list(argv)
+
+
 def ensure_dir(path: Path) -> Path:
     path.mkdir(parents=True, exist_ok=True)
     return path
@@ -162,6 +191,7 @@ def run(cmd: list[str], *, timeout: int = 900, cwd: Path | None = None,
             errors="replace",
             timeout=timeout,
             check=False,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         )
     except FileNotFoundError as exc:
         raise DocVisionError(f"Executable not found: {cmd[0]}", hint="Run `docvision doctor` or `docvision setup`.") from exc
