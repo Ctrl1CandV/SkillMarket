@@ -1,0 +1,101 @@
+/* Original color recipes. Single source of palette values; not a universal brand system.
+   Select a recipe on <html data-palette="…">. Shape/font tokens are optional. */
+:root, [data-palette="neutral-cobalt"] {
+  color-scheme: light;
+  --cs-canvas: #f0f3f8; --cs-surface: #ffffff; --cs-surface-alt: #eaf0f8;
+  --cs-text: #19263a; --cs-muted: #56657a; --cs-border: #d7e0ec; --cs-control-border: #718197;
+  --cs-accent: #2c4dc9; --cs-on-accent: #ffffff; --cs-accent-hover: #243fa6; --cs-accent-active: #1d3285;
+  --cs-selected: #e2eaff; --cs-selected-text: #233c9b; --cs-focus: #2c4dc9;
+  --cs-brand: #20376e; --cs-on-brand: #ffffff; --cs-brand-muted: #c9d5f3;
+  --cs-brand-accent: #dce7ff; --cs-on-brand-accent: #20376e;
+  --cs-success: #286349; --cs-success-bg: #e9f3ec; --cs-warning: #785014; --cs-warning-bg: #fff0d4; --cs-danger: #9d3049; --cs-danger-bg: #fff0f2;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 12px;
+}
+[data-palette="ink-cyan"] {
+  color-scheme: dark;
+  --cs-canvas: #0a151e; --cs-surface: #11232f; --cs-surface-alt: #1b3442;
+  --cs-text: #e1edf0; --cs-muted: #a5bac6; --cs-border: #2d4758; --cs-control-border: #7995a7;
+  --cs-accent: #8cdeeb; --cs-on-accent: #09242e; --cs-accent-hover: #abe8f1; --cs-accent-active: #c6f0f5;
+  --cs-selected: #244652; --cs-selected-text: #b5edf4; --cs-focus: #8cdeeb;
+  --cs-brand: #c6eef2; --cs-on-brand: #102d38; --cs-brand-muted: #385967;
+  --cs-brand-accent: #173e4f; --cs-on-brand-accent: #e9fbff;
+  --cs-success: #91deba; --cs-success-bg: #17392e; --cs-warning: #f4d090; --cs-warning-bg: #382e1e; --cs-danger: #ffb6c2; --cs-danger-bg: #402732;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 8px;
+}
+[data-palette="paper-berry"] {
+  color-scheme: light;
+  --cs-canvas: #eee7e8; --cs-surface: #fffbf9; --cs-surface-alt: #efe3e8;
+  --cs-text: #362332; --cs-muted: #725b6c; --cs-border: #dfcdd5; --cs-control-border: #927487;
+  --cs-accent: #8f2d59; --cs-on-accent: #fffafb; --cs-accent-hover: #772349; --cs-accent-active: #601b3a;
+  --cs-selected: #f4dfe8; --cs-selected-text: #762647; --cs-focus: #8f2d59;
+  --cs-brand: #4a2337; --cs-on-brand: #fff8f5; --cs-brand-muted: #e2bdce;
+  --cs-brand-accent: #f5d7c6; --cs-on-brand-accent: #4a2337;
+  --cs-success: #2c6656; --cs-success-bg: #eaf3ee; --cs-warning: #7d541c; --cs-warning-bg: #fbefdb; --cs-danger: #a72c47; --cs-danger-bg: #fbe7ec;
+  --cs-font-heading: "Noto Serif CJK SC", "Songti SC", SimSun, serif; --cs-radius: 3px;
+}
+[data-palette="olive-linen"] {
+  color-scheme: light;
+  --cs-canvas: #eeeadd; --cs-surface: #fbf9f1; --cs-surface-alt: #e6e5d4;
+  --cs-text: #303626; --cs-muted: #5d634f; --cs-border: #cfd0ba; --cs-control-border: #7e836b;
+  --cs-accent: #4d5f2e; --cs-on-accent: #ffffff; --cs-accent-hover: #3e4e24; --cs-accent-active: #303e1b;
+  --cs-selected: #dfe7c5; --cs-selected-text: #35451f; --cs-focus: #4d5f2e;
+  --cs-brand: #dbe0b6; --cs-on-brand: #2f3d22; --cs-brand-muted: #4d5a37;
+  --cs-brand-accent: #4b3c26; --cs-on-brand-accent: #fff7e5;
+  --cs-success: #38613f; --cs-success-bg: #e8efdf; --cs-warning: #805321; --cs-warning-bg: #f7eacc; --cs-danger: #9a392d; --cs-danger-bg: #fae7df;
+  --cs-font-heading: "Noto Serif CJK SC", "Songti SC", SimSun, serif; --cs-radius: 5px;
+}
+[data-palette="mist-teal"] {
+  color-scheme: light;
+  --cs-canvas: #e9f3f1; --cs-surface: #f8fffd; --cs-surface-alt: #d7e9e3;
+  --cs-text: #163e3a; --cs-muted: #48665f; --cs-border: #bcd4cc; --cs-control-border: #668b81;
+  --cs-accent: #17675d; --cs-on-accent: #ffffff; --cs-accent-hover: #105449; --cs-accent-active: #0d443b;
+  --cs-selected: #cde8dd; --cs-selected-text: #154e44; --cs-focus: #17675d;
+  --cs-brand: #164b45; --cs-on-brand: #f0fff9; --cs-brand-muted: #b7d8cc;
+  --cs-brand-accent: #e2e8ac; --cs-on-brand-accent: #344823;
+  --cs-success: #246445; --cs-success-bg: #e1f0e5; --cs-warning: #7c551a; --cs-warning-bg: #f9efd8; --cs-danger: #9b3c45; --cs-danger-bg: #f9e9e9;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 18px;
+}
+[data-palette="clay-rust"] {
+  color-scheme: light;
+  --cs-canvas: #f3e3d6; --cs-surface: #fff8f0; --cs-surface-alt: #ecd3bd;
+  --cs-text: #402d26; --cs-muted: #715246; --cs-border: #d7bca7; --cs-control-border: #97735e;
+  --cs-accent: #9b3d27; --cs-on-accent: #ffffff; --cs-accent-hover: #81301f; --cs-accent-active: #682619;
+  --cs-selected: #f5d8bd; --cs-selected-text: #70321e; --cs-focus: #8f3824;
+  --cs-brand: #a33b25; --cs-on-brand: #fff9f2; --cs-brand-muted: #ffdfc5;
+  --cs-brand-accent: #ffe0aa; --cs-on-brand-accent: #592b1a;
+  --cs-success: #386247; --cs-success-bg: #e7efdf; --cs-warning: #775017; --cs-warning-bg: #fbebcb; --cs-danger: #a12839; --cs-danger-bg: #fbe6e9;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 7px;
+}
+[data-palette="violet-mist"] {
+  color-scheme: light;
+  --cs-canvas: #e8e3f1; --cs-surface: #fcfaff; --cs-surface-alt: #dfd6ed;
+  --cs-text: #352642; --cs-muted: #645571; --cs-border: #cdbfdf; --cs-control-border: #8b789f;
+  --cs-accent: #65408c; --cs-on-accent: #ffffff; --cs-accent-hover: #523274; --cs-accent-active: #42275e;
+  --cs-selected: #e6d5f5; --cs-selected-text: #4c2b70; --cs-focus: #65408c;
+  --cs-brand: #ded2ee; --cs-on-brand: #38224f; --cs-brand-muted: #625075;
+  --cs-brand-accent: #4c2b70; --cs-on-brand-accent: #ffffff;
+  --cs-success: #2f6452; --cs-success-bg: #e6f1ea; --cs-warning: #7c541b; --cs-warning-bg: #f9eed6; --cs-danger: #9e344f; --cs-danger-bg: #fbe7ef;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 20px;
+}
+[data-palette="graphite-lime"] {
+  color-scheme: light;
+  --cs-canvas: #e9eae5; --cs-surface: #fafbf6; --cs-surface-alt: #dfe2d8;
+  --cs-text: #262a22; --cs-muted: #555e4c; --cs-border: #c7ccbf; --cs-control-border: #7b826f;
+  --cs-accent: #353e28; --cs-on-accent: #ffffff; --cs-accent-hover: #262e1b; --cs-accent-active: #1c2214;
+  --cs-selected: #e0ebbe; --cs-selected-text: #35421c; --cs-focus: #4b5f2b;
+  --cs-brand: #232520; --cs-on-brand: #f8f9ec; --cs-brand-muted: #c0c6b1;
+  --cs-brand-accent: #d6ed84; --cs-on-brand-accent: #29341b;
+  --cs-success: #3c6135; --cs-success-bg: #e6eedb; --cs-warning: #765018; --cs-warning-bg: #f7ebd0; --cs-danger: #9b3540; --cs-danger-bg: #fae8e8;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif; --cs-radius: 2px;
+}
+[data-palette="espresso-amber"] {
+  color-scheme: dark;
+  --cs-canvas: #201b17; --cs-surface: #2c241e; --cs-surface-alt: #3b3027;
+  --cs-text: #f4e8d9; --cs-muted: #c4b6aa; --cs-border: #594a3d; --cs-control-border: #a18a72;
+  --cs-accent: #efbc75; --cs-on-accent: #302014; --cs-accent-hover: #f4ce95; --cs-accent-active: #f8ddb3;
+  --cs-selected: #56422a; --cs-selected-text: #ffe0a9; --cs-focus: #efbc75;
+  --cs-brand: #e5c4a1; --cs-on-brand: #34241b; --cs-brand-muted: #644a36;
+  --cs-brand-accent: #4b3022; --cs-on-brand-accent: #fff0d9;
+  --cs-success: #b7d79b; --cs-success-bg: #2d3b25; --cs-warning: #efc279; --cs-warning-bg: #493724; --cs-danger: #ffb9af; --cs-danger-bg: #4b2e2a;
+  --cs-font-heading: "Noto Serif CJK SC", "Songti SC", SimSun, serif; --cs-radius: 7px;
+}

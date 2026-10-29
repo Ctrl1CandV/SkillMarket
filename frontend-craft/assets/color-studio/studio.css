@@ -1,0 +1,68 @@
+.studio-page { --studio-focus: var(--cs-focus); width: min(1240px, calc(100% - 64px)); margin: 0 auto; }
+.studio-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 26px 0; border-bottom: 1px solid var(--cs-border); font-size: 12px; }
+.studio-brand { color: var(--cs-text); text-decoration: none; font-weight: 750; letter-spacing: .07em; }
+.studio-brand span { color: var(--cs-muted); font-weight: 400; }
+.studio-header > a:last-child { color: var(--cs-muted); }
+.studio-intro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: end; padding: 48px 0 36px; }
+.studio-intro h1 { margin-top: 18px; font-size: clamp(36px, 4.5vw, 58px); letter-spacing: -.025em; line-height: 1.25; font-weight: 650; }
+.studio-intro > p { color: var(--cs-muted); font-size: 15px; line-height: 1.9; max-width: 33em; padding-bottom: 5px; }
+.selected-recipe { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(250px, 1fr); gap: 40px; background: var(--cs-surface); color: var(--cs-text); border: 1px solid var(--cs-border); border-radius: 12px; padding: 28px 30px; }
+.selected-recipe h2 { margin: 7px 0 10px; font-family: var(--cs-font-heading); font-size: 26px; }
+.selected-recipe p { font-size: 14px; line-height: 1.8; }
+.selected-recipe .eyebrow { font-size: 11px; }
+.recipe-caution { margin-top: 10px; color: var(--cs-muted); }
+.recipe-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; }
+.recipe-actions p { grid-column: 1 / -1; margin-bottom: 2px; color: var(--cs-muted); font-size: 12px; }
+.recipe-actions .button:first-of-type { grid-column: 1 / -1; }
+.palette-section-heading { display: flex; gap: 20px; justify-content: space-between; align-items: baseline; margin: 36px 0 20px; }
+.palette-section-heading h2 { font-size: 20px; }
+.palette-section-heading p { color: var(--cs-muted); font-size: 13px; }
+.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px 24px; }
+.palette-card { display: block; padding: 0; min-width: 0; background: var(--cs-surface); color: var(--cs-text); border: 1px solid var(--cs-border); border-radius: 10px; text-align: left; overflow: hidden; }
+.palette-card[aria-pressed="true"] { outline: 2px solid var(--studio-focus); outline-offset: 3px; }
+.palette-card:focus-visible { outline: 3px solid var(--studio-focus); outline-offset: 6px; }
+.mini-page { height: 190px; padding: 15px; background: var(--cs-canvas); display: grid; grid-template-columns: .85fr 1fr; gap: 10px; }
+.mini-brand { background: var(--cs-brand); color: var(--cs-on-brand); padding: 18px 12px; display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--cs-radius); min-width: 0; }
+.mini-brand span { font-size: 8px; letter-spacing: .08em; color: var(--cs-brand-muted); }
+.mini-brand strong { font-family: var(--cs-font-heading); font-size: 21px; line-height: 1.3; font-weight: 600; }
+.mini-brand i { display: block; width: 44px; height: 16px; border-radius: 3px; background: var(--cs-brand-accent); }
+.mini-surface { background: var(--cs-surface); color: var(--cs-text); border: 1px solid var(--cs-border); border-radius: var(--cs-radius); padding: 14px 10px; display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.mini-surface b { font-size: 12px; line-height: 1.5; }
+.mini-line { height: 4px; width: 90%; border-radius: 1px; background: var(--cs-muted); }
+.mini-line.short { width: 65%; }
+.mini-selection { background: var(--cs-selected); color: var(--cs-selected-text); padding: 5px; font-size: 9px; border-left: 2px solid var(--cs-accent); margin-top: 3px; }
+.mini-action { background: var(--cs-accent); color: var(--cs-on-accent); padding: 4px 10px; align-self: flex-start; border-radius: 4px; font-size: 9px; margin-top: auto; }
+.card-copy { display: block; padding: 17px 18px 18px; }
+.card-title { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
+.card-index { font-size: 11px; font-weight: 400; color: var(--cs-muted); }
+.card-description { display: block; margin-top: 7px; color: var(--cs-muted); font-size: 12px; }
+.card-selected { display: block; margin-top: 12px; font-size: 12px; color: var(--cs-accent); }
+.reuse-panel { margin-top: 48px; border-top: 1px solid var(--cs-border); padding-top: 32px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+.reuse-panel h2 { margin: 12px 0; }
+.reuse-panel p { color: var(--cs-muted); font-size: 14px; line-height: 1.9; }
+.reuse-panel .button-row { margin-top: 22px; }
+#export-status { min-height: 24px; margin-top: 10px; }
+#export-details { padding: 20px; background: var(--cs-surface); border: 1px solid var(--cs-border); border-radius: 10px; align-self: start; }
+#export-details summary { font-size: 13px; }
+#css-output { font: 12px/1.6 Consolas, monospace; width: 100%; resize: vertical; margin-top: 16px; white-space: pre; overflow: auto; }
+.studio-note { color: var(--cs-muted); font-size: 12px; line-height: 1.9; max-width: 70em; margin-top: 32px; }
+.studio-footer { margin-top: 30px; padding: 24px 0; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--cs-border); font-size: 11px; color: var(--cs-muted); }
+.studio-footer a { color: inherit; }
+@media (max-width: 950px) { .studio-intro { gap: 32px; } .palette-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .selected-recipe { gap: 24px; } }
+@media (max-width: 650px) {
+ .studio-page { width: calc(100% - 32px); }
+ .studio-header { gap: 10px; font-size: 10px; align-items: flex-start; }
+ .studio-brand span { display: block; margin-top: 4px; }
+ .studio-intro { grid-template-columns: 1fr; gap: 20px; padding-top: 32px; }
+ .studio-intro h1 { font-size: 39px; }
+ .studio-intro > p { font-size: 14px; }
+ .selected-recipe { grid-template-columns: 1fr; padding: 23px; gap: 20px; }
+ .recipe-actions p { margin: 0; }
+ .palette-section-heading { display: block; }
+ .palette-section-heading p { margin-top: 6px; }
+ .palette-grid { grid-template-columns: 1fr; gap: 24px; }
+ .mini-page { height: 205px; }
+ .mini-brand strong { font-size: 25px; }
+ .reuse-panel { grid-template-columns: 1fr; gap: 20px; }
+ .studio-footer { flex-direction: column; gap: 8px; }
+}
