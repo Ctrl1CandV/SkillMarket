@@ -4,6 +4,8 @@
 
 Tufte CSS、Tabler、PhotoSwipe 与 Wikipedia 的六个原始页面状态已实际采集并逐张查看，标为 `verified_visual`。Oil UI 条目仍为 `candidate`；其旧版页面及画面再分发范围尚未确认。Linear、Carbon 与 Letterform 的方法资料保持 `documented`。可运行的原创候选另见[样式样张](style-samples.md)。
 
+2026-10-29 增补的局部界面来源均为 `documented`：已核对官方文字与图像入口，没有实际看图、产品操作或本地截图包。按下表选择当前需要的关系，不默认加载全部来源。
+
 ## 已核验的本地画面
 
 | 原始页面与本地图 | 实际观察的关系 | 迁移边界 |
@@ -29,6 +31,25 @@ Tufte CSS、Tabler、PhotoSwipe 与 Wikipedia 的六个原始页面状态已实�
 | [Carbon 网格](https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview) | 看更多条目与看每条更多内容的空间选择 | 网格数值属于原设计系统；这里只学习布局决策 |
 | [Letterform Archive 档案设计](https://letterformarchive.org/news/designing-the-online-archive/) | 素材原貌、检索与档案内容的关系 | 不把作品图像丰富度当作所有工具都需要大图的证据 |
 | [Oil UI folio](https://ui.oiloil.org/works/folio/live/index.html) | 作品比例、观看顺序和文字辅助关系 | 无真实作品素材时不能只复制空网格证明设计成立 |
+
+## 局部信息、动作与状态
+
+同样包含十多项内容的区域，可能需要配置作用域、共同查看或分步提交等不同关系。先匹配内容形态、动作后果与容器条件，再选来源；组件规范辅助组织，不替代完整产品画面。
+
+| 关系与来源（2026-10-29 文档核验） | 适合研究的组合 | 迁移边界 |
+| --- | --- | --- |
+| [Open WebUI 连接](https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible/) | 连接列表到编辑窗口；地址、凭据、模型、启停与验证/保存归属同一连接 | 供应商特例及模型发现行为不可照搬；不是所有配置均应常驻 |
+| [Dify 模型供应商](https://docs.dify.ai/en/cloud/use-dify/workspace/model-providers) | 供应商共享凭据、单模型凭据、默认模型分层组织 | 没有相应能力时不引入插件、计费或负载均衡层次 |
+| [Bruno 继承身份验证](https://docs.usebruno.com/auth/overview) | 有效值、只读状态、来源说明与编辑来源入口同处一个局部区域 | 查看来源不改变继承模式；无继承关系时无需套层级 |
+| [VS Code 设置编辑器](https://code.visualstudio.com/docs/configure/settings) | 分类与搜索、作用域、多类输入、改动标记和单项重置共同工作 | 即时生效与提交草稿不同；不复制全部作用域或默认窗口形态 |
+| [GitHub PR 审查](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request) | 背景链接、逐文件内容、查看进度、待提交评论与最终决定分工 | 只学习局部状态与整体动作关系，不把 diff、折叠或审查机制套给其他业务 |
+| [Readwise 文档会话](https://docs.readwise.io/reader/guides/ghostreader/chat) | 主体阅读与会话；选段材料、模型选择、保存回答依附各自操作 | 单文档与全库模式分开判断；未验证长回答、焦点或返回位置 |
+| [Zotero 阅读与笔记](https://www.zotero.org/support/pdf_reader) | 正文、注释列表、可编辑笔记及返回来源的关联 | PDF 注释不等于长会话；不预设三栏比例 |
+| [Carbon 表单](https://www.carbondesignsystem.com/building-blocks/core/patterns/forms) | 相关字段、组间距、标签与完整动作区；容器内通栏动作组是一种选择 | 贴边、顺序和尺寸属于其系统，不作为通用按钮规范 |
+| [Primer 对话框](https://primer.style/product/components/dialog/guidelines/) | 筛选区、滚动主体与右对齐动作页脚；适合有明确结束点的任务 | 不能把整页强塞进弹窗；与 Carbon 是不同整体方案，不逐控件拼贴 |
+| [Fluent 抽屉](https://fluent2.microsoft.design/components/web/react/core/drawer/usage) | 并置或覆盖的选择、局部与整体错误、受影响区域的恢复 | 短辅助任务的步数和遮罩建议不直接限制长内容 |
+
+这些条目记录的是来源明确描述的关系；中文长标签、真实数量、组合错误与窗口变化仍需在当前工程验证。图像使用条件尚未核实，不随技能分发外部图片。
 
 ## 已有描述与方法依据
 

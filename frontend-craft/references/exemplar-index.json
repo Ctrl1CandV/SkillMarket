@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-26",
-  "basis": "2026-10-26: six original-interface states captured and viewed from four independent publishers; Wikipedia body/source states were added after the paired-build freeze and are not evidence of their effect on those builds.",
+  "updated_at": "2026-10-29",
+  "basis": "2026-10-29: added ten documented references for local information/action/state relationships; no new visual captures. 2026-10-26: six original-interface states captured and viewed from four independent publishers; Wikipedia body/source states were added after the paired-build freeze and are not evidence of their effect on those builds.",
   "entries": [
     {
       "id": "oil-reader",
@@ -475,6 +475,219 @@
         "page_state": "实际点击正文第一次 [21] 后，Cho 等 2014 文献条目高亮，显示作者、论文题目、ACL/DOI 及两个回链。",
         "method": "Codex cua_repl / IAB 原在线页面 tab.screenshot(fullPage:false) 原始 JPEG；DOM 核对 CSS 1440×1000，未裁切、重绘或缩放。操作与时间记录见维护 evidence/references/wikipedia-*.json；正文精确捕获时间未保存，仅保留文件保存时间。"
       }
+    },
+    {
+      "id": "openwebui-connections",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "connect",
+        "validate"
+      ],
+      "content_shapes": [
+        "connection-list",
+        "mixed-controls",
+        "conditional-fields"
+      ],
+      "source_url": "https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible/",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：按连接组织地址、凭据、模型及验证/保存，启停保留配置。适合列表到编辑窗口的对象归属；供应商特例、验证错误与模型发现的行为不可照搬。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "dify-provider-scope",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "select",
+        "manage"
+      ],
+      "content_shapes": [
+        "provider-card",
+        "model-list",
+        "credential-scope"
+      ],
+      "source_url": "https://docs.dify.ai/en/cloud/use-dify/workspace/model-providers",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：区分供应商共享凭据、单模型凭据与工作区默认模型，负载均衡属于模型配置。适合多层对象的配置范围；目标产品没有对应能力时不添加层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "bruno-inherited-auth",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "configure",
+        "override"
+      ],
+      "content_shapes": [
+        "active-value",
+        "read-only-fields",
+        "source-link"
+      ],
+      "source_url": "https://docs.usebruno.com/auth/overview",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：继承配置显示来源、有效值与编辑来源入口；查看继承值不改变继承模式。适合只读值与局部覆盖共存的区域；无继承关系时不引入层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-contained-forms",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "edit",
+        "submit"
+      ],
+      "content_shapes": [
+        "grouped-fields",
+        "mixed-controls",
+        "action-group"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/core/patterns/forms",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：按相关任务分组，字段、组间距及动作共同对齐；容器内可用通栏动作组。适合多组输入与完成动作；贴边、顺序和尺寸属于 Carbon，不与其他系统零散拼贴。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "primer-dialog-regions",
+      "status": "documented",
+      "tasks": [
+        "edit",
+        "confirm",
+        "filter"
+      ],
+      "content_shapes": [
+        "dialog",
+        "scroll-body",
+        "action-footer"
+      ],
+      "source_url": "https://primer.style/product/components/dialog/guidelines/",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：筛选区、滚动主体和动作页脚各有职责，主要动作在页脚右对齐。适合有明确结束点的局部任务；不将复杂页面强塞进弹窗，也不把右对齐当通用要求。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "readwise-document-chat",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "ask",
+        "save"
+      ],
+      "content_shapes": [
+        "document",
+        "conversation",
+        "attached-passage"
+      ],
+      "source_url": "https://docs.readwise.io/reader/guides/ghostreader/chat",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：阅读旁会话、选段提问、输入处模型选择和单条回答存入笔记。适合消息与材料及相邻动作分工；单文档和全库模式不同，不推断长回答、焦点或返回位置已验证。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "zotero-annotation-notes",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "annotate",
+        "compose"
+      ],
+      "content_shapes": [
+        "document",
+        "annotation-list",
+        "editable-note"
+      ],
+      "source_url": "https://www.zotero.org/support/pdf_reader",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：主体阅读、注释与笔记面板关联，添加到笔记的注释保留回到 PDF 的路径。适合内容生产与来源往返；不将 PDF 笔记布局当作长会话模板或固定三栏比例。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "fluent-drawer-states",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "edit",
+        "recover"
+      ],
+      "content_shapes": [
+        "inline-panel",
+        "overlay-panel",
+        "section-error"
+      ],
+      "source_url": "https://fluent2.microsoft.design/components/web/react/core/drawer/usage",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：需同时操作主体时可并置，聚焦辅助任务时可覆盖；局部错误靠近受影响分组。适合共视选择与分组恢复；不把短辅助任务的步数或遮罩规则泛化到长内容。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "vscode-settings-scope",
+      "status": "documented",
+      "tasks": [
+        "find",
+        "configure",
+        "reset"
+      ],
+      "content_shapes": [
+        "settings-editor",
+        "scope-selector",
+        "mixed-controls",
+        "modified-state"
+      ],
+      "source_url": "https://code.visualstudio.com/docs/configure/settings",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：分类、搜索、作用域、逐项编辑与已修改标记共同组织设置，支持筛选改动和单项重置。适合多控件与状态共存；即时生效不能迁移成有提交草稿的行为，也不照搬全部配置层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "github-review-progress",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "compare",
+        "comment",
+        "submit"
+      ],
+      "content_shapes": [
+        "diff",
+        "context-links",
+        "review-progress",
+        "pending-comments"
+      ],
+      "source_url": "https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：侧栏提供背景，逐文件内容关联评论与已查看状态，待提交评论和最终审查分开；文件新变化会重开查看状态。适合局部进度与整体决定；不将代码 diff、折叠或审批机制当通用模板。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
     }
   ]
 }
