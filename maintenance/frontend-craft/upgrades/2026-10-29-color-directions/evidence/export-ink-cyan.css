@@ -1,0 +1,32 @@
+/* Original Frontend Craft recipe: 墨色与冰青
+   Recheck pairings after adapting to real content. Font and radius are optional. */
+:root {
+  color-scheme: dark;
+  --cs-canvas: #0a151e;
+  --cs-surface: #11232f;
+  --cs-surface-alt: #1b3442;
+  --cs-text: #e1edf0;
+  --cs-muted: #a5bac6;
+  --cs-border: #2d4758;
+  --cs-control-border: #7995a7;
+  --cs-accent: #8cdeeb;
+  --cs-on-accent: #09242e;
+  --cs-accent-hover: #abe8f1;
+  --cs-accent-active: #c6f0f5;
+  --cs-selected: #244652;
+  --cs-selected-text: #b5edf4;
+  --cs-focus: #8cdeeb;
+  --cs-brand: #c6eef2;
+  --cs-on-brand: #102d38;
+  --cs-brand-muted: #385967;
+  --cs-brand-accent: #173e4f;
+  --cs-on-brand-accent: #e9fbff;
+  --cs-success: #91deba;
+  --cs-success-bg: #17392e;
+  --cs-warning: #f4d090;
+  --cs-warning-bg: #382e1e;
+  --cs-danger: #ffb6c2;
+  --cs-danger-bg: #402732;
+  --cs-font-heading: "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cs-radius: 8px;
+}

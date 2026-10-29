@@ -2,7 +2,7 @@
 name: frontend-craft
 description: 设计、改版或精修 Web 页面及局部界面时使用，覆盖工具、阅读、数据、内容展示与落地页。依据真实任务和内容，选用可见参考，完成整体构图、局部信息与控件组织、文字系统、配色、素材、响应式和交互，并查看实际结果。适用于“页面不好看、窗口信息和功能散乱、主次不明、像套模板、中文难读、操作时画面混乱”等请求；平台和核心流程依据不足时衔接 product-design。纯后端、仅改文案、PDF 与原生 App 不在此列。
 metadata:
-  version: "0.5.0-rc.2"
+  version: "0.5.0-rc.3"
 ---
 
 # Frontend craft
@@ -36,6 +36,8 @@ metadata:
 用可用的图像或浏览器能力实际查看选中的画面；文件路径、网页链接和文字说明不等于已经看图。先建立一个连贯的整体依据，必要时补局部参考。简短说明继承什么关系、调整什么条件；无需每次让用户选择风格，也不默认制作多套完整方案。
 
 记录中的候选、方法参考与已核验画面保持区别。缺少图片时可依据配套说明继续工作，但不能声称已视觉核对。原创[样式样张](references/style-samples.md)提供可调整的实现起点，不代表外部成功案例或已验证的最佳答案。
+
+需要更多配色选择、现有页面总落到相近色调，或需要可复制的搭配模板时，读[配色方向与模板](references/color-directions.md)。可复用整体方向，也可在成立的体系内选配色变体；用当前内容检查，保留用户的品牌与结构。
 
 ### 3. 联合决定构图与样式
 
@@ -78,6 +80,7 @@ metadata:
 | 中文字形、混排、断行及回退 | [中文排版](references/cjk-typography.md) |
 | 选择、查看和转用外部画面 | [参考选用](references/reference-selection.md)与[范例](references/exemplars.md) |
 | 需要一套可调整的实际样式起点 | [样式样张](references/style-samples.md) |
+| 配色选择不足、整套搭配及可复制模板 | [配色方向与模板](references/color-directions.md) |
 | 当前使用场景的选择条件 | [场景](references/scenarios.md) |
 | 实现后观察、诊断和修订 | [看图与修订](references/review.md) |
 
