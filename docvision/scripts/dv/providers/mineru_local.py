@@ -44,7 +44,7 @@ def convert(source: str, opts: Options) -> tuple:
     if not engine.available:
         raise DocVisionError(
             "MinerU local engine is not installed.",
-            hint="Run `docvision setup --profile mineru --yes`, then `docvision doctor`.",
+            hint="Run `docvision setup --profile mineru --sample <local PDF/image> --yes`, then `docvision doctor`.",
         )
     if util.is_url(source):
         raise DocVisionError("The local MinerU adapter expects a local file; download the URL first.")

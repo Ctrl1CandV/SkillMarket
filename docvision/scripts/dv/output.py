@@ -25,6 +25,8 @@ def _same_source(docdir: Path, source: str) -> bool:
     meta = util.read_json(docdir / "meta.json", {})
     saved = meta.get("source") if isinstance(meta, dict) else None
     path = saved.get("path") if isinstance(saved, dict) else None
+    if path and not util.is_url(path) and not Path(path).is_absolute():
+        path = str(docdir / path)
     return (isinstance(path, str) and bool(path)
             and _source_identity(path) == _source_identity(source))
 
@@ -175,6 +177,13 @@ def _write_document(raw: RawDoc, source: str, opts: Options, *, docdir: Path,
         "assets": {},
         "warnings": list(raw.warnings),
     }
+    # Region input.png travels with its result, including after folder renames.
+    if opts.extra.get('refine_task') and not util.is_url(source):
+        try:
+            content['source']['path'] = Path(os.path.relpath(Path(source).resolve(), docdir.resolve())).as_posix()
+            content['source']['path_base'] = 'document'
+        except ValueError:
+            pass  # Relative references cannot cross Windows volumes.
     asset_pages: dict[str, dict] = {}
     for page in pages:
         out_page = {"page": page.page, "width": page.width, "height": page.height,

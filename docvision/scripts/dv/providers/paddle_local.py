@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from .. import config, util
@@ -36,6 +37,19 @@ def _command(engine, source: Path, out_dir: Path, opts: Options, device: str) ->
            "--use_doc_unwarping", "False"]
     if opts.mode == "chart":
         cmd += ["--use_chart_recognition", "True"]
+    task = opts.extra.get("refine_task")
+    if opts.extra.get("refine_is_region") and task in {"formula", "table"}:
+        # Verified against PaddleOCR v3.7.0's doc_parser CLI executor:
+        # https://github.com/PaddlePaddle/PaddleOCR/blob/v3.7.0/paddleocr/_pipelines/paddleocr_vl.py
+        installed = (engine.extra.get("package_versions") or {}).get("paddleocr", "")
+        if not re.match(r"^3\.7\.\d+(?:$|[.+-])", installed):
+            raise DocVisionError(
+                "Local formula/table region recognition requires a verified PaddleOCR 3.7.x runtime; "
+                f"detected {installed or 'unknown version'}.",
+                hint="Configure a compatible isolated Paddle environment, or use --provider packet to inspect the crop.",
+            )
+        cmd += ["--use_layout_detection", "False", "--prompt_label", task,
+                "--format_block_content", "True"]
     return cmd
 
 
@@ -142,7 +156,7 @@ def convert(source: str, opts: Options) -> tuple:
     if not engine.available:
         raise DocVisionError(
             "PaddleOCR-VL local engine is not installed.",
-            hint="Run `docvision setup --profile paddle --yes` (conda GPU is recommended), then `docvision doctor`.",
+            hint="Run `docvision setup --profile paddle --sample <local PDF/image> --yes`, then `docvision doctor`.",
         )
     if util.is_url(source):
         raise DocVisionError("The local PaddleOCR adapter expects a local file; download the URL first.")

@@ -7,7 +7,7 @@ import re
 import time
 from pathlib import Path
 
-from . import config, focus, read as reading, util
+from . import cache, config, focus, portability, read as reading, util
 from .base import DocVisionError, Options
 from .detect import describe_route
 from .output import write_document
@@ -79,28 +79,29 @@ def choose_provider(provider: str, task: str, allow_remote: bool) -> str:
             if not allow_remote:
                 raise DocVisionError('Remote refinement requires --allow-remote after upload authorization.')
         return provider
-    keys = config.remote_keys() if allow_remote else {}
     if task in {'figure', 'chart'}:
         if config.discover_vlm().available:
             return 'local-vlm'
-    elif keys.get('paddle') and config.remote_consent() == 'remote':
-        return 'paddleocr-cloud'
-    # No implicit paid provider, repeated model initialization or document upload.
+    # A token and upload permission are not evidence that a second OCR pass
+    # helps. Select paddleocr-cloud explicitly for an identified uncertainty.
     return 'packet'
 
 
 def _selector(provider: str, extra: dict) -> dict:
-    cfg = config.load()
     # Hash configuration so URLs with credentials and arbitrary extra options are not persisted.
-    selected = cfg.get('remote', {}) if describe_route(provider)['remote'] else cfg.get('engines', {})
-    env_model = util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL') if provider == 'local-vlm' else None
-    endpoint = util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL') if provider == 'local-vlm' else None
-    engine = config.discover_mineru() if provider == 'mineru-local' else config.discover_paddle() if provider == 'paddleocr-local' else None
-    engine_version = engine.version if engine else None
-    blob = json.dumps({'config': selected, 'extra': extra, 'env_model': env_model,
-                       'endpoint': endpoint, 'engine_version': engine_version,
-                       'engine_fingerprint': engine.extra.get('cache_fingerprint') if engine else None}, sort_keys=True, ensure_ascii=True)
+    blob = json.dumps(cache.provider_context(provider, extra=extra), sort_keys=True,
+                      ensure_ascii=True, default=str)
     return {'configuration_sha256': hashlib.sha256(blob.encode()).hexdigest()}
+
+
+def _latest_attempt(root: Path, identifier: str) -> tuple[int, Path]:
+    """Include unfinished directories: an older success must not hide a new submission."""
+    latest = (1, root / identifier)
+    for directory in root.glob(f'{identifier}-*'):
+        suffix = directory.name[len(identifier) + 1:]
+        if directory.is_dir() and suffix.isdigit() and int(suffix) > latest[0]:
+            latest = (int(suffix), directory)
+    return latest
 
 
 def _context(page: dict, block: dict | None, box: list | None) -> tuple[str, list[str]]:
@@ -156,13 +157,14 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
     extra = dict(extra or {})
     if provider == 'paddleocr-local' and not config.discover_paddle().version and not force:
         raise DocVisionError('Cannot identify the isolated Paddle runtime version for safe reuse. Run doctor/setup, or explicitly use --force for a new local attempt.')
-    original = reading._source_path(meta)
+    original = reading._source_path(meta, docdir)
     if not original:
         raise DocVisionError('Refinement needs the original local PDF/image for an attributable crop.')
     actual_sha = util.sha256_file(original)
     if meta.get('source', {}).get('sha256') and meta['source']['sha256'] != actual_sha:
         raise DocVisionError('The original file has changed; reconvert it before reusing page/block coordinates.')
     signature = {'source_sha256': actual_sha, 'page': page, 'block': block_id, 'bbox': box,
+                 'selected_block_bbox': block.get('bbox') if block else None,
                  'task': task, 'provider': provider, 'dpi': dpi, 'prompt_version': focus.PROMPT_VERSION,
                  'context_sha256': hashlib.sha256(context.encode()).hexdigest(),
                  'question_sha256': hashlib.sha256(question.encode()).hexdigest(), **_selector(provider, extra)}
@@ -178,7 +180,11 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
               'record_path': str(record_path.resolve())}
     if dry_run:
         return record
+    attempt, directory = _latest_attempt(directory.parent, identifier)
+    record_path = directory / 'record.json'
     cached = util.read_json(record_path, {}) or {}
+    if cached:
+        cached = portability.resolve_refinement(docdir, cached, record_path)
     if cached and not force and cached.get('state') in {'recognized', 'review_required', 'failed', 'submitted'}:
         # Missing local inputs/results invalidate the cache. A previous failure is never silently retried.
         needed = [cached.get('image_path'), cached.get('context_path')]
@@ -188,7 +194,6 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
             return {**cached, 'cached': True}
         raise DocVisionError('A refinement attempt already exists but its files are missing. Inspect it and use --force for an explicit new attempt.')
     util.ensure_dir(directory.parent)
-    attempt = 1
     while True:
         try:
             # Atomic ownership across threads and processes, before rendering or submission.
@@ -201,7 +206,7 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
             directory = docdir / 'refinements' / f'{identifier}-{attempt}'
     record_path = directory / 'record.json'
     record['record_path'] = str(record_path.resolve())
-    util.write_json(record_path, record)
+    portability.save_refinement(docdir, record_path, record)
     image_path = directory / 'input.png'
     if box:
         reading.crop(docdir, page=page, bbox=','.join(str(n) for n in box), out=image_path, dpi=dpi)
@@ -222,11 +227,13 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
     else:
         # Write an in-progress record before submission. An interrupted request is never auto-resubmitted.
         record['state'] = 'submitted'
-        util.write_json(record_path, record)
+        portability.save_refinement(docdir, record_path, record)
         opts = Options(provider=provider, mode='ocr', tier='quality', allow_remote=allow_remote,
-                       timeout=timeout, keep_raw=True, staging=directory / 'work',
+                       timeout=timeout, keep_raw=True, staging=directory / 'work', output=directory / 'result',
                        extra={**extra, 'refine_task': task, 'refine_is_region': box is not None,
-                              'refine_context': context, 'question': question})
+                              'refine_context': context, 'question': question,
+                              **({'_cloud_refinement_record': str(record_path.resolve()),
+                                  'cloud_new_attempt': force} if provider == 'paddleocr-cloud' else {})})
         try:
             raw, raw_meta = run_provider(provider, str(image_path), opts)
             if raw is None or not raw.markdown.strip():
@@ -234,6 +241,9 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
             output = write_document(raw, str(image_path), opts, out_root=directory / 'result',
                                     info={'pages': 1, 'sha256': record['input_sha256']},
                                     raw_meta=raw_meta, route=describe_route(provider))
+            if (raw_meta or {}).get('cloud_task_id'):
+                from . import cloud_jobs
+                cloud_jobs.mark_output(raw_meta['cloud_task_id'], output)
             qa = util.read_json(output / 'qa.json', {}) or {}
             record.update({'state': 'recognized' if qa.get('status') != 'fail' else 'failed',
                            'model': raw.model, 'markdown_path': str((output / f'{output.name}.md').resolve()),
@@ -243,19 +253,49 @@ def run(docdir: Path, *, page: int, block_id: str | None = None, bbox=None,
         except Exception as exc:
             # Keep the local packet for review; never switch provider or repeat submission.
             record.update({'state': 'failed', 'error': _error_text(exc)})
+        finally:
+            if opts.extra.get('_cloud_task_id'):
+                record['cloud_task_id'] = opts.extra['_cloud_task_id']
     record['elapsed_seconds'] = round(time.monotonic() - started, 3)
-    util.write_json(record_path, record)
+    portability.save_refinement(docdir, record_path, record)
     return record
 
 
 def list_results(docdir: Path, *, page: int | None = None, block_id: str | None = None) -> list[dict]:
+    paths = sorted((Path(docdir) / 'refinements').glob('*/record.json'))
+    if not paths:
+        return []
+    meta, content = reading.load(Path(docdir))
+    source_sha = (meta.get('source') or {}).get('sha256')
+    original = reading._source_path(meta, docdir)
+    if original:
+        actual_sha = util.sha256_file(original)
+        if source_sha and source_sha != actual_sha:
+            return []
+        source_sha = actual_sha
     results = []
-    for path in sorted((Path(docdir) / 'refinements').glob('*/record.json')):
+    for path in paths:
         record = util.read_json(path, {}) or {}
         source = record.get('source') or {}
+        if not source_sha or source.get('sha256') != source_sha:
+            continue
         if page is not None and source.get('page') != page:
             continue
         if block_id is not None and source.get('block') != block_id:
             continue
-        results.append(record)
+        current = next((p for p in content.get('pages') or [] if p.get('page') == source.get('page')), None)
+        if not current:
+            continue
+        block = None
+        signature = record.get('signature') or {}
+        if source.get('block'):
+            block = next((b for b in current.get('blocks') or [] if b.get('id') == source['block']), None)
+            # Legacy records do not distinguish a manually overridden box.
+            recorded_box = signature.get('selected_block_bbox', source.get('bbox'))
+            if not block or block.get('bbox') != recorded_box:
+                continue
+        context, _ = _context(current, block, source.get('bbox'))
+        if signature.get('context_sha256') != hashlib.sha256(context.encode()).hexdigest():
+            continue
+        results.append(portability.resolve_refinement(docdir, record, path))
     return results

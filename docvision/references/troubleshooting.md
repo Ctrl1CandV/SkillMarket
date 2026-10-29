@@ -14,9 +14,9 @@ python "{SKILL_DIR}/scripts/docvision.py" verify <输出目录> --json
 
 ## 本地引擎找不到
 
-- `mineru-kit not found`：`setup --profile mineru --yes`，或把已有 MinerU 4 的 `mineru-kit` 路径写进 `config.json` 的 `engines.mineru.exe`。
+- `mineru-kit not found`：`setup --profile mineru --sample ./paper.pdf --yes`，或把已有 MinerU 4 的 `mineru-kit` 路径写进 `config.json` 的 `engines.mineru.exe`。
 - 已有 MinerU 3.x：本技能要求 4.x；3.x 的命令/输出不同，不要混用。新建 `docvision-mineru` 环境。
-- `paddleocr not found`：`setup --profile paddle --device cuda --yes`；或写 `engines.paddleocr.exe`。
+- `paddleocr not found`：`setup --profile paddle --device cuda --sample ./page.png --yes`；或写 `engines.paddleocr.exe`。
 - conda 找不到：`conda` 可能不在 PATH；用 `--manager uv`，或把 conda 加入 PATH 后重试。
 - 环境创建失败（channel 404）：`setup` 已用 `-c conda-forge --override-channels`；仍失败时检查网络/代理，或指定 `--conda-channel`。
 
@@ -34,10 +34,10 @@ standard 档约 2 GB。下载中断后重跑即可；不要手动改模型目录
 
 ### 解析很慢
 
-- 首次运行含模型加载，2 页 10 秒左右正常；整本按页数线性增长。
-- 不要同时跑两个 MinerU 进程抢 GPU；批量用 `--workers 1` 或 2。
-- `--tier fast` 只取文字层，最快；`quality` 更慢。
-- 纯文字数字版 PDF 用 `--mode text`；扫描件才用 `--mode ocr`。
+- 每个文件启动一次引擎进程，多页 PDF 在一次调用内处理。看 JSON 的 timings_seconds 区分 provider 与其他阶段；复杂页耗时可能不成线性。
+- 批量先用 `--workers 1 --resume`。只有测过吞吐与峰值显存后才增加并发。
+- auto + `--tier fast` 仅用 core 读取文字层，不启动 OCR；它不保证阅读顺序、公式和表格正确。
+- 数字版只筛正文用 `--tier fast`；扫描件及文字层失真的关键公式/表格页可用 `--mode ocr --tier standard`。
 
 ### OOM / CUDA
 

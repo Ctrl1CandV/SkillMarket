@@ -1,6 +1,6 @@
 # 远程接口：只有 PaddleOCR 官方 API
 
-远程是“关键页复核”的出口，不是默认。本技能只保留一条云端路线：**PaddleOCR 官网 / AI Studio 官方 API**。原因很直接：它是本项目唯一用真实账号验证过公式与合并表格的远程服务，其余云端 OCR（GLM、Mistral、Gemini、MinerU 云端）没有验证过的 key，代码与文档都成了无法证实的承诺，已移除。删掉代码比留着“看起来支持”更诚实。
+远程用于疑难区域的第二份转写，辅助查错与纠错。本技能只保留一条云端路线：**PaddleOCR 官网 / AI Studio 官方 API**。2026-10-29 同图小样本未显示 API 的精度优势；仅首次公式裁图更快，整页和表格本地更快。它可以补充不同模型的结果，但仍可能漏编号、误识符号，采纳必须回看原图。其他未经实际账号验证的云端适配器已移除。
 
 价格/额度为 2026-10-28 调研值，随时可能变；`docvision usage` 只是提示，不是账单依据。
 
@@ -10,6 +10,8 @@
 2. **每次调用同意**（`--allow-remote`）：即使安装级已允许，单次上传仍要显式加这个参数。
 
 没有任何路径会在本地失败后自动上传，也不会在失败后切换 provider。额度耗尽或 401 时明确报错、不重试。
+
+`refine --provider auto` 即使具备两道开关也先生成 OCR 精读包；需要第二份转写时显式选 `--provider paddleocr-cloud`。有 jobId 的中断任务用 `jobs resume` 只继续 GET；未知提交不自动重传。完整恢复、迁移和保存校正方法见[长期阅读维护](maintenance.md)。
 
 ## 凭据位置
 
@@ -21,7 +23,7 @@ python "{SKILL_DIR}/scripts/docvision.py" credentials show      # 只显示名�
 python "{SKILL_DIR}/scripts/docvision.py" credentials remove    # 删除密钥并回到 local-only
 ```
 
-- 解析顺序：`--env-file` → `DOCVISION_ENV_FILE` → `{SKILL_DIR}/.credentials.env` → 当前目录 `.env`。进程环境变量优先于文件。
+- 解析顺序：`--env-file` → `DOCVISION_ENV_FILE` → `{SKILL_DIR}/.credentials.env` → 当前目录 `.env`。进程环境变量优先于文件。`credentials set` 会替换同一凭据组的旧别名；如果进程仍带旧 token，需更新或清除该环境变量。
 - 凭据绑定当前机器与系统用户；自动加载只接受匹配绑定。旧未绑定文件请重新 `credentials set --prompt`，开发测试可显式 `--env-file` 选择。进程环境变量可独立使用。
 - POSIX 从创建时使用 0600；Windows 写入并核对当前用户的私有 DACL。权限设置失败就拒绝保存；不写符号链接/重解析点。文件权限与 Git 忽略各自处理不同问题。
 - 写入前检查 `git check-ignore`：若技能目录位于某个 git 仓库且该文件未被忽略，直接拒绝写入，并提示应添加的忽略行。
@@ -47,10 +49,10 @@ python "{SKILL_DIR}/scripts/docvision.py" credentials remove    # 删除密钥�
 
 图表与架构图的语义解释没有云端路线了。可选：
 
-1. `refine --provider packet`：生成裁图 + 上下文包，由**当前对话的视觉能力**实际看图（推荐，零上传）。
-2. `refine --provider local-vlm`：本机 Ollama/vLLM 的 OpenAI 兼容端点，必须是 loopback（`127.0.0.1`/`localhost`），否则拒绝。
+1. `refine --provider packet`：生成裁图 + 上下文包，由**当前对话的视觉能力**实际看图（推荐；制作包本身不调用 OCR API，宿主看图遵循宿主的数据处理策略）。
+2. `refine --provider local-vlm`：本机 Ollama/vLLM 的 OpenAI 兼容端点，必须是 loopback（`127.0.0.1`/`localhost`），否则拒绝。本地视觉请求显式绕过环境代理并拒绝 HTTP 重定向。
 
-配置：`config.json` 的 `engines.vlm`（`base_url`、`model`）或 `DOCVISION_OPENAI_BASE_URL` / `DOCVISION_OPENAI_MODEL`；key 用 `DOCVISION_VLM_API_KEY`（本地 Ollama 可留空）。没有布局管线，阅读顺序与跨页表格需自己检查。
+配置：`config.json` 的 `engines.vlm`（`base_url`、`model`）或 `DOCVISION_OPENAI_BASE_URL` / `DOCVISION_OPENAI_MODEL`；key 用 `DOCVISION_VLM_API_KEY`（本地 Ollama 可留空）。有效设置顺序为本次 `--extra` → DOCVISION 环境变量 → OPENAI 别名 → config，发现、执行与缓存使用相同解析。没有布局管线，阅读顺序与跨页表格需自己检查。
 
 ## 上传前检查清单
 

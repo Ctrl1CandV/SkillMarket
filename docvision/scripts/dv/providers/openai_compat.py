@@ -6,13 +6,10 @@ import json
 import re
 import time
 from pathlib import Path
-from urllib.parse import urlparse
-import ipaddress
 
 from .. import config, focus, util
 from ..base import DocVisionError, Options, RawDoc, RawPage, RawBlock
 from ..detect import inspect_input
-from .common import pages_from_markdown
 
 SYSTEM = "You are a precise document OCR and layout engine. Return only the requested Markdown."
 PROMPT = """Transcribe page {page} of {total} to GitHub-Flavored Markdown.
@@ -74,10 +71,8 @@ def _page_images(source: str, opts: Options) -> list[tuple[int, bytes, str]]:
 
 def convert(source: str, opts: Options) -> tuple:
     """Local-only OpenAI-compatible vision (Ollama, vLLM on this machine)."""
-    cfg = config.load()
-    vcfg = cfg.get("engines", {}).get("vlm", {})
-    base_url = opts.extra.get("base_url") or vcfg.get("base_url")
-    model = opts.extra.get("model") or vcfg.get("model")
+    vcfg = config.effective_vlm_config(opts.extra)
+    base_url, model = vcfg["base_url"], vcfg["model"]
     key = _key(vcfg.get("api_key_env") or "DOCVISION_VLM_API_KEY")
     provider = "local-vlm"
     if not base_url:
@@ -86,16 +81,7 @@ def convert(source: str, opts: Options) -> tuple:
     if not model:
         raise DocVisionError("No vision model is configured.",
                              hint="Set DOCVISION_OPENAI_MODEL or configure engines.vlm.model.")
-    host = urlparse(base_url).hostname or ''
-    try:
-        loopback = ipaddress.ip_address(host).is_loopback
-    except ValueError:
-        loopback = host.lower() == 'localhost'
-    if not loopback:
-        raise DocVisionError(
-            'local-vlm must use a loopback endpoint; this skill has no remote vision route.',
-            hint='Point engines.vlm.base_url at 127.0.0.1, or use --provider packet and inspect the crop yourself.',
-        )
+    util.validate_local_http_url(base_url)
     info = inspect_input(source, opts)
     if opts.dry_run:
         return None, {"provider": provider, "endpoint": _endpoint(base_url), "model": model,
@@ -124,8 +110,8 @@ def convert(source: str, opts: Options) -> tuple:
         headers = {}
         if key:
             headers["Authorization"] = "Bearer " + key
-        status, body = util.post_json(_endpoint(base_url), payload,
-                                      timeout=min(opts.timeout, 600), headers=headers)
+        status, body = util.post_local_json(_endpoint(base_url), payload,
+                                           timeout=min(opts.timeout, 600), headers=headers)
         text = body.decode("utf-8", errors="replace")
         try:
             data = json.loads(text)

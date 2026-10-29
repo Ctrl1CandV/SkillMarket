@@ -338,6 +338,59 @@ def post_json(url: str, payload, *, timeout: int = 120,
         raise DocVisionError(f"Network error while calling {url}: {exc.reason}") from exc
 
 
+def validate_local_http_url(url: str) -> None:
+    """Accept only direct loopback HTTP(S) endpoints for local inference."""
+    import ipaddress
+
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        host = parsed.hostname or ""
+        parsed.port  # Reject malformed ports before constructing a request.
+        try:
+            loopback = ipaddress.ip_address(host).is_loopback
+        except ValueError:
+            loopback = host.lower() == "localhost"
+        valid = (parsed.scheme in {"http", "https"} and loopback
+                 and parsed.username is None and parsed.password is None
+                 and not parsed.query and not parsed.fragment)
+    except (TypeError, ValueError):
+        valid = False
+    if not valid:
+        raise DocVisionError(
+            "local-vlm requires a loopback HTTP(S) endpoint without credentials, query or fragment.",
+            hint="Use http://127.0.0.1:<port>/v1 or --provider packet.",
+        )
+
+
+class _NoLocalRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        fp.close()
+        raise DocVisionError("Local VLM redirects are refused; configure the final loopback endpoint directly.")
+
+
+def post_local_json(url: str, payload, *, timeout: int = 120,
+                    headers: dict[str, str] | None = None) -> tuple[int, bytes]:
+    """Send local inference directly, ignoring proxies and refusing redirects."""
+    validate_local_http_url(url)
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(url, data=data, method="POST")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("User-Agent", "docvision/0.1")
+    for key, value in (headers or {}).items():
+        req.add_header(key, value)
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoLocalRedirect())
+    try:
+        with opener.open(req, timeout=timeout) as resp:
+            return resp.status, resp.read()
+    except urllib.error.HTTPError as exc:
+        with exc:
+            if 300 <= exc.code < 400:
+                raise DocVisionError("Local VLM redirects are refused; configure the final loopback endpoint directly.") from None
+            return exc.code, exc.read()
+    except urllib.error.URLError as exc:
+        raise DocVisionError(f"Network error while calling local VLM: {exc.reason}") from exc
+
+
 def get_json(url: str, *, timeout: int = 60,
              headers: dict[str, str] | None = None) -> tuple[int, bytes]:
     req = urllib.request.Request(url, method="GET")

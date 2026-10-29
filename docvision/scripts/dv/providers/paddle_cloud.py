@@ -16,7 +16,7 @@ import urllib.request
 import uuid
 from pathlib import Path
 
-from .. import config, util
+from .. import cloud_jobs, config, util
 from ..base import DocVisionError, Options, RawBlock, RawDoc, RawPage, block_markdown
 from ..detect import inspect_input
 from .common import assemble_markdown, map_block_type
@@ -39,6 +39,12 @@ def _remaining(deadline: float, cap: float = 120) -> float:
     return min(cap, left)
 
 
+def _safe_message(value: object, token: str) -> str:
+    # Download errors may include temporary signed URLs. Neither receipts nor
+    # CLI error logs should retain them, including arbitrary query parameters.
+    return re.sub(r'https?://[^\s<>\"\']+', '[remote-url]', util.redact(str(value), [token]))[:1200]
+
+
 def _api(url: str, token: str, deadline: float, *, payload: dict | None = None,
          body: bytes | None = None, content_type: str | None = None) -> dict:
     if payload is not None:
@@ -54,7 +60,7 @@ def _api(url: str, token: str, deadline: float, *, payload: dict | None = None,
     except urllib.error.HTTPError as exc:
         status, raw = exc.code, exc.read()
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
-        detail = util.redact(str(exc), [token])
+        detail = _safe_message(exc, token)
         raise DocVisionError(f"PaddleOCR network request failed: {detail}",
                              hint="Check connectivity. The submission is not automatically retried.") from exc
     text = raw.decode("utf-8", errors="replace")
@@ -66,7 +72,7 @@ def _api(url: str, token: str, deadline: float, *, payload: dict | None = None,
         raise DocVisionError("PaddleOCR response must be a JSON object.")
     if status != 200 or result.get("code") not in (0, None):
         code = result.get("code") or status
-        message = util.redact(str(result.get("msg") or result.get("message") or "request rejected")[:600], [token])
+        message = _safe_message(result.get("msg") or result.get("message") or "request rejected", token)[:600]
         raise DocVisionError(f"PaddleOCR error ({code}): {message}", code=str(code),
                              hint=util.error_hint_for_http(status, message))
     data = result.get("data")
@@ -103,7 +109,7 @@ def _selection(info: dict, source: str, opts: Options) -> list[int]:
     return list(range(total))
 
 
-def _multipart(path: Path, fields: dict) -> tuple[bytes, str]:
+def _multipart(path: Path, fields: dict, *, file_bytes: bytes | None = None) -> tuple[bytes, str]:
     boundary = "docvision-" + uuid.uuid4().hex
     chunks: list[bytes] = []
     for name, value in fields.items():
@@ -112,7 +118,7 @@ def _multipart(path: Path, fields: dict) -> tuple[bytes, str]:
     # Keep user filenames out of MIME headers and avoid Unicode/header escaping.
     name = "docvision-" + util.short_hash(str(path.resolve())) + path.suffix.lower()
     chunks.extend([f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{name}\"\r\nContent-Type: {util.mime_for(path)}\r\n\r\n".encode(),
-                   path.read_bytes(), f"\r\n--{boundary}--\r\n".encode()])
+                   path.read_bytes() if file_bytes is None else file_bytes, f"\r\n--{boundary}--\r\n".encode()])
     return b"".join(chunks), "multipart/form-data; boundary=" + boundary
 
 
@@ -216,24 +222,97 @@ def _parse(data: bytes, expected: list[int], opts: Options, deadline: float) -> 
                                         asset=asset, meta={"provider_type": label}))
         if not page.blocks:
             page.blocks.append(RawBlock(type="text", text=page.markdown, markdown=page.markdown, page=page_no))
+        if page.markdown:
+            # The service Markdown can omit recognized footnotes or chart
+            # tables. Preserve its reading order and append only missing data,
+            # as the local Paddle adapter does; never repair recognized symbols.
+            for block in page.blocks:
+                if block.type == "chart" or block.meta.get("provider_type") == "footnote":
+                    content = block.markdown.strip()
+                    if content and "".join(content.split()) not in "".join(page.markdown.split()):
+                        page.markdown += "\n\n" + content
         pages.append(page)
     return sorted(pages, key=lambda p: p.page), assets
+
+
+def _endpoint() -> str:
+    endpoint = (config.load().get("remote", {}).get("paddle_base") or JOBS_URL).rstrip("/")
+    parsed = urllib.parse.urlsplit(endpoint)
+    if (parsed.scheme not in {"http", "https"} or not parsed.netloc or parsed.query or
+            parsed.fragment or parsed.username or parsed.password):
+        raise DocVisionError("remote.paddle_base must be the full PaddleOCR jobs HTTP endpoint without credentials or a query.")
+    return endpoint
+
+
+def _token() -> str:
+    token = util.env_value(*TOKEN_NAMES)
+    if not token:
+        raise DocVisionError("PaddleOCR cloud needs an AI Studio access token.",
+                             hint="Set PADDLEOCR_ACCESS_TOKEN (or DOCVISION_PADDLE_TOKEN); never paste it into a document or commit it.")
+    return token
+
+
+def _record_failure(record: dict, exc: BaseException) -> None:
+    # Store a bounded classification only; upstream errors can contain tokens
+    # or signed result URLs. Preserve the last known submission/polling state.
+    try:
+        cloud_jobs.update(record['task_id'], last_error_kind=type(exc).__name__)
+    except OSError:
+        pass  # the pre-POST receipt remains the recovery authority
+
+
+def _job_error(record: dict, exc: Exception, token: str) -> DocVisionError:
+    hint = 'Cloud task ' + record['task_id'] + ' was retained. Use `docvision jobs list`; resume never submits again.'
+    if isinstance(exc, DocVisionError) and exc.hint:
+        hint = _safe_message(exc.hint, token) + ' ' + hint
+    return DocVisionError(_safe_message(exc, token), hint=hint, code=getattr(exc, 'code', None))
+
+
+def _collect(record: dict, opts: Options, token: str, deadline: float, started: float) -> tuple:
+    """Only GETs: poll the already registered job, download and parse results."""
+    job_id = record['job_id']
+    poll_url = record['endpoint'] + "/" + urllib.parse.quote(job_id, safe="")
+    while True:
+        item = _api(poll_url, token, deadline)
+        state = item.get("state")
+        if state == "done":
+            cloud_jobs.update(record['task_id'], state='remote_done', last_error_kind=None)
+            break
+        if state == "failed":
+            cloud_jobs.update(record['task_id'], state='remote_failed')
+            message = _safe_message(item.get("errorMsg") or "no detail", token)
+            raise DocVisionError(f"PaddleOCR job failed: {message}", code="job_failed")
+        if state not in {"pending", "running"}:
+            raise DocVisionError(f"PaddleOCR returned an unknown job state: {_safe_message(state, token)!r}.")
+        cloud_jobs.update(record['task_id'], state=state)
+        time.sleep(min(2, _remaining(deadline)))
+    result = item.get("resultUrl")
+    result_url = result.get("jsonUrl") if isinstance(result, dict) else None
+    if not isinstance(result_url, str) or not util.is_url(result_url):
+        raise DocVisionError("PaddleOCR finished without a JSONL result URL.")
+    data = util.download(result_url, timeout=_remaining(deadline), max_bytes=200 * 1024 * 1024)
+    pages, assets = _parse(data, record['expected_pages'], opts, deadline)
+    elapsed = round(time.monotonic() - started, 3)
+    doc = RawDoc(markdown=assemble_markdown(pages), pages=pages, assets=assets,
+                 provider="paddleocr-cloud", model=record['model'],
+                 usage={"job_id": job_id, "cloud_task_id": record['task_id'],
+                        "elapsed_seconds": elapsed, "pages_processed": len(pages)})
+    if opts.keep_raw:
+        doc.raw_files["paddle-result.jsonl"] = data
+    cloud_jobs.update(record['task_id'], state='parsed', last_error_kind=None)
+    return doc, {"provider": "paddleocr-cloud", "model": record['model'], "job_id": job_id,
+                 "cloud_task_id": record['task_id'], "pages": len(pages), "elapsed_seconds": elapsed}
 
 
 def convert(source: str, opts: Options) -> tuple:
     info = inspect_input(source, opts)
     expected = _selection(info, source, opts)
-    endpoint = (config.load().get("remote", {}).get("paddle_base") or JOBS_URL).rstrip("/")
-    parsed = urllib.parse.urlsplit(endpoint)
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc or parsed.query or parsed.fragment:
-        raise DocVisionError("remote.paddle_base must be the full PaddleOCR jobs HTTP endpoint without a query.")
+    endpoint = _endpoint()
     model = str(opts.extra.get("model") or "PaddleOCR-VL-1.6")
     options = {"useDocOrientationClassify": False, "useDocUnwarping": False,
                "useChartRecognition": opts.mode == "chart",
                "formatBlockContent": True, "showFormulaNumber": True}
     task = opts.extra.get('refine_task')
-    # A known region should go directly to its specialist recognizer. Re-running
-    # layout detection can misclassify a two-line equation as ordinary text.
     if opts.extra.get('refine_is_region') and task in {'formula', 'table'}:
         options.update(useLayoutDetection=False, promptLabel=task)
     payload = {"model": model, "optionalPayload": options}
@@ -245,44 +324,153 @@ def convert(source: str, opts: Options) -> tuple:
                       "payload_summary": payload}
     if not opts.allow_remote:
         raise DocVisionError("PaddleOCR cloud requires --allow-remote before uploading a document.")
-    token = util.env_value(*TOKEN_NAMES)
-    if not token:
-        raise DocVisionError("PaddleOCR cloud needs an AI Studio access token.",
-                             hint="Set PADDLEOCR_ACCESS_TOKEN (or DOCVISION_PADDLE_TOKEN); never paste it into a document or commit it.")
+    token = _token()
     started = time.monotonic()
     deadline = started + opts.timeout
-    if util.is_url(source):
-        task = _api(endpoint, token, deadline, payload={**payload, "fileUrl": source})
-    else:
+    # Prepare bytes before creating the intent. The hash must describe exactly
+    # the file whose bytes are sent, even if another process changes its path.
+    body = content_type = None
+    if not util.is_url(source):
         fields = {**payload, "optionalPayload": json.dumps(options)}
-        body, content_type = _multipart(Path(source), fields)
-        task = _api(endpoint, token, deadline, body=body, content_type=content_type)
-    job_id = task.get("jobId")
-    if not isinstance(job_id, str) or not job_id:
-        raise DocVisionError("PaddleOCR did not return a jobId; the request is not automatically resubmitted.")
-    poll_url = endpoint + "/" + urllib.parse.quote(job_id, safe="")
-    while True:
-        item = _api(poll_url, token, deadline)
-        state = item.get("state")
-        if state == "done":
-            break
-        if state == "failed":
-            message = util.redact(str(item.get("errorMsg") or "no detail"), [token])
-            raise DocVisionError(f"PaddleOCR job failed: {message}", code="job_failed")
-        if state not in {"pending", "running"}:
-            raise DocVisionError(f"PaddleOCR returned an unknown job state: {state!r}.")
-        time.sleep(min(2, _remaining(deadline)))
-    result = item.get("resultUrl")
-    result_url = result.get("jsonUrl") if isinstance(result, dict) else None
-    if not isinstance(result_url, str) or not util.is_url(result_url):
-        raise DocVisionError("PaddleOCR finished without a JSONL result URL.")
-    data = util.download(result_url, timeout=_remaining(deadline), max_bytes=200 * 1024 * 1024)
-    pages, assets = _parse(data, expected, opts, deadline)
-    elapsed = round(time.monotonic() - started, 3)
-    doc = RawDoc(markdown=assemble_markdown(pages), pages=pages, assets=assets,
-                 provider="paddleocr-cloud", model=model,
-                 usage={"job_id": job_id, "elapsed_seconds": elapsed, "pages_processed": len(pages)})
-    if opts.keep_raw:
-        doc.raw_files["paddle-result.jsonl"] = data
-    return doc, {"provider": "paddleocr-cloud", "model": model, "job_id": job_id,
-                 "pages": len(pages), "elapsed_seconds": elapsed}
+        file_bytes = Path(source).read_bytes()
+        if util.sha256_bytes(file_bytes) != info['sha256']:
+            raise DocVisionError('Source changed while preparing the cloud upload; no request was sent.')
+        body, content_type = _multipart(Path(source), fields, file_bytes=file_bytes)
+    output_root = Path(opts.output or config.load().get('output', {}).get('default_dir') or 'docvision-out')
+    record = cloud_jobs.create(source, info, endpoint, payload, expected, opts, output_root=output_root)
+    try:
+        if util.is_url(source):
+            response = _api(endpoint, token, deadline, payload={**payload, "fileUrl": source})
+        else:
+            response = _api(endpoint, token, deadline, body=body, content_type=content_type)
+        job_id = response.get("jobId")
+        if not isinstance(job_id, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,200}', job_id):
+            raise DocVisionError("PaddleOCR did not return a valid jobId; the request is not automatically resubmitted.")
+        record = cloud_jobs.update(record['task_id'], job_id=job_id, state='submitted')
+        return _collect(record, opts, token, deadline, started)
+    except BaseException as exc:
+        _record_failure(record, exc)
+        if isinstance(exc, Exception):
+            raise _job_error(record, exc, token) from exc
+        raise
+
+
+def _restore_options(record: dict, *, timeout: int, allow_remote: bool) -> Options:
+    return Options(provider='paddleocr-cloud', timeout=timeout, allow_remote=allow_remote,
+                   **record['options'], extra=dict(record.get('extra') or {}))
+
+
+def _validate_recovery(record: dict, source: str | None, allow_remote: bool,
+                       refinement_record: str | Path | None) -> tuple[str, tuple | None]:
+    if not allow_remote:
+        raise DocVisionError('Cloud job recovery requires --allow-remote on this call.')
+    if config.remote_consent() != 'remote':
+        raise DocVisionError('Remote access is not enabled for this OS user; confirm consent before recovering a cloud job.')
+    if record.get('endpoint') != _endpoint():
+        raise DocVisionError('Configured Paddle endpoint differs from this cloud task; no request was sent.')
+    if not record.get('job_id'):
+        raise DocVisionError('Submission state is unknown and no jobId was received; recovery cannot safely poll or resubmit.',
+                             hint='Check the service account. An explicit new cloud attempt may be billed again; no automatic retry is available.')
+    if record.get('source', {}).get('kind') != 'file':
+        raise DocVisionError('URL-source tasks cannot be recovered with verified source bytes. Download inputs locally before future submissions.')
+    linked = cloud_jobs.refinement(record, refinement_record)
+    candidate = source or (linked[2].get('image_path') if linked else None) or record['source'].get('path')
+    path = Path(candidate).expanduser().resolve() if candidate else None
+    if not path or not path.is_file():
+        raise DocVisionError('Cloud task source is missing; provide --source with the original bytes.')
+    if util.sha256_file(path) != record['source'].get('sha256'):
+        raise DocVisionError('Source SHA256 differs from the submitted cloud task; no request was sent.')
+    if linked:
+        if linked[2].get('cloud_task_id') != record['task_id']:
+            raise DocVisionError('Linked refinement does not identify this cloud task.')
+        original = linked[2].get('source') or {}
+        meta = util.read_json(linked[0] / 'meta.json', {}) or {}
+        # Explicit document relinking updates this authoritative source while
+        # the old refinement retains the historical absolute path.
+        current = (meta.get('source') or {}) if meta else original
+        original_path = Path(current.get('path') or '')
+        if not original_path.is_absolute():
+            original_path = linked[0] / original_path
+        if (current.get('sha256') != original.get('sha256') or not original_path.is_file() or
+                util.sha256_file(original_path) != original.get('sha256')):
+            raise DocVisionError('The refinement original source is missing or changed; no request was sent.')
+    return str(path), linked
+
+
+def resume_job(task_id: str, *, allow_remote: bool = False, timeout: int = 900,
+               source: str | None = None, out_root: str | Path | None = None,
+               refinement_record: str | Path | None = None) -> dict:
+    """Recover a durable receipt with GET only, and write a full docvision result.
+
+    A moved source can be supplied explicitly only if its SHA256 still matches.
+    No success, failure, timeout or missing job ID ever causes another POST.
+    """
+    from ..output import write_document
+    from ..verify import verify_document
+    record = cloud_jobs.load(task_id)
+    source, linked = _validate_recovery(record, source, allow_remote, refinement_record)
+    opts = _restore_options(record, timeout=timeout, allow_remote=allow_remote)
+    output_root = Path(out_root) if out_root else (linked[1].parent / 'result' if linked else Path(record['output_root']))
+    if linked:
+        try:
+            output_root.resolve().relative_to(linked[0])
+        except ValueError as exc:
+            raise DocVisionError('A refinement recovery output must stay inside its document directory.') from exc
+    started = time.monotonic()
+    token = ''
+    try:
+        previous = Path(record['output_dir']) if record.get('output_dir') else None
+        if linked and linked[2].get('markdown_path'):
+            moved_output = Path(linked[2]['markdown_path']).parent
+            if moved_output.is_dir():
+                previous = moved_output
+        # Successful recovery remains useful after result links expire. Inspect
+        # provenance and structural validity before reusing an existing result.
+        meta = util.read_json(previous / 'meta.json', {}) if previous and previous.is_dir() else {}
+        same_output = previous and previous.parent.resolve() == output_root.resolve()
+        if (record.get('state') == 'completed' and same_output and
+                (meta.get('source') or {}).get('sha256') == record['source']['sha256'] and
+                (meta.get('raw_meta') or {}).get('cloud_task_id') == task_id and
+                verify_document(previous).get('status') != 'fail'):
+            output = previous
+            raw_model = record['model']
+            warnings = meta.get('warnings') or []
+        else:
+            token = _token()
+            raw, raw_meta = _collect(record, opts, token, started + timeout, started)
+            info = inspect_input(source, opts)
+            if info.get('sha256') != record['source']['sha256']:
+                raise DocVisionError('Source changed during cloud recovery; output was not written.')
+            raw_meta['recovered'] = True
+            raw_meta['cache_request'] = record.get('cache_request')
+            output = write_document(raw, source, opts, out_root=output_root, info=info,
+                                    raw_meta=raw_meta, elapsed=time.monotonic() - started)
+            raw_model, warnings = raw.model, raw.warnings
+        qa = util.read_json(output / 'qa.json', {}) or {}
+        output_meta = util.read_json(output / 'meta.json', {}) or {}
+        markdown_path = output / output_meta['markdown_path']
+        cloud_jobs.mark_output(task_id, output)
+        if qa.get('status') in {'pass', 'warn'}:
+            # Persist a verified relocation so the next recovery can reuse the
+            # complete output without asking again for the now-missing path.
+            cloud_jobs.update(task_id, source={**record['source'], 'path': source})
+        if linked:
+            docdir, record_path, refinement = linked
+            refinement.update(cloud_task_id=task_id, state='recognized' if qa.get('status') != 'fail' else 'failed',
+                              model=raw_model, markdown_path=str(markdown_path.resolve()),
+                              qa=qa.get('status'), warnings=warnings, recovered_at=util.now_iso())
+            refinement.pop('error', None)
+            if qa.get('status') == 'fail':
+                refinement['error'] = 'Recovered refinement failed structural checks; inspect qa.json.'
+            cloud_jobs.save_refinement(docdir, record_path, refinement)
+            cloud_jobs.update(task_id, refinement_record=str(record_path))
+        return {'state': 'done' if qa.get('status') != 'fail' else 'failed', 'cloud_task_id': task_id,
+                'job_id': record['job_id'], 'provider': 'paddleocr-cloud', 'output_dir': str(output),
+                'markdown_path': str(markdown_path), 'qa': qa.get('status'),
+                'elapsed_seconds': round(time.monotonic() - started, 3), 'recovered': True,
+                'refinement_record': str(linked[1]) if linked else None}
+    except BaseException as exc:
+        _record_failure(record, exc)
+        if isinstance(exc, Exception):
+            raise _job_error(record, exc, token) from exc
+        raise

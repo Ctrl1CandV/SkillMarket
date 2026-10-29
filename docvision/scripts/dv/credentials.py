@@ -396,6 +396,12 @@ def save_credentials(values: dict[str, str], path: str | Path | None = None) -> 
             hint=f'Add "{target.name}" to {target.parent / ".gitignore"}, then retry.',
         )
     existing = _read_file(target, require_binding=True, purpose='replace') if target.exists() else {}
+    # Re-entering a credential replaces its entire alias group. Otherwise a
+    # stale higher-priority spelling can keep shadowing the newly saved value.
+    for group in ENV_GROUPS:
+        if any(name in values for name in group):
+            for name in group:
+                existing.pop(name, None)
     existing.update(values)
     body = '# docvision credentials (never commit; values are not printed by the CLI)\n'
     body += OWNER_PREFIX + _identity() + '\n'

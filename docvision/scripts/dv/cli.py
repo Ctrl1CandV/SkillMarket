@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import replace
 from pathlib import Path
 
-from . import cache, config, credentials, detect, doctor, read as read_mod, refine, setup_cmd, util, verify as verify_mod
+from . import cache, config, credentials, detect, doctor, portability, read as read_mod, refine, setup_cmd, util, verify as verify_mod
 from .base import DocVisionError, Options
 from .output import write_document
 from .providers import PROVIDERS, run as run_provider
@@ -48,14 +48,8 @@ def _options(args) -> Options:
     )
 
 
-def _cache_context(provider: str) -> dict:
-    cfg = config.load()
-    engine = config.discover_mineru() if provider == 'mineru-local' else config.discover_paddle() if provider == 'paddleocr-local' else None
-    # request_signature persists hashes of these values, not credentials.
-    return {'configuration': cfg, 'provider': provider, 'engine_version': engine.version if engine else None,
-            'engine_fingerprint': engine.extra.get('cache_fingerprint') if engine else None,
-            'vlm_model': util.env_value('DOCVISION_OPENAI_MODEL', 'OPENAI_MODEL'),
-            'vlm_base': util.env_value('DOCVISION_OPENAI_BASE_URL', 'OPENAI_BASE_URL')}
+def _cache_context(provider: str, extra: dict | None = None) -> dict:
+    return cache.provider_context(provider, extra=extra)
 
 
 def _guard_remote(provider: str, allow_remote: bool) -> None:
@@ -79,42 +73,58 @@ def _guard_remote(provider: str, allow_remote: bool) -> None:
         )
 
 
-def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = False) -> dict:
+def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = False,
+                 resume_index: cache.ResumeIndex | None = None) -> dict:
     started = time.monotonic()
+    timings = {}
     result = {"input": source, "state": "failed", "provider": None, "privacy": None,
               "output_dir": None, "markdown_path": None, "pages": None,
               "elapsed": None, "error": None, "warnings": []}
     try:
-        opts = replace(opts, staging=out_root / '.staging')
+        opts = replace(opts, staging=out_root / '.staging', output=out_root,
+                       extra={k: v for k, v in opts.extra.items() if k != '_cloud_task_id'})
         info = detect.inspect_input(source, opts)
+        timings['inspect'] = round(time.monotonic() - started, 4)
+        phase = time.monotonic()
         provider = detect.choose_provider(source, opts, info)
         route = detect.describe_route(provider)
         result["provider"] = provider
         result["privacy"] = route["privacy"]
         _guard_remote(provider, opts.allow_remote)
+        context = _cache_context(provider, opts.extra)
+        timings['route'] = round(time.monotonic() - phase, 4)
         if opts.dry_run:
             doc, raw_meta = run_provider(provider, source, opts)
             result.update({"state": "planned", "raw": raw_meta,
                            "route": route, "info": info})
             return result
-        if getattr(opts, "resume", False):
-            context = _cache_context(provider)
+        if getattr(opts, "resume", False) and not opts.force:
+            phase = time.monotonic()
             existing = None if provider == 'paddleocr-local' and not context['engine_version'] else cache.find_existing(
-                out_root, info, opts, provider=provider, context=context)
+                out_root, info, opts, provider=provider, context=context, index=resume_index)
+            timings['cache'] = round(time.monotonic() - phase, 4)
             if existing:
                 result.update({"state": "skipped", "output_dir": str(existing),
-                               "markdown_path": str(existing / f"{existing.name}.md")})
+                               "markdown_path": str(existing / util.read_json(existing / 'meta.json')['markdown_path'])})
                 return result
+        phase = time.monotonic()
         doc, raw_meta = run_provider(provider, source, opts)
+        timings['provider'] = round(time.monotonic() - phase, 4)
         if doc is None:
             result.update({"state": "failed", "error": "Provider did not return a document."})
             return result
         elapsed = time.monotonic() - started
         raw_meta = dict(raw_meta or {})
+        raw_meta['timings_seconds'] = dict(timings)
         raw_meta['cache_request'] = cache.request_signature(info, opts, provider=provider,
-                                                          context=_cache_context(provider))
+                                                          context=context)
+        phase = time.monotonic()
         docdir = write_document(doc, source, opts, out_root=out_root, route=route,
                                 elapsed=elapsed, info=info, raw_meta=raw_meta)
+        if raw_meta.get('cloud_task_id'):
+            from . import cloud_jobs
+            cloud_jobs.mark_output(raw_meta['cloud_task_id'], docdir)
+        timings['write_verify'] = round(time.monotonic() - phase, 4)
         result.update({
             "state": "done",
             "output_dir": str(docdir),
@@ -127,6 +137,8 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
         result['qa'] = qa.get('status')
         if qa.get('status') == 'fail':
             result.update({'state': 'failed', 'error': 'Output failed structural verification; inspect qa.json.'})
+        elif resume_index is not None:
+            resume_index.add(docdir)
     except DocVisionError as exc:
         result["error"] = str(exc)
         if exc.hint:
@@ -135,10 +147,16 @@ def _convert_one(source: str, opts: Options, out_root: Path, *, quiet: bool = Fa
     except Exception as exc:  # one malformed provider response must not abort a batch
         result["error"] = f"{type(exc).__name__}: {exc}"
         result["elapsed"] = round(time.monotonic() - started, 2)
+    finally:
+        if opts.extra.get('_cloud_task_id'):
+            result['cloud_task_id'] = opts.extra['_cloud_task_id']
+        result['elapsed'] = round(time.monotonic() - started, 3)
+        result['timings_seconds'] = timings
     return result
 
 
 def cmd_convert(args) -> int:
+    batch_started = time.monotonic()
     opts = _options(args)
     sources = util.expand_inputs(args.inputs)
     if not sources:
@@ -147,16 +165,17 @@ def cmd_convert(args) -> int:
     out_root = Path(args.output).expanduser() if args.output else Path(config.load().get("output", {}).get("default_dir", "docvision-out"))
     util.ensure_dir(out_root)
     results: list[dict] = []
+    resume_index = cache.ResumeIndex(out_root) if opts.resume and not opts.force else None
     workers = max(1, min(opts.workers, len(sources)))
     if workers == 1:
         for source in sources:
-            res = _convert_one(source, opts, out_root, quiet=args.quiet)
+            res = _convert_one(source, opts, out_root, quiet=args.quiet, resume_index=resume_index)
             results.append(res)
             if not args.json:
                 _print_result(res, quiet=args.quiet)
     else:
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            futures = {pool.submit(_convert_one, s, opts, out_root, quiet=args.quiet): s
+            futures = {pool.submit(_convert_one, s, opts, out_root, quiet=args.quiet, resume_index=resume_index): s
                        for s in sources}
             for future in as_completed(futures):
                 res = future.result()
@@ -165,6 +184,8 @@ def cmd_convert(args) -> int:
                     _print_result(res, quiet=args.quiet)
     if args.json:
         _out(json.dumps({"total": len(results),
+                         "elapsed_seconds": round(time.monotonic() - batch_started, 3),
+                         "pages_processed": sum(r.get('pages') or 0 for r in results if r['state'] == 'done'),
                          "done": sum(r["state"] == "done" for r in results),
                          "planned": sum(r["state"] == "planned" for r in results),
                          "skipped": sum(r["state"] == "skipped" for r in results),
@@ -196,6 +217,8 @@ def _print_result(res: dict, *, quiet: bool = False) -> None:
         _out(f"      {res['error']}")
     if res.get("hint"):
         _out(f"      hint: {res['hint']}")
+    if res.get('cloud_task_id'):
+        _out(f"      cloud task: {res['cloud_task_id']} (jobs resume continues without a new submission)")
     for warning in res.get("warnings") or []:
         _out(f"      warning: {warning}")
     if res.get("state") == "planned" and res.get("raw"):
@@ -207,7 +230,7 @@ def cmd_read(args) -> int:
     text = read_mod.read(
         docdir, page=args.page, block_id=args.block,
         fmt=args.format, context=args.context, max_chars=args.max_chars,
-        as_json=args.json,
+        as_json=args.json, original=args.original,
     )
     records = refine.list_results(docdir, page=args.page, block_id=args.block)
     if records and args.format != 'image':
@@ -328,7 +351,10 @@ def cmd_providers(args) -> int:
     consent = config.remote_consent()
     rows = []
     for name, meta in PROVIDERS.items():
-        if name == "local-vlm":
+        if name == 'text-local':
+            import importlib.util
+            available = importlib.util.find_spec('pypdf') is not None
+        elif name == "local-vlm":
             available = engines["vlm"].available
         elif name.endswith("-local"):
             key = "mineru" if name.startswith("mineru") else "paddleocr"
@@ -452,8 +478,16 @@ def cmd_credentials(args) -> int:
 
 
 def cmd_setup(args) -> int:
+    if args.history:
+        _out(json.dumps(setup_cmd.history(), ensure_ascii=False, indent=2))
+        return 0
+    if args.rollback:
+        return setup_cmd.rollback(args.rollback, dry_run=args.dry_run, yes=args.yes)
     if args.remote or args.local_only:
         mode = "local-only" if args.local_only else "remote"
+        if args.dry_run:
+            _out(f"planned remote consent: {mode} (unchanged)")
+            return 0
         config.set_consent(mode)
         _out(f"remote consent: {mode}")
         return 0
@@ -461,7 +495,46 @@ def cmd_setup(args) -> int:
                          models=args.models, yes=args.yes, dry_run=args.dry_run,
                          channel=args.conda_channel, index=args.index,
                          timeout=args.timeout, home=args.mineru_home,
-                         models_dir=args.models_dir)
+                         models_dir=args.models_dir, sample=args.sample, sample_page=args.sample_page)
+
+
+def cmd_correct(args) -> int:
+    from . import corrections
+    docdir = read_mod.resolve_docdir(args.path)
+    if args.action == 'list':
+        result = corrections.list_records(docdir, page=args.page, block_id=args.block)
+    elif args.action == 'revoke':
+        result = corrections.revoke(docdir, args.id, author=args.author,
+                                    reviewer=args.reviewer, reason=args.reason)
+    else:
+        try:
+            replacement = Path(args.text_file).expanduser().read_text(encoding='utf-8-sig')
+        except OSError as exc:
+            raise DocVisionError(f'Cannot read correction text: {exc}') from exc
+        result = corrections.save(docdir, page=args.page, block_id=args.block, bbox=args.bbox,
+                                  replacement=replacement, author=args.author, status=args.status,
+                                  reviewer=args.reviewer, evidence=args.evidence, unresolved=args.unresolved)
+    _out(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_relink(args) -> int:
+    result = portability.relink(read_mod.resolve_docdir(args.path), source=args.source, dry_run=args.dry_run)
+    _out(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_jobs(args) -> int:
+    from . import cloud_jobs
+    from .providers import paddle_cloud
+    if args.action == 'list':
+        result = cloud_jobs.list_jobs()
+    else:
+        result = paddle_cloud.resume_job(args.id, allow_remote=args.allow_remote, timeout=args.timeout,
+                                         source=args.source, out_root=Path(args.output) if args.output else None,
+                                         refinement_record=args.record)
+    _out(json.dumps(result, ensure_ascii=False, indent=2))
+    return 1 if isinstance(result, dict) and result.get('state') == 'failed' else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -487,7 +560,7 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--allow-remote", action="store_true",
                    help="explicitly allow uploading to a remote OCR service")
     c.add_argument("--keep-raw", action="store_true", help="keep provider JSON/Markdown under raw/")
-    c.add_argument("--resume", action="store_true", help="skip inputs already converted (same SHA-256)")
+    c.add_argument("--resume", action="store_true", help="reuse matching source, provider and recognition settings")
     c.add_argument("--force", action="store_true", help="reuse the same output directory")
     c.add_argument("--dry-run", action="store_true", help="print the planned provider/command")
     c.add_argument("--extra", help="provider options, e.g. model_version=pipeline")
@@ -496,7 +569,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     d = sub.add_parser("doctor", help="check engines, models, GPU and credentials")
     d.add_argument("--json", action="store_true")
-    d.add_argument("--probe", action="store_true", help="make free authentication checks where a service offers one")
+    d.add_argument("--probe", action="store_true", help="inspect local readiness; never submits an OCR job or proves cloud authentication")
 
     s = sub.add_parser("setup", help="build a long-lived isolated environment")
     s.add_argument("--profile", choices=["core", "mineru", "paddle", "all"], default="mineru")
@@ -515,6 +588,12 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--local-only", action="store_true",
                    help="record that remote uploads must stay disabled (no install)")
     s.add_argument("--timeout", type=int, default=3600)
+    s.add_argument('--sample', help='local PDF/image for single-page candidate acceptance before switching OCR')
+    s.add_argument('--sample-page', type=int, default=1)
+    maintenance = s.add_mutually_exclusive_group()
+    maintenance.add_argument('--history', action='store_true', help='list installation snapshots')
+    maintenance.add_argument('--rollback', metavar='ID', help='restore an installation snapshot; retain environments')
+    s.add_argument('--json', action='store_true', help='machine-readable setup history')
 
     crd = sub.add_parser("credentials", help="write/read the fixed credential file (values never printed)")
     crd.add_argument("action", choices=["set", "show", "remove", "path"])
@@ -534,6 +613,54 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--context", type=int, default=0, help="neighbouring pages to include")
     r.add_argument("--max-chars", type=int, default=12000)
     r.add_argument("--json", action="store_true")
+    r.add_argument('--original', action='store_true', help='show original OCR without accepted correction overlays')
+
+    correct = sub.add_parser('correct', help='save attributable manual/host corrections without overwriting OCR')
+    actions = correct.add_subparsers(dest='action', required=True)
+    add = actions.add_parser('add')
+    add.add_argument('path')
+    add.add_argument('--page', type=int, required=True)
+    target = add.add_mutually_exclusive_group()
+    target.add_argument('--block')
+    target.add_argument('--bbox', help='normalized region; stored as a scoped note')
+    add.add_argument('--text-file', required=True, help='UTF-8 replacement or uncertainty note')
+    add.add_argument('--author', choices=['human', 'host'], default='human')
+    add.add_argument('--status', choices=['candidate', 'accepted', 'unknown'], default='candidate')
+    add.add_argument('--reviewer', default='')
+    add.add_argument('--evidence', action='append', default=[], help='what was actually inspected; repeatable')
+    add.add_argument('--unresolved', action='append', default=[], help='remaining uncertainties; repeatable')
+    add.add_argument('--json', action='store_true')
+    ls = actions.add_parser('list')
+    ls.add_argument('path')
+    ls.add_argument('--page', type=int)
+    ls.add_argument('--block')
+    ls.add_argument('--json', action='store_true')
+    revoke = actions.add_parser('revoke')
+    revoke.add_argument('path')
+    revoke.add_argument('id')
+    revoke.add_argument('--author', choices=['human', 'host'], default='human')
+    revoke.add_argument('--reviewer', required=True)
+    revoke.add_argument('--reason', required=True)
+    revoke.add_argument('--json', action='store_true')
+
+    relink = sub.add_parser('relink', help='rebind a moved source with the same SHA-256; normalize internal paths')
+    relink.add_argument('path')
+    relink.add_argument('--source', help='explicit new PDF/image path; no disk scan')
+    relink.add_argument('--dry-run', action='store_true')
+    relink.add_argument('--json', action='store_true')
+
+    jobs = sub.add_parser('jobs', help='list or resume cloud jobs without submitting again')
+    job_actions = jobs.add_subparsers(dest='action', required=True)
+    job_list = job_actions.add_parser('list')
+    job_list.add_argument('--json', action='store_true')
+    resume = job_actions.add_parser('resume')
+    resume.add_argument('id', help='local task id from jobs list or the refinement record')
+    resume.add_argument('--allow-remote', action='store_true')
+    resume.add_argument('--source', help='explicit relocated source with matching SHA-256')
+    resume.add_argument('--record', help='explicit relocated refinement record.json')
+    resume.add_argument('-o', '--output')
+    resume.add_argument('--timeout', type=int, default=900)
+    resume.add_argument('--json', action='store_true')
 
     tr = sub.add_parser('triage', help='list regions worth reviewing (not an accuracy score)')
     tr.add_argument('path')
@@ -545,7 +672,7 @@ def build_parser() -> argparse.ArgumentParser:
     rf.add_argument('--block')
     rf.add_argument('--bbox', help='normalized x0,y0,x1,y1; otherwise selected block or whole page')
     rf.add_argument('--task', choices=['auto', 'transcribe', 'formula', 'table', 'chart', 'figure'], default='auto')
-    rf.add_argument('--provider', choices=['auto', 'packet'] + list(PROVIDERS), default='auto')
+    rf.add_argument('--provider', choices=['auto', 'packet'] + [name for name in PROVIDERS if name != 'text-local'], default='auto')
     rf.add_argument('--allow-remote', action='store_true')
     rf.add_argument('--dpi', type=int, default=300)
     rf.add_argument('--question', default='', help='what to inspect in the selected region')
@@ -595,7 +722,8 @@ def main(argv=None) -> int:
         from .credentials import load_env_file
         # Credential repair/removal and consent changes must work even if an
         # old or foreign installation credential file cannot be loaded safely.
-        if args.command not in {'credentials', 'setup'}:
+        if (args.command not in {'credentials', 'setup', 'correct', 'relink'}
+                and not (args.command == 'jobs' and args.action == 'list')):
             load_env_file(args.env_file)
         if args.command == "convert":
             return cmd_convert(args)
@@ -607,6 +735,12 @@ def main(argv=None) -> int:
             return cmd_credentials(args)
         if args.command == "read":
             return cmd_read(args)
+        if args.command == 'correct':
+            return cmd_correct(args)
+        if args.command == 'relink':
+            return cmd_relink(args)
+        if args.command == 'jobs':
+            return cmd_jobs(args)
         if args.command == 'triage':
             return cmd_triage(args)
         if args.command == 'refine':
