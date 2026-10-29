@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>局部界面 · 匿名对照</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root { color-scheme: light; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; color: #213044; background: #f2f4f7; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-size: 15px; line-height: 1.6; }
+    button, input { font: inherit; }
+    button, a { touch-action: manipulation; }
+    button { cursor: pointer; }
+    a { color: #2753a4; text-underline-offset: 4px; }
+    button:focus-visible, a:focus-visible, input:focus-visible + span { outline: 3px solid #2753a4; outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .shell { max-width: 2040px; padding: 32px 28px 40px; margin: 0 auto; }
+    .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+    h1 { margin: 0; font-size: clamp(23px, 2vw, 30px); line-height: 1.4; }
+    .intro { margin: 9px 0 0; color: #536278; }
+    .reveal { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+    .reveal button { border: 1px solid #bcc8d6; border-radius: 6px; background: #fff; color: #344760; padding: 8px 13px; font-size: 13px; }
+    #version-key { margin: 9px 0 0; font-size: 13px; color: #536278; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-top: 28px; padding: 18px 0; border-block: 1px solid #d3dce7; }
+    .tasks { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tasks button { min-height: 40px; padding: 8px 14px; border: 1px solid transparent; border-radius: 6px; color: #536278; background: transparent; }
+    .tasks button:hover { background: #e5eaf1; }
+    .tasks button[aria-pressed="true"] { color: #fff; background: #293e5b; }
+    fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; gap: 12px; flex-wrap: wrap; }
+    legend { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .mode { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #455771; padding-block: 6px; }
+    .mode input { accent-color: #2753a4; margin: 0; }
+    .context { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin: 24px 0 14px; }
+    h2 { font-size: 18px; margin: 0; }
+    #viewport-note { margin: 0; color: #536278; font-size: 13px; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; align-items: start; }
+    figure { min-width: 0; margin: 0; }
+    figcaption { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 13px 16px; background: #fff; border: 1px solid #ccd6e3; border-radius: 8px 8px 0 0; }
+    .variant { display: inline-flex; gap: 9px; align-items: baseline; }
+    .variant strong { font-size: 20px; font-weight: 650; }
+    .variant span { color: #64738a; font-size: 12px; }
+    .links { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; }
+    .image-stage { border: 1px solid #ccd6e3; border-top: 0; background: #e7ecf2; border-radius: 0 0 8px 8px; padding: 0; overflow: hidden; }
+    .image-stage img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: contain; object-position: top center; }
+    .compare[data-mode="narrow"] .image-stage { padding: 18px; }
+    .compare[data-mode="narrow"] .image-stage img { max-width: 400px; aspect-ratio: 20 / 41; margin: auto; }
+    .missing { display: grid; place-content: center; min-height: 260px; padding: 24px; color: #64738a; font-size: 14px; text-align: center; }
+    .footnote { margin: 22px 0 0; color: #536278; font-size: 13px; max-width: 72em; }
+    .notice { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    @media (max-width: 760px) {
+      .shell { padding: 24px 16px 32px; }
+      .top, .context { flex-direction: column; gap: 14px; }
+      .reveal { align-items: flex-start; }
+      .controls { gap: 14px; margin-top: 22px; }
+      .compare { grid-template-columns: 1fr; gap: 22px; }
+      .compare[data-mode="narrow"] .image-stage { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div><h1>局部界面 · 匿名对照</h1><p class="intro">同一任务、内容与视口下的两组实现。可先比较画面，再打开原型操作。</p></div>
+      <div class="reveal"><button id="reveal" type="button" aria-expanded="false" aria-controls="version-key">显示版本对应关系</button><p id="version-key" hidden>A：旧版技能　/　B：新版技能</p></div>
+    </header>
+    <div class="controls">
+      <nav class="tasks" aria-label="选择比较任务"><button type="button" data-task="1" aria-pressed="true">任务 1</button><button type="button" data-task="2" aria-pressed="false">任务 2</button><button type="button" data-task="3" aria-pressed="false">任务 3</button></nav>
+      <fieldset><legend>截图视口</legend><label class="mode"><input type="radio" name="mode" value="desktop" checked><span>桌面 · 960 × 720</span></label><label class="mode"><input type="radio" name="mode" value="narrow"><span>窄屏 · 400 × 820</span></label></fieldset>
+    </div>
+    <div class="context"><h2 id="task-title">任务 1</h2><p id="viewport-note">截图采集视口：960 × 720 CSS px</p></div>
+    <section class="compare" id="comparison" data-mode="desktop" aria-label="A 与 B 截图对照">
+      <figure><figcaption><div class="variant"><strong>A</strong><span class="version-label" hidden>旧版技能</span></div><div class="links"><a id="prototype-a" href="./a/task-1.html" target="_blank" rel="noopener">打开 A 原型 ↗</a><a id="full-a" href="./captures/a/task-1-desktop.jpg" target="_blank" rel="noopener">原尺寸截图 ↗</a></div></figcaption><div class="image-stage"><img id="image-a" src="./captures/a/task-1-desktop.jpg" alt="A 组任务 1，桌面截图" width="960" height="720"><div class="missing" id="missing-a" hidden>该截图尚未生成或无法加载。<br>请稍后刷新页面。</div></div></figure>
+      <figure><figcaption><div class="variant"><strong>B</strong><span class="version-label" hidden>新版技能</span></div><div class="links"><a id="prototype-b" href="./b/task-1.html" target="_blank" rel="noopener">打开 B 原型 ↗</a><a id="full-b" href="./captures/b/task-1-desktop.jpg" target="_blank" rel="noopener">原尺寸截图 ↗</a></div></figcaption><div class="image-stage"><img id="image-b" src="./captures/b/task-1-desktop.jpg" alt="B 组任务 1，桌面截图" width="960" height="720"><div class="missing" id="missing-b" hidden>该截图尚未生成或无法加载。<br>请稍后刷新页面。</div></div></figure>
+    </section>
+    <p class="footnote">这里显示的是各视口的一张截图，按当前页面宽度等比呈现，不代表完整页面或全部状态。可打开原尺寸截图查看细节；“打开原型”会在新页显示可操作页面，窗口大小由你的浏览器决定。</p>
+    <p class="notice" id="announcement" aria-live="polite"></p>
+    <noscript><p>任务切换需要 JavaScript；上方可直接查看任务 1，并打开 A、B 原型。</p></noscript>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const titles = { 1: "播客试听片段批量制作与交付", 2: "巡演无线设备维修处置", 3: "书店周末外摆选书" };
+      const byId = (id) => document.getElementById(id);
+      let task = 1;
+      let mode = "desktop";
+      for (const group of ["a", "b"]) {
+        const img = byId(`image-${group}`);
+        const setImageState = (failed) => { img.hidden = failed; byId(`missing-${group}`).hidden = !failed; };
+        img.addEventListener("error", () => setImageState(true));
+        img.addEventListener("load", () => setImageState(false));
+        if (img.complete) setImageState(img.naturalWidth === 0);
+      }
+      function update() {
+        byId("task-title").textContent = titles[task];
+        byId("comparison").dataset.mode = mode;
+        const narrow = mode === "narrow";
+        byId("viewport-note").textContent = `截图采集视口：${narrow ? "400 × 820" : "960 × 720"} CSS px`;
+        document.querySelectorAll("[data-task]").forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.task) === task)));
+        for (const group of ["a", "b"]) {
+          const image = byId(`image-${group}`);
+          const path = `./captures/${group}/task-${task}-${mode}.jpg`;
+          image.hidden = false;
+          byId(`missing-${group}`).hidden = true;
+          image.width = narrow ? 400 : 960;
+          image.height = narrow ? 820 : 720;
+          image.alt = `${group.toUpperCase()} 组${titles[task]}，${narrow ? "窄屏" : "桌面"}截图`;
+          image.src = path;
+          byId(`full-${group}`).href = path;
+          byId(`prototype-${group}`).href = `./${group}/task-${task}.html`;
+        }
+        byId("announcement").textContent = `已切换到${titles[task]}，${narrow ? "窄屏" : "桌面"}截图。`;
+      }
+      document.querySelectorAll("[data-task]").forEach((button) => button.addEventListener("click", () => { task = Number(button.dataset.task); update(); }));
+      document.querySelectorAll('[name="mode"]').forEach((input) => input.addEventListener("change", () => { if (input.checked) { mode = input.value; update(); } }));
+      byId("reveal").addEventListener("click", (event) => {
+        const show = event.currentTarget.getAttribute("aria-expanded") !== "true";
+        event.currentTarget.setAttribute("aria-expanded", String(show));
+        event.currentTarget.textContent = show ? "隐藏版本对应关系" : "显示版本对应关系";
+        byId("version-key").hidden = !show;
+        document.querySelectorAll(".version-label").forEach((label) => { label.hidden = !show; });
+      });
+      update();
+    })();
+  </script>
+</body>
+</html>

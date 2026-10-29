@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>试听片段 · 声场制作台</title>
+<style>
+:root{--ink:#1f302e;--muted:#52645f;--line:#d8e0dc;--paper:#fff;--back:#f2f5f2;--accent:#166451;--accent-soft:#e8f2ed;--warn:#89500d;--warn-soft:#fff4df;--bad:#a33832;--bad-soft:#fff0ec;--focus:#326da5;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:var(--ink);background:var(--back);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;font-size:14px;line-height:1.6}button,input,select{font:inherit}button,input,select,summary{touch-action:manipulation}button,select,summary,label.pick{cursor:pointer}button{border:1px solid #aebdb5;background:white;color:var(--ink);border-radius:7px;min-height:40px;padding:8px 15px;font-weight:600;line-height:1.4}button:hover:not(:disabled){background:#edf3ef;border-color:#789589}button:disabled{cursor:not-allowed;opacity:.48}.primary{background:var(--accent);border-color:var(--accent);color:#fff}.primary:hover:not(:disabled){background:#0f4d3e;border-color:#0f4d3e}button.small{min-height:35px;padding:6px 12px;font-size:13px}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);margin:0;flex-shrink:0}input[type=number],select{width:100%;height:42px;border:1px solid #a4b4ab;border-radius:6px;background:#fff;color:var(--ink);padding:7px 10px}input[aria-invalid=true]{border-color:var(--bad);background:#fffafa}input:disabled,select:disabled{background:#edf0ed;color:#637168}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}.topbar{height:58px;border-bottom:1px solid var(--line);background:#fff;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}.brand svg{color:var(--accent)}.brand span{font-size:13px;font-weight:400;color:var(--muted);border-left:1px solid var(--line);margin-left:6px;padding-left:16px}.demo{font-size:12px;color:var(--muted)}main{max-width:1060px;margin:auto;padding:25px 28px 126px}.page-title{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.eyebrow{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.08em;margin:0 0 4px}h1{font-size:28px;line-height:1.35;letter-spacing:-.02em;margin:0 0 8px}h2,h3,p{margin:0}.subtitle{color:var(--muted);font-size:13px}.batch-mark{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;padding-top:6px}.producer-note{display:flex;align-items:flex-start;gap:12px;margin:19px 0 22px;border-left:3px solid #b9c9c0;padding:1px 0 1px 12px;color:var(--muted);font-size:13px;line-height:1.8}.producer-note strong{white-space:nowrap;color:var(--ink);font-weight:600}.workbench{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}.tools{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border-bottom:1px solid var(--line);background:#f9fbf9}.selection{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.pick{display:flex;gap:10px;align-items:center;min-height:40px}.selection-text{font-size:13px;color:var(--muted)}.format-global{display:flex;gap:10px;align-items:center;white-space:nowrap}.format-global label{font-size:13px;font-weight:600}.format-global select{width:102px;height:38px}.column-label{display:flex;justify-content:space-between;align-items:center;padding:8px 20px 8px 52px;color:#63726a;font-size:12px;border-bottom:1px solid var(--line)}.clip{position:relative;border-bottom:1px solid var(--line)}.clip:last-child{border-bottom:0}.clip-head{display:grid;grid-template-columns:20px minmax(0,1fr) auto;column-gap:14px;align-items:start;padding:17px 18px 15px}.clip-pick{padding-top:5px;min-height:38px;display:flex;align-items:flex-start}.clip-copy{min-width:0}.title-line{display:flex;gap:10px;align-items:baseline}.clip-id{font-size:11px;color:#63736b;flex-shrink:0;letter-spacing:.04em}.clip h3{font-size:15px;font-weight:600;line-height:1.65;overflow-wrap:anywhere}.clip-meta{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:6px}.clip-meta .range{color:#263e33}.status-side{display:flex;align-items:flex-end;flex-direction:column;gap:8px;padding-left:3px;min-width:90px}.status{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;background:#edf1ef;color:#4c5d54}.status:before{content:"";height:5px;width:5px;border-radius:50%;background:currentColor}.status.good{color:var(--accent);background:var(--accent-soft)}.status.warn{color:var(--warn);background:var(--warn-soft)}.status.bad{color:var(--bad);background:var(--bad-soft)}.status.busy{color:#2d5892;background:#eaf0fb}.status.busy:before{animation:pulse .65s infinite alternate}@keyframes pulse{to{opacity:.2}}.row-toggle{min-height:30px;background:none;border:0;padding:2px 1px 2px 10px;color:var(--accent);font-size:12px;font-weight:600}.row-toggle:hover:not(:disabled){background:none;text-decoration:underline}.reason{font-size:12px;line-height:1.7;margin-top:7px;color:var(--warn)}.reason.error{color:var(--bad)}.reason.good{color:var(--accent)}.edit-panel{background:#f7f9f6;border-top:1px solid #e0e7e1;padding:20px 22px 20px 52px}.edit-panel[hidden]{display:none}.editor-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr);gap:16px}.field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px}.field label span{font-weight:400;color:var(--muted)}.field-help{margin-top:8px;font-size:12px;color:var(--muted)}.issue-box{margin-top:15px;border:1px solid #e2c487;background:var(--warn-soft);padding:12px 14px;border-radius:6px;color:#6d4413}.issue-box p{font-size:13px;line-height:1.7}.issue-box label{display:flex;gap:9px;align-items:flex-start;margin-top:10px;font-size:13px;font-weight:600}.issue-box input{margin-top:2px}.issue-box .help{font-size:12px;margin-top:7px;color:#78562b}.source-box{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid #ddbbb3;background:#fff5f2;margin:0 0 17px;padding:12px 14px;border-radius:6px}.source-box p{font-size:13px}.source-box .muted{font-size:12px}.source-ok{font-size:12px;color:var(--accent);margin-bottom:13px}.field-error{font-size:13px;color:var(--bad);margin-top:9px}.product-line{border-top:1px solid var(--line);margin-top:17px;padding-top:13px;display:flex;align-items:center;justify-content:space-between;gap:15px}.product-copy{font-size:12px;color:var(--muted)}.product-copy strong{color:var(--ink);font-weight:500}.product-copy small{font-size:11px;display:block;margin-top:2px}.single-action{flex-shrink:0}.in-page-note{font-size:12px;color:var(--muted);margin:12px 2px 0}.results{margin-top:20px;background:white;border:1px solid var(--line);border-radius:8px;padding:15px 18px}.results[hidden]{display:none}.results summary{font-size:13px;font-weight:600;list-style-position:outside;margin-left:16px}.results ol{padding-left:25px;margin-bottom:0;font-size:13px}.results li{padding:4px 0}.results .result-id{font-weight:600;color:var(--ink);margin-right:8px}.results pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.7;background:#f5f7f5;border-radius:5px;padding:14px;margin-bottom:0}.footer{position:fixed;bottom:0;left:0;right:0;z-index:3;border-top:1px solid #c9d5cc;background:rgba(255,255,255,.97);box-shadow:0 -4px 18px #203c2810;padding:15px 28px max(15px,env(safe-area-inset-bottom));}.footer-inner{max-width:1004px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.footer-summary strong{font-size:14px}.footer-summary p{font-size:12px;color:var(--muted);margin-top:3px}.action-group{display:flex;gap:10px;flex-shrink:0}.action-group button{min-height:44px;padding-inline:18px}.toast{position:fixed;z-index:5;left:50%;bottom:98px;transform:translateX(-50%);background:#213b31;color:white;border:1px solid #395348;border-radius:8px;box-shadow:0 6px 24px #1b30252b;max-width:calc(100vw - 32px);width:max-content;padding:11px 17px;font-size:13px}.toast:empty{display:none}.progress{height:3px;background:#e2ece5;margin:10px 0 0;overflow:hidden;border-radius:2px}.progress[hidden]{display:none}.progress div{height:100%;background:var(--accent);transition:width .2s}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[hidden]{display:none!important}
+@media(max-width:650px){.topbar{height:54px;padding:0 18px}.brand{font-size:16px}.brand span{display:none}.demo{font-size:11px}main{padding:22px 14px 165px}.page-title{gap:10px}h1{font-size:25px}.batch-mark{font-size:11px}.producer-note{display:block;margin-top:16px;margin-bottom:19px;font-size:13px}.producer-note strong{display:block;margin-bottom:4px}.tools{padding:10px 13px;gap:12px;align-items:flex-start;flex-direction:column}.selection{justify-content:space-between;width:100%}.format-global{justify-content:space-between;width:100%;border-top:1px solid var(--line);padding-top:10px}.format-global select{width:155px}.column-label{padding-left:45px;padding-right:14px}.clip-head{padding:16px 13px;grid-template-columns:18px minmax(0,1fr);gap:10px}.title-line{display:block}.clip-id{display:block;line-height:1.3;margin-bottom:4px}.clip h3{font-size:15px;line-height:1.7}.clip-pick{padding-top:23px}.status-side{grid-column:2;flex-direction:row;justify-content:space-between;align-items:center;min-width:0;padding:0;margin-top:0}.clip-meta{gap:4px 10px}.clip .reason{margin-top:6px}.row-toggle{min-height:35px;padding-right:0}.edit-panel{padding:17px 16px}.editor-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.field:last-child{grid-column:1/-1}.product-line{align-items:flex-start;flex-direction:column;gap:10px}.single-action{width:100%}.source-box{padding:11px 12px}.source-box button{width:100%}.footer{padding:12px 16px max(12px,env(safe-area-inset-bottom))}.footer-inner{display:block}.footer-summary{display:flex;flex-wrap:wrap;gap:3px 12px;align-items:center;margin-bottom:10px}.footer-summary strong{font-size:13px}.footer-summary p{font-size:11px;margin:0}.action-group{display:grid;grid-template-columns:1fr 1.25fr;gap:9px}.action-group button{padding-inline:8px;font-size:13px}.toast{bottom:137px;font-size:12px}.results{padding:13px 14px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10v4m4-8v12m5-15v18m5-15v12m4-8v4"/></svg>声场<span>制作工作台</span></div><div class="demo">本地演示 · 刷新后重置</div></header>
+<main>
+  <div class="page-title"><div><p class="eyebrow">社区电台 / 交付准备</p><h1>试听片段</h1><p class="subtitle">核对范围，制作片段，再导出交付清单。</p></div><div class="batch-mark">制作批次<br><span class="mono">PREVIEW / 06</span></div></div>
+  <aside class="producer-note"><strong>制作人备注</strong><p>这些片段将放到社区电台的试听页，标题请保持完整；推广内容必须事先确认，不能只凭文件生成成功就交付。</p></aside>
+  <section class="workbench" aria-label="片段制作列表">
+    <div class="tools"><div class="selection"><label class="pick"><input type="checkbox" id="selectAll">全选 6 项</label><span class="selection-text" id="selectionText"></span></div><div class="format-global"><label for="globalFormat">全局输出格式</label><select id="globalFormat"><option value="MP3">MP3</option><option value="WAV">WAV</option></select></div></div>
+    <div class="column-label"><span>节目与截取范围</span><span>当前产物</span></div>
+    <div id="clipList"></div>
+  </section>
+  <p class="in-page-note">模拟制作，每项约 0.5 秒；不播放或生成音频。JSON 清单只包含当前选择及其交付结果。</p>
+  <details class="results" id="batchResults" hidden><summary id="batchResultTitle">最近制作结果</summary><ol id="batchResultList"></ol></details>
+  <details class="results" id="exportPreview" hidden><summary id="exportTitle">最近导出的清单</summary><pre id="exportContent"></pre></details>
+</main>
+<footer class="footer"><div class="footer-inner"><div class="footer-summary"><strong id="footerCount"></strong><p id="footerExplain"></p></div><div class="action-group"><button id="exportButton" type="button">导出清单</button><button id="makeButton" class="primary" type="button">制作所选片段</button></div></div><div class="progress" id="progress" hidden role="progressbar" aria-label="制作进度" aria-valuemin="0" aria-valuemax="100"><div id="progressFill"></div></div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div><div id="liveStatus" class="sr-only" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+const clips = [
+  {id:'P01',title:'江面还没有醒来：旧渡口凌晨五点的第一班船',duration:468,start:20,end:95,selected:true,product:{start:20,end:95,format:'MP3'}},
+  {id:'P02',title:'把一封未寄出的信读完，然后谈谈离开家乡的第十年',duration:612,start:40,end:120,selected:true},
+  {id:'P03',title:'修伞师傅说，最难找回的其实是一根弯掉的骨架',duration:398,start:15,end:85,selected:false,missing:true},
+  {id:'P04',title:'夜班便利店里的陌生人，和那碗被反复加热的面',duration:530,start:50,end:135,selected:true,failedOnce:false},
+  {id:'P05',title:'楼顶菜园第一次收获以后，邻居们开始互相记住名字',duration:445,start:30,end:100,selected:true,product:{start:30,end:100,format:'WAV'}},
+  {id:'P06',title:'一场停电让排练暂停了二十分钟',duration:360,start:340,end:370,selected:false}
+].map(c=>({...c,format:'inherit',promoConfirmed:false,promoReset:false,expanded:false,failure:null,processing:false}));
+let globalFormat='MP3', busy=false, toastTimer;
+const $=id=>document.getElementById(id);
+const escapeText=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const formatFor=c=>c.format==='inherit'?globalFormat:c.format;
+const time=s=>Number.isFinite(s)?`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`:'—';
+const signature=c=>JSON.stringify([c.start,c.end,formatFor(c),!!c.missing]);
+function rangeErrors(c){
+  const errors=[];
+  if(!Number.isFinite(c.start)||!Number.isFinite(c.end)) errors.push('请填写有效的起点和终点。');
+  else {
+    if(c.start<0) errors.push('起点不能小于 0 秒。');
+    if(c.start>=c.end) errors.push('终点必须晚于起点。');
+    if(c.end>c.duration) errors.push(`终点 ${c.end} 秒超出源时长 ${c.duration} 秒。`);
+    if(c.end-c.start>120) errors.push('片段不能超过 120 秒。');
+  }
+  return errors;
+}
+function problems(c){const errors=rangeErrors(c);if(c.missing)errors.unshift('源文件缺失，请关联备用源。');if(c.id==='P02'&&c.end>105&&!c.promoConfirmed)errors.push('尚未确认保留 105 秒起的下期推广。');return errors;}
+function validProduct(c){return !!c.product&&!problems(c).length&&c.product.start===c.start&&c.product.end===c.end&&c.product.format===formatFor(c);}
+function currentFailure(c){return c.failure&&c.failure.signature===signature(c)?c.failure.message:null;}
+function stateFor(c){
+  if(c.processing)return {label:'制作中',kind:'busy',reason:'正在模拟编码，请稍候。'};
+  if(c.missing)return {label:'源缺失',kind:'bad',reason:'源文件缺失，可重新关联演示备用源。'};
+  if(rangeErrors(c).length)return {label:'范围无效',kind:'bad',reason:rangeErrors(c).join(' ')};
+  if(c.id==='P02'&&c.end>105&&!c.promoConfirmed)return {label:'待确认',kind:'warn',reason:'105 秒起为下期推广，制作前需确认保留。'};
+  if(validProduct(c))return {label:'有效',kind:'good',reason:''};
+  if(currentFailure(c))return {label:'制作失败',kind:'bad',reason:currentFailure(c)+'，可单项重试。'};
+  if(c.product)return {label:'已过期',kind:'warn',reason:`已有 ${c.product.format} 产物与当前参数不符，需重新制作。`};
+  return {label:'待制作',kind:'neutral',reason:''};
+}
+function message(text){$('toast').textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').textContent='',5200);}
+function makeRow(c){return `<article class="clip" id="clip-${c.id}" aria-labelledby="title-${c.id}">
+  <div class="clip-head"><label class="clip-pick"><input type="checkbox" id="pick-${c.id}" data-action="pick" data-id="${c.id}" ${c.selected?'checked':''} aria-label="选择 ${c.id} ${escapeText(c.title)}"></label>
+  <div class="clip-copy"><div class="title-line"><span class="clip-id mono">${c.id}</span><h3 id="title-${c.id}">${escapeText(c.title)}</h3></div><div class="clip-meta"><span class="range mono" id="range-${c.id}"></span><span id="format-${c.id}"></span><span>源时长 <span class="mono">${time(c.duration)}</span></span></div><p class="reason" id="reason-${c.id}"></p></div>
+  <div class="status-side"><span class="status" id="state-${c.id}"></span><button type="button" class="row-toggle" data-action="toggle" data-id="${c.id}" id="toggle-${c.id}" aria-expanded="false" aria-controls="edit-${c.id}">编辑与详情 <span aria-hidden="true">⌄</span></button></div></div>
+  <section class="edit-panel" id="edit-${c.id}" aria-label="${c.id} 参数与产物" hidden>
+  ${c.id==='P03'?`<div class="source-box" id="source-missing"><div><p><strong>源文件缺失</strong></p><p class="muted">演示备用源：修伞访谈_补传版 · 398 秒</p></div><button class="small" type="button" data-action="relink" data-id="P03" id="relinkButton">关联备用源</button></div><p class="source-ok" id="source-ok" hidden>✓ 已关联：修伞访谈_补传版 · 398 秒</p>`:''}
+  <div class="editor-fields"><div class="field"><label for="start-${c.id}">截取起点 <span>（秒）</span></label><input type="number" step="any" min="0" max="${c.duration}" value="${c.start}" id="start-${c.id}" data-id="${c.id}" data-action="start" aria-describedby="limits-${c.id} errors-${c.id}"></div><div class="field"><label for="end-${c.id}">截取终点 <span>（秒）</span></label><input type="number" step="any" min="0" max="${c.duration}" value="${c.end}" id="end-${c.id}" data-id="${c.id}" data-action="end" aria-describedby="limits-${c.id} errors-${c.id}"></div><div class="field"><label for="override-${c.id}">此项输出格式</label><select id="override-${c.id}" data-id="${c.id}" data-action="format"><option value="inherit">跟随全局（MP3）</option><option value="MP3">单独指定 MP3</option><option value="WAV">单独指定 WAV</option></select></div></div>
+  <p class="field-help" id="limits-${c.id}">允许范围 0–${c.duration} 秒，片段最长 120 秒。<span id="length-${c.id}"></span></p><p class="field-error" id="errors-${c.id}" role="status"></p>
+  ${c.id==='P02'?`<div class="issue-box" id="promoBox"><p>105 秒起进入下期推广。若保留这段内容，需要先明确确认；也可以将截取终点调整到 105 秒或更早。</p><label for="promoConfirm"><input type="checkbox" id="promoConfirm" data-action="promo" data-id="P02">我确认保留 105 秒后的推广内容</label><p class="help" id="promoHelp">修改截取范围后，需要重新确认。</p></div><p class="source-ok" id="promoClear" hidden style="margin:12px 0 0">✓ 当前范围不含下期推广，无需确认。</p>`:''}
+  <div class="product-line"><p class="product-copy" id="product-${c.id}"></p><button class="small single-action" type="button" id="single-${c.id}" data-action="single" data-id="${c.id}">制作此项</button></div>
+  </section></article>`;}
+$('clipList').innerHTML=clips.map(makeRow).join('');
+function render(){
+  const selected=clips.filter(c=>c.selected),valid=selected.filter(validProduct),blocked=selected.filter(c=>problems(c).length),jobs=selected.filter(c=>!problems(c).length&&!validProduct(c));
+  $('selectionText').textContent=`已选 ${selected.length} 项 / 共 6 项`;
+  $('selectAll').checked=selected.length===clips.length;$('selectAll').indeterminate=selected.length>0&&selected.length<clips.length;
+  $('selectAll').disabled=busy;$('globalFormat').disabled=busy;
+  clips.forEach(c=>{
+    const state=stateFor(c),rangeIssue=rangeErrors(c);
+    $('state-'+c.id).textContent=state.label;$('state-'+c.id).className='status '+state.kind;
+    $('range-'+c.id).textContent=`${time(c.start)} → ${time(c.end)} · ${Number.isFinite(c.start)&&Number.isFinite(c.end)?+(c.end-c.start).toFixed(3):'—'} 秒`;
+    $('format-'+c.id).textContent=`${formatFor(c)}${c.format==='inherit'?' · 跟随全局':' · 单独指定'}`;
+    $('reason-'+c.id).textContent=state.reason;$('reason-'+c.id).hidden=!state.reason;$('reason-'+c.id).className='reason '+(state.kind==='bad'?'error':state.kind==='good'?'good':'');
+    $('pick-'+c.id).checked=c.selected;$('pick-'+c.id).disabled=busy;
+    $('start-'+c.id).disabled=busy;$('end-'+c.id).disabled=busy;$('override-'+c.id).disabled=busy;
+    $('start-'+c.id).setAttribute('aria-invalid',String(rangeIssue.length>0));$('end-'+c.id).setAttribute('aria-invalid',String(rangeIssue.length>0));
+    $('override-'+c.id).options[0].textContent=`跟随全局（${globalFormat}）`;
+    $('errors-'+c.id).textContent=rangeIssue.join(' ');$('errors-'+c.id).hidden=!rangeIssue.length;
+    $('length-'+c.id).textContent=Number.isFinite(c.start)&&Number.isFinite(c.end)&&c.end>c.start?`当前 ${+(c.end-c.start).toFixed(3)} 秒。`:'';
+    $('edit-'+c.id).hidden=!c.expanded;$('toggle-'+c.id).setAttribute('aria-expanded',String(c.expanded));$('toggle-'+c.id).innerHTML=c.expanded?'收起详情 <span aria-hidden="true">⌃</span>':'编辑与详情 <span aria-hidden="true">⌄</span>';
+    const product=$('product-'+c.id);
+    product.innerHTML=c.product?`<strong>已有产物：${c.product.format} · ${c.product.start}–${c.product.end} 秒</strong><small>${validProduct(c)?'参数匹配，可纳入交付清单。':'当前不可交付；旧产物保留，修复或重新制作后更新。'}</small>`:'<strong>尚无成功产物</strong><small>制作成功后记录实际范围与格式。</small>';
+    $('single-'+c.id).textContent=c.processing?'正在制作…':currentFailure(c)?'重试此项':validProduct(c)?'产物有效':c.product?'重新制作此项':'制作此项';
+    $('single-'+c.id).disabled=busy||problems(c).length>0||validProduct(c);
+  });
+  const p02=clips.find(c=>c.id==='P02'),p03=clips.find(c=>c.id==='P03');
+  $('promoBox').hidden=!(p02.end>105);$('promoClear').hidden=!(Number.isFinite(p02.end)&&p02.end<=105);
+  $('promoConfirm').checked=p02.promoConfirmed;$('promoConfirm').disabled=busy;
+  $('promoHelp').textContent=p02.promoReset&&!p02.promoConfirmed?'截取范围已修改，之前的确认已失效。':'修改截取范围后，需要重新确认。';
+  $('source-missing').hidden=!p03.missing;$('source-ok').hidden=!!p03.missing;$('relinkButton').disabled=busy;
+  $('footerCount').textContent=`已选 ${selected.length} 项 · ${valid.length} 项可交付`;
+  $('footerExplain').textContent=busy?'正在制作，参数暂时锁定。':`${jobs.length} 项待制作${blocked.length?` · ${blocked.length} 项需处理`:''}${!selected.length?' · 请先选择片段':''}`;
+  $('exportButton').textContent=`导出清单${valid.length?' · '+valid.length:''}`;$('exportButton').disabled=busy||valid.length===0;
+  $('exportButton').title=valid.length?'下载本地 JSON，附所选项的排除原因':'所选项没有有效成功产物，暂不可导出';
+  $('makeButton').disabled=busy||!selected.length;$('makeButton').textContent=busy?'正在制作…':'制作所选片段';
+}
+function updateField(target){
+  if(busy)return;
+  const c=clips.find(c=>c.id===target.dataset.id);if(!c)return;
+  const action=target.dataset.action;
+  if(action==='start'||action==='end'){
+    const value=target.value===''?null:target.valueAsNumber;
+    if(c[action]!==value){c[action]=value;if(c.id==='P02'){c.promoReset=c.promoConfirmed||c.promoReset;c.promoConfirmed=false;}}
+  }else if(action==='format')c.format=target.value;
+  else if(action==='pick')c.selected=target.checked;
+  else if(action==='promo'){c.promoConfirmed=target.checked;c.promoReset=false;}
+  render();
+}
+$('clipList').addEventListener('input',e=>{if(e.target.matches('input[type=number]'))updateField(e.target);});
+$('clipList').addEventListener('change',e=>{if(!e.target.matches('input[type=number]'))updateField(e.target);});
+$('clipList').addEventListener('click',e=>{
+  const button=e.target.closest('button[data-action]');if(!button)return;
+  const c=clips.find(c=>c.id===button.dataset.id),action=button.dataset.action;
+  if(action==='toggle'){c.expanded=!c.expanded;render();return;}
+  if(busy)return;
+  if(action==='relink'){c.missing=false;c.source='修伞访谈_补传版';render();$('start-P03').focus();message('P03 已关联备用源，截取范围保持不变。');}
+  if(action==='single')runBatch([c]);
+});
+$('selectAll').addEventListener('change',e=>{if(busy)return;clips.forEach(c=>c.selected=e.target.checked);render();});
+$('globalFormat').addEventListener('change',e=>{if(busy)return;globalFormat=e.target.value;render();message(`全局格式已改为 ${globalFormat}，单独指定格式的片段不受影响。`);});
+function exclusion(c){const errors=problems(c);if(errors.length)return errors.join(' ');if(currentFailure(c))return currentFailure(c);if(c.product)return `已有产物 ${c.product.format} ${c.product.start}–${c.product.end} 秒，与当前 ${formatFor(c)} ${c.start}–${c.end} 秒不匹配，产物已过期。`;return '尚未制作成功，无有效产物。';}
+async function runBatch(targets){
+  if(busy||!targets.length)return;
+  busy=true;const results=[],jobs=[];
+  targets.forEach(c=>{if(problems(c).length)results.push({id:c.id,text:'未处理：'+problems(c).join(' '),type:'blocked'});else if(validProduct(c))results.push({id:c.id,text:`保留已有 ${c.product.format} 产物，当前参数未变。`,type:'kept'});else jobs.push(c);});
+  let done=0;$('progress').hidden=!jobs.length;$('progressFill').style.width='0%';$('progress').setAttribute('aria-valuenow','0');render();
+  $('liveStatus').textContent=`开始制作 ${jobs.length} 项，其他 ${results.length} 项保留并记录原因。`;
+  for(const c of jobs){
+    c.processing=true;render();await new Promise(resolve=>setTimeout(resolve,500));
+    if(c.id==='P04'&&!c.failedOnce){c.failedOnce=true;c.failure={signature:signature(c),message:'编码任务中断'};results.push({id:c.id,text:'制作失败：编码任务中断。可单项重试或再次制作所选片段。',type:'failed'});}
+    else {c.product={start:c.start,end:c.end,format:formatFor(c)};c.failure=null;results.push({id:c.id,text:`制作成功：${formatFor(c)} · ${c.start}–${c.end} 秒。`,type:'success'});}
+    c.processing=false;done++;$('progressFill').style.width=`${done/jobs.length*100}%`;$('progress').setAttribute('aria-valuenow',String(Math.round(done/jobs.length*100)));render();
+  }
+  busy=false;$('progress').hidden=true;render();
+  const success=results.filter(r=>r.type==='success').length,failed=results.filter(r=>r.type==='failed').length,kept=results.filter(r=>r.type==='kept').length,blocked=results.filter(r=>r.type==='blocked').length;
+  const summary=`制作结果：${success} 项成功${failed?' · '+failed+' 项失败':''}${kept?' · '+kept+' 项保留':''}${blocked?' · '+blocked+' 项受阻':''}`;
+  $('batchResults').hidden=false;$('batchResultTitle').textContent=summary;
+  $('batchResultList').innerHTML=results.sort((a,b)=>a.id.localeCompare(b.id)).map(r=>`<li><span class="result-id mono">${r.id}</span>${escapeText(r.text)}</li>`).join('');
+  $('liveStatus').textContent=summary;message(summary);
+}
+$('makeButton').addEventListener('click',()=>runBatch(clips.filter(c=>c.selected)));
+$('exportButton').addEventListener('click',()=>{
+  if(busy)return;const selected=clips.filter(c=>c.selected),included=selected.filter(validProduct),excluded=selected.filter(c=>!validProduct(c));if(!included.length)return;
+  const output={type:'podcast-preview-delivery',demo:true,exportedAt:new Date().toISOString(),globalFormat,producerNote:'这些片段将放到社区电台的试听页，标题请保持完整；推广内容必须事先确认，不能只凭文件生成成功就交付。',selectedIds:selected.map(c=>c.id),products:included.map(c=>({id:c.id,title:c.title,source:c.source||'原始源文件',sourceDurationSeconds:c.duration,startSeconds:c.product.start,endSeconds:c.product.end,durationSeconds:c.product.end-c.product.start,format:c.product.format,promotionIncluded:c.id==='P02'&&c.product.end>105,promotionConfirmed:c.id==='P02'&&c.product.end>105?c.promoConfirmed:null})),excluded:excluded.map(c=>({id:c.id,title:c.title,reason:exclusion(c)}))};
+  const json=JSON.stringify(output,null,2),blob=new Blob([json],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='试听片段交付清单.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $('exportPreview').hidden=false;$('exportTitle').textContent=`最近导出：${included.length} 项产物 · ${excluded.length} 项排除`;$('exportContent').textContent=json;message(`已导出 JSON：${included.length} 项有效产物，${excluded.length} 项排除。`);
+});
+render();
+</script>
+</body>
+</html>

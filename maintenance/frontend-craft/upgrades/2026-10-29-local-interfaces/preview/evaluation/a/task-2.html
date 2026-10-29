@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R-204 · 巡演无线设备维修处置</title>
+<style>
+:root{--ink:#18332f;--muted:#5e706b;--line:#d8e1dc;--page:#f0f3ef;--green:#176453;--light:#e9f3ec;--red:#a23330;--red-bg:#fff0ed;--amber:#80541f;--amber-bg:#fbf3e2;--white:#fff;--radius:10px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:20px}body{margin:0;background:var(--page);color:var(--ink);font:14px/1.6 "Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;padding-bottom:104px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.62}button,select,textarea,input{accent-color:var(--green)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #238a75;outline-offset:3px}button{border:1px solid #9cafa6;border-radius:6px;background:#fff;color:var(--ink);padding:8px 13px;min-height:40px;font-weight:600}button:hover:not(:disabled){background:#f0f6f1}button.primary{background:var(--green);border-color:var(--green);color:white}button.primary:hover{background:#0d5142}.secondary{background:transparent}.link-button{padding:2px 0;min-height:30px;background:none;border:0;color:var(--green);text-align:left;text-decoration:underline;text-underline-offset:3px}a{color:var(--green);text-underline-offset:3px}p,h1,h2,h3,blockquote{margin:0}h1{font-size:25px;line-height:1.4;letter-spacing:-.02em}h2{font-size:17px;line-height:1.5}h3{font-size:15px}.muted{color:var(--muted)}.small{font-size:12px}.mono{font-family:Consolas,monospace;font-variant-numeric:tabular-nums}.topbar{height:51px;background:#183b33;color:#f5f8f3;display:flex;align-items:center;justify-content:space-between;padding:0 max(24px,calc((100vw - 1120px)/2));gap:12px}.brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:.04em}.brand svg{width:23px;height:23px}.demo{font-size:12px;color:#d0e2d7}.page{max-width:1168px;margin:0 auto;padding:25px 24px}.hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12px}.state{display:inline-flex;align-items:center;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600;background:#e2e9e4;color:#43574f;white-space:nowrap}.state.good{background:var(--light);color:#155641}.state.bad{background:var(--red-bg);color:var(--red)}.state.warn{background:var(--amber-bg);color:var(--amber)}.subline{margin-top:6px;color:var(--muted);font-size:13px}.schedule{display:flex;align-items:center;gap:19px;text-align:center;flex-shrink:0}.schedule strong{display:block;font-size:23px;font-weight:600;line-height:1.4;font-variant-numeric:tabular-nums}.schedule span{font-size:12px;color:var(--muted)}.schedule .arrow{font-size:21px;color:#8ca294}.customer{background:#fffaf0;border:1px solid #e9dec1;border-left:4px solid #aa8040;padding:15px 19px;border-radius:0 8px 8px 0}.customer-head{font-size:12px;color:#70582b;font-weight:700;margin-bottom:5px}.customer blockquote{line-height:1.85;font-size:14px}.customer .addition{margin-top:9px;padding-top:9px;border-top:1px solid #e9dec1;font-size:13px;color:#605b49}.jumpnav{display:flex;gap:23px;align-items:center;padding:16px 0 13px;font-size:13px}.jumpnav a{font-weight:600;text-decoration:none}.jumpnav .note{margin-left:auto;color:var(--muted);font-size:12px}.workspace{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,1fr);gap:20px;align-items:start}.panel{border:1px solid var(--line);background:#fff;border-radius:var(--radius);overflow:hidden;min-width:0}.panel-heading{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}.section-number{font-size:11px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:2px}.record{padding:17px 19px;border-bottom:1px solid var(--line);scroll-margin-top:16px}.record:last-child{border-bottom:0}.record-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}.record-title{display:flex;gap:9px;align-items:baseline;min-width:0}.id{font-size:12px;color:#7a8982;flex-shrink:0}.record .meta{font-size:12px;color:var(--muted)}.record.problem{background:linear-gradient(90deg,#fffaf8,white 85%)}.field{margin-top:14px}.field label,.field-label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}.field label span{font-weight:400;color:var(--muted)}select,textarea{display:block;width:100%;border:1px solid #9aada3;border-radius:6px;background:white;color:var(--ink);padding:9px 11px;min-height:41px}textarea{resize:vertical;min-height:89px;line-height:1.7}select{max-width:215px}.field-foot{display:flex;justify-content:space-between;gap:9px;color:var(--muted);font-size:12px;margin-top:5px}.field-error{font-size:12px;color:var(--red);margin-top:5px}.row-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}.hint{font-size:12px;color:var(--muted);margin-top:8px}.check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:13px;line-height:1.7;margin:12px 0 0}.check input{width:17px;height:17px;margin:3px 0 0;flex-shrink:0}.history{padding:16px 19px;background:#f8faf7;font-size:13px}.history summary{cursor:pointer;font-weight:600;color:var(--muted)}.history p{margin-top:8px;color:var(--muted)}.plan-body{padding:17px 19px}.plan-options{display:grid;gap:8px;margin:0 0 17px;padding:0;border:0;min-width:0}.plan-options legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.option{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);padding:11px 12px;border-radius:7px;cursor:pointer;line-height:1.5}.option:has(input:checked){border-color:var(--green);background:var(--light);box-shadow:inset 3px 0 var(--green)}.option input{margin:4px 0 0;width:16px;height:16px;flex-shrink:0}.option strong{font-weight:600;font-size:14px}.option small{display:block;color:var(--muted);font-size:12px;margin-top:3px}.requirements{padding:12px 13px;background:#f5f7f3;border-radius:6px;margin-bottom:12px}.requirements p{font-size:12px;color:var(--muted);margin-bottom:7px}.requirements ul{padding:0;margin:0;list-style:none}.requirements li{display:flex;gap:8px;align-items:baseline;font-size:13px;margin:4px 0}.requirement-dot{font-size:12px;color:var(--green);width:14px;flex-shrink:0}.requirement-dot.no{color:var(--red)}.requirements a{color:inherit}.equipment{border:1px solid var(--line);padding:12px;border-radius:7px;margin:10px 0}.equipment-title{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:600}.equipment p{font-size:12px;color:var(--muted);margin:5px 0 9px}.equipment.unavailable{background:#f4f5f2}.equipment button{width:100%}.wiring{margin:13px 0;background:#f5f7f3;border-radius:6px;padding:10px 12px;font-size:12px;color:var(--muted)}.wire{display:flex;justify-content:space-between;gap:8px;padding:4px 0;color:var(--ink)}.wire b{color:#5e7f6e;font-weight:400}.wire-caption{padding-top:7px;border-top:1px solid var(--line);margin-top:7px}.error-summary{border:1px solid #d59a8c;background:var(--red-bg);padding:12px 13px;border-radius:6px;margin-top:16px;color:var(--red)}.error-summary h3{font-size:13px}.error-summary ul{padding-left:18px;margin:7px 0 0}.error-summary button{font-weight:400;border:0;background:none;color:var(--red);font-size:13px;text-align:left;padding:3px 0;min-height:31px;text-decoration:underline;text-underline-offset:3px}.result{margin-top:20px;border-color:#92b4a2}.result .panel-heading{background:var(--light)}.result.stale{border-color:#d1ad66}.result.stale .panel-heading{background:var(--amber-bg)}.result-body{padding:19px;display:grid;grid-template-columns:1fr 1fr;gap:24px}.result-body h3{margin-bottom:7px}.result-body p,.result-body li{font-size:13px;line-height:1.85;overflow-wrap:anywhere;white-space:pre-wrap}.result-body ul{margin:0;padding-left:18px}.stale-note{background:var(--amber-bg);padding:12px 19px;color:var(--amber);border-top:1px solid #e4d1a7;font-size:13px}.footer{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(255,255,255,.98);border-top:1px solid #c9d7ce;box-shadow:0 -4px 18px #18332f08}.footer-inner{max-width:1168px;margin:auto;min-height:82px;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}.save-copy{font-size:13px}.save-copy strong{display:block;font-weight:600}.save-copy small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.footer-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.footer-actions .primary{min-width:130px}.notice{position:fixed;right:24px;bottom:96px;z-index:10;max-width:min(480px,calc(100vw - 32px));padding:11px 16px;border-radius:7px;color:#fff;background:#234b3e;box-shadow:0 4px 20px #18332f26;font-size:13px;pointer-events:none}.reservation-reminder{font-size:12px;color:var(--amber);border-top:1px solid var(--line);padding-top:13px;margin-top:16px}.reservation-reminder button{font-size:12px;margin-left:5px}[hidden]{display:none!important}.flash{animation:flash 1s ease-out}@keyframes flash{from{box-shadow:inset 0 0 0 3px #d1a646}to{box-shadow:inset 0 0 0 0 transparent}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flash{animation:none}}@media(max-width:730px){body{padding-bottom:132px}.topbar{padding:0 16px;height:48px}.page{padding:21px 16px}.hero{display:block;margin-bottom:16px}h1{font-size:23px}.schedule{margin-top:17px;justify-content:flex-start;gap:18px;text-align:left}.schedule strong{font-size:20px;display:inline;margin-right:6px}.schedule div{display:flex;align-items:baseline}.customer{padding:13px 14px}.customer blockquote{line-height:1.85}.jumpnav{gap:22px;padding:14px 0}.jumpnav .note{display:none}.workspace{grid-template-columns:minmax(0,1fr);gap:16px}.panel-heading{padding:15px 16px}.record{padding:16px}.plan-body{padding:16px}.history{padding:14px 16px}.result-body{grid-template-columns:1fr;gap:17px;padding:16px}.footer-inner{padding:10px 16px 13px;display:block}.footer-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:8px}.footer-actions #cancelConfirm{grid-column:1/-1;min-height:30px;padding:3px;order:3}.save-copy{display:flex;gap:8px;align-items:baseline;justify-content:space-between}.save-copy small{font-size:11px;margin:0}.notice{bottom:148px;right:16px}.subline{font-size:12px}.demo{font-size:11px}}@media(max-width:360px){.page{padding-left:12px;padding-right:12px}.schedule strong{font-size:18px}.save-copy{display:block}.topbar{padding:0 12px}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13h3l2-7 4 13 3-10 2 4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>巡演设备 · 维修台</div><span class="demo">内存演示 · 刷新即重置</span></header>
+<main class="page">
+  <section class="hero" aria-labelledby="pageTitle">
+    <div><div class="eyebrow"><span class="mono">工单 R-204</span><span id="topState" class="state">未保存</span></div><h1 id="pageTitle">今晚的设备处置</h1><p class="subline">青岚剧社 · 双通道无线接收套装 <span class="mono">W-204</span> · 联系人 顾夏</p></div>
+    <div class="schedule" aria-label="今日17点30分取件，19点演出"><div><strong>17:30</strong><span>今日取件</span></div><span class="arrow" aria-hidden="true">→</span><div><strong>19:00</strong><span>演出开始</span></div></div>
+  </section>
+  <section class="customer" aria-label="客户约束与追加说明"><p class="customer-head">交付前，请保留这三项约束</p><blockquote>“今晚有两位演员同时上台，不能把双通道改成轮流使用。现场只留了两路XLR输入；如果换设备，请把接线变化写清楚，接收人员不是音响师。”</blockquote><p class="addition"><span class="mono">H1</span> · 顾夏 14:20 追加：原机若无法稳定使用，可接受备用机先行；原机下周再取。</p></section>
+  <nav class="jumpnav" aria-label="工单区域"><a href="#checks">检查记录 ↓</a><a href="#plan">今晚方案 ↓</a><a href="#result" id="resultLink" hidden>确认结果 ↓</a><span class="note">登记资料后，核对并确认一个方案</span></nav>
+  <div class="workspace">
+    <section class="panel" id="checks" aria-labelledby="checksTitle"><div class="panel-heading"><div><span class="section-number">01 / 核对依据</span><h2 id="checksTitle">原机检查记录</h2></div><span class="small muted">W-204</span></div>
+      <article class="record" id="c1"><div class="record-head"><div class="record-title"><span class="id mono">C1</span><h3>双路输出及底噪</h3></div><span class="state good">通过</span></div><p class="meta">14:05 · 技师 陆川</p></article>
+      <article class="record problem" id="c2"><div class="record-head"><div class="record-title"><span class="id mono">C2</span><h3>同频干扰复测</h3></div><span id="c2Badge" class="state bad">失败</span></div><p class="meta" id="c2Meta">14:12 · 已登记</p>
+        <div class="field"><label for="c2Status">复测结果</label><select id="c2Status"><option value="fail">失败</option><option value="pass">通过</option></select></div>
+        <div class="field"><label for="c2Note">发现说明 <span>· 通过时至少 10 字</span></label><textarea id="c2Note" rows="2" aria-describedby="c2Help c2Error">演员转身时B通道间歇失声</textarea><div class="field-foot"><span id="c2Help">任何改动均需重新登记，并重做 C3。</span><span id="c2Count">14 字</span></div><p class="field-error" id="c2Error" hidden></p></div>
+        <div class="row-actions"><button type="button" id="registerC2">登记复测结果</button><span class="small muted" id="c2SavedHint">当前记录已登记</span></div>
+      </article>
+      <article class="record" id="c3"><div class="record-head"><div class="record-title"><span class="id mono">C3</span><h3>连续运行稳定性</h3></div><span id="c3Badge" class="state warn">未完成</span></div><p class="meta" id="c3Meta">须在最新一次 C2 结果登记后重做。</p><div class="row-actions"><button type="button" id="c3Pass">登记通过</button><button type="button" id="c3Fail">登记失败</button></div><p class="hint" id="c3Hint">请完成连续运行检查后登记。</p></article>
+      <article class="record" id="c4"><div class="record-head"><div class="record-title"><span class="id mono">C4</span><h3>随箱附件</h3></div><span id="c4Badge" class="state warn">缺 2 只固定夹</span></div><p class="meta">电源、天线、两根 XLR 线齐全。</p><label class="check"><input type="checkbox" id="clips"><span>已补齐 2 只固定夹，附件齐全</span></label></article>
+      <details class="history" open><summary>前次维修记录 <span class="mono">H2</span></summary><p>13:50 · 重新固定 B 通道天线接口，尚未排除移动时接触不良。</p></details>
+    </section>
+    <section class="panel" id="plan" aria-labelledby="planTitle"><div class="panel-heading"><div><span class="section-number">02 / 决定今晚</span><h2 id="planTitle">选择处理方案</h2></div></div><div class="plan-body">
+      <fieldset class="plan-options"><legend>处理方案</legend><label class="option"><input type="radio" name="plan" value="original" checked><span><strong>原机交付</strong><small>全部检查通过，附件齐全</small></span></label><label class="option"><input type="radio" name="plan" value="backup"><span><strong>备用机先行</strong><small>今晚用备用套装，原机下周再取</small></span></label><label class="option"><input type="radio" name="plan" value="repair"><span><strong>继续检修</strong><small>记录未能交付的原因</small></span></label></fieldset>
+      <div id="originalFields"><div class="requirements"><p>原机交付条件</p><ul id="readiness"></ul></div><div class="field"><label for="originalNote">交接补充 <span>· 选填</span></label><textarea id="originalNote" rows="2" placeholder="可补充现场使用提醒或交接事项"></textarea></div></div>
+      <div id="backupFields" hidden><p class="small muted">占用一套可借设备，并核对现场接线。</p><div class="equipment"><div class="equipment-title"><span><span class="id mono">S1</span> · W-088</span><span class="state good" id="reserveState">可借</span></div><p>双通道 / XLR · 已完成稳定性检查</p><button type="button" id="reserveButton">占用 W-088</button></div><div class="equipment unavailable"><div class="equipment-title"><span><span class="id mono">S2</span> · W-091</span><span class="state">不可借</span></div><p>双通道 / XLR · 已占用至明日</p><button type="button" disabled aria-label="W-091 已占用至明日，不可占用">W-091 无法占用</button></div>
+        <label class="check"><input type="checkbox" id="channelCompat"><span>确认双通道可供两位演员同时使用</span></label><label class="check"><input type="checkbox" id="wireCompat"><span>确认可接现场两路 XLR 输入</span></label>
+        <div class="wiring" aria-label="建议的接线对应"><div class="wire"><span>W-088 · A 输出</span><b>→</b><span>现场 XLR 输入 1</span></div><div class="wire"><span>W-088 · B 输出</span><b>→</b><span>现场 XLR 输入 2</span></div><p class="wire-caption">将实际接线变化写入下方交接说明，供接收人员照做。</p></div>
+        <div class="field"><label for="handover">交接说明 <span>· 至少 10 字</span></label><textarea id="handover" rows="4" placeholder="写清设备替换、A/B 两路如何接线，以及原机取件安排。" aria-describedby="handoverHelp"></textarea><div class="field-foot"><span id="handoverHelp">接收人员不是音响师，请写具体步骤。</span><span id="handoverCount">0 字</span></div></div>
+      </div>
+      <div id="repairFields" hidden><p class="small muted">本方案不会安排设备交付，请留下明确原因。</p><div class="field"><label for="repairReason">继续检修原因 <span>· 至少 10 字</span></label><textarea id="repairReason" rows="4" placeholder="说明尚未解决的问题及不能交付的原因。"></textarea><div class="field-foot"><span>供后续维修和客户交接参考。</span><span id="repairCount">0 字</span></div></div></div>
+      <div id="reservationReminder" class="reservation-reminder" hidden>W-088 仍由本工单占用。<button class="link-button" type="button" id="releaseOutside">释放占用</button></div>
+      <div class="error-summary" id="errorSummary" role="alert" tabindex="-1" hidden><h3>暂时无法确认，请完成以下事项</h3><ul id="errorList"></ul></div>
+    </div></section>
+  </div>
+  <section class="panel result" id="result" aria-labelledby="resultTitle" tabindex="-1" hidden><div class="panel-heading"><div><span class="section-number">03 / 处置结果</span><h2 id="resultTitle">已确认 · 原机交付</h2></div><span class="small muted" id="confirmedAt"></span></div><div class="stale-note" id="staleNote" hidden>资料已有改动，此结果已过期。请完成当前方案的条件后重新确认。</div><div class="result-body"><div><h3>确认依据</h3><ul id="resultBasis"></ul></div><div><h3>交接说明</h3><p id="resultHandover"></p></div></div></section>
+</main>
+<footer class="footer"><div class="footer-inner"><div class="save-copy"><strong id="saveState" aria-live="polite">未保存</strong><small id="saveDetail">资料仅保留在当前页面</small></div><div class="footer-actions"><button type="button" id="cancelConfirm" hidden>撤销确认</button><button type="button" id="saveDraft">保存草稿</button><button type="button" id="confirmPlan" class="primary">确认原机交付</button></div></div></footer>
+<div class="notice" id="notice" role="status" hidden></div>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const labels = {original:'原机交付',backup:'备用机先行',repair:'继续检修'};
+  const state = {plan:'original',c2Status:'fail',c2Note:'演员转身时B通道间歇失声',c2Registered:true,c2Version:0,c2Time:'14:12',c3Status:'pending',c3Version:-1,c3Time:'',c3Invalidated:false,clips:false,reserved:false,channelCompat:false,wireCompat:false,handover:'',repairReason:'',originalNote:'',dirty:true,savedAt:'',confirmation:null};
+  let savedDraft = null, errorsShown = false, noticeTimer;
+  const count = text => [...text.replace(/\s/g,'')].length;
+  const now = () => new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});
+  function toast(message){$('notice').textContent=message;$('notice').hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').hidden=true,4200);}
+  function modified(){state.dirty=true;if(state.confirmation)state.confirmation.stale=true;}
+  function c2Ready(){return state.c2Registered&&state.c2Status==='pass'&&count(state.c2Note)>=10;}
+  function c3Ready(){return state.c3Status==='pass'&&state.c3Version===state.c2Version&&state.c2Registered;}
+  function issues(){
+    if(state.plan==='original'){
+      const list=[];
+      if(!state.c2Registered)list.push({id:'c2Status',text:'C2：修改后的复测结果尚未登记'});
+      else if(!c2Ready())list.push({id:'c2Status',text:'C2：同频干扰复测须通过，发现说明至少 10 字'});
+      if(!c3Ready())list.push({id:'c3Pass',text:'C3：须在最新 C2 登记后，重做并登记稳定性通过'});
+      if(!state.clips)list.push({id:'clips',text:'C4：补齐 2 只固定夹并确认附件齐全'});
+      return list;
+    }
+    if(state.plan==='backup'){
+      const list=[];
+      if(!state.reserved)list.push({id:'reserveButton',text:'占用可借的备用套装 W-088'});
+      if(!state.channelCompat)list.push({id:'channelCompat',text:'确认双通道可供两位演员同时使用'});
+      if(!state.wireCompat)list.push({id:'wireCompat',text:'确认与现场两路 XLR 输入兼容'});
+      if(count(state.handover)<10)list.push({id:'handover',text:'填写至少 10 字的交接说明，写清接线变化'});
+      return list;
+    }
+    return count(state.repairReason)<10?[{id:'repairReason',text:'填写至少 10 字的继续检修原因'}]:[];
+  }
+  function setBadge(id,text,kind){$(id).textContent=text;$(id).className='state '+kind;}
+  function renderErrors(){
+    const list=errorsShown?issues():[];
+    $('errorSummary').hidden=!list.length;
+    $('errorList').replaceChildren();
+    list.forEach(item=>{const li=document.createElement('li'),button=document.createElement('button');button.type='button';button.textContent=item.text;button.addEventListener('click',()=>jump(item.id));li.append(button);$('errorList').append(li);});
+  }
+  function jump(id){const target=$(id),region=target.closest('.record')||target.closest('.field')||target;region.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true});region.classList.remove('flash');void region.offsetWidth;region.classList.add('flash');}
+  function render(){
+    const c2Text=state.c2Registered?(state.c2Status==='pass'?'通过':'失败'):'待登记';
+    setBadge('c2Badge',c2Text,state.c2Registered?(state.c2Status==='pass'?'good':'bad'):'warn');
+    $('c2Meta').textContent=state.c2Registered?state.c2Time+' · 已登记':'内容已修改 · 请重新登记';
+    $('c2SavedHint').textContent=state.c2Registered?'当前记录已登记':'登记后才能重新检查 C3';
+    $('c2Count').textContent=count(state.c2Note)+' 字';
+    const c3Text=state.c3Invalidated?'已失效':({pending:'未完成',pass:'通过',fail:'失败'}[state.c3Status]);
+    setBadge('c3Badge',c3Text,state.c3Status==='pass'?'good':state.c3Status==='fail'?'bad':'warn');
+    $('c3Meta').textContent=state.c3Status==='pending'?(state.c3Invalidated?'C2 已改动，旧稳定性结果不可沿用。':'须在最新一次 C2 结果登记后重做。'):state.c3Time+' · 基于 '+state.c2Time+' 登记的 C2 结果';
+    $('c3Hint').textContent=state.c2Registered?'请完成连续运行检查后登记。':'先登记上方 C2 复测结果，再重做稳定性检查。';
+    $('c3Pass').disabled=$('c3Fail').disabled=!state.c2Registered;
+    $('c3Pass').setAttribute('aria-pressed',String(state.c3Status==='pass'));
+    $('c3Fail').setAttribute('aria-pressed',String(state.c3Status==='fail'));
+    setBadge('c4Badge',state.clips?'附件齐全':'缺 2 只固定夹',state.clips?'good':'warn');
+    const ready=[['C1','双路输出及底噪通过',true,'c1'],['C2','同频干扰复测通过',c2Ready(),'c2Status'],['C3','最新稳定性检查通过',c3Ready(),'c3Pass'],['C4','随箱附件齐全',state.clips,'clips']];
+    $('readiness').replaceChildren();ready.forEach(([id,title,ok,target])=>{const li=document.createElement('li'),mark=document.createElement('span'),a=document.createElement('a');mark.className='requirement-dot'+(ok?'':' no');mark.textContent=ok?'✓':'○';a.href='#'+target;a.textContent=id+' · '+title;a.addEventListener('click',event=>{event.preventDefault();jump(target);});li.append(mark,a);$('readiness').append(li);});
+    ['original','backup','repair'].forEach(plan=>$(plan+'Fields').hidden=state.plan!==plan);
+    setBadge('reserveState',state.reserved?'本单已占用':'可借','good');
+    $('reserveButton').textContent=state.reserved?'释放 W-088 占用':'占用 W-088';
+    $('reservationReminder').hidden=!state.reserved||state.plan==='backup';
+    $('handoverCount').textContent=count(state.handover)+' 字';$('repairCount').textContent=count(state.repairReason)+' 字';
+    const validResult=state.confirmation&&!state.confirmation.stale;
+    const status=validResult?'已确认':state.dirty?'未保存':'已保存';
+    setBadge('topState',status,validResult?'good':state.dirty?'warn':'good');
+    $('saveState').textContent=status+(state.confirmation?.stale?' · 确认结果已过期':'');
+    $('saveDetail').textContent=state.savedAt?'本页保存于 '+state.savedAt+' · 刷新会重置':'资料仅保留在当前页面';
+    $('confirmPlan').textContent=(validResult?'再次确认':state.confirmation?'重新确认':'确认')+labels[state.plan];
+    $('cancelConfirm').hidden=!state.confirmation;
+    $('result').hidden=$('resultLink').hidden=!state.confirmation;
+    if(state.confirmation){
+      const c=state.confirmation;
+      $('result').classList.toggle('stale',c.stale);$('staleNote').hidden=!c.stale;
+      $('resultTitle').textContent=(c.stale?'已过期 · ':'已确认 · ')+labels[c.plan];$('confirmedAt').textContent=c.time+' 确认';
+      $('resultBasis').replaceChildren();c.basis.forEach(item=>{const li=document.createElement('li');li.textContent=item;$('resultBasis').append(li);});
+      $('resultHandover').textContent=c.handover;
+    }
+    renderErrors();
+  }
+  function editC2(){state.c2Status=$('c2Status').value;state.c2Note=$('c2Note').value;state.c2Registered=false;state.c3Status='pending';state.c3Version=-1;state.c3Invalidated=true;$('c2Error').hidden=true;$('c2Note').removeAttribute('aria-invalid');modified();render();}
+  $('c2Status').addEventListener('change',editC2);$('c2Note').addEventListener('input',editC2);
+  $('registerC2').addEventListener('click',()=>{
+    if(state.c2Status==='pass'&&count(state.c2Note)<10){$('c2Error').textContent='通过时，发现说明至少需要 10 个非空白字符。';$('c2Error').hidden=false;$('c2Note').setAttribute('aria-invalid','true');jump('c2Note');return;}
+    if(state.c2Registered){toast('此复测结果已登记；修改结果或说明后再登记。');return;}
+    state.c2Registered=true;state.c2Version++;state.c2Time=now();state.c3Status='pending';state.c3Version=-1;modified();render();toast('C2 已登记，请重新完成 C3 稳定性检查。');
+  });
+  function registerC3(value){if(!state.c2Registered)return;state.c3Status=value;state.c3Version=state.c2Version;state.c3Invalidated=false;state.c3Time=now();modified();render();toast('C3 已登记为'+(value==='pass'?'通过':'失败')+'。');}
+  $('c3Pass').addEventListener('click',()=>registerC3('pass'));$('c3Fail').addEventListener('click',()=>registerC3('fail'));
+  ['clips','channelCompat','wireCompat'].forEach(id=>$(id).addEventListener('change',()=>{state[id]=$(id).checked;modified();render();}));
+  ['handover','repairReason','originalNote'].forEach(id=>$(id).addEventListener('input',()=>{state[id]=$(id).value;modified();render();}));
+  document.querySelectorAll('input[name="plan"]').forEach(input=>input.addEventListener('change',()=>{state.plan=input.value;errorsShown=false;modified();render();}));
+  function toggleReservation(){state.reserved=!state.reserved;modified();render();toast(state.reserved?'W-088 已为 R-204 占用（本页演示）。':'W-088 已释放，登记内容保留。');}
+  $('reserveButton').addEventListener('click',toggleReservation);$('releaseOutside').addEventListener('click',toggleReservation);
+  function save(){state.dirty=false;state.savedAt=now();savedDraft=JSON.parse(JSON.stringify(state));}
+  $('saveDraft').addEventListener('click',()=>{save();render();toast('草稿已保存在当前页面，切换方案不会丢失内容。');});
+  $('confirmPlan').addEventListener('click',()=>{
+    errorsShown=true;render();if(issues().length){$('errorSummary').scrollIntoView({behavior:'smooth',block:'center'});$('errorSummary').focus({preventScroll:true});return;}
+    let basis=[],handover='';
+    if(state.plan==='original'){
+      basis=['C1：双路输出及底噪通过（14:05，技师陆川）。','C2：同频干扰复测通过（'+state.c2Time+'）。'+state.c2Note,'C3：连续运行稳定性通过（'+state.c3Time+'），基于最新一次 C2 登记。','C4：固定夹已补齐，电源、天线及两根 XLR 线齐全。'];
+      handover='今日 17:30 交付原机 W-204，供 19:00 演出使用。保留双通道同时使用，接现场两路 XLR 输入。'+(state.originalNote.trim()?'\n\n补充：'+state.originalNote.trim():'');
+    }else if(state.plan==='backup'){
+      basis=['S1：W-088 已由本工单占用；双通道 / XLR，已完成稳定性检查。','已确认两位演员可同时使用双通道。','已确认与现场两路 XLR 输入兼容。','H1：顾夏 14:20 同意备用机先行，原机下周再取。'];
+      handover='今日 17:30 交接备用套装 W-088，原机 W-204 下周再取。\n\n'+state.handover.trim();
+    }else{
+      basis=['H2：B 通道天线接口重新固定后，仍需排查移动时接触不良。','本次选择继续检修，未安排设备交付。','检修原因：'+state.repairReason.trim()];
+      handover='原机 W-204 留在维修处继续检修。\n\n原因：'+state.repairReason.trim();
+    }
+    state.confirmation={plan:state.plan,basis,handover,time:now(),stale:false};save();errorsShown=false;render();$('result').scrollIntoView({behavior:'smooth',block:'center'});$('result').focus({preventScroll:true});toast('方案已确认，处置结果已生成。');
+  });
+  $('cancelConfirm').addEventListener('click',()=>{const released=state.reserved;state.confirmation=null;state.reserved=false;state.dirty=true;errorsShown=false;render();toast('已撤销确认，登记内容保留。'+(released?'W-088 占用已释放。':''));$('confirmPlan').focus();});
+  render();
+})();
+</script>
+</body>
+</html>

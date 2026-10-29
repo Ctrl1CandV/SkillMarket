@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="neutral-cobalt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>藏品借展安排 · 原创局部界面样张</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="local-interface.css">
+  <script src="local-interface.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#loan-form">跳到借展安排</a>
+  <div class="loan-shell">
+    <header class="loan-masthead">
+      <div><a href="index.html">样式实验室</a><span aria-hidden="true"> / </span><span>复杂局部界面</span></div>
+      <label class="loan-theme">主题 <select id="loan-theme"><option value="neutral-cobalt">中性与钴蓝</option><option value="ink-cyan">墨色与冰青</option><option value="paper-berry">纸面与莓红</option></select></label>
+    </header>
+    <p class="loan-demo">原创演示 · 藏品、机构及条件均为虚构；修改只保留在当前页面，刷新后恢复，不发送申请。</p>
+    <main class="loan-workspace">
+      <header class="loan-heading">
+        <div><p class="loan-eyebrow">青禾博物馆 / 借展安排 LX-027</p><h1>青釉双耳盘口壶<span>教学复制件 · 现代</span></h1></div>
+        <div class="loan-state"><span id="loan-status" class="status-pill status-review">待场馆确认</span><span id="loan-dirty">当前无未保存修改</span></div>
+      </header>
+      <nav class="loan-navigation" aria-label="借展详情区域"><a href="#object-context">藏品与条件</a><a href="#arrangement">安排与运输</a><a href="#loan-history">变更记录</a></nav>
+      <div class="loan-columns">
+        <article class="loan-context" id="object-context" aria-labelledby="object-heading">
+          <h2 id="object-heading">让器物回到使用情境</h2>
+          <p>这件教学复制件将参与临河城市博物馆的“日常的器物”展览，与粮食量器、炊具和生活场景图共同呈现。它的任务是帮助观众理解器形与日常使用的关系；展签应清楚标注“现代教学复制件”，不能借陈列语境暗示其为出土原件。</p>
+          <p>本次借展包括器物、独立底座和一份交接照片清单。运输与展陈安排需要一起确认：底座随器物装箱，抵达后由双方核对清单，再放入封闭展柜。本样张约定不得粘贴标签或开放触摸；若场馆尚未确认条件，可以先保存安排，但状态仍保留为待确认。</p>
+          <dl class="loan-identity"><div><dt>藏品编号</dt><dd>QH-JX-0148</dd></div><div><dt>材质与尺寸</dt><dd>陶瓷复制件 · 高 28.6 cm</dd></div><div><dt>借展范围</dt><dd>器物 1 件、底座 1 件、交接清单</dd></div><div><dt>可用窗口</dt><dd>2027.03.15 — 2027.06.20</dd></div></dl>
+          <section class="loan-conditions" aria-labelledby="conditions-heading"><h3 id="conditions-heading">这次安排需要保留的条件</h3><ul><li>借出至归还的整个时段须在可用窗口内。</li><li>使用专用缓冲箱；交接前后各核对一次照片清单。</li><li>运输方式改变时，补齐承运方或自提接收人。</li></ul><p>以上仅为演示约定，不是实际文物运输或保护规范。</p></section>
+          <details id="loan-history"><summary>变更记录 <span id="history-count">2 条</span></summary><ol id="history-list"><li><strong>初始化演示记录</strong><p>借展日期为 3 月 20 日至 5 月 12 日，采用专业运输；接收方条件尚待确认。</p></li><li><strong>建立借展对象</strong><p>将器物、底座和交接清单归入同一安排。</p></li></ol></details>
+        </article>
+        <form id="loan-form" class="loan-form" aria-labelledby="arrangement" novalidate>
+          <section class="loan-form-section"><h2 id="arrangement">安排与运输</h2><p class="loan-section-note">先确定场馆与时间，再安排对应的运输交接。</p>
+            <div class="loan-field"><label for="venue">接收场馆</label><input id="venue" name="venue" value="临河城市博物馆 · 第二展厅" maxlength="80" required></div>
+            <div class="loan-field-pair"><div class="loan-field"><label for="start">借出日期</label><input id="start" name="start" type="date" min="2027-03-15" max="2027-06-20" value="2027-03-20" required></div><div class="loan-field"><label for="end">归还日期</label><input id="end" name="end" type="date" min="2027-03-20" max="2027-06-20" value="2027-05-12" required></div></div>
+            <p id="date-hint" class="loan-hint">日期包含往返运输；归还不得晚于 6 月 20 日。</p>
+          </section>
+          <fieldset class="loan-form-section"><legend>运输与保护</legend>
+            <div class="loan-field"><label for="transport">运输方式</label><select id="transport" name="transport"><option value="carrier">专业运输</option><option value="pickup">接收场馆自提</option></select></div>
+            <div id="carrier-field" class="loan-field"><label for="carrier">承运方</label><input id="carrier" name="carrier" value="青禾保护运输工作室（虚构）" maxlength="80" required></div>
+            <div id="pickup-field" class="loan-field" hidden><label for="receiver">自提接收人</label><input id="receiver" name="receiver" maxlength="60" placeholder="填写交接时的接收人" disabled></div>
+            <p id="transport-hint" class="loan-hint">承运方负责送达与返程，双方按照片清单交接。</p>
+            <p class="loan-fixed-condition"><strong>保护方式</strong><span>专用缓冲箱 · 底座随箱 · 照片清单交接</span></p>
+            <label class="loan-checkbox"><input type="checkbox" id="confirmed" name="confirmed"><span>接收方已确认封闭展柜与禁止触摸的条件</span></label>
+            <p id="confirmation-hint" class="loan-hint">尚未确认不影响保存；保存后仍显示“待场馆确认”。</p>
+          </fieldset>
+          <div class="loan-field loan-note"><label for="note">交接备注 <span>选填</span></label><textarea id="note" name="note" rows="3" maxlength="600">请随箱放置底座安装示意，开箱时先核对两件物品及照片清单。</textarea></div>
+          <div class="loan-save-area"><p id="loan-feedback" role="status" aria-live="polite">本页保存只更新演示记录，不代表审批或发运。</p><div class="loan-actions"><button class="button button-primary" type="submit">保存安排</button><button class="button button-secondary" id="restore" type="button" disabled>恢复已保存</button><button class="button button-quiet" id="undo" type="button" hidden>撤销上次保存</button></div></div>
+        </form>
+      </div>
+    </main>
+    <footer class="loan-page-footer">样张观察重点：连续解释、关联字段、条件变化与不同后果的操作，如何在同一界面中形成秩序。</footer>
+  </div>
+</body>
+</html>

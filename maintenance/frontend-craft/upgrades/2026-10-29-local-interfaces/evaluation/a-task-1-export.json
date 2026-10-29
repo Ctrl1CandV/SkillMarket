@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "kind": "社区电台试听片段交付清单",
+  "demo": true,
+  "globalFormat": "MP3",
+  "selectedIds": [
+    "P01",
+    "P02",
+    "P03",
+    "P04",
+    "P05",
+    "P06"
+  ],
+  "producerNote": "这些片段将放到社区电台的试听页，标题请保持完整；推广内容必须事先确认，不能只凭文件生成成功就交付。",
+  "artifacts": [
+    {
+      "id": "P01",
+      "title": "江面还没有醒来：旧渡口凌晨五点的第一班船",
+      "source": "原始源文件",
+      "sourceDurationSeconds": 468,
+      "startSeconds": 20,
+      "endSeconds": 95,
+      "durationSeconds": 75,
+      "format": "MP3",
+      "promotionIncluded": false,
+      "promotionConfirmed": null
+    },
+    {
+      "id": "P05",
+      "title": "楼顶菜园第一次收获以后，邻居们开始互相记住名字",
+      "source": "原始源文件",
+      "sourceDurationSeconds": 445,
+      "startSeconds": 30,
+      "endSeconds": 100,
+      "durationSeconds": 70,
+      "format": "MP3",
+      "promotionIncluded": false,
+      "promotionConfirmed": null
+    }
+  ],
+  "excluded": [
+    {
+      "id": "P02",
+      "title": "把一封未寄出的信读完，然后谈谈离开家乡的第十年",
+      "reason": "含 105 秒后的下期推广，尚未确认保留"
+    },
+    {
+      "id": "P03",
+      "title": "修伞师傅说，最难找回的其实是一根弯掉的骨架",
+      "reason": "源文件缺失，请重新关联备用源"
+    },
+    {
+      "id": "P04",
+      "title": "夜班便利店里的陌生人，和那碗被反复加热的面",
+      "reason": "编码任务中断"
+    },
+    {
+      "id": "P06",
+      "title": "一场停电让排练暂停了二十分钟",
+      "reason": "范围无效：需满足 0 ≤ 起点 < 终点 ≤ 360 秒"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 # frontend-craft 待办
 
-当前为 frontend-craft 0.5.0-rc.1 与 product-design 0.2.0-rc.1 联合升级候选。正文、参考、样张、隔离比较与用户反馈已完成；用户随后明确要求清理并提交推送 main/dev，按运行资源与维护归档分开交付，见[收尾记录](upgrades/2026-10-26/reports/closeout.md)。保留 RC 与效果证据边界，没有创建发布标签或安装个人技能。
+当前为 frontend-craft 0.5.0-rc.2 与 product-design 0.2.0-rc.2。多信息、多功能局部界面的定向补强及三题对比完成，用户选择 1B、2A、3B，明确认可目标达成；真实项目实践延后，见[本轮实施与验收](reports/local-interface-implementation-2026-10-29.md)。用户授权本轮独立本地提交，随后另做配色与样式选择优化。
+
+0.5.0-rc.1 / 0.2.0-rc.1 的联合升级与提交推送属于历史轮次，见[收尾记录](upgrades/2026-10-26/reports/closeout.md)。保留各轮 RC 与证据边界，没有创建发布标签或安装个人技能。
 
 上一版 0.4.2 / 0.1.0 的本地分支保存记录见[制作与验证记录](../product-design/reports/initial-design-2026-10-25.md)。用户对声音艺术专题、原管理页与修订管理页的历史反馈及[拆解报告](evals/management-v042-review-2026-10-25/analysis.md)继续保留，不能当作本轮结果。
 

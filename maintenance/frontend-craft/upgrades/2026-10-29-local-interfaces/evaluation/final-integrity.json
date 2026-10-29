@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-29",
+  "integrity": [
+    {
+      "check": "baseline",
+      "files": 32,
+      "unchanged": true
+    },
+    {
+      "check": "candidate",
+      "files": 36,
+      "unchanged": true
+    },
+    {
+      "check": "briefs-and-scoring",
+      "files": 5,
+      "unchanged": true
+    }
+  ],
+  "runs": [
+    {
+      "variant": "a",
+      "task": 1,
+      "file": "preview/evaluation/a/task-1.html",
+      "sha256": "aad4dadeed070b5a974d5b5c3ee932837876154b7ee4f2606a044680d4d977e8"
+    },
+    {
+      "variant": "a",
+      "task": 2,
+      "file": "preview/evaluation/a/task-2.html",
+      "sha256": "b40bfe530c1e56d18ae4bfc477d7dfc58c606a3eaadc9f823e52346c47658088"
+    },
+    {
+      "variant": "a",
+      "task": 3,
+      "file": "preview/evaluation/a/task-3.html",
+      "sha256": "1073670451432f7c3f7fcb94f66bd59991267a1a3e77e2d004442e115de5f6a7"
+    },
+    {
+      "variant": "b",
+      "task": 1,
+      "file": "preview/evaluation/b/task-1.html",
+      "sha256": "288d0efe952ae659e9da3d1bdb75afd04d9bc198ab09434b54edb58cd2e03a66"
+    },
+    {
+      "variant": "b",
+      "task": 2,
+      "file": "preview/evaluation/b/task-2.html",
+      "sha256": "f5f4e97b1081cda8cd106f01dd449f48499ac0376045d283640936809c7a25f2"
+    },
+    {
+      "variant": "b",
+      "task": 3,
+      "file": "preview/evaluation/b/task-3.html",
+      "sha256": "a1471a82bbdde57fe8cc84d0da9eac390c9652f93a75656e5bf7be4370c8f073"
+    }
+  ],
+  "generation": "one independent context per task and package; same inherited model settings; no browser revision",
+  "artifactsUneditedAfterBuild": true
+}

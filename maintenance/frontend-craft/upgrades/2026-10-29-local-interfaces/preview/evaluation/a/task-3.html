@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>周末外摆选书 · 书店工作台</title>
+<style>
+  :root{color-scheme:light;--ink:#263b34;--muted:#68746d;--green:#275d49;--green-light:#eaf2eb;--paper:#f5f4ed;--line:#dce0d6;--white:#fffefa;--error:#9c3c2a;--warning:#805e2d}
+  *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.6 "Microsoft YaHei","PingFang SC",sans-serif;line-break:strict}button,input,select,textarea{font:inherit}button{cursor:pointer}button,a,input,select,textarea{outline-offset:3px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #c08a38}button{color:inherit}button:disabled{cursor:default;opacity:.45}button{border:1px solid var(--line);background:var(--white);border-radius:6px;min-height:36px;padding:6px 12px}button:hover:not(:disabled){border-color:var(--green);background:#f1f5ee}.primary{background:var(--green);border-color:var(--green);color:white;font-weight:600}.primary:hover:not(:disabled){background:#1d4838;color:white}.text-button{border:0;padding:4px 0;background:none;color:var(--green);min-height:32px}.text-button:hover:not(:disabled){background:none;text-decoration:underline}.muted{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .topline{border-bottom:1px solid var(--line);background:var(--white)}.topline-inner{max-width:1280px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:14px 28px}.identity{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.06em}.bookmark{width:20px;height:24px;display:block;background:var(--green);clip-path:polygon(0 0,100% 0,100% 100%,50% 77%,0 100%)}.demo-label{font-size:12px;color:var(--muted)}.shell{max-width:1280px;margin:0 auto;padding:25px 28px 130px}.page-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:16px}.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--green);font-weight:700;margin:0 0 5px}h1{font-size:28px;line-height:1.35;letter-spacing:-.02em;margin:0;font-weight:650}.heading-note{margin:0;color:var(--muted);font-size:12px;text-align:right}.brief{display:flex;gap:14px;padding:13px 16px;background:#eeede3;border-left:3px solid #aca775;margin:0 0 23px;border-radius:0 5px 5px 0}.brief strong{flex:none;font-size:13px}.brief p{margin:0;font-size:13px;line-height:1.75}.mobile-switch{display:none}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 292px;gap:24px;align-items:start}.catalog{min-width:0}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}h2{font-size:18px;margin:0;font-weight:650}.section-title .small{font-size:12px;color:var(--muted)}
+  .filters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:16px;background:var(--white);border:1px solid var(--line);border-radius:8px}.search-field{grid-column:1/-1;position:relative}.search-field svg{position:absolute;left:11px;top:12px;color:var(--muted)}.search-field input{padding-left:35px;width:100%}.field-label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.filters select{width:100%;min-width:0}.filters input,.filters select{border:1px solid #cbd2c6;border-radius:5px;background:#fffefa;height:40px;color:var(--ink);padding-right:8px}.filters select{padding-left:8px}.filter-bottom{grid-column:1/-1;display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:12px}.sort-wrap{display:flex;align-items:center;gap:8px}.sort-wrap select{width:auto;max-width:170px;height:34px}.results-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 8px;font-size:12px}.results-toolbar button{font-size:12px}.outside-notice{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--green-light);padding:8px 12px;border-radius:5px;font-size:12px;margin:0 0 10px}.outside-notice[hidden]{display:none}.outside-notice button{white-space:nowrap;font-size:12px}.book-list{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden}.book-row{display:grid;grid-template-columns:22px minmax(0,1fr);gap:11px;padding:16px;border-bottom:1px solid var(--line)}.book-row:last-child{border-bottom:0}.book-row.is-selected{background:#f5f8f0}.book-row.is-paused{background:#f4f1e9}.choose{accent-color:var(--green);width:18px;height:18px;margin:6px 0 0;cursor:pointer}.book-line{display:flex;gap:9px;align-items:baseline}.book-id{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.03em;flex:none}.book-title{background:none;border:0;padding:0;min-height:0;line-height:1.6;font-size:15px;font-weight:600;text-align:left}.book-title:hover:not(:disabled){background:none;text-decoration:underline}.book-meta{margin:5px 0 7px;font-size:12px;color:var(--muted)}.dot{margin:0 6px;color:#9ca59a}.availability{display:flex;align-items:center;gap:10px;font-size:12px;flex-wrap:wrap}.stock-tag{color:var(--green);font-weight:600}.stock-tag.none{color:#865b38}.inventory{color:var(--muted)}.row-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}.row-actions .text-button{font-size:12px}.quantity{display:inline-flex;align-items:center;border:1px solid #bac8b9;border-radius:5px;overflow:hidden;background:var(--white)}.quantity button{border:0;border-radius:0;width:32px;padding:0;min-height:32px;font-size:18px}.quantity input{border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);width:43px;height:32px;text-align:center;background:transparent;outline-offset:-3px;font-variant-numeric:tabular-nums;color:var(--ink)}.quantity button:focus-visible{outline-offset:-3px}.unit{font-size:12px;margin-left:6px}.qty-wrap{display:flex;align-items:center}.unselected-hint{color:var(--muted);font-size:12px}.pause-label{color:var(--warning);font-size:12px}.empty{padding:36px 18px;text-align:center;color:var(--muted)}.empty strong{display:block;color:var(--ink);font-size:15px;margin-bottom:8px}.empty p{margin:0 0 10px;font-size:13px}
+  .manifest{background:var(--white);border:1px solid #cdd5c9;border-radius:8px;min-width:0}.manifest-top{padding:18px 18px 16px;background:#eaf0e5;border-radius:7px 7px 0 0}.manifest-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.manifest-heading h2{font-size:17px}.manifest-heading span{font-size:12px;color:var(--muted)}.total{margin:14px 0 7px;display:flex;align-items:baseline;gap:7px;font-variant-numeric:tabular-nums}.total strong{font-size:34px;line-height:1;font-weight:600}.total span{font-size:13px;color:var(--muted)}.total em{font-style:normal;font-size:12px;margin-left:auto}.capacity-track{height:5px;border-radius:3px;background:#cdd9c7;overflow:hidden}.capacity-fill{height:100%;background:var(--green);transition:width .15s ease}.pickup-totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.pickup-totals div+div{border-left:1px solid #cbd4c5;padding-left:12px}.pickup-totals span{font-size:12px;display:block}.pickup-totals strong{font-size:14px;letter-spacing:.02em}.pickup-totals small{font-size:11px;display:block;color:var(--muted);margin-top:2px}.manifest-tabs{display:flex;padding:0 16px;border-bottom:1px solid var(--line);gap:20px}.manifest-tabs button{border:0;border-radius:0;background:none;min-height:46px;padding:0 1px;color:var(--muted);font-size:13px}.manifest-tabs button[aria-pressed=true]{border-bottom:2px solid var(--green);color:var(--green);font-weight:650}.manifest-items{padding:0 16px}.selected-item{padding:14px 0;border-bottom:1px solid var(--line)}.selected-item:last-child{border-bottom:0}.selected-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px;font-size:11px;color:var(--muted)}.outside-badge{background:#e8efdf;color:#49603c;padding:1px 5px;border-radius:3px;font-size:10px}.selected-item .book-title{font-size:13px}.selected-bottom{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:6px}.selected-bottom button.text-button{font-size:12px}.selected-bottom .quantity button{width:26px}.selected-bottom .quantity input{width:35px}.item-note{font-size:11px;color:var(--muted);margin:7px 0 0;line-height:1.65;overflow-wrap:anywhere}.manifest-footer{padding:9px 16px 12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}.manifest-footer button{font-size:12px}.initial-help{padding:0 16px 15px;color:var(--muted);font-size:11px;line-height:1.7;margin:0}
+  .savebar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,254,250,.98);border-top:1px solid #cbd3c6;z-index:5;box-shadow:0 -4px 16px #344b3510}.savebar-inner{max-width:1280px;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;margin:auto;gap:16px}.save-context{display:flex;align-items:center;gap:20px}.footer-total{font-size:14px;white-space:nowrap}.footer-total strong{font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums}.save-state{font-size:12px}.save-state small{font-size:11px;color:var(--muted);display:block}.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;background:#b58a38;vertical-align:2px;margin-right:6px}.save-state.saved .status-dot{background:var(--green)}.savebar .primary{min-height:42px;min-width:136px}.notice{position:fixed;bottom:88px;left:28px;right:28px;max-width:700px;margin:auto;z-index:8;padding:12px 16px;display:flex;align-items:center;gap:14px;background:#edf4e8;border:1px solid #bbcdb2;border-radius:7px;box-shadow:0 4px 18px #223b2920;font-size:13px}.notice[hidden]{display:none}.notice.error{background:#fff0e9;border-color:#d6a897;color:#813322}.notice button{margin-left:auto;min-width:30px;flex:none;min-height:30px;padding:0;background:none;border:0;font-size:20px}.notice p{margin:0}
+  dialog{color:var(--ink);border:1px solid #cdd4c7;border-radius:10px;padding:0;width:min(560px,calc(100% - 28px));max-height:calc(100dvh - 40px);background:var(--white);box-shadow:0 16px 80px #18261e40}dialog::backdrop{background:#22362db0}.dialog-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 22px;border-bottom:1px solid var(--line)}.dialog-header span{font-size:12px;color:var(--muted)}.close-dialog{border:0;min-width:32px;padding:0;font-size:24px;background:none}.dialog-body{padding:22px}.dialog-body h2{font-size:21px;line-height:1.55;margin:0 0 8px}.detail-meta{font-size:13px;color:var(--muted);margin:0 0 18px}.detail-stock{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:13px 15px;background:#f2f3eb;border-radius:6px;font-size:12px}.detail-stock strong{font-size:20px;display:block}.detail-stock span{color:var(--muted)}.recommendation{border-left:3px solid #b0b588;margin:20px 0;padding:0 0 0 13px;font-size:14px;line-height:1.8}.recommendation strong{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}.detail-note{display:block;margin:20px 0 7px;font-weight:600}.detail-note span{font-size:12px;color:var(--muted);font-weight:400;margin-left:8px}textarea{width:100%;min-height:110px;padding:10px 12px;border:1px solid #bfc8b8;border-radius:6px;resize:vertical;background:white;color:var(--ink);line-height:1.8;font-size:14px}.note-help{margin:5px 0 17px;font-size:11px;color:var(--muted)}.detail-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}.detail-actions .left{display:flex;align-items:center;gap:8px}.detail-feedback{padding:10px 12px;border-radius:5px;margin:15px 0 0;background:#eaf2e7;color:var(--green);font-size:12px}.detail-feedback.error{background:#fff0e9;color:var(--error)}.detail-feedback[hidden]{display:none}.dialog-footer{padding:12px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);background:#f8f8f1;font-size:11px;color:var(--muted)}.dialog-footer button{min-width:85px}
+  @media(min-width:1200px){.workspace{grid-template-columns:minmax(0,1fr) 330px}.book-row{padding:18px 20px}.book-title{font-size:16px}}
+  @media(max-width:740px){.topline-inner{padding:12px 18px}.identity{font-size:13px}.demo-label{font-size:10px}.shell{padding:21px 16px 145px}.page-heading{gap:12px;margin-bottom:14px}.heading-note{display:none}h1{font-size:25px}.brief{display:block;padding:11px 13px;margin-bottom:19px}.brief strong{display:block;margin-bottom:4px}.brief p{font-size:12px}.mobile-switch{display:flex;position:sticky;top:0;z-index:3;background:var(--paper);padding:8px 0 12px;gap:8px;margin-bottom:8px}.mobile-switch button{flex:1;font-size:13px;padding:9px 5px;min-height:42px;background:var(--white)}.mobile-switch button[aria-pressed=true]{background:var(--green);color:white;border-color:var(--green);font-weight:600}.workspace{display:block}.manifest{display:none}.workspace.show-manifest .catalog{display:none}.workspace.show-manifest .manifest{display:block}.section-title{margin-bottom:10px}.filters{padding:12px;gap:9px}.filter-bottom{gap:6px}.sort-wrap{gap:5px}.sort-wrap select{max-width:148px}.filters select{padding-left:5px;padding-right:1px;font-size:12px}.book-row{padding:15px 12px;gap:9px;grid-template-columns:20px minmax(0,1fr)}.book-line{gap:7px}.book-title{font-size:15px}.book-meta{font-size:11px}.row-actions{gap:7px}.availability{gap:8px}.stock-tag,.inventory{font-size:11px}.selected-item .book-title{font-size:15px}.selected-meta{font-size:12px}.selected-bottom{margin-top:12px}.selected-bottom .quantity button{width:32px}.selected-bottom .quantity input{width:42px}.selected-bottom button.text-button{font-size:13px}.item-note{font-size:12px}.manifest-top{padding:18px}.manifest-items{padding:0 18px}.manifest-heading h2{font-size:18px}.manifest-tabs button{font-size:14px}.initial-help{font-size:12px}.savebar-inner{padding:11px 16px;gap:10px}.save-context{display:block}.footer-total{font-size:12px}.footer-total strong{font-size:18px}.save-state{font-size:11px;margin-top:3px}.save-state small{display:none}.savebar .primary{min-width:116px;padding:9px 12px;font-size:13px}.notice{left:16px;right:16px;bottom:89px;padding:10px 12px;font-size:12px}.dialog-header{padding:12px 17px}.dialog-body{padding:18px}.dialog-body h2{font-size:19px}.dialog-footer{padding:11px 18px}.dialog-footer span{max-width:220px}button{min-height:38px}.row-actions .text-button{min-height:36px}.quantity button,.quantity input{min-height:36px;height:36px}.quantity input{font-size:16px}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topline"><div class="topline-inner"><div class="identity"><span class="bookmark" aria-hidden="true"></span>书店工作台</div><span class="demo-label">虚构活动 · 本页内存演示</span></div></header>
+<main class="shell">
+  <div class="page-heading"><div><p class="eyebrow">社区外摆 / WEEKEND BOOKS</p><h1>周末外摆选书</h1></div><p class="heading-note">最多携带 18 册<br>按取书点准备，带着故事出发。</p></div>
+  <aside class="brief" aria-label="活动说明"><strong>这次带什么</strong><p>来访者多为附近居民，请保留适合边翻边聊的书。西店图书由另一位同事带来，数量变化要能说清楚。</p></aside>
+  <nav class="mobile-switch" aria-label="选书工作区"><button type="button" id="showCatalog" aria-pressed="true">选书目录 · 8 种</button><button type="button" id="showManifest" aria-pressed="false">携带清单 · 5 册</button></nav>
+  <div class="workspace" id="workspace">
+    <section class="catalog" aria-labelledby="catalogTitle">
+      <div class="section-title"><h2 id="catalogTitle">选书目录</h2><span class="small">可携带 = 在库 − 已预留</span></div>
+      <div class="filters" role="search" aria-label="查找图书">
+        <label class="search-field"><span class="sr-only">搜索书名、作者或出版社</span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5"/></svg><input id="search" type="search" placeholder="搜索书名、作者或出版社" autocomplete="off"></label>
+        <label><span class="field-label">主题</span><select id="theme"><option value="">全部主题</option>城市</option><option>自然</option><option>手作</option></select></label>
+        <label><span class="field-label">取书点</span><select id="pickup"><option value="">全部取书点</option>东店</option><option>西店</option></select></label>
+        <label><span class="field-label">库存状态</span><select id="availability"><option value="all">全部余量</option><option value="available">有余量</option><option value="none">无余量</option></select></label>
+        <div class="filter-bottom"><label class="sort-wrap">排序<select id="sort"><option value="id">编号顺序</option><option value="title-asc">书名 · 升序</option><option value="title-desc">书名 · 降序</option><option value="available-desc">余量 · 多到少</option><option value="available-asc">余量 · 少到多</option></select></label><button type="button" class="text-button" id="clearFilters">清除筛选</button></div>
+      </div>
+      <div class="results-toolbar"><span id="resultCount" aria-live="polite"></span><button type="button" id="clearCurrent" class="text-button">取消当前结果中的选择</button></div>
+      <div class="outside-notice" id="outsideNotice" hidden><span id="outsideText"></span><button type="button" class="text-button" id="viewOutside">查看清单 →</button></div>
+      <div class="book-list" id="bookList"></div>
+    </section>
+    <aside class="manifest" id="manifest" aria-labelledby="manifestTitle">
+      <div class="manifest-top"><div class="manifest-heading"><h2 id="manifestTitle">本次携带</h2><span id="kindCount"></span></div><div class="total"><strong id="totalCount">5</strong><span>/ 18 册</span><em id="capacityHint"></em></div><div class="capacity-track" role="meter" aria-label="已选携带册数" aria-valuemin="0" aria-valuemax="18" aria-valuenow="5" id="capacityMeter"><div class="capacity-fill" id="capacityFill"></div></div><div class="pickup-totals" id="pickupTotals"></div></div>
+      <div class="manifest-tabs" aria-label="清单状态"><button type="button" id="selectedTab" aria-pressed="true">已选 3</button><button type="button" id="deferredTab" aria-pressed="false">暂缓 0</button></div>
+      <div class="manifest-items" id="manifestItems"></div>
+      <div class="manifest-footer"><span id="manifestHint"></span><button type="button" class="text-button" id="clearAll">取消全部已选</button></div>
+      <p class="initial-help">对比初选：东店 2 册，西店 3 册。<br>“暂缓”会保留原数量和备注，方便稍后恢复。</p>
+    </aside>
+  </div>
+</main>
+<div class="notice" id="notice" role="alert" hidden><p id="noticeText"></p><button type="button" id="dismissNotice" aria-label="关闭提示">×</button></div>
+<footer class="savebar"><div class="savebar-inner"><div class="save-context"><div class="footer-total" id="footerTotal"></div><div class="save-state" id="saveState"><span class="status-dot"></span><span id="saveText">尚未保存</span><small>仅在本页保留，刷新后恢复初选；不调拨库存。</small></div></div><button type="button" class="primary" id="saveDraft">保存选书草稿</button></div></footer>
+<dialog id="bookDialog" aria-labelledby="detailTitle">
+  <div class="dialog-header"><span id="detailId"></span><button type="button" class="close-dialog" id="closeDetail" aria-label="关闭图书详情">×</button></div>
+  <div class="dialog-body"><h2 id="detailTitle"></h2><p class="detail-meta" id="detailMeta"></p><div class="detail-stock" id="detailStock"></div><blockquote class="recommendation" id="recommendation" hidden><strong>店员荐语</strong><span id="recommendationText"></span></blockquote><label class="detail-note" for="noteInput">单书备注<span>给取书与现场介绍的提醒</span></label><textarea id="noteInput" placeholder="记下这本书需要留意的事…"></textarea><p class="note-help">编辑会计入当前草稿；完成后可在底部保存。</p><div class="detail-actions" id="detailActions"></div><p class="detail-feedback" id="detailFeedback" role="status" hidden></p></div>
+  <div class="dialog-footer"><span>可携带数量以在库减去已预留为准。</span><button type="button" class="primary" id="doneDetail">完成</button></div>
+</dialog>
+<script>
+'use strict';
+const books = [
+ {id:'B01',title:'沿着消失的河流走：一座城市的水与人的记忆',author:'许澜',publisher:'青石出版',theme:'城市',pickup:'东店',stock:7,reserved:2,recommendation:'适合从熟悉的街名谈起；附录较长，介绍时可引导读者先看旧河道地图。'},
+ {id:'B02',title:'阳台上的一年：从第一粒种子到最后一场霜',author:'罗芮',publisher:'慢木出版',theme:'自然',pickup:'西店',stock:5,reserved:1},
+ {id:'B03',title:'下班以后，我们怎样重新学会画画',author:'周遇',publisher:'斑点出版',theme:'手作',pickup:'东店',stock:4,reserved:4},
+ {id:'B04',title:'门牌号背后的人：老街口述生活史',author:'沈宜',publisher:'青石出版',theme:'城市',pickup:'西店',stock:6,reserved:1},
+ {id:'B05',title:'给孩子看的夜行动物观察笔记',author:'岑禾',publisher:'溪岸出版',theme:'自然',pickup:'东店',stock:8,reserved:2},
+ {id:'B06',title:'缝补不是为了遮住破洞：衣物修复小练习',author:'林简',publisher:'慢木出版',theme:'手作',pickup:'西店',stock:3,reserved:0},
+ {id:'B07',title:'骑车经过的二十四座小桥',author:'姚青',publisher:'溪岸出版',theme:'城市',pickup:'东店',stock:2,reserved:2},
+ {id:'B08',title:'落叶、苔藓和石头的名字',author:'顾庭',publisher:'斑点出版',theme:'自然',pickup:'西店',stock:6,reserved:0}
+];
+const selected = new Map([['B01',2],['B04',1],['B06',2]]);
+const deferred = new Map();
+const notes = new Map(books.map(b=>[b.id,b.id==='B06'?'请带封面无折痕的版本，现场会演示书里的布贴步骤。':'']));
+const filters = {query:'',theme:'',pickup:'',availability:'all',sort:'id'};
+let revision=0, savedRevision=null, savedDraft=null, savedAt='', manifestMode='selected', detailBook=null, detailOpener=null;
+const $ = id=>document.getElementById(id);
+const esc = text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const getBook = id=>books.find(b=>b.id===id);
+const available = b=>b.stock-b.reserved;
+const total = ()=>Array.from(selected.values()).reduce((a,b)=>a+b,0);
+function results(){
+ const q=filters.query.trim().toLocaleLowerCase('zh-CN');
+ const list=books.filter(b=>(!q||[b.title,b.author,b.publisher].some(s=>s.toLocaleLowerCase('zh-CN').includes(q)))&&(!filters.theme||b.theme===filters.theme)&&(!filters.pickup||b.pickup===filters.pickup)&&(filters.availability==='all'||(filters.availability==='available'?available(b)>0:available(b)===0)));
+ return list.sort((a,b)=>{
+  if(filters.sort==='title-asc')return a.title.localeCompare(b.title,'zh-CN');
+  if(filters.sort==='title-desc')return b.title.localeCompare(a.title,'zh-CN');
+  if(filters.sort==='available-desc')return available(b)-available(a)||a.id.localeCompare(b.id);
+  if(filters.sort==='available-asc')return available(a)-available(b)||a.id.localeCompare(b.id);
+  return a.id.localeCompare(b.id);
+ });
+}
+function qtyControl(b,qty,place){return `<div class="qty-wrap"><div class="quantity"><button type="button" data-action="minus" data-id="${b.id}" data-focus="${place}-${b.id}-minus" aria-label="减少 ${b.id} 携带数量">−</button><input type="text" inputmode="numeric" value="${qty}" data-quantity="${b.id}" data-focus="${place}-${b.id}-qty" aria-label="${b.id} 携带数量" autocomplete="off"><button type="button" data-action="plus" data-id="${b.id}" data-focus="${place}-${b.id}-plus" aria-label="增加 ${b.id} 携带数量">+</button></div><span class="unit">册</span></div>`}
+function renderCatalog(){
+ const list=results(), ids=new Set(list.map(b=>b.id));
+ const currentSelected=list.filter(b=>selected.has(b.id));
+ const outside=books.filter(b=>selected.has(b.id)&&!ids.has(b.id));
+ $('resultCount').textContent=`${list.length} 种结果 · 已选 ${currentSelected.length} 种`;
+ $('clearCurrent').disabled=currentSelected.length===0;
+ $('outsideNotice').hidden=!outside.length;
+ $('outsideText').textContent=`筛选外已选 ${outside.length} 种 · ${outside.reduce((n,b)=>n+selected.get(b.id),0)} 册`;
+ $('bookList').innerHTML=list.length?list.map(b=>{
+  const picked=selected.has(b.id), paused=deferred.has(b.id),qty=selected.get(b.id);
+  let controls=picked?qtyControl(b,qty,'catalog'):`<span class="unselected-hint">${available(b)===0?'全部已预留，仍可查看详情':'勾选后加入 1 册'}</span>`;
+  if(paused)controls=`<span class="pause-label">本次暂缓${deferred.get(b.id).wasSelected?` · 原选 ${deferred.get(b.id).qty} 册`:''}</span><button type="button" class="text-button" data-action="restore" data-id="${b.id}">恢复${deferred.get(b.id).wasSelected?'选择':'到目录'}</button>`;
+  return `<article class="book-row ${picked?'is-selected':''} ${paused?'is-paused':''}" data-book="${b.id}"><input class="choose" type="checkbox" data-select="${b.id}" data-focus="catalog-${b.id}-select" aria-label="选择 ${b.id} ${esc(b.title)}" ${picked?'checked':''} ${available(b)===0?'aria-disabled="true"':''}><div><div class="book-line"><span class="book-id">${b.id}</span><button type="button" class="book-title" data-action="detail" data-id="${b.id}">${esc(b.title)}</button></div><p class="book-meta">${esc(b.author)} / ${esc(b.publisher)}<span class="dot">·</span>${b.theme}<span class="dot">·</span>${b.pickup}</p><div class="availability"><span class="stock-tag ${available(b)===0?'none':''}">可携带 ${available(b)} 册</span><span class="inventory">在库 ${b.stock} · 已预留 ${b.reserved}</span></div><div class="row-actions">${controls}<button type="button" class="text-button" data-action="detail" data-id="${b.id}">${notes.get(b.id)?'查看备注':'详情 / 备注'}${b.recommendation?' · 有荐语':''} ↗</button></div></div></article>`;
+ }).join(''):`<div class="empty"><strong>没有符合条件的图书</strong><p>试试其他关键词，或放宽主题、取书点和余量条件。</p><button type="button" data-action="reset">清除筛选</button></div>`;
+}
+function renderManifest(){
+ const count=total(), ids=new Set(results().map(b=>b.id));
+ $('kindCount').textContent=`${selected.size} 种图书`;
+ $('totalCount').textContent=count;
+ $('capacityHint').textContent=count===18?'已装满':`还可带 ${18-count} 册`;
+ $('capacityMeter').setAttribute('aria-valuenow',count);
+ $('capacityFill').style.width=(count/18*100)+'%';
+ $('pickupTotals').innerHTML=['东店','西店'].map(p=>{const num=books.filter(b=>b.pickup===p).reduce((n,b)=>n+(selected.get(b.id)||0),0),diff=num-(p==='东店'?2:3);return `<div><span>${p}取书</span><strong>${num} 册</strong><small>较初选${diff===0?'未变':` ${diff>0?'+':'−'}${Math.abs(diff)} 册`}</small></div>`}).join('');
+ $('selectedTab').textContent=`已选 ${selected.size}`;
+ $('deferredTab').textContent=`暂缓 ${deferred.size}`;
+ $('selectedTab').setAttribute('aria-pressed',manifestMode==='selected');
+ $('deferredTab').setAttribute('aria-pressed',manifestMode==='deferred');
+ const list=books.filter(b=>(manifestMode==='selected'?selected:deferred).has(b.id));
+ $('manifestItems').innerHTML=list.length?list.map(b=>{
+  const paused=manifestMode==='deferred', record=deferred.get(b.id);
+  return `<article class="selected-item ${!ids.has(b.id)?'outside':''}"><div class="selected-meta"><span>${b.id} · ${b.pickup}</span>${!ids.has(b.id)?'<span class="outside-badge">筛选外</span>':''}</div><button type="button" class="book-title" data-action="detail" data-id="${b.id}">${esc(b.title)}</button>${notes.get(b.id)?`<p class="item-note">备注：${esc(notes.get(b.id))}</p>`:''}<div class="selected-bottom">${paused?`<span class="pause-label">${record.wasSelected?`原选 ${record.qty} 册`:'原未选择'}</span><button type="button" data-action="restore" data-id="${b.id}">${record.wasSelected?'恢复选择':'恢复到目录'}</button>`:`${qtyControl(b,selected.get(b.id),'manifest')}<button type="button" class="text-button" data-action="detail" data-id="${b.id}">编辑</button><button type="button" class="text-button" data-action="defer" data-id="${b.id}">暂缓</button>`}</div></article>`;
+ }).join(''):`<div class="empty"><strong>${manifestMode==='selected'?'还没有选择图书':'暂无暂缓的图书'}</strong><p>${manifestMode==='selected'?'到目录挑几本适合边翻边聊的书。':'不确定是否携带的书，可以先暂缓。'}</p>${manifestMode==='selected'?'<button type="button" data-action="catalog">去选书</button>':''}</div>`;
+ $('manifestHint').textContent=manifestMode==='selected'?'包含所有筛选外已选':'暂缓不占用携带册数';
+ $('clearAll').disabled=selected.size===0;
+ $('showManifest').textContent=`携带清单 · ${count} 册${deferred.size?` / 暂缓 ${deferred.size}`:''}`;
+}
+function renderSave(){
+ const saved=savedRevision===revision;
+ $('footerTotal').innerHTML=`已选 <strong>${selected.size}</strong> 种 <strong>${total()}</strong> 册 <span class="muted">/ 18</span>`;
+ $('saveState').classList.toggle('saved',saved);
+ $('saveText').textContent=saved?`已保存 · ${savedAt}`:'尚未保存';
+ $('saveDraft').textContent=saved?'草稿已保存':'保存选书草稿';
+}
+function renderDetailActions(){
+ if(!detailBook)return;
+ const b=getBook(detailBook),paused=deferred.has(b.id),picked=selected.has(b.id);
+ const left=paused?`<span class="pause-label">本次暂缓${deferred.get(b.id).wasSelected?` · 原选 ${deferred.get(b.id).qty} 册`:''}</span>`:picked?qtyControl(b,selected.get(b.id),'detail'):`<span class="muted">尚未选择</span>`;
+ const right=paused?`<button type="button" class="primary" data-action="restore" data-id="${b.id}">${deferred.get(b.id).wasSelected?'恢复原数量':'恢复到目录'}</button>`:picked?`<button type="button" data-action="defer" data-id="${b.id}">本次暂缓</button><button type="button" class="text-button" data-action="remove" data-id="${b.id}">取消选择</button>`:`<button type="button" data-action="defer" data-id="${b.id}">本次暂缓</button><button type="button" class="primary" data-action="add" data-id="${b.id}" ${available(b)===0?'aria-disabled="true"':''}>${available(b)===0?'无余量，无法加入':'加入 1 册'}</button>`;
+ $('detailActions').innerHTML=`<div class="left">${left}</div><div class="left">${right}</div>`;
+}
+function renderAll(){
+ const focus=document.activeElement?.dataset.focus;
+ renderCatalog();renderManifest();renderSave();renderDetailActions();
+ if(focus){const el=document.querySelector(`[data-focus="${focus}"]`);if(el)el.focus({preventScroll:true});}
+}
+function changed(){revision++;renderAll()}
+function notify(message,error=false){
+ $('noticeText').textContent=message;$('notice').classList.toggle('error',error);$('notice').hidden=false;
+ if($('bookDialog').open){$('detailFeedback').textContent=message;$('detailFeedback').classList.toggle('error',error);$('detailFeedback').hidden=false;}
+}
+function validateQty(b,value,old=0){
+ if(!/^\d+$/.test(String(value))||!Number.isSafeInteger(Number(value))||Number(value)<1)return '携带数量须为正整数，至少 1 册。';
+ if(Number(value)>available(b))return `${b.id} 最多可携带 ${available(b)} 册（在库 ${b.stock} − 已预留 ${b.reserved}），${value} 册超过余量。`;
+ const attempted=total()-old+Number(value);
+ if(attempted>18)return `本次最多携带 18 册；这样调整会达到 ${attempted} 册，超出 ${attempted-18} 册。请先减少其他图书数量。`;
+ return '';
+}
+function addBook(id){
+ const b=getBook(id);if(deferred.has(id)){restoreBook(id);return}if(selected.has(id))return;
+ const reason=validateQty(b,1);
+ if(reason){renderAll();notify(available(b)===0?`${id} 在库 ${b.stock} 册均已预留，可携带 0 册，不能加入；可以继续查看详情。`:reason+' 选择未改变。',true);return}
+ selected.set(id,1);changed();notify(`${id} 已加入 1 册。`);
+}
+function updateQty(id,value){
+ if(!selected.has(id))return;
+ const old=selected.get(id),reason=validateQty(getBook(id),value,old);
+ if(reason){renderAll();notify(reason+` 已保留原数量 ${old} 册。`,true);return}
+ if(Number(value)===old){renderAll();return}
+ selected.set(id,Number(value));changed();notify(`${id} 携带数量已改为 ${Number(value)} 册。`);
+}
+function removeBook(id){if(!selected.has(id))return;selected.delete(id);changed();notify(`${id} 已取消选择，单书备注保留。`)}
+function deferBook(id){
+ if(deferred.has(id))return;
+ deferred.set(id,{qty:selected.get(id)||1,wasSelected:selected.has(id)});selected.delete(id);changed();notify(`${id} 已标记“本次暂缓”，原数量与备注保留。`);
+}
+function restoreBook(id){
+ const record=deferred.get(id);if(!record)return;
+ if(record.wasSelected){const reason=validateQty(getBook(id),record.qty);if(reason){renderAll();notify(`无法恢复 ${id} 的 ${record.qty} 册：${reason} 该书保持暂缓。`,true);return}selected.set(id,record.qty)}
+ deferred.delete(id);changed();notify(`${id} 已恢复${record.wasSelected?`选择 ${record.qty} 册`:'到目录'}，备注保留。`);
+}
+function clearSelected(currentOnly){
+ const ids=currentOnly?results().map(b=>b.id):Array.from(selected.keys());let kinds=0,copies=0;
+ ids.forEach(id=>{if(selected.has(id)){kinds++;copies+=selected.get(id);selected.delete(id)}});
+ if(!kinds)return;changed();notify(`${currentOnly?'当前结果中的':'全部'} ${kinds} 种 ${copies} 册已取消选择${currentOnly?'，筛选外的选择保留':''}。备注和暂缓记录保留。`);
+}
+function resetFilters(){
+ filters.query='';filters.theme='';filters.pickup='';filters.availability='all';
+ $('search').value='';$('theme').value='';$('pickup').value='';$('availability').value='all';renderAll();
+}
+function switchWorkspace(mode){
+ const manifest=mode==='manifest';$('workspace').classList.toggle('show-manifest',manifest);
+ $('showCatalog').setAttribute('aria-pressed',!manifest);$('showManifest').setAttribute('aria-pressed',manifest);
+}
+function openDetail(id,opener){
+ const b=getBook(id);detailBook=id;detailOpener=opener;
+ $('detailId').textContent=`${id} · 图书详情`;$('detailTitle').textContent=b.title;
+ $('detailMeta').textContent=`${b.author} / ${b.publisher} · ${b.theme} · ${b.pickup}取书`;
+ $('detailStock').innerHTML=`<div><span>在库</span><strong>${b.stock} 册</strong></div><div><span>已预留</span><strong>${b.reserved} 册</strong></div><div><span>可携带</span><strong>${available(b)} 册</strong></div>`;
+ $('recommendation').hidden=!b.recommendation;$('recommendationText').textContent=b.recommendation||'';
+ $('noteInput').value=notes.get(id);$('detailFeedback').hidden=true;renderDetailActions();$('bookDialog').showModal();
+}
+function closeDetail(){$('bookDialog').close()}
+document.addEventListener('click',event=>{
+ const btn=event.target.closest('button[data-action]');if(!btn)return;
+ const id=btn.dataset.id;
+ switch(btn.dataset.action){
+  case 'detail':openDetail(id,btn);break;
+  case 'plus':updateQty(id,selected.get(id)+1);break;
+  case 'minus':updateQty(id,selected.get(id)-1);break;
+  case 'add':addBook(id);break;
+  case 'remove':removeBook(id);break;
+  case 'defer':deferBook(id);break;
+  case 'restore':restoreBook(id);break;
+  case 'reset':resetFilters();break;
+  case 'catalog':switchWorkspace('catalog');$('search').focus();break;
+ }
+});
+document.addEventListener('change',event=>{
+ const el=event.target;
+ if(el.dataset.select){if(el.checked)addBook(el.dataset.select);else removeBook(el.dataset.select)}
+ if(el.dataset.quantity)updateQty(el.dataset.quantity,el.value);
+});
+document.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.dataset.quantity){event.preventDefault();updateQty(event.target.dataset.quantity,event.target.value)}});
+$('search').addEventListener('input',e=>{filters.query=e.target.value;renderAll()});
+['theme','pickup','availability','sort'].forEach(id=>$(id).addEventListener('change',e=>{filters[id]=e.target.value;renderAll()}));
+$('clearFilters').addEventListener('click',resetFilters);
+$('clearCurrent').addEventListener('click',()=>clearSelected(true));
+$('clearAll').addEventListener('click',()=>clearSelected(false));
+$('selectedTab').addEventListener('click',()=>{manifestMode='selected';renderManifest()});
+$('deferredTab').addEventListener('click',()=>{manifestMode='deferred';renderManifest()});
+$('showCatalog').addEventListener('click',()=>switchWorkspace('catalog'));
+$('showManifest').addEventListener('click',()=>switchWorkspace('manifest'));
+$('viewOutside').addEventListener('click',()=>{manifestMode='selected';renderManifest();switchWorkspace('manifest');$('manifest').scrollIntoView({block:'start',behavior:'smooth'})});
+$('noteInput').addEventListener('input',e=>{if(detailBook&&notes.get(detailBook)!==e.target.value){notes.set(detailBook,e.target.value);revision++;renderCatalog();renderManifest();renderSave()}});
+$('closeDetail').addEventListener('click',closeDetail);$('doneDetail').addEventListener('click',closeDetail);
+$('bookDialog').addEventListener('close',()=>{
+ const id=detailBook;detailBook=null;
+ const target=detailOpener?.isConnected?detailOpener:document.querySelector(`#${$('workspace').classList.contains('show-manifest')?'manifestItems':'bookList'} [data-action="detail"][data-id="${id}"]`);
+ if(target)target.focus({preventScroll:true});else $('saveDraft').focus({preventScroll:true});
+});
+$('dismissNotice').addEventListener('click',()=>{$('notice').hidden=true});
+$('saveDraft').addEventListener('click',()=>{
+ savedDraft={selected:Array.from(selected.entries()),deferred:Array.from(deferred.entries()).map(([id,record])=>[id,{...record}]),notes:Array.from(notes.entries())};
+ savedRevision=revision;savedAt=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});renderSave();
+ notify(`已保存当前草稿：${savedDraft.selected.length} 种 ${total()} 册，另有 ${deferred.size} 种暂缓。仅在本页保留，刷新会恢复初选；未调拨库存。`);
+});
+renderAll();
+</script>
+</body>
+</html>

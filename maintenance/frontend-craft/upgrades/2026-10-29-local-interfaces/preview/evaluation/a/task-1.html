@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>试听片段交付 · 社区电台</title>
+<style>
+:root{color-scheme:light;--paper:#f5f5f0;--ink:#20352e;--muted:#63716b;--line:#d8dfd8;--green:#235d46;--soft:#e9f1e9;--danger:#a13a2d;--warn:#86520e;--font:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font-family:var(--font);font-size:14px;line-height:1.6}button,input,select{font:inherit}button,select,input[type=checkbox]{cursor:pointer}button{border:1px solid #87958b;background:#fff;color:var(--ink);border-radius:6px;min-height:38px;padding:7px 12px;font-weight:600}button:hover:not(:disabled){background:var(--soft);border-color:var(--green)}button:disabled{opacity:.5;cursor:not-allowed}button.primary{background:var(--green);border-color:var(--green);color:#fff}button.primary:hover:not(:disabled){background:#174b36}button.link{border:0;background:none;padding:0;min-height:32px;font-weight:500;color:var(--green);text-decoration:underline;text-underline-offset:3px}input,select{border:1px solid #87958b;border-radius:5px;background:#fff;color:var(--ink);height:36px;padding:5px 8px;max-width:100%}input[type=checkbox]{accent-color:var(--green);width:18px;height:18px;padding:0;margin:0;flex:none}input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #d39d27;outline-offset:3px}input:disabled,select:disabled{background:#eef0eb;cursor:wait}h1,h2,h3,p{margin:0}h1{font-size:29px;line-height:1.3;letter-spacing:-.02em}h2{font-size:17px}h3{font-size:16px;line-height:1.7;font-weight:650}.shell{max-width:1220px;margin:auto;padding:0 28px}.masthead{border-bottom:1px solid var(--line);height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.07em}.mark{display:flex;gap:3px;align-items:center;height:22px}.mark i{display:block;width:3px;background:var(--green);border-radius:3px}.mark i:nth-child(1),.mark i:nth-child(5){height:8px}.mark i:nth-child(2),.mark i:nth-child(4){height:15px}.mark i:nth-child(3){height:22px}.demo{font-size:12px;color:var(--muted)}.intro{padding:28px 0 22px}.eyebrow{color:var(--green);font-size:12px;font-weight:700;letter-spacing:.12em;margin-bottom:7px}.introline{display:flex;gap:16px;align-items:center;justify-content:space-between}.batchtag{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted)}.note{max-width:880px;color:#53635a;margin-top:14px;line-height:1.75}.note strong{color:var(--ink);font-weight:600}.toolbar{border-top:2px solid var(--green);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;flex-wrap:wrap}.selectline,.formatline{display:flex;align-items:center;gap:10px}.selectline label{display:flex;align-items:center;gap:9px;min-height:36px;cursor:pointer}.count{font-size:13px;color:var(--muted)}.formatline select{width:90px}.formatline label{font-weight:600}.hint{font-size:12px;color:var(--muted)}.list{background:#fff;border:1px solid var(--line);border-top:0}.clip{padding:20px 20px 18px;border-bottom:1px solid var(--line);position:relative}.clip:last-child{border-bottom:0}.clip.selected{box-shadow:inset 3px 0 var(--green)}.clipgrid{display:grid;grid-template-columns:22px minmax(210px,1fr) 226px 164px;gap:14px;align-items:start}.pick{padding-top:5px;display:block}.identity{min-width:0}.number{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);display:inline-block;margin-bottom:3px}.sourcemeta{margin-top:7px;font-size:12px;color:var(--muted)}.sourcefix{margin-top:8px}.sourcefix button{font-size:12px;line-height:1.5;min-height:34px;text-align:left}.params{display:grid;gap:8px;padding-top:1px}.range{display:flex;gap:6px;align-items:end}.range label{display:grid;gap:4px;color:var(--muted);font-size:12px}.range input{width:82px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}.range .dash{padding-bottom:6px;color:#6d7c72}.duration{font-size:12px;color:var(--muted);margin-top:4px}.formatcontrol{display:flex;align-items:center;gap:7px}.formatcontrol label{font-size:12px;color:var(--muted);white-space:nowrap}.formatcontrol select{width:160px;font-size:13px}.actualformat{font-size:11px;color:var(--muted)}.state{padding-top:2px;min-width:0}.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:650;border-radius:4px;padding:2px 7px;background:#f0f2ef;color:#53635a}.badge.ok{color:#20573c;background:#e6f1e7}.badge.warn{color:var(--warn);background:#fff2d9}.badge.error{color:var(--danger);background:#fae9e4}.badge.busy{background:#e5edf7;color:#27527f}.reason{font-size:12px;line-height:1.65;margin:7px 0;color:var(--muted)}.reason.problem{color:var(--danger)}.artifact{font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px}.itemaction{font-size:12px;min-height:33px;padding:5px 10px;margin-top:7px}.promotion{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;margin:12px 0 0 36px;border-left:3px solid #c58a26;background:#fff7e8;font-size:12px;color:#684c1f}.promotion input{margin-top:2px}.promotion label{cursor:pointer;line-height:1.7}.promotion strong{font-weight:650}.policy{color:var(--muted);font-size:12px;padding:10px 0 0}.history{margin:20px 0 26px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:12px 16px}.history summary{cursor:pointer;font-weight:600}.history ul{padding-left:20px;color:var(--muted);font-size:12px;margin:10px 0 0}.workspace{padding-bottom:20px}.dock{position:sticky;bottom:0;background:rgba(245,245,240,.98);border-top:1px solid #aebdb1;z-index:4;padding:12px 0 max(12px,env(safe-area-inset-bottom));box-shadow:0 -6px 18px #20352e06}.dockinner{display:flex;align-items:center;justify-content:space-between;gap:12px}.delivery{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px}.delivery strong{font-size:17px;color:var(--green)}.actions{display:flex;gap:9px;align-items:center}.statusline{font-size:12px;color:var(--muted);margin-top:4px;max-width:1120px}.progress{width:100%;height:3px;background:#dbe4db;position:absolute;top:0;left:0}.progress span{display:block;height:100%;background:var(--green);transition:width .2s}dialog{border:1px solid var(--line);border-radius:10px;padding:0;width:min(620px,calc(100% - 32px));max-height:86dvh;color:var(--ink);background:#fff}dialog::backdrop{background:#15271f77}.dialoghead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line)}.dialoghead button{font-size:20px;min-width:38px;padding:0}.dialogbody{padding:20px 22px}.dialogbody p{font-size:13px;color:var(--muted);margin:7px 0 14px}.manifest-list{list-style:none;padding:0;margin:8px 0 22px}.manifest-list li{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.manifest-list li span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.dialogfooter{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.empty{font-size:13px;color:var(--muted)}[hidden]{display:none!important}
+@media(min-width:1100px){.clipgrid{grid-template-columns:22px minmax(320px,1fr) 240px 190px;gap:20px}.clip{padding:22px}}
+@media(max-width:760px){.shell{padding:0 18px}.masthead{height:55px}.demo{font-size:11px}.intro{padding:23px 0 19px}h1{font-size:25px}.batchtag{display:none}.note{font-size:13px;line-height:1.8}.toolbar{gap:8px;padding:12px 0}.formatline{gap:8px}.formatline label{font-size:13px}.formatline .hint{display:none}.count{font-size:12px}.clip{padding:18px 16px}.clipgrid{grid-template-columns:20px minmax(0,1fr);gap:10px 11px}.identity{grid-column:2}.params{grid-column:2;grid-template-columns:minmax(0,1fr);gap:7px;margin-top:2px}.state{grid-column:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:12px}.reason{flex-basis:100%;margin:0}.artifact{flex-basis:100%;margin:0}.itemaction{margin:0 0 0 auto}.state .badge{order:-2}.state .itemaction{order:-1}.promotion{margin-left:31px;padding:9px 10px}.formatcontrol select{width:167px}.range input{width:92px}.range label{font-size:12px}.sourcemeta{margin-top:5px}h3{font-size:16px}.dockinner{flex-wrap:wrap;gap:8px}.delivery{width:100%;justify-content:space-between;font-size:12px}.delivery strong{font-size:16px}.actions{width:100%}.actions button{flex:1;min-height:42px;font-size:13px;padding:7px}.statusline{font-size:11px;margin-top:5px}.dialoghead{padding:14px 16px}.dialogbody{padding:16px}.dialogfooter{padding:14px 16px}.policy{line-height:1.8}.history{margin-top:16px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="masthead"><div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>社区电台<span style="font-weight:400;color:var(--muted);letter-spacing:0"> / 制作台</span></div><span class="demo">演示批次 · 刷新后重置</span></header>
+  <main class="workspace">
+    <section class="intro" aria-labelledby="pageTitle"><p class="eyebrow">社区声音 · 试听页交付</p><div class="introline"><h1 id="pageTitle">试听片段交付</h1><span class="batchtag">本批次 / 06 段</span></div><p class="note"><strong>制作人备注</strong>　这些片段将放到社区电台的试听页，标题请保持完整；推广内容必须事先确认，不能只凭文件生成成功就交付。</p></section>
+    <section aria-label="片段选择与全局格式" class="toolbar"><div class="selectline"><label for="selectAll"><input type="checkbox" id="selectAll">全选</label><span class="count" id="selectionCount"></span></div><div class="formatline"><label for="globalFormat">全局格式</label><select id="globalFormat"><option>MP3</option><option>WAV</option></select><span class="hint">仅影响跟随全局的片段</span></div></section>
+    <div class="list" id="clips" aria-label="六个试听片段"></div>
+    <p class="policy">截取规则：0 ≤ 起点 &lt; 终点 ≤ 源时长，每段最长 120 秒。这里只模拟制作，不播放或生成音频。</p>
+    <details class="history" id="history" hidden><summary id="historySummary">最近一次制作结果</summary><ul id="historyItems"></ul></details>
+  </main>
+</div>
+<footer class="dock"><div class="progress" id="progress" hidden><span id="progressFill"></span></div><div class="shell"><div class="dockinner"><div class="delivery"><span id="deliveryCounts"></span><button class="link" id="review" type="button">核对交付清单</button></div><div class="actions"><button id="export" type="button">导出 JSON</button><button class="primary" id="make" type="button">制作所选片段</button></div></div><p id="status" class="statusline" role="status" aria-live="polite">参数变化后请重新制作；导出只包含当前有效产物。</p></div></footer>
+<dialog id="manifest" aria-labelledby="manifestTitle"><div class="dialoghead"><h2 id="manifestTitle">交付清单核对</h2><button id="closeManifest" type="button" aria-label="关闭交付清单">×</button></div><div class="dialogbody" id="manifestBody"></div><div class="dialogfooter"><button id="backManifest" type="button">继续核对片段</button><button class="primary" id="downloadManifest" type="button">下载 JSON</button></div></dialog>
+<script>
+'use strict';
+const data=[
+ {id:'P01',title:'江面还没有醒来：旧渡口凌晨五点的第一班船',length:468,start:20,end:95,selected:true,mode:'global',source:true,artifact:{start:20,end:95,format:'MP3',source:'original'}},
+ {id:'P02',title:'把一封未寄出的信读完，然后谈谈离开家乡的第十年',length:612,start:40,end:120,selected:true,mode:'global',source:true,promoConfirmed:false},
+ {id:'P03',title:'修伞师傅说，最难找回的其实是一根弯掉的骨架',length:398,start:15,end:85,selected:false,mode:'global',source:false},
+ {id:'P04',title:'夜班便利店里的陌生人，和那碗被反复加热的面',length:530,start:50,end:135,selected:true,mode:'global',source:true,attempts:0},
+ {id:'P05',title:'楼顶菜园第一次收获以后，邻居们开始互相记住名字',length:445,start:30,end:100,selected:true,mode:'global',source:true,artifact:{start:30,end:100,format:'WAV',source:'original'}},
+ {id:'P06',title:'一场停电让排练暂停了二十分钟',length:360,start:340,end:370,selected:false,mode:'global',source:true}
+];
+let globalFormat='MP3',busy=false,batchResults=[],completed=0,total=0;
+const $=id=>document.getElementById(id);
+const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const format=item=>item.mode==='global'?globalFormat:item.mode;
+const sourceKey=item=>item.id==='P03'&&item.source?'backup':'original';
+function reasons(item){
+ const result=[];
+ if(!item.source)result.push('源文件缺失，请重新关联备用源');
+ if(!Number.isFinite(item.start)||!Number.isFinite(item.end))result.push('请填写完整的起点和终点');
+ else if(item.start<0||item.end<=item.start||item.end>item.length)result.push(`范围无效：需满足 0 ≤ 起点 < 终点 ≤ ${item.length} 秒`);
+ else if(item.end-item.start>120)result.push('片段超过 120 秒，请缩短截取范围');
+ if(item.id==='P02'&&item.end>105&&!item.promoConfirmed)result.push('含 105 秒后的下期推广，尚未确认保留');
+ return result;
+}
+function matches(item){const a=item.artifact;return Boolean(a&&a.start===item.start&&a.end===item.end&&a.format===format(item)&&a.source===sourceKey(item));}
+function valid(item){return reasons(item).length===0&&matches(item);}
+function exclusion(item){const problems=reasons(item);if(problems.length)return problems.join('；');if(item.failure)return item.failure;if(item.artifact&&!matches(item))return `产物过期：已有 ${item.artifact.start}–${item.artifact.end} 秒 / ${item.artifact.format}，当前为 ${item.start}–${item.end} 秒 / ${format(item)}`;return '尚未制作成功';}
+function state(item){
+ if(item.processing)return ['制作中','busy','正在模拟编码，请稍候'];
+ const problems=reasons(item);
+ if(problems.length){let label=!item.source?'源文件缺失':item.id==='P02'&&item.end>105&&!item.promoConfirmed&&problems.length===1?'推广待确认':'范围无效';return [label,label==='推广待确认'?'warn':'error',problems.join('；')];}
+ if(valid(item))return ['有效产物','ok','与当前范围、格式一致，可交付'];
+ if(item.failure)return ['制作失败','error',item.failure+'，可重试'];
+ if(item.artifact)return ['产物过期','warn',`当前要求 ${format(item)} · ${item.start}–${item.end} 秒，请重新制作`];
+ return ['待制作','','参数已通过校验'];
+}
+function buildRows(){
+ $('clips').innerHTML=data.map(item=>`<article class="clip" id="row-${item.id}" aria-labelledby="title-${item.id}" data-id="${item.id}"><div class="clipgrid"><label class="pick"><input type="checkbox" data-field="selected" aria-label="选择 ${item.id} ${escapeHtml(item.title)}" ${item.selected?'checked':''}></label><div class="identity"><span class="number">${item.id}</span><h3 id="title-${item.id}">${escapeHtml(item.title)}</h3><p class="sourcemeta" data-view="source"></p>${item.id==='P03'?'<div class="sourcefix" data-view="sourcefix"><button type="button" data-action="relink">关联备用源：修伞访谈_补传版</button></div>':''}</div><div class="params"><div><div class="range"><label>起点（秒）<input type="number" min="0" max="${item.length}" step="any" value="${item.start}" data-field="start" aria-label="${item.id} 起点（秒）"></label><span class="dash" aria-hidden="true">—</span><label>终点（秒）<input type="number" min="0" max="${item.length}" step="any" value="${item.end}" data-field="end" aria-label="${item.id} 终点（秒）"></label></div><p class="duration" data-view="duration"></p></div><div class="formatcontrol"><label for="format-${item.id}">输出</label><select id="format-${item.id}" data-field="mode" aria-label="${item.id} 输出格式"><option value="global">跟随全局</option><option value="MP3">单独指定 MP3</option><option value="WAV">单独指定 WAV</option></select></div><p class="actualformat" data-view="format"></p></div><div class="state"><span class="badge" data-view="badge"></span><p class="reason" data-view="reason" id="reason-${item.id}"></p><p class="artifact" data-view="artifact"></p><button type="button" class="itemaction" data-action="make" aria-label="制作或重试 ${item.id}"></button></div></div>${item.id==='P02'?'<div class="promotion" data-view="promotion"><input id="promo-P02" type="checkbox" data-field="promoConfirmed"><label for="promo-P02"><strong>105 秒起进入下期推广。</strong>我已核对，并确认保留本次截取范围内的推广内容。修改起点或终点后需重新确认。</label></div>':''}</article>`).join('');
+ updateAll();
+}
+function updateRow(item){
+ const row=$('row-'+item.id),view=key=>row.querySelector(`[data-view="${key}"]`),s=state(item);
+ row.classList.toggle('selected',item.selected);
+ row.querySelector('[data-field="selected"]').checked=item.selected;
+ view('source').textContent=(item.id==='P03'&&item.source?'备用源：修伞访谈_补传版 · ':'源时长 ')+item.length+' 秒'+(!item.source?' · 未关联源文件':'');
+ if(view('sourcefix'))view('sourcefix').hidden=item.source;
+ view('duration').textContent=Number.isFinite(item.start)&&Number.isFinite(item.end)&&item.end>item.start?'片段 '+Number((item.end-item.start).toFixed(3))+' 秒 / 最长 120 秒':'请设置有效截取范围';
+ view('format').textContent='当前输出：'+format(item)+(item.mode==='global'?' · 跟随全局':' · 独立格式');
+ view('badge').textContent=s[0];view('badge').className='badge '+s[1];
+ view('reason').textContent=s[2];view('reason').className='reason'+(s[1]==='error'?' problem':'');
+ const a=item.artifact;view('artifact').textContent=a?`已有产物：${a.start}–${a.end} 秒 · ${a.format}`:'尚无成功产物';
+ row.querySelectorAll('input,select,button').forEach(control=>control.disabled=busy);
+ const action=row.querySelector('[data-action="make"]');
+ action.textContent=item.processing?'制作中…':valid(item)?'已匹配':item.failure?'重试制作':item.artifact?'重新制作':'制作此片段';
+ action.disabled=busy||valid(item)||reasons(item).length>0;
+ action.title=reasons(item).length?reasons(item).join('；'):'';
+ for(const field of ['start','end']){const input=row.querySelector(`[data-field="${field}"]`);const invalid=!Number.isFinite(item.start)||!Number.isFinite(item.end)||item.start<0||item.end<=item.start||item.end>item.length||item.end-item.start>120;input.setAttribute('aria-invalid',String(invalid));input.setAttribute('aria-describedby','reason-'+item.id);}
+ if(item.id==='P02'){view('promotion').hidden=!(item.end>105);row.querySelector('[data-field="promoConfirmed"]').checked=item.promoConfirmed;}
+}
+function updateSummary(){
+ const selected=data.filter(item=>item.selected),ready=selected.filter(valid).length;
+ $('selectionCount').textContent=`已选 ${selected.length} / ${data.length} 项`;
+ $('selectAll').checked=selected.length===data.length;$('selectAll').indeterminate=selected.length>0&&selected.length<data.length;
+ $('selectAll').disabled=busy;$('globalFormat').disabled=busy;
+ $('deliveryCounts').innerHTML=`<strong>${ready}</strong> 项可交付 · ${selected.length-ready} 项待处理`;
+ $('make').disabled=busy||selected.length===0;$('make').textContent=busy?`制作中 ${completed} / ${total}`:`制作所选片段（${selected.length}）`;
+ $('export').disabled=busy||ready===0;$('export').textContent=`导出 JSON（${ready}）`;
+ $('export').title=ready?'下载所选有效产物与排除原因':'请先制作至少一个所选片段';$('review').disabled=busy;
+ $('progress').hidden=!busy;$('progressFill').style.width=(total?completed/total*100:0)+'%';
+}
+function updateAll(){data.forEach(updateRow);updateSummary();}
+function announce(message){$('status').textContent=message;}
+function renderHistory(){
+ $('history').hidden=false;const ok=batchResults.filter(r=>r.type==='ok').length,failed=batchResults.filter(r=>r.type==='failed').length,skipped=batchResults.filter(r=>r.type==='skip').length;
+ $('historySummary').textContent=`最近一次制作：${ok} 项成功 · ${failed} 项失败 · ${skipped} 项保留 / 跳过`;
+ $('historyItems').innerHTML=batchResults.map(r=>`<li><strong>${r.id}</strong>　${escapeHtml(r.message)}</li>`).join('');
+}
+async function makeItems(items){
+ if(busy)return;busy=true;batchResults=[];completed=0;
+ const queue=[];
+ items.forEach(item=>{const problems=reasons(item);if(problems.length)batchResults.push({id:item.id,type:'skip',message:'未制作：'+problems.join('；')});else if(valid(item))batchResults.push({id:item.id,type:'skip',message:'保留有效产物，参数未变化'});else queue.push(item);});
+ total=queue.length;updateAll();
+ if(!queue.length){busy=false;renderHistory();updateAll();announce('没有需要制作且校验通过的片段。有效产物已保留，其他原因见制作记录。');return;}
+ for(const item of queue){
+  item.processing=true;item.failure='';updateRow(item);announce(`正在制作 ${item.id}：${item.title}`);
+  await new Promise(resolve=>setTimeout(resolve,500));
+  item.processing=false;item.attempts=(item.attempts||0)+1;
+  if(item.id==='P04'&&item.attempts===1){item.failure='编码任务中断';batchResults.push({id:item.id,type:'failed',message:'制作失败：编码任务中断，请重试'});}
+  else{item.artifact={start:item.start,end:item.end,format:format(item),source:sourceKey(item)};item.failure='';batchResults.push({id:item.id,type:'ok',message:`制作成功：${item.start}–${item.end} 秒 · ${format(item)}`});}
+  completed++;updateRow(item);updateSummary();
+ }
+ busy=false;updateAll();renderHistory();
+ announce(`本次制作完成：${batchResults.filter(r=>r.type==='ok').length} 项成功，${batchResults.filter(r=>r.type==='failed').length} 项失败。请核对清单后导出。`);
+}
+$('clips').addEventListener('input',event=>{
+ const field=event.target.dataset.field;if(!['start','end'].includes(field)||busy)return;
+ const item=data.find(item=>item.id===event.target.closest('[data-id]').dataset.id);
+ item[field]=event.target.value===''?null:Number(event.target.value);item.failure='';if(item.id==='P02')item.promoConfirmed=false;
+ updateRow(item);updateSummary();
+});
+$('clips').addEventListener('change',event=>{
+ const field=event.target.dataset.field;if(!field||['start','end'].includes(field)||busy)return;
+ const item=data.find(item=>item.id===event.target.closest('[data-id]').dataset.id);
+ if(field==='selected'||field==='promoConfirmed')item[field]=event.target.checked;
+ if(field==='mode'){item.mode=event.target.value;item.failure='';}
+ updateAll();
+});
+$('clips').addEventListener('click',event=>{
+ const button=event.target.closest('[data-action]');if(!button||busy)return;
+ const item=data.find(item=>item.id===button.closest('[data-id]').dataset.id);
+ if(button.dataset.action==='relink'){item.source=true;updateAll();announce('P03 已关联「修伞访谈_补传版」，源时长 398 秒。可开始制作。');const next=$('row-P03').querySelector('[data-field="start"]');next.focus();}
+ if(button.dataset.action==='make')makeItems([item]);
+});
+$('selectAll').addEventListener('change',event=>{if(busy)return;data.forEach(item=>item.selected=event.target.checked);updateAll();});
+$('globalFormat').addEventListener('change',event=>{if(busy)return;globalFormat=event.target.value;data.forEach(item=>{if(item.mode==='global')item.failure='';});updateAll();announce('全局格式已改为 '+globalFormat+'；跟随全局且格式不匹配的产物需重新制作。');});
+$('make').addEventListener('click',()=>makeItems(data.filter(item=>item.selected)));
+function manifest(){
+ const selected=data.filter(item=>item.selected);
+ return {schemaVersion:1,kind:'社区电台试听片段交付清单',demo:true,globalFormat,selectedIds:selected.map(item=>item.id),producerNote:'这些片段将放到社区电台的试听页，标题请保持完整；推广内容必须事先确认，不能只凭文件生成成功就交付。',artifacts:selected.filter(valid).map(item=>({id:item.id,title:item.title,source:item.id==='P03'?'修伞访谈_补传版':'原始源文件',sourceDurationSeconds:item.length,startSeconds:item.artifact.start,endSeconds:item.artifact.end,durationSeconds:Number((item.artifact.end-item.artifact.start).toFixed(3)),format:item.artifact.format,promotionIncluded:item.id==='P02'&&item.end>105,promotionConfirmed:item.id==='P02'&&item.end>105?Boolean(item.promoConfirmed):null})),excluded:selected.filter(item=>!valid(item)).map(item=>({id:item.id,title:item.title,reason:exclusion(item)}))};
+}
+function previewManifest(){
+ const output=manifest();
+ $('manifestBody').innerHTML=`<p>当前选择 ${output.selectedIds.length} 项。清单会列出有效产物和其余所选项的排除原因；不会生成音频文件。</p><h3>可交付 · ${output.artifacts.length} 项</h3>${output.artifacts.length?'<ul class="manifest-list">'+output.artifacts.map(a=>`<li><strong>${a.id}</strong>　${escapeHtml(a.title)}<span>${a.startSeconds}–${a.endSeconds} 秒 · ${a.format}${a.promotionIncluded?' · 已确认保留推广':''}</span></li>`).join('')+'</ul>':'<p class="empty">暂无可交付产物，请先完成制作。</p>'}<h3>排除 · ${output.excluded.length} 项</h3>${output.excluded.length?'<ul class="manifest-list">'+output.excluded.map(a=>`<li><strong>${a.id}</strong>　${escapeHtml(a.title)}<span>${escapeHtml(a.reason)}</span></li>`).join('')+'</ul>':'<p class="empty">没有被排除的所选片段。</p>'}`;
+ $('downloadManifest').disabled=!output.artifacts.length||busy;$('manifest').showModal();
+}
+function download(){
+ if(busy)return;const output=manifest();if(!output.artifacts.length){announce('暂无所选有效产物，无法导出。');return;}
+ const blob=new Blob([JSON.stringify(output,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='社区电台_试听片段交付清单.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ announce(`JSON 清单已生成：${output.artifacts.length} 项有效产物，${output.excluded.length} 项排除原因。`);
+}
+$('review').addEventListener('click',previewManifest);$('export').addEventListener('click',download);$('downloadManifest').addEventListener('click',download);$('closeManifest').addEventListener('click',()=>$('manifest').close());$('backManifest').addEventListener('click',()=>$('manifest').close());
+buildRows();
+</script>
+</body>
+</html>

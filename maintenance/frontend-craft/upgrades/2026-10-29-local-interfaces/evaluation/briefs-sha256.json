@@ -1,0 +1,22 @@
+[
+  {
+    "path": "briefs.md",
+    "sha256": "796c3d67ecfc88198c2a0ac50410fb86902e2012f4bdb678d032b60833595d2b"
+  },
+  {
+    "path": "scoring.md",
+    "sha256": "83779d7125ec19be9f8da30cc0dd81b0ed4751b25305a7c52c500583a43e2fbe"
+  },
+  {
+    "path": "tasks/task-1.md",
+    "sha256": "3a8fe45f3ee81fa73d25d6c6f39e9a028916a9ed9d7fe4975e795957dd997c91"
+  },
+  {
+    "path": "tasks/task-2.md",
+    "sha256": "ac34aa9d61873f42deb7a2d1e9be2c13d40296e9a33079e85b7ac471edc79f1d"
+  },
+  {
+    "path": "tasks/task-3.md",
+    "sha256": "ba9f398eabf38695bde025f558f5703141a6085c97d7c63259bddda0250d2f46"
+  }
+]

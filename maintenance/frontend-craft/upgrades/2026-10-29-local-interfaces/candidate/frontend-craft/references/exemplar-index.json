@@ -1,0 +1,693 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-29",
+  "basis": "2026-10-29: added ten documented references for local information/action/state relationships; no new visual captures. 2026-10-26: six original-interface states captured and viewed from four independent publishers; Wikipedia body/source states were added after the paired-build freeze and are not evidence of their effect on those builds.",
+  "entries": [
+    {
+      "id": "oil-reader",
+      "status": "candidate",
+      "tasks": [
+        "read",
+        "annotate"
+      ],
+      "content_shapes": [
+        "long-text",
+        "margin-notes"
+      ],
+      "source_url": "https://ui.oiloil.org/works/reader/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线范例中的描述；本轮尚未直接核验原页面或采集画面。观察连续正文与旁注关系，勿固定深底/宋体/丝带。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-minutes",
+      "status": "candidate",
+      "tasks": [
+        "compare",
+        "verify"
+      ],
+      "content_shapes": [
+        "summary",
+        "transcript"
+      ],
+      "source_url": "https://ui.oiloil.org/works/minutes/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注整理结果与原始依据的定位，不预设证据都常驻一栏。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-mail",
+      "status": "candidate",
+      "tasks": [
+        "browse",
+        "read",
+        "respond"
+      ],
+      "content_shapes": [
+        "list",
+        "detail"
+      ],
+      "source_url": "https://ui.oiloil.org/works/mail/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注列表选中、阅读与回复分工，三栏与橙色不是默认答案。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "linear-refresh",
+      "status": "documented",
+      "tasks": [
+        "operate",
+        "scan"
+      ],
+      "content_shapes": [
+        "dense-app"
+      ],
+      "source_url": "https://linear.app/now/behind-the-latest-design-refresh",
+      "evidence_kind": "primary_method_article",
+      "notes": "已核对官方改版说明：保留丰富密度，调整导航和主要工作区权重、边界与图标。本轮尚无本地截图包。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-type",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "operate",
+        "present"
+      ],
+      "content_shapes": [
+        "type-system"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/foundations/typography/style-strategies",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "已核对区域用途与 productive/expressive 排版的关系。属于方法参考，不作为完整产品画面的替代。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-grid",
+      "status": "documented",
+      "tasks": [
+        "compare",
+        "browse"
+      ],
+      "content_shapes": [
+        "grid",
+        "mixed-content"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "已核对网格中增加条目数与增加单项内容空间的区别。原尺寸属于Carbon，不直接当通用数值。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "letterform-archive",
+      "status": "documented",
+      "tasks": [
+        "browse",
+        "inspect",
+        "present"
+      ],
+      "content_shapes": [
+        "artifacts",
+        "images",
+        "metadata"
+      ],
+      "source_url": "https://letterformarchive.org/news/designing-the-online-archive/",
+      "evidence_kind": "primary_method_article",
+      "notes": "已核对档案设计说明；用于素材原貌、发现与档案信息关系。实际画面和当前页面状态需采集核验。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "oil-folio",
+      "status": "candidate",
+      "tasks": [
+        "present",
+        "explore"
+      ],
+      "content_shapes": [
+        "artworks",
+        "captions"
+      ],
+      "source_url": "https://ui.oiloil.org/works/folio/live/index.html",
+      "evidence_kind": "inherited_description",
+      "notes": "继承基线描述；需核验原页面。关注作品尺度与观看顺序，不能以空网格替代真实素材。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "tufte-sidenotes",
+      "status": "verified_visual",
+      "tasks": [
+        "read",
+        "annotate"
+      ],
+      "content_shapes": [
+        "long-text",
+        "sidenotes",
+        "code"
+      ],
+      "source_url": "https://edwardtufte.github.io/tufte-css/#sidenotes",
+      "source_origin": "edwardtufte-tufte-css",
+      "release_categories": [
+        "reading-verification"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "适用于连续阅读与旁注关系，属于 reading-verification 类别的补充参考；它本身没有真实来源核对流程，不能单独满足该类别的完整覆盖。",
+      "screenshots": [
+        "assets/references/tufte-css/desktop.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "官方示例的 Sidenotes 章节；连续正文、编号 3 的短旁注和行内/块级代码；截图区域没有外部插图。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Tufte CSS 原仓库 MIT 许可允许复制和分发代码及相关文档。本图为仓库原始说明与样式的浏览器呈现，选取不含第三方插图的旁注章节；完整 MIT 文本随图保留在 assets/references/tufte-css/LICENSE.txt。",
+        "source_url": "https://github.com/edwardtufte/tufte-css/blob/gh-pages/LICENSE"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "正文占据连续左侧阅读面，较小旁注通过编号与邻近位置关联；无需把段落拆进独立卡片。",
+          "大标题、正文、旁注、代码通过尺度与字族区分，低对比纸色背景延续阅读。"
+        ],
+        "transfer_limits": [
+          "只验证英文原始说明和一条短旁注；不能据此证明长 AI 解读或多证据核验成立。",
+          "宋体/衬线、行宽与边距需随中文内容和窗口宽度重定；本图没有证明窄屏行为。"
+        ]
+      }
+    },
+    {
+      "id": "tabler-datatables",
+      "status": "verified_visual",
+      "tasks": [
+        "scan",
+        "compare",
+        "sort"
+      ],
+      "content_shapes": [
+        "dense-table",
+        "numeric-columns",
+        "progress"
+      ],
+      "source_url": "https://preview.tabler.io/datatables.html#content",
+      "source_origin": "tabler",
+      "release_categories": [
+        "dense-operation"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "无独立摄影素材的真实密集操作页；观察表格关系和已执行的排序状态。",
+      "screenshots": [
+        "assets/references/tabler/desktop.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "Tabler 1.7.1 DataTables；实际点击 Name 列升序，首行为 Eejanaika new；导航到原页 #content 锚点，工作表格占完整视口，未包含头像照片。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Tabler MIT 许可覆盖原演示页面代码、表格数据和图标。本图只含其 DataTables 工作区；不包含独立照片或 ApexCharts 图表。完整 MIT 文本随图保留在 assets/references/tabler/LICENSE.txt。",
+        "source_url": "https://github.com/tabler/tabler/blob/dev/LICENSE"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "15 行、7 列在单一连续表面呈现；轻分隔和列对齐支持横向比较，表格承担主要面积。",
+          "蓝色进度条标示数值分布，字重、徽标与稀疏强调辅助查找，未给每个数据字段独立容器。"
+        ],
+        "transfer_limits": [
+          "只实际验证列排序；不推断筛选、批量操作、错误或窄屏表现。",
+          "短英文数据与中文长名称不同，列宽、换行和数量精度需重新决定；截图锚点已滚过站点导航。"
+        ]
+      }
+    },
+    {
+      "id": "photoswipe-gallery",
+      "status": "verified_visual",
+      "tasks": [
+        "browse",
+        "present"
+      ],
+      "content_shapes": [
+        "photographs",
+        "mixed-proportions"
+      ],
+      "source_url": "https://photoswipe.com/",
+      "source_origin": "photoswipe-dmytro-semenov",
+      "release_categories": [
+        "public-display"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "素材占主导的内容展示；图片授权与组件许可分别记录。",
+      "screenshots": [
+        "assets/references/photoswipe/gallery.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "PhotoSwipe 5.4.4 官方首页的五张 Luca Bravo 图片，灯箱尚未打开；左侧大竖图、右侧四张横图和摄影署名。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "PhotoSwipe 官方演示与网页源代码为 MIT；摄影由页面署名 Luca Bravo，源码列明 Unsplash 图片 ID；Unsplash 许可允许复制和分发，禁止无实质修改单独销售照片及竞争图库。此处仅分发整体界面参考截图，保留作者署名、许可证及来源；照片不作为独立可复用素材提供。见 assets/references/photoswipe/ATTRIBUTION.md 和 LICENSE.txt。",
+        "source_url": "https://unsplash.com/license"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "一张大竖图与四张较小横图形成明确观看次序，细小白色间隔保持整体作品面。",
+          "标题、简短说明和照片署名在图像周围提供语境，不抢占主要图像面积。"
+        ],
+        "transfer_limits": [
+          "这是组件展示页，不是含完整检索和长档案元信息的展示产品。",
+          "缩略图发生裁切，不能拿缩略图裁切方式代替原图查看；需要实际作品素材才能判断整体成立。"
+        ]
+      }
+    },
+    {
+      "id": "photoswipe-lightbox",
+      "status": "verified_visual",
+      "tasks": [
+        "inspect",
+        "present"
+      ],
+      "content_shapes": [
+        "large-photograph",
+        "overlay"
+      ],
+      "source_url": "https://photoswipe.com/",
+      "source_origin": "photoswipe-dmytro-semenov",
+      "release_categories": [
+        "public-display"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "与首页画廊为同一来源的第二状态；不计为额外独立发布主体。",
+      "screenshots": [
+        "assets/references/photoswipe/lightbox.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "实际点击官方首页第一张图片，灯箱打开至 1 / 5；显示 Zoom、Close、Previous、Next 控件，保持原图纵横比。",
+        "method": "Codex cua_repl / IAB 原始在线页面 tab.screenshot(fullPage:false)，DOM 核对 CSS 视口 1440×1000；工具输出原始 JPEG 为 1425×990，未裁切、重绘或缩放。"
+      },
+      "license": {
+        "redistribution": "allowed",
+        "basis": "PhotoSwipe 官方演示与网页源代码为 MIT；摄影由页面署名 Luca Bravo，源码列明 Unsplash 图片 ID；Unsplash 许可允许复制和分发，禁止无实质修改单独销售照片及竞争图库。此处仅分发整体界面参考截图，保留作者署名、许可证及来源；照片不作为独立可复用素材提供。见 assets/references/photoswipe/ATTRIBUTION.md 和 LICENSE.txt。",
+        "source_url": "https://unsplash.com/license"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "照片按原比例占据灯箱主要高度；暗色背景与边缘控件形成图像中心和操作外围的分工。",
+          "计数、关闭和翻页入口保持轻量可见，与首页预览形成由浏览到细看的尺度变化。"
+        ],
+        "transfer_limits": [
+          "仅实际验证打开第一图；没有把截图当作键盘、关闭、缩放或移动端的全面测试。",
+          "没有长图注或复杂元数据，迁移到档案展示时需要另行组织这些信息。"
+        ]
+      }
+    },
+    {
+      "status": "verified_visual",
+      "tasks": [
+        "read",
+        "verify"
+      ],
+      "content_shapes": [
+        "continuous-text",
+        "citation",
+        "source-reference"
+      ],
+      "source_origin": "wikipedia-contributors",
+      "release_categories": [
+        "reading-verification"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "正文与来源为同一页面的两个实际状态；同属一个发布主体。六次配对构建冻结后补充，不宣称这些构建使用过该参考。",
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Wikipedia 文字以 CC BY-SA 4.0 提供；作者通过文章及完整编辑历史署名。两图是未经像素修改的页面状态记录，不含第三方论文插图。来源图页脚标识仅用于教育性说明网站界面，不暗示背书，不将商标纳入文字许可。详见 assets/references/wikipedia-attention/ATTRIBUTION.md 和 SOURCE.md。",
+        "source_url": "https://en.wikipedia.org/wiki/Wikipedia:Copyrights"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "连续正文用轻量编号 [21] 保持来源可发现，实际点击后来源条目以底色突出，并显示作者、题目和链接。",
+          "来源条目的第一个回链实际返回正文第一次引用；保留来源身份及对应关系，避免仅罗列脱离正文的书目。"
+        ],
+        "transfer_limits": [
+          "英文百科的文献追溯只验证来源定位关系，没有核验论文结论真伪；页面自身的 original research? 提示按原样保留。",
+          "回链目标位于视口顶边（DOM top 约 -0.225px），不能把其留白当理想答案；迁移时须为标题和上下文留空间。",
+          "没有验证中文、长 AI 回答、可编辑笔记、多来源共同可见或外部页面窄屏；不要求复制百科三栏。"
+        ]
+      },
+      "id": "wikipedia-attention-body",
+      "source_url": "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#Attention_with_seq2seq",
+      "screenshots": [
+        "assets/references/wikipedia-attention/body-citation.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "实际点击目录 Attention with seq2seq；正文首段旁有 [21][22] 与原页提示，尚未跳至文末来源。",
+        "method": "Codex cua_repl / IAB 原在线页面 tab.screenshot(fullPage:false) 原始 JPEG；DOM 核对 CSS 1440×1000，未裁切、重绘或缩放。操作与时间记录见维护 evidence/references/wikipedia-*.json；正文精确捕获时间未保存，仅保留文件保存时间。"
+      }
+    },
+    {
+      "status": "verified_visual",
+      "tasks": [
+        "read",
+        "verify"
+      ],
+      "content_shapes": [
+        "continuous-text",
+        "citation",
+        "source-reference"
+      ],
+      "source_origin": "wikipedia-contributors",
+      "release_categories": [
+        "reading-verification"
+      ],
+      "evidence_kind": "original_online_interface_capture",
+      "notes": "正文与来源为同一页面的两个实际状态；同属一个发布主体。六次配对构建冻结后补充，不宣称这些构建使用过该参考。",
+      "license": {
+        "redistribution": "allowed",
+        "basis": "Wikipedia 文字以 CC BY-SA 4.0 提供；作者通过文章及完整编辑历史署名。两图是未经像素修改的页面状态记录，不含第三方论文插图。来源图页脚标识仅用于教育性说明网站界面，不暗示背书，不将商标纳入文字许可。详见 assets/references/wikipedia-attention/ATTRIBUTION.md 和 SOURCE.md。",
+        "source_url": "https://en.wikipedia.org/wiki/Wikipedia:Copyrights"
+      },
+      "review": {
+        "viewed": true,
+        "reviewed_at": "2026-10-26",
+        "relationships": [
+          "连续正文用轻量编号 [21] 保持来源可发现，实际点击后来源条目以底色突出，并显示作者、题目和链接。",
+          "来源条目的第一个回链实际返回正文第一次引用；保留来源身份及对应关系，避免仅罗列脱离正文的书目。"
+        ],
+        "transfer_limits": [
+          "英文百科的文献追溯只验证来源定位关系，没有核验论文结论真伪；页面自身的 original research? 提示按原样保留。",
+          "回链目标位于视口顶边（DOM top 约 -0.225px），不能把其留白当理想答案；迁移时须为标题和上下文留空间。",
+          "没有验证中文、长 AI 回答、可编辑笔记、多来源共同可见或外部页面窄屏；不要求复制百科三栏。"
+        ]
+      },
+      "id": "wikipedia-attention-source",
+      "source_url": "https://en.wikipedia.org/wiki/Attention_Is_All_You_Need#cite_note-:22-23",
+      "screenshots": [
+        "assets/references/wikipedia-attention/source-location.jpg"
+      ],
+      "capture": {
+        "captured_at": "2026-10-26",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "image_pixels": {
+          "width": 1425,
+          "height": 990
+        },
+        "page_state": "实际点击正文第一次 [21] 后，Cho 等 2014 文献条目高亮，显示作者、论文题目、ACL/DOI 及两个回链。",
+        "method": "Codex cua_repl / IAB 原在线页面 tab.screenshot(fullPage:false) 原始 JPEG；DOM 核对 CSS 1440×1000，未裁切、重绘或缩放。操作与时间记录见维护 evidence/references/wikipedia-*.json；正文精确捕获时间未保存，仅保留文件保存时间。"
+      }
+    },
+    {
+      "id": "openwebui-connections",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "connect",
+        "validate"
+      ],
+      "content_shapes": [
+        "connection-list",
+        "mixed-controls",
+        "conditional-fields"
+      ],
+      "source_url": "https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible/",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：按连接组织地址、凭据、模型及验证/保存，启停保留配置。适合列表到编辑窗口的对象归属；供应商特例、验证错误与模型发现的行为不可照搬。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "dify-provider-scope",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "select",
+        "manage"
+      ],
+      "content_shapes": [
+        "provider-card",
+        "model-list",
+        "credential-scope"
+      ],
+      "source_url": "https://docs.dify.ai/en/cloud/use-dify/workspace/model-providers",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：区分供应商共享凭据、单模型凭据与工作区默认模型，负载均衡属于模型配置。适合多层对象的配置范围；目标产品没有对应能力时不添加层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "bruno-inherited-auth",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "configure",
+        "override"
+      ],
+      "content_shapes": [
+        "active-value",
+        "read-only-fields",
+        "source-link"
+      ],
+      "source_url": "https://docs.usebruno.com/auth/overview",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：继承配置显示来源、有效值与编辑来源入口；查看继承值不改变继承模式。适合只读值与局部覆盖共存的区域；无继承关系时不引入层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "carbon-contained-forms",
+      "status": "documented",
+      "tasks": [
+        "configure",
+        "edit",
+        "submit"
+      ],
+      "content_shapes": [
+        "grouped-fields",
+        "mixed-controls",
+        "action-group"
+      ],
+      "source_url": "https://www.carbondesignsystem.com/building-blocks/core/patterns/forms",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：按相关任务分组，字段、组间距及动作共同对齐；容器内可用通栏动作组。适合多组输入与完成动作；贴边、顺序和尺寸属于 Carbon，不与其他系统零散拼贴。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "primer-dialog-regions",
+      "status": "documented",
+      "tasks": [
+        "edit",
+        "confirm",
+        "filter"
+      ],
+      "content_shapes": [
+        "dialog",
+        "scroll-body",
+        "action-footer"
+      ],
+      "source_url": "https://primer.style/product/components/dialog/guidelines/",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：筛选区、滚动主体和动作页脚各有职责，主要动作在页脚右对齐。适合有明确结束点的局部任务；不将复杂页面强塞进弹窗，也不把右对齐当通用要求。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "readwise-document-chat",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "ask",
+        "save"
+      ],
+      "content_shapes": [
+        "document",
+        "conversation",
+        "attached-passage"
+      ],
+      "source_url": "https://docs.readwise.io/reader/guides/ghostreader/chat",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：阅读旁会话、选段提问、输入处模型选择和单条回答存入笔记。适合消息与材料及相邻动作分工；单文档和全库模式不同，不推断长回答、焦点或返回位置已验证。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "zotero-annotation-notes",
+      "status": "documented",
+      "tasks": [
+        "read",
+        "annotate",
+        "compose"
+      ],
+      "content_shapes": [
+        "document",
+        "annotation-list",
+        "editable-note"
+      ],
+      "source_url": "https://www.zotero.org/support/pdf_reader",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：主体阅读、注释与笔记面板关联，添加到笔记的注释保留回到 PDF 的路径。适合内容生产与来源往返；不将 PDF 笔记布局当作长会话模板或固定三栏比例。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "fluent-drawer-states",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "edit",
+        "recover"
+      ],
+      "content_shapes": [
+        "inline-panel",
+        "overlay-panel",
+        "section-error"
+      ],
+      "source_url": "https://fluent2.microsoft.design/components/web/react/core/drawer/usage",
+      "evidence_kind": "primary_design_guidance",
+      "notes": "2026-10-29 核对官方方法：需同时操作主体时可并置，聚焦辅助任务时可覆盖；局部错误靠近受影响分组。适合共视选择与分组恢复；不把短辅助任务的步数或遮罩规则泛化到长内容。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "vscode-settings-scope",
+      "status": "documented",
+      "tasks": [
+        "find",
+        "configure",
+        "reset"
+      ],
+      "content_shapes": [
+        "settings-editor",
+        "scope-selector",
+        "mixed-controls",
+        "modified-state"
+      ],
+      "source_url": "https://code.visualstudio.com/docs/configure/settings",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：分类、搜索、作用域、逐项编辑与已修改标记共同组织设置，支持筛选改动和单项重置。适合多控件与状态共存；即时生效不能迁移成有提交草稿的行为，也不照搬全部配置层级。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    },
+    {
+      "id": "github-review-progress",
+      "status": "documented",
+      "tasks": [
+        "inspect",
+        "compare",
+        "comment",
+        "submit"
+      ],
+      "content_shapes": [
+        "diff",
+        "context-links",
+        "review-progress",
+        "pending-comments"
+      ],
+      "source_url": "https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request",
+      "evidence_kind": "primary_product_documentation",
+      "notes": "2026-10-29 核对官方文档：侧栏提供背景，逐文件内容关联评论与已查看状态，待提交评论和最终审查分开；文件新变化会重开查看状态。适合局部进度与整体决定；不将代码 diff、折叠或审批机制当通用模板。未看图或操作。",
+      "screenshots": [],
+      "capture": null,
+      "license": null,
+      "review": null
+    }
+  ]
+}

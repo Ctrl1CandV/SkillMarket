@@ -1,0 +1,751 @@
+{
+  "checked_at": "2026-10-29T10:55:16+08:00",
+  "scope": "baseline and candidate snapshots, frontend-craft/product-design runtime only; no evaluation files, browser or network",
+  "snapshot_before": {
+    "baseline": {
+      "passed": true,
+      "manifest_sha256": "aca4478ade45cef04c6a432400f336feb8df3fd7c3d9a559e816b806fe2700ad",
+      "expected_files": 32,
+      "actual_files": 32,
+      "changed": [],
+      "missing": [],
+      "extra": [],
+      "duplicate_manifest_paths": 0
+    },
+    "candidate": {
+      "passed": true,
+      "manifest_sha256": "7c67ca720885869b40ebf23a87e0b7daa92acef390653d5855815e1cb044cf6c",
+      "expected_files": 36,
+      "actual_files": 36,
+      "changed": [],
+      "missing": [],
+      "extra": [],
+      "duplicate_manifest_paths": 0
+    }
+  },
+  "snapshot_after": {
+    "baseline": {
+      "passed": true,
+      "manifest_sha256": "aca4478ade45cef04c6a432400f336feb8df3fd7c3d9a559e816b806fe2700ad",
+      "expected_files": 32,
+      "actual_files": 32,
+      "changed": [],
+      "missing": [],
+      "extra": [],
+      "duplicate_manifest_paths": 0
+    },
+    "candidate": {
+      "passed": true,
+      "manifest_sha256": "7c67ca720885869b40ebf23a87e0b7daa92acef390653d5855815e1cb044cf6c",
+      "expected_files": 36,
+      "actual_files": 36,
+      "changed": [],
+      "missing": [],
+      "extra": [],
+      "duplicate_manifest_paths": 0
+    }
+  },
+  "snapshots_and_manifests_unchanged_during_audit": true,
+  "runtime_equals_candidate": true,
+  "runtime_only": [],
+  "candidate_only": [],
+  "runtime_changed_files": [],
+  "quick_validate": {
+    "candidate/frontend-craft": {
+      "command": [
+        "D:\\ProgramData\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "C:\\Users\\LiuYiJie\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-29-local-interfaces\\candidate\\frontend-craft"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    "candidate/product-design": {
+      "command": [
+        "D:\\ProgramData\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "C:\\Users\\LiuYiJie\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-29-local-interfaces\\candidate\\product-design"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    "runtime/frontend-craft": {
+      "command": [
+        "D:\\ProgramData\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "C:\\Users\\LiuYiJie\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "D:\\Program Project\\SkillMarket\\frontend-craft"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    "runtime/product-design": {
+      "command": [
+        "D:\\ProgramData\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "C:\\Users\\LiuYiJie\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "D:\\Program Project\\SkillMarket\\product-design"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    }
+  },
+  "local_links": {
+    "passed": true,
+    "local_references_checked": 128,
+    "external_or_data_links_skipped": 77,
+    "issues": [],
+    "references": [
+      {
+        "source": "frontend-craft/assets/references/photoswipe/ATTRIBUTION.md",
+        "target": "LICENSE.txt"
+      },
+      {
+        "source": "frontend-craft/assets/references/tabler/SOURCE.md",
+        "target": "LICENSE.txt"
+      },
+      {
+        "source": "frontend-craft/assets/references/tufte-css/SOURCE.md",
+        "target": "LICENSE.txt"
+      },
+      {
+        "source": "frontend-craft/assets/references/wikipedia-attention/ATTRIBUTION.md",
+        "target": "SOURCE.md"
+      },
+      {
+        "source": "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+        "target": "ATTRIBUTION.md"
+      },
+      {
+        "source": "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+        "target": "body-citation.jpg"
+      },
+      {
+        "source": "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+        "target": "source-location.jpg"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "styles.css"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "lab.js"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#main-content"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#top"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#evidence-panel"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#section-position"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#section-evidence"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#section-figure"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#section-window"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#evidence-1"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#evidence-2"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#evidence-3"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#reader-heading"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#source-1"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#source-2"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#source-3"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/index.html",
+        "target": "#top"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "styles.css"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "local-interface.css"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "local-interface.js"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "#loan-form"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "index.html"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "#object-context"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "#arrangement"
+      },
+      {
+        "source": "frontend-craft/assets/style-lab/local-interface.html",
+        "target": "#loan-history"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#先看同一画面里的文字角色"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#字体候选与实际可用性"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#连续正文"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#中英混排与强调"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#断行与标点"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "#实现后检查"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/cjk-typography.md",
+        "target": "layout.md"
+      },
+      {
+        "source": "frontend-craft/references/content.md",
+        "target": "local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/references/content.md",
+        "target": "layout.md"
+      },
+      {
+        "source": "frontend-craft/references/content.md",
+        "target": "exemplars.md"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/tufte-css/desktop.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/tabler/desktop.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/photoswipe/gallery.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/photoswipe/lightbox.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/wikipedia-attention/body-citation.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplar-index.json",
+        "target": "assets/references/wikipedia-attention/source-location.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "exemplar-index.json"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/tufte-css/desktop.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/wikipedia-attention/body-citation.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/wikipedia-attention/source-location.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/tabler/desktop.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/photoswipe/gallery.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/photoswipe/lightbox.jpg"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/wikipedia-attention/ATTRIBUTION.md"
+      },
+      {
+        "source": "frontend-craft/references/exemplars.md",
+        "target": "../assets/references/photoswipe/ATTRIBUTION.md"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#确定同一画面中的关系"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#分配空间与视觉分量"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#密度与节奏"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#选择布局模式与原语"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#明确滚动边界"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "#空间变化时延续任务"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "exemplars.md"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/references/layout.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/references/local-interfaces.md",
+        "target": "visual-style.md"
+      },
+      {
+        "source": "frontend-craft/references/local-interfaces.md",
+        "target": "layout.md#明确滚动边界"
+      },
+      {
+        "source": "frontend-craft/references/local-interfaces.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/references/local-interfaces.md",
+        "target": "exemplars.md"
+      },
+      {
+        "source": "frontend-craft/references/local-interfaces.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/reference-selection.md",
+        "target": "exemplars.md"
+      },
+      {
+        "source": "frontend-craft/references/reference-selection.md",
+        "target": "exemplar-index.json"
+      },
+      {
+        "source": "frontend-craft/references/reference-selection.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/reference-selection.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/references/review.md",
+        "target": "cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/references/review.md",
+        "target": "visual-style.md"
+      },
+      {
+        "source": "frontend-craft/references/review.md",
+        "target": "local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/references/review.md",
+        "target": "content.md"
+      },
+      {
+        "source": "frontend-craft/references/review.md",
+        "target": "visual-style.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "content.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "content.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "exemplars.md"
+      },
+      {
+        "source": "frontend-craft/references/scenarios.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/index.html"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/styles.css"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/lab.js"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/local-interface.html"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/local-interface.css"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "../assets/style-lab/local-interface.js"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/references/style-samples.md",
+        "target": "reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "style-samples.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/references/visual-style.md",
+        "target": "review.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/content.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/exemplars.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/style-samples.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/layout.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/visual-style.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/review.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/content.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/content.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/local-interfaces.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/layout.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/visual-style.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/cjk-typography.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/reference-selection.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/exemplars.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/style-samples.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/scenarios.md"
+      },
+      {
+        "source": "frontend-craft/SKILL.md",
+        "target": "references/review.md"
+      },
+      {
+        "source": "product-design/SKILL.md",
+        "target": "references/product-context.md"
+      },
+      {
+        "source": "product-design/SKILL.md",
+        "target": "references/new-and-redesign.md"
+      },
+      {
+        "source": "product-design/SKILL.md",
+        "target": "references/examples.md"
+      }
+    ]
+  },
+  "exemplar_index": {
+    "passed": true,
+    "baseline_count": 14,
+    "candidate_count": 24,
+    "original_entries_and_order_exactly_equal": true,
+    "duplicate_ids": [],
+    "new_entries": [
+      {
+        "id": "openwebui-connections",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "dify-provider-scope",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "bruno-inherited-auth",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "carbon-contained-forms",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "primer-dialog-regions",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "readwise-document-chat",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "zotero-annotation-notes",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "fluent-drawer-states",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "vscode-settings-scope",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      },
+      {
+        "id": "github-review-progress",
+        "status": "documented",
+        "screenshots": [],
+        "capture": null
+      }
+    ]
+  },
+  "js_syntax": [
+    {
+      "scope": "candidate",
+      "file": "frontend-craft/assets/style-lab/lab.js",
+      "command": [
+        "D:\\Program Files\\nodejs\\node.EXE",
+        "--check",
+        "D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-29-local-interfaces\\candidate\\frontend-craft\\assets\\style-lab\\lab.js"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "candidate",
+      "file": "frontend-craft/assets/style-lab/local-interface.js",
+      "command": [
+        "D:\\Program Files\\nodejs\\node.EXE",
+        "--check",
+        "D:\\Program Project\\SkillMarket\\maintenance\\frontend-craft\\upgrades\\2026-10-29-local-interfaces\\candidate\\frontend-craft\\assets\\style-lab\\local-interface.js"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "runtime",
+      "file": "frontend-craft/assets/style-lab/lab.js",
+      "command": [
+        "D:\\Program Files\\nodejs\\node.EXE",
+        "--check",
+        "D:\\Program Project\\SkillMarket\\frontend-craft\\assets\\style-lab\\lab.js"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "scope": "runtime",
+      "file": "frontend-craft/assets/style-lab/local-interface.js",
+      "command": [
+        "D:\\Program Files\\nodejs\\node.EXE",
+        "--check",
+        "D:\\Program Project\\SkillMarket\\frontend-craft\\assets\\style-lab\\local-interface.js"
+      ],
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "passed": true
+}

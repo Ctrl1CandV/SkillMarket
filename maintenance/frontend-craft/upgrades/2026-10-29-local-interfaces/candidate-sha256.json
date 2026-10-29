@@ -1,0 +1,146 @@
+[
+  {
+    "path": "frontend-craft/assets/references/photoswipe/ATTRIBUTION.md",
+    "sha256": "d24cde5ca27be904f119426052a3a3d63f94f4dd3949d3dcb35f063934ffce8f"
+  },
+  {
+    "path": "frontend-craft/assets/references/photoswipe/gallery.jpg",
+    "sha256": "e2234194137efc1fdaff28df75b21a1a3ca4ef2d85eff1a9aa806e690e9a70b5"
+  },
+  {
+    "path": "frontend-craft/assets/references/photoswipe/LICENSE.txt",
+    "sha256": "41924a489f374dcc647db30916c6de47c4eb8c9a995de6a4c08629696096db3e"
+  },
+  {
+    "path": "frontend-craft/assets/references/photoswipe/lightbox.jpg",
+    "sha256": "eb75444e34c522d0fee23af94228658e9cbd4973099606a7b423039c23d1f6bb"
+  },
+  {
+    "path": "frontend-craft/assets/references/tabler/desktop.jpg",
+    "sha256": "a790b184245aeb830829eb739e7467bd94f234b0c796abd21ce347e761cf164a"
+  },
+  {
+    "path": "frontend-craft/assets/references/tabler/LICENSE.txt",
+    "sha256": "4f88a82d13be3c5c63a12c5631eae914aa4381b6dc17641bf1ab85f3f8f6c8a5"
+  },
+  {
+    "path": "frontend-craft/assets/references/tabler/SOURCE.md",
+    "sha256": "2e023495adf1f5d378d8c012dc2bb3a7e6a7d45f484411426063e057fbab212c"
+  },
+  {
+    "path": "frontend-craft/assets/references/tufte-css/desktop.jpg",
+    "sha256": "7e6a168d0e8991a6a7f3457539d2b9263075575ad50456ba289d413c21abec1d"
+  },
+  {
+    "path": "frontend-craft/assets/references/tufte-css/LICENSE.txt",
+    "sha256": "a79c7ce09a19c1d53087f053bf35ef380fe3f23d6b7c877e11b7f4ecf01fb909"
+  },
+  {
+    "path": "frontend-craft/assets/references/tufte-css/SOURCE.md",
+    "sha256": "372dec08df579c3fcaaeb19dda3958cb1ddd8974c6c1a6efd256a8c5d0620b49"
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/ATTRIBUTION.md",
+    "sha256": "d718f6277413dbf3296f59d5bffbabddc53f14af0f138e7cb011ba19ad295ec6"
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/body-citation.jpg",
+    "sha256": "04f51b9aad28e19bba8c9e4a961bfb515413fbbc3e2f98eb6ead6ea7cab9fbe8"
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/source-location.jpg",
+    "sha256": "95fcf355acacc4e140d07c07eb1f89df5f6814fe5615a63d71bbb3ea2bfde347"
+  },
+  {
+    "path": "frontend-craft/assets/references/wikipedia-attention/SOURCE.md",
+    "sha256": "58c72d3a3611a6553972712050697948ca1adf99af3b93649d4f5886ace82a67"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/index.html",
+    "sha256": "dfd2048a3f9c0a9a51176b313999d93bc8b873e857c67971fe0ef010572f9617"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/lab.js",
+    "sha256": "9a22a63601ce342b592eb42b28db42a6870b548da50fe2f27367631ecf45112a"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/local-interface.css",
+    "sha256": "e3c01569cfe38e76cc64072c6f800ae74103f01a245e17a624706440c7a4ce32"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/local-interface.html",
+    "sha256": "c6bbee59f2e2972c8037319ea0fa8ce795a81d5b9218f02bc2c2ea33a3a7fe2b"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/local-interface.js",
+    "sha256": "7090a8d5a8286ab85e3ea06a5d6c5a7df49763e4842422c3254fbd27bb393574"
+  },
+  {
+    "path": "frontend-craft/assets/style-lab/styles.css",
+    "sha256": "06021a84bcca0558edf277ef967c3070866d8969d6674bb0b8330c99ae9147f0"
+  },
+  {
+    "path": "frontend-craft/references/cjk-typography.md",
+    "sha256": "634a84e2d9e8dec8b81e40997cbe65fdb6800820abb393abfd3530eeb0d6fb2d"
+  },
+  {
+    "path": "frontend-craft/references/content.md",
+    "sha256": "6bdbcdfd01b8e1f288ac00a4608522e76dc4dc802d691c5c6f6f377babc4e1bd"
+  },
+  {
+    "path": "frontend-craft/references/exemplar-index.json",
+    "sha256": "4c751c93d9a48cc8417897321a5b0a928eb1d4b565d02462d9f5cd7456ca0341"
+  },
+  {
+    "path": "frontend-craft/references/exemplars.md",
+    "sha256": "25c7bdb7c53d2bafacb37becd19f15c42e0913c9917c71b46d080b4ee5e05eb3"
+  },
+  {
+    "path": "frontend-craft/references/layout.md",
+    "sha256": "b698b3e1b3c631bfe39ff1f4abb57ec30ef216b82990c66ab658bdb489392d95"
+  },
+  {
+    "path": "frontend-craft/references/local-interfaces.md",
+    "sha256": "48029e218135ea2f690687d0f4b6cc2352ea69a80c5ac845dd5633b409fb6776"
+  },
+  {
+    "path": "frontend-craft/references/reference-selection.md",
+    "sha256": "feb8e09cc121c9d456438a2ed34efa1afe1b66d02686e0dd9fe6433052b42076"
+  },
+  {
+    "path": "frontend-craft/references/review.md",
+    "sha256": "3f8d5dad036d3b19d70cde1af73d435b583e01a73a4a3eb6ef0505fd9492dab3"
+  },
+  {
+    "path": "frontend-craft/references/scenarios.md",
+    "sha256": "379ef21d389fd21dbfd714e8aad4b3d0e8e2cf8e505afdc0d0cff0118200f954"
+  },
+  {
+    "path": "frontend-craft/references/style-samples.md",
+    "sha256": "9d5868075d1f36f5e32dd95252a78d6da862138fedfcfe0cd49434952df77988"
+  },
+  {
+    "path": "frontend-craft/references/visual-style.md",
+    "sha256": "aba0d69955968a2f1945829264a5fe66303abc1310578b94d300aac235e257d6"
+  },
+  {
+    "path": "frontend-craft/SKILL.md",
+    "sha256": "fa8668611f93835de615950011b711f68cc144e8dc05b0034dfa4b692b8e1e0f"
+  },
+  {
+    "path": "product-design/references/examples.md",
+    "sha256": "ac2e3d68f45bddddfc082d0d699b36ad0a34989567d89452200b3d1f35d4ca89"
+  },
+  {
+    "path": "product-design/references/new-and-redesign.md",
+    "sha256": "6db4adc87f236e34f8a267b4432f2bac641039bd446d7a649300e53fa38315ec"
+  },
+  {
+    "path": "product-design/references/product-context.md",
+    "sha256": "45f13ad5be3771af44a20c57e828b4be2c99200a311a89f031c398196d6742a4"
+  },
+  {
+    "path": "product-design/SKILL.md",
+    "sha256": "cbd655cd868670c77a47816f8a44a4efae11f67d29315bdb8ba07886e6c507f9"
+  }
+]
