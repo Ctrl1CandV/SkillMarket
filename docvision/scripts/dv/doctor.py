@@ -142,6 +142,7 @@ def collect(*, probe: bool = False) -> dict:
     storage = storage_status()
     hardware = hardware_plan(platform, ram_gb, gpu, storage)
     local_available = any(e.available for e in engines.values() if e.name != "vlm") or engines["vlm"].available
+    text_local_available = bool(core.get('pypdf', {}).get('ok'))
     remote_available = any(bool(v) for v in keys.values())
     consent = config.remote_consent()
     remote_policy_allowed = consent == "remote"
@@ -163,12 +164,14 @@ def collect(*, probe: bool = False) -> dict:
             "extra": {k: v for k, v in engine.extra.items() if k != "api_key"},
         }
     actions = []
+    if text_local_available:
+        actions.append('PDF text-layer reading is ready: docvision convert <paper.pdf> --tier fast --resume. This does not perform OCR or verify formulas/tables.')
     if hardware["local_feasibility"] == "caution":
         actions.append("Assess the limited-memory/disk local route before installation: docvision setup --profile mineru --no-models --dry-run; consider core or economy/basic models first.")
     if not engines["mineru"].available:
-        actions.append("Inspect the local installation plan, then install after checking hardware: docvision setup --profile mineru --dry-run")
+        actions.append("For full OCR when needed, inspect the local installation plan: docvision setup --profile mineru --dry-run")
     if engines["mineru"].available and not (engine_data["mineru"]["models"] or {}).get("standard_present"):
-        actions.append("Inspect missing models at the reported MinerU home; prepare economy/basic on limited hardware. For standard after checking resources: docvision setup --profile mineru --yes")
+        actions.append("Inspect missing models at the reported MinerU home; prepare economy/basic on limited hardware. For standard after checking resources: docvision setup --profile mineru --sample <local PDF/image> --yes")
     if not all(item.get("ok") for item in core.values()):
         actions.append("For page rendering/cropping: docvision setup --profile core --yes")
     if not remote_available:
@@ -181,8 +184,8 @@ def collect(*, probe: bool = False) -> dict:
         actions.append("No configured remote route has a successful authentication probe; inspect probe details or use local OCR.")
     paddle = engines["paddleocr"]
     if paddle.extra.get("installed") and not paddle.available:
-        actions.append("Repair Paddle's isolated dependencies: docvision setup --profile paddle --yes; then test one page.")
-    if not local_available and not remote_available:
+        actions.append("Build and validate a new Paddle environment: docvision setup --profile paddle --sample <local PDF/image> --yes; the previous runtime stays active on failure.")
+    if not local_available and not remote_available and not text_local_available:
         actions.append("No OCR route is ready; install a local engine or configure one remote key.")
     return {
         "schema": "docvision.doctor/1",
@@ -205,10 +208,11 @@ def collect(*, probe: bool = False) -> dict:
         "engines": engine_data,
         "remote": remotes,
         "local_available": local_available,
+        "text_local_available": text_local_available,
         "remote_available": remote_available,
         "remote_policy_allowed": remote_policy_allowed,
         "remote_usable": remote_usable,
-        "healthy": local_available or remote_usable,
+        "healthy": text_local_available or local_available or remote_usable,
         "next_actions": actions,
         "note": "Installed availability does not prove OCR accuracy; run a real sample and inspect page images.",
     }
@@ -236,6 +240,7 @@ def render(report: dict) -> str:
     for name, item in report["core_python_modules"].items():
         lines.append(f"    [{mark(item['ok'])}] {name}: {item['detail']}")
     lines.append("  local engines:")
+    lines.append(f"    [{mark(report.get('text_local_available'))}] text-local: PDF text layer only (no OCR)")
     for name, item in report["engines"].items():
         lines.append(f"    [{mark(item['available'])}] {name}: {item.get('version') or item.get('detail')}")
         if item.get("exe"):

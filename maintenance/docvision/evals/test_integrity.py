@@ -43,7 +43,7 @@ class IntegrityTests(unittest.TestCase):
         raw = RawDoc(markdown="", pages=pages, provider="mineru-local",
                      assets={"diagram.png": PNG} if image else {})
         return write_document(raw, str(self.source), Options(pages=selected),
-                              out_root=self.root / "out", info={"pages": total, "sha256": "abc"})
+                              out_root=self.root / "out", info={"pages": total, "sha256": util.sha256_file(self.source)})
 
     @staticmethod
     def issue_codes(qa):

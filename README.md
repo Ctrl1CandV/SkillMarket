@@ -10,7 +10,7 @@
 - [grad-companion](plugins/grad-companion-plugin/)：辅助读研期间的论文阅读、研究记录、实验积累与阶段复盘；新增 [experiment-design](plugins/grad-companion-plugin/skills/experiment-design/SKILL.md)，把研究想法转成可执行、有判别力的实验计划。
 - [agent-parliament](plugins/agent-parliament-plugin/skills/orchestrator/SKILL.md)：组织规划、质疑、实现、审查与验证，不依赖专用 MCP 服务；可由同一代理顺序执行。
 - [skill-search](skill-search/SKILL.md)：针对明确的技能搜索请求或复杂项目中的能力缺口，寻找能改善任务的技能；检查已有能力、读候选正文、分清指标口径，找不到就停止。
-- [docvision](docvision/SKILL.md)：0.3.0，本地批量解析 PDF/图片，按页或裁块精读公式、表格、图表与架构图；默认完全本地，首次使用时询问是否配置 PaddleOCR 官方免费额度 API（凭据固定在技能目录、可持久拒绝上传），保留原图、页码、bbox 和独立复核结果。
+- [docvision](docvision/SKILL.md)：0.5.0，数字 PDF 批量筛读与本地 OCR；疑难区域按需用 PaddleOCR API 对照纠错，图表与架构图实际看图。保留原稿和有依据的校正，支持云任务续接、文献搬家、环境验收与回退。
 - [presentation-craft](presentation-craft/SKILL.md)：用免费本地工具制作组会、论文与课程汇报；组织证据、选择视觉风格，生成可编辑 PPTX 与基本点击动画，并检查实际导出与放映。
 - [git-governance](git-governance/SKILL.md)：按项目需要选择 Git 工作流，管理分支、文件入库与本地保留、提交、协作、发布和安全清理；区分 Git 机制、团队约定与发布清单。
 

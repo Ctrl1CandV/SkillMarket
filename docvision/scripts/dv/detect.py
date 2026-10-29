@@ -42,7 +42,12 @@ def inspect_input(source: str, opts: Options) -> dict:
         info["sha256"] = util.sha256_file(path)
         if info["is_pdf"]:
             info["pages"] = util.pdf_page_count(path)
-            info["pdf_text"] = util.pdf_text_stats(path)
+            # Fast reading already requests the embedded layer. A second
+            # full-document extraction merely to decide OCR is wasted work.
+            text_only = (opts.mode in {'auto', 'text'} and
+                         (opts.provider == 'text-local' or
+                          (opts.provider == 'auto' and opts.tier == 'fast')))
+            info["pdf_text"] = {} if text_only else util.pdf_text_stats(path)
             chars_per_page = info["pdf_text"].get("chars_per_page")
             if chars_per_page is not None:
                 info["needs_ocr"] = chars_per_page < 50
@@ -68,6 +73,13 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
     if opts.provider and opts.provider != "auto":
         return opts.provider
 
+    # Reading a digital paper should not require discovering or launching OCR.
+    # Scanned/empty selections fail explicitly in this provider; never upload
+    # or silently switch to a heavier model after a text-only request.
+    if (opts.tier == "fast" and opts.mode in {"auto", "text"}
+            and not util.is_url(source) and util.suffix_of(source) == ".pdf"):
+        return "text-local"
+
     # Local first, always.  A local failure never silently becomes an upload.
     if config.discover_mineru().available:
         return "mineru-local"
@@ -84,7 +96,7 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
     if config.remote_consent() == "local-only":
         raise DocVisionError(
             "No local OCR engine is installed, and remote upload was declined for this installation.",
-            hint=("Install a local engine with `docvision setup --profile mineru --yes`, "
+            hint=("Install a local engine with `docvision setup --profile mineru --sample <local PDF/image> --yes`, "
                   "or re-enable the remote route with `docvision setup --remote`."),
         )
     if config.remote_consent() != "remote":
@@ -94,15 +106,16 @@ def choose_provider(source: str, opts: Options, info: dict | None = None) -> str
         )
     raise DocVisionError(
         "No local OCR engine is installed, and remote upload was not authorized.",
-        hint=("Install a local engine with `docvision setup --profile mineru --yes`, "
+        hint=("Install a local engine with `docvision setup --profile mineru --sample <local PDF/image> --yes`, "
               "or pass `--allow-remote --provider paddleocr-cloud` after checking that "
               "uploading the document is acceptable."),
     )
 
 
 def describe_route(provider: str) -> dict:
-    local = provider in {"mineru-local", "paddleocr-local", "local-vlm"}
+    local = provider in {"text-local", "mineru-local", "paddleocr-local", "local-vlm"}
     labels = {
+        "text-local": "Local PDF text layer",
         "mineru-local": "MinerU 4 local",
         "paddleocr-local": "PaddleOCR-VL local",
         "local-vlm": "Local OpenAI-compatible VLM",

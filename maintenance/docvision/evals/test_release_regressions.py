@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'docvision' / 'scripts'))
 
 from dv import read, refine, setup_cmd, util  # noqa: E402
-from dv.base import Options, RawBlock, RawDoc, RawPage  # noqa: E402
+from dv.base import DocVisionError, Options, RawBlock, RawDoc, RawPage  # noqa: E402
 from dv.output import write_document  # noqa: E402
 
 
@@ -71,6 +71,9 @@ class RenderReleaseTests(unittest.TestCase):
         replacement.replace(self.source)
         self.assertEqual(self.source.stat().st_mtime_ns, before.st_mtime_ns)
 
+        with self.assertRaisesRegex(DocVisionError, 'original file has changed'):
+            read.read(self.docdir, page=1, fmt='image')
+        self.document(force=True)
         current = Path(read.read(self.docdir, page=1, fmt='image'))
         self.assert_color(current, (0, 0, 255))
         self.assert_color(previous, (255, 0, 0))
@@ -88,13 +91,16 @@ class RenderReleaseTests(unittest.TestCase):
         self.assertEqual(again, high)
         self.assertEqual(render.call_args_list, [call(self.source, 0, dpi=150), call(self.source, 0, dpi=300)])
 
-    def test_pdf_source_change_invalidates_render_with_stale_metadata(self):
+    def test_pdf_source_change_requires_reconversion_before_render(self):
         self.source = self.root / 'source.pdf'
         self.source.write_bytes(b'old PDF fixture')
         self.docdir = self.document()
         with patch.object(util, 'render_pdf_page', side_effect=lambda source, index, dpi: source.read_bytes()):
             previous = read.render_page(self.docdir, 1)
             self.source.write_bytes(b'new PDF fixture')
+            with self.assertRaisesRegex(DocVisionError, 'original file has changed'):
+                read.render_page(self.docdir, 1)
+            self.document(force=True)
             current = read.render_page(self.docdir, 1)
         self.assertEqual(current.read_bytes(), b'new PDF fixture')
         self.assertEqual(previous.read_bytes(), b'old PDF fixture')

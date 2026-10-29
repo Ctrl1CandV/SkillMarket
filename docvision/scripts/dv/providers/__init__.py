@@ -7,7 +7,7 @@ route the skill is designed and tested around.
 
 from __future__ import annotations
 
-from . import mineru_local, openai_compat, paddle_cloud, paddle_local
+from . import mineru_local, openai_compat, paddle_cloud, paddle_local, text_local
 
 
 def run(provider: str, source: str, opts):
@@ -19,6 +19,8 @@ def run(provider: str, source: str, opts):
                                  hint='Confirm upload is acceptable and run `docvision setup --remote`.')
         if not opts.allow_remote:
             raise DocVisionError('Remote upload requires --allow-remote on this call.')
+    if provider == "text-local":
+        return text_local.convert(source, opts)
     if provider == "mineru-local":
         return mineru_local.convert(source, opts)
     if provider == "paddleocr-local":
@@ -32,6 +34,7 @@ def run(provider: str, source: str, opts):
 
 
 PROVIDERS = {
+    "text-local": {"layer": "local", "label": "PDF text layer (no OCR/model)", "quality": "text-only"},
     "mineru-local": {"layer": "local", "label": "MinerU 4 local", "quality": "high"},
     "paddleocr-local": {"layer": "local", "label": "PaddleOCR-VL 1.6 local", "quality": "high"},
     "local-vlm": {"layer": "local", "label": "Local OpenAI-compatible VLM", "quality": "medium"},

@@ -118,25 +118,32 @@ def _stored_path(value: str) -> Path:
     return path.resolve()
 
 
-def models_root(cfg: dict | None = None) -> Path:
+def models_root(cfg: dict | None = None, *, use_environment: bool = True) -> Path:
     """Fixed model root: config override, then DOCVISION_MODELS, then app data."""
     cfg = load() if cfg is None else cfg
     configured = (cfg.get("models_dir") or "").strip()
-    return _stored_path(configured) if configured else util.models_dir()
+    return _stored_path(configured) if configured else (util.models_dir() if use_environment else util.app_dir() / 'models')
 
 
-def model_home(name: str, cfg: dict | None = None) -> Path:
+def model_home(name: str, cfg: dict | None = None, *, use_environment: bool = True) -> Path:
     """Fixed per-engine model folder, reusing an existing legacy install.
 
     A machine that already downloaded weights to ~/.mineru or ~/.paddlex keeps
     using them instead of re-downloading gigabytes; a fresh install gets the
     fixed application-data path.  An explicit models_dir/DOCVISION_MODELS
-    always wins and disables the legacy fallback.
+    disables the legacy fallback. Transactional installs may pin an engine's
+    active model_home within that root; DOCVISION_MODELS explicitly overrides it.
     """
     cfg = load() if cfg is None else cfg
+    if use_environment and os.environ.get('DOCVISION_MODELS'):
+        return util.models_dir() / name
+    engine_name = {'mineru': 'mineru', 'paddlex': 'paddleocr'}.get(name)
+    active_home = cfg.get('engines', {}).get(engine_name, {}).get('model_home')
+    if active_home:
+        return _stored_path(active_home)
     configured = (cfg.get("models_dir") or "").strip()
-    explicit = bool(configured) or bool(os.environ.get("DOCVISION_MODELS"))
-    root = models_root(cfg) / name
+    explicit = bool(configured) or (use_environment and bool(os.environ.get("DOCVISION_MODELS")))
+    root = models_root(cfg, use_environment=use_environment) / name
     if explicit:
         return root
     if name == "mineru":
@@ -144,7 +151,7 @@ def model_home(name: str, cfg: dict | None = None) -> Path:
         if engine_home:
             return _stored_path(engine_home)
     variable = {"mineru": "MINERU_HOME", "paddlex": "PADDLE_PDX_CACHE_HOME"}.get(name)
-    inherited = os.environ.get(variable) if variable else None
+    inherited = os.environ.get(variable) if variable and use_environment else None
     if inherited:
         return util._absolute_storage(inherited, variable)
     legacy = {"mineru": Path.home() / ".mineru", "paddlex": Path.home() / ".paddlex"}.get(name)
@@ -341,15 +348,39 @@ def _discover_paddle(cfg: dict, *, detailed: bool = False) -> Engine:
     )
 
 
-def discover_vlm(cfg: dict | None = None) -> Engine:
-    cfg = cfg or load()
+def effective_vlm_config(extra: dict | None = None, cfg: dict | None = None) -> dict:
+    """Resolve public VLM settings consistently for discovery, execution and cache.
+
+    Explicit call options win over environment variables, which win over stored
+    settings. Return the credential variable's name, never its secret value.
+    """
+    cfg = load() if cfg is None else cfg
     vcfg = cfg.get("engines", {}).get("vlm", {})
-    base = vcfg.get("base_url") or ""
-    model = vcfg.get("model") or ""
+    extra = extra or {}
+    return {
+        "base_url": extra.get("base_url") or util.env_value("DOCVISION_OPENAI_BASE_URL", "OPENAI_BASE_URL")
+                    or vcfg.get("base_url") or "",
+        "model": extra.get("model") or util.env_value("DOCVISION_OPENAI_MODEL", "OPENAI_MODEL")
+                 or vcfg.get("model") or "",
+        "api_key_env": vcfg.get("api_key_env") or "DOCVISION_VLM_API_KEY",
+    }
+
+
+def discover_vlm(cfg: dict | None = None) -> Engine:
+    vcfg = effective_vlm_config(cfg=cfg)
+    base, model = vcfg["base_url"], vcfg["model"]
+    local = False
+    if base and model:
+        from .base import DocVisionError
+        try:
+            util.validate_local_http_url(base)
+            local = True
+        except DocVisionError:
+            pass
     return Engine(
         name="vlm",
-        available=bool(base and model),
-        detail=("configured" if base and model else "set engines.vlm.base_url and model"),
+        available=local,
+        detail=("configured" if local else "set a loopback HTTP endpoint and vision model"),
         extra={"base_url": base, "model": model,
                "api_key": util.env_value(vcfg.get("api_key_env") or "DOCVISION_VLM_API_KEY", "OPENAI_API_KEY")},
     )

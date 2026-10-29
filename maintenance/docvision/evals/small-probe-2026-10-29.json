@@ -1,0 +1,690 @@
+{
+  "schema": "docvision.small-probe-summary/1",
+  "date": "2026-10-29",
+  "hardware": {
+    "os": "Windows 11",
+    "gpu": "RTX 4060 Laptop",
+    "vram_mib": 8188,
+    "observed_local_backend": "llama-cpp-engine",
+    "gpu_acceleration_attribution_proven": false
+  },
+  "sources": {
+    "attention": "https://arxiv.org/pdf/1706.03762",
+    "vae": "https://arxiv.org/pdf/1312.6114"
+  },
+  "input_sha256": {
+    "pages.pdf": "16e86e1f79d216e383b696eb3b7ff355e21631815339df58cf7ea48dbc9548ce",
+    "formula.png": "9869690142446c45e0b59084a8478f0647d4b45d59afd9ee307710b83e09307a",
+    "table.png": "372dd2106f6883c6103cea9a442374f36f85925830d1c9b1ed645cc96bf6d016"
+  },
+  "page_map": [
+    {
+      "combined_page": 1,
+      "paper": "attention",
+      "source_physical_page": 4,
+      "source_sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+      "source_page_count": 15,
+      "image": "attention-p04-300dpi.png",
+      "pixels": [
+        2550,
+        3301
+      ]
+    },
+    {
+      "combined_page": 2,
+      "paper": "attention",
+      "source_physical_page": 8,
+      "source_sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+      "source_page_count": 15,
+      "image": "attention-p08-300dpi.png",
+      "pixels": [
+        2550,
+        3301
+      ]
+    },
+    {
+      "combined_page": 3,
+      "paper": "vae",
+      "source_physical_page": 4,
+      "source_sha256": "bdcb63b79ed88f64f8ee2d43a721930d01dde5441a4dba20ecaa2342b34e017c",
+      "source_page_count": 14,
+      "image": "vae-p04-300dpi.png",
+      "pixels": [
+        2550,
+        3301
+      ]
+    }
+  ],
+  "crops": [
+    {
+      "path": "formula.png",
+      "paper": "vae",
+      "source_physical_page": 4,
+      "combined_page": 3,
+      "region": "Equation (7), including the where clause and equation number",
+      "bbox_normalized": [
+        0.245,
+        0.37,
+        0.835,
+        0.437
+      ],
+      "bbox_pixels": [
+        625,
+        1221,
+        2129,
+        1443
+      ],
+      "dpi": 300,
+      "source_sha256": "bdcb63b79ed88f64f8ee2d43a721930d01dde5441a4dba20ecaa2342b34e017c",
+      "sha256": "9869690142446c45e0b59084a8478f0647d4b45d59afd9ee307710b83e09307a",
+      "pixels": [
+        1504,
+        222
+      ]
+    },
+    {
+      "path": "table.png",
+      "paper": "attention",
+      "source_physical_page": 8,
+      "combined_page": 2,
+      "region": "Table 2, including its caption, complete header and all data rows",
+      "bbox_normalized": [
+        0.17,
+        0.085,
+        0.835,
+        0.315
+      ],
+      "bbox_pixels": [
+        434,
+        281,
+        2129,
+        1040
+      ],
+      "dpi": 300,
+      "source_sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+      "sha256": "372dd2106f6883c6103cea9a442374f36f85925830d1c9b1ed645cc96bf6d016",
+      "pixels": [
+        1695,
+        759
+      ]
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "P01",
+      "region": "document",
+      "applies_to": [
+        "pages.pdf"
+      ],
+      "expected": "结果完整包含3页，顺序依次为Attention原物理页4、Attention原物理页8、VAE原物理页4；不缺页、不重复、不按原页号4/8/4错误去重。"
+    },
+    {
+      "id": "P02",
+      "region": "document",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png",
+        "table.png"
+      ],
+      "expected": "保留页来源映射：合并页1→Attention4，合并页2/table.png→Attention8，合并页3/formula.png→VAE4；不要把裁图的局部第1页引用为论文第1页。"
+    },
+    {
+      "id": "A01",
+      "region": "attention_formula",
+      "applies_to": [
+        "pages.pdf"
+      ],
+      "expected": "公式(1)softmax内是QK^{T}/sqrt(d_k)：T为K的转置上标，根号覆盖d_k，下标为k而非x。"
+    },
+    {
+      "id": "A02",
+      "region": "attention_formula",
+      "applies_to": [
+        "pages.pdf"
+      ],
+      "expected": "Attention(Q,K,V)=softmax(QK^T/sqrt(d_k))V，末尾V在softmax括号外，右侧编号(1)保留。"
+    },
+    {
+      "id": "A03",
+      "region": "attention_formula",
+      "applies_to": [
+        "pages.pdf"
+      ],
+      "expected": "页底脚注4保留q·k=sum_{i=1}^{d_k}q_i k_i，求和下界i=1、上界d_k及两个i下标正确。"
+    },
+    {
+      "id": "V01",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "公式(7)左侧为带波浪号且上标B的L：tilde L^B(theta,phi;x^{(i)})，参数theta/phi和样本上标(i)没有混淆。"
+    },
+    {
+      "id": "V02",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "KL项前是负号：-D_KL(q_phi(z|x^{(i)}) || p_theta(z))。第一个分布以x^{(i)}为条件，第二个是未以x为条件的先验p_theta(z)。"
+    },
+    {
+      "id": "V03",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "KL项后为加号和(1/L)sum_{l=1}^{L}；分母是L，求和下界是小写l=1，上界是大写L。"
+    },
+    {
+      "id": "V04",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "求和项为log p_theta(x^{(i)} | z^{(i,l)})；x与z的条件方向、theta下标、(i)和(i,l)上标完整。"
+    },
+    {
+      "id": "V05",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "第二行where子句为z^{(i,l)}=g_phi(epsilon^{(i,l)},x^{(i)})，不能漏掉整行或把g_phi的phi读成theta。"
+    },
+    {
+      "id": "V06",
+      "region": "vae_formula",
+      "applies_to": [
+        "pages.pdf",
+        "formula.png"
+      ],
+      "expected": "原图第二行右侧写epsilon^{(l)} ~ p(epsilon)，上标仅(l)，与前面epsilon^{(i,l)}不同；忠实保留此差异，并保留右侧编号(7)。"
+    },
+    {
+      "id": "T01",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "Table2表头为Model跨两层表头；BLEU、Training Cost(FLOPs)各覆盖EN-DE和EN-FR两列，等价于Model rowspan=2、两个分组各colspan=2。"
+    },
+    {
+      "id": "T02",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "完整保留10个模型数据行及顺序：ByteNet、Deep-Att+PosUnk、GNMT+RL、ConvS2S、MoE、Deep-Att+PosUnk Ensemble、GNMT+RL Ensemble、ConvS2S Ensemble、Transformer(base model)、Transformer(big)。"
+    },
+    {
+      "id": "T03",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "ByteNet行仅BLEU EN-DE=23.75，其BLEU EN-FR及两项Training Cost为空白，不能补0或挪入其他行。"
+    },
+    {
+      "id": "T04",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "Deep-Att+PosUnk非Ensemble行：BLEU EN-FR=39.2，Training Cost EN-FR=1.0×10^20；该行两项EN-DE都为空白。"
+    },
+    {
+      "id": "T05",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "GNMT+RL非Ensemble行四项依次24.6、39.92、2.3×10^19、1.4×10^20；小数与科学计数指数不能串列。"
+    },
+    {
+      "id": "T06",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "ConvS2S非Ensemble行四项依次25.16、40.46、9.6×10^18、1.5×10^20。"
+    },
+    {
+      "id": "T07",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "ConvS2S Ensemble行BLEU EN-FR=41.29；不要与GNMT+RL Ensemble的41.16或Transformer(big)的41.8混淆。"
+    },
+    {
+      "id": "T08",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "Transformer(base model)的BLEU EN-DE=27.3、EN-FR=38.1；Training Cost是横跨两列的单一3.3×10^18，不能把指数拆成单独单元格或编造两项成本。"
+    },
+    {
+      "id": "T09",
+      "region": "attention_table",
+      "applies_to": [
+        "pages.pdf",
+        "table.png"
+      ],
+      "expected": "Transformer(big)的BLEU EN-DE=28.4、EN-FR=41.8；Training Cost是横跨两列的单一2.3×10^19。"
+    }
+  ],
+  "methods": [
+    "Three pages, two crops, one repeated formula per route; four independent CLI processes, workers=1, no docvision resume.",
+    "Local full pages use standard; local crops use quality/advanced, matching the default refine tier.",
+    "Paddle crops use formula/table specialist options. Compare actual workflows, not identical model configurations.",
+    "One local page was validated before benchmarking. Setup/downloads excluded; launch/export/network waits included.",
+    "Manual source-image checks; no aggregate accuracy percentage. P01/P02 excluded from recognition counts."
+  ],
+  "routes": {
+    "local": {
+      "provider": "mineru-local",
+      "model": "MinerU 4 (4.0.12)",
+      "run_id": "20261029T030820Z-mineru-local-2073b664a5",
+      "total_wall_seconds": 91.1902,
+      "completed_input_pages": 6,
+      "timings": [
+        {
+          "step": "01-pages",
+          "wall_seconds": 30.9059,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.078,
+            "route": 2.61,
+            "provider": 28.062,
+            "write_verify": 0.016
+          }
+        },
+        {
+          "step": "02-formula",
+          "wall_seconds": 22.0099,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 3.671,
+            "provider": 18.204,
+            "write_verify": 0.0
+          }
+        },
+        {
+          "step": "03-table",
+          "wall_seconds": 19.5766,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 2.797,
+            "provider": 16.641,
+            "write_verify": 0.0
+          }
+        },
+        {
+          "step": "04-formula-repeat",
+          "wall_seconds": 18.6978,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 3.109,
+            "provider": 15.438,
+            "write_verify": 0.0
+          }
+        }
+      ],
+      "original_content_checkpoint_counts": {
+        "01-pages": {
+          "main_markdown_status": {
+            "pass": 18,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "page_markdown_status": {
+            "pass": 18,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 18,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "raw_recognized_blocks_status": {
+            "pass": 18,
+            "fail": 0,
+            "uncertain": 0
+          }
+        },
+        "02-formula": {
+          "main_markdown_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "page_markdown_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "raw_recognized_blocks_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          }
+        },
+        "03-table": {
+          "main_markdown_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "page_markdown_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "raw_recognized_blocks_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          }
+        },
+        "04-formula-repeat": {
+          "main_markdown_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "page_markdown_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "raw_recognized_blocks_status": {
+            "pass": 6,
+            "fail": 0,
+            "uncertain": 0
+          }
+        }
+      },
+      "additional_findings": [
+        {
+          "id": "E01",
+          "status": "pass",
+          "predeclared_checkpoint": false,
+          "classification": "provider_recognition_comparison",
+          "expected": "Attention物理页4正文缩放因子1/sqrt(d_k)",
+          "observed": "1/sqrt(d_k)",
+          "evidence": "本地p1-b6 / raw middle_json pages[0].blocks[6] / 主MD正确；原始云端p1-b8为d_x。"
+        },
+        {
+          "id": "E02",
+          "status": "fail",
+          "predeclared_checkpoint": false,
+          "classification": "provider_recognition_error",
+          "expected": "Attention Table2题注newstest2014",
+          "observed": "newestest2014",
+          "evidence": "整页raw middle_json pages[1].blocks[0].content[0]、裁图pages[0].blocks[0].content[0]以及两者主MD都同错；云端题注拼写正确。"
+        },
+        {
+          "id": "E03",
+          "status": "fail",
+          "predeclared_checkpoint": false,
+          "classification": "provider_duplicate_regions",
+          "evidence": "raw middle_json pages[0].blocks[10]已含完整脚注；blocks[11]/[12]又输出脚注中的求和与d_k。主MD、p1-b10/11/12、page.markdown均重复。",
+          "note": "A03评价求和边界/下标及存在性，因此通过；重复片段另列，不修改原始输出。"
+        },
+        {
+          "id": "E04",
+          "status": "fail",
+          "predeclared_checkpoint": false,
+          "classification": "adapter_nested_content_flattening",
+          "main_markdown_status": "pass",
+          "page_markdown_status": "fail",
+          "content_blocks_status": "fail",
+          "raw_recognized_blocks_status": "pass",
+          "evidence": "VAE Algorithm1：raw middle_json pages[2].blocks[0] code/sub_type=algorithm的content含algorithm_body及text/equation_inline嵌套span。raw structured_content相同位置content已是可读字符串；主MD也可读。content p3-b0与page.markdown却输出Python list/dict字面量。"
+        },
+        {
+          "id": "E05",
+          "status": "fail",
+          "predeclared_checkpoint": false,
+          "classification": "adapter_caption_omission",
+          "main_markdown_status": "present_with_E02_typo",
+          "page_markdown_status": "fail",
+          "content_blocks_status": "fail",
+          "raw_recognized_blocks_status": "present_with_E02_typo",
+          "evidence": "整页raw table pages[1].blocks[0].content[0]和裁图pages[0].blocks[0].content[0]已有table_caption；主MD有题注，content p2-b0/p1-b0及page.markdown没有题注。",
+          "note": "可修复已有caption搬运；不能凭适配器猜改newestest2014识别错误。"
+        }
+      ],
+      "comparisons": {
+        "formula": {
+          "crop_repeat_identical": true,
+          "fullpage_crop_semantically_equal_on_selected_checks": true,
+          "fullpage_blocks": 1,
+          "crop_blocks": 2,
+          "improvement_on_selected_checks": false,
+          "note": "standard整页已正确；advanced裁图拆成两公式块，编号7保留。粗体宏不同不判错误。"
+        },
+        "table": {
+          "normalized_rows_equal_fullpage_crop_and_main_markdown": true,
+          "full_page_html_rows": 12,
+          "crop_html_rows": 12,
+          "model_data_rows": 10,
+          "improvement_on_selected_checks": false,
+          "note": "两档均正确保留选定值、空值及合并。advanced裁图未修复题注拼写。"
+        },
+        "cloud": {
+          "baseline": "accuracy-cloud.json, original run, before postfix",
+          "observed_difference": "本地保留正文d_k、主MD脚注和裁图编号7；云端分别误识/导出遗漏/漏编号。云端题注拼写正确，本地误识。两边表格选定关系均正确。",
+          "configuration_caveat": "本地整页standard，裁图quality映射advanced；云端用专业formula/table任务。比较的是实际使用路线，不是统一推理档位。"
+        }
+      }
+    },
+    "cloud": {
+      "provider": "paddleocr-cloud",
+      "model": "PaddleOCR-VL-1.6",
+      "run_id": "20261029T025123Z-paddleocr-cloud-a569690e57",
+      "total_wall_seconds": 183.9276,
+      "completed_input_pages": 6,
+      "timings": [
+        {
+          "step": "01-pages",
+          "wall_seconds": 126.0533,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.078,
+            "route": 0.0,
+            "provider": 125.703,
+            "write_verify": 0.141
+          }
+        },
+        {
+          "step": "02-formula",
+          "wall_seconds": 10.3004,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "provider": 10.156,
+            "write_verify": 0.0
+          }
+        },
+        {
+          "step": "03-table",
+          "wall_seconds": 46.5263,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "provider": 46.375,
+            "write_verify": 0.0
+          }
+        },
+        {
+          "step": "04-formula-repeat",
+          "wall_seconds": 1.0476,
+          "state": "done",
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "provider": 0.906,
+            "write_verify": 0.016
+          }
+        }
+      ],
+      "original_content_checkpoint_counts": {
+        "01-pages": {
+          "main_markdown_status": {
+            "pass": 17,
+            "fail": 1,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 18,
+            "fail": 0,
+            "uncertain": 0
+          }
+        },
+        "02-formula": {
+          "main_markdown_status": {
+            "pass": 5,
+            "fail": 1,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 5,
+            "fail": 1,
+            "uncertain": 0
+          }
+        },
+        "03-table": {
+          "main_markdown_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 9,
+            "fail": 0,
+            "uncertain": 0
+          }
+        },
+        "04-formula-repeat": {
+          "main_markdown_status": {
+            "pass": 5,
+            "fail": 1,
+            "uncertain": 0
+          },
+          "content_blocks_status": {
+            "pass": 5,
+            "fail": 1,
+            "uncertain": 0
+          }
+        }
+      },
+      "additional_findings": [
+        {
+          "id": "E01",
+          "status": "fail",
+          "predeclared_checkpoint": false,
+          "classification": "provider_recognition_error",
+          "expected": "Attention物理页4公式(1)之后正文缩放因子为1/sqrt(d_k)",
+          "observed": "1/sqrt(d_x)",
+          "evidence": "content p1-b8 / raw layoutParsingResults[0].prunedResult.parsing_res_list[8] / 主MD均同错。",
+          "note": "核心公式A01仍正确；此正文错误额外披露，不事后混进预设检查点。"
+        },
+        {
+          "id": "E02",
+          "status": "fail",
+          "checkpoint": "A03",
+          "classification": "recognized_content_omitted_from_reading_markdown",
+          "evidence": "raw第1页parsing_res_list[12]是正确footnote、block_order=null，model_settings.markdown_ignore_labels含footnote；content p1-b12保留，但page.markdown/主MD遗漏。",
+          "fix_boundary": "适配器可补回已有识别脚注；不能猜测修正d_x或凭空补服务漏识编号。"
+        }
+      ],
+      "comparisons": {
+        "formula": {
+          "body_identical_fullpage_crop_repeat": true,
+          "improvement_on_selected_checks": false,
+          "regression": "两次crop丢编号(7)，全页保留；epsilon上标差异在全部输出中正确。"
+        },
+        "table": {
+          "normalized_rows_equal_excluding_crop_caption": true,
+          "full_page_html_rows": 12,
+          "crop_html_rows": 13,
+          "model_data_rows": 10,
+          "interpretation": "crop额外首行是colspan=5题注，不是多识别的模型行；选定内容未改善也未损坏。"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Only this sample and this machine; no long-document throughput or peak-memory conclusion.",
+    "OS, model runtime and service caches/queue conditions uncontrolled.",
+    "Manual proofreading time not separately measured.",
+    "Logical input page counts are not billing or actual inference counts.",
+    "Original-run assessments are preserved separately from offline adapter repairs."
+  ],
+  "artifact_directory": "_docvision/small-probe-2026-10-29",
+  "runtime_registration": "Validated new isolated runtime; prior user config backed up; only local engine/core/models merged; remote settings preserved.",
+  "cloud_repeat": {
+    "different_job_ids": true,
+    "raw_jsonl_identical": true,
+    "raw_sha256": "c8bac4e4c6f0ec16495f5fb81ecda50b8af0043e0eb92e4c3f8a3a685db41f33",
+    "interpretation": "Evidence supports server-side result reuse; no explicit cache-hit, inference-time or billing field proves the mechanism."
+  },
+  "adapter_repairs": {
+    "docvision_version": "0.4.1",
+    "cloud": "Restore recognized footnotes/chart text absent from reading Markdown; three real footnotes recovered without changing block text.",
+    "mineru": "Flatten nested algorithm/image caption spans and preserve table caption with original HTML in block/page reading.",
+    "verification": "Offline reconstruction from saved raw members; original outputs kept; no additional inference or API calls.",
+    "remaining_model_errors": [
+      "Cloud formula crop loses equation number 7",
+      "Cloud inline d_k becomes d_x",
+      "Local caption spells newstest2014 as newestest2014",
+      "Local provider repeats footnote formula fragments"
+    ]
+  },
+  "validation": {
+    "unittest_total": 210,
+    "passed": 209,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0,
+    "contract_checks_passed": 5,
+    "skill_metadata": "valid"
+  }
+}

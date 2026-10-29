@@ -17,7 +17,7 @@
   refinements/     独立精读请求、原页/bbox、裁图、上下文与结果
 ```
 
-目录名来自原文件名（保留中文，替换 Windows 非法字符）；同名输入会加短哈希，不覆盖已有结果。`--resume` 比较源指纹、请求签名和 QA；改变档位、mode、页范围、provider、model/配置等会重跑。旧版无签名输出不直接复用。
+目录名来自原文件名（保留中文，替换 Windows 非法字符）；同名输入会加短哈希，不覆盖已有结果。text-local 使用同一输出契约，每页为文字块，bbox=null；文字层不等于公式或表格识别结果。`--resume` 比较源指纹、请求签名和 QA；改变档位、mode、页范围、provider、model/有效配置等会重跑；远程同意、无关引擎和输出目录不使本地结果失效。批次内复用元数据索引，候选在使用前仍检查当前文件与 QA。旧版无签名输出不直接复用。
 
 ## `content.json` 字段
 
@@ -70,7 +70,7 @@
 - `markdown` 是该块可直接放进 Markdown 的文本；`text` 是纯文本/HTML 内容，便于检索。
 - `id` 形如 `p<page>-b<index>`，用于 `read --block` / `crop --block`。
 - `asset` 指向 `assets/` 下的文件；表格块可能同时有 HTML 和区域截图。
-- `source.path` 是本机绝对路径，方便之后渲染/裁剪；远程转换后原始文件不在本机时，`read --format image` 会明确报错。
+- `source.path` 可为绝对路径，或相对该 `meta.json`/`content.json` 所在文档目录的路径（`path_base=document`）；精读内部输入和 relink 后的同卷源使用相对路径。原始文件不在本机时，渲染/裁剪明确报错，可用 relink 显式绑定同 SHA 文件。
 - `privacy` 只有 `local` / `uploaded`；`uploaded` 时 `meta.route.remote=true`。
 
 ## `meta.json`
@@ -84,6 +84,7 @@
 - `usage`：provider 返回的 token/耗时/command（视引擎）
 - `raw_meta`：任务 ID、命令、endpoint 等排障信息
 - `raw_meta.cache_request`：影响输出的请求签名；extra/context 只存哈希，避免意外存入密钥。
+- `raw_meta.timings_seconds`：检查/路由/缓存/provider 阶段耗时；CLI 逐项结果另含 write_verify 和总 elapsed，批次 JSON 含 elapsed_seconds、pages_processed（不计跳过页）。provider 包括启动与导出，不能当纯推理耗时。
 
 不记录 API key、token、cookie。
 
@@ -108,9 +109,11 @@
 
 `refinements/<签名>/record.json` 使用 `docvision.refinement/1`，保存 `source.page/block/bbox/sha256`、task、provider、dpi、输入/上下文路径、模型、状态、结果路径与 `accuracy_verified=false`。独立结果的页 1 表示裁图输入，引用论文时必须使用 record.source.page，不能写成原文第 1 页。
 
-状态为 planned、review_required、submitted、recognized、failed。planned 不联网；review_required 是图包已准备；recognized 只代表识别返回且结构未失败。submitted 中断状态需检查远程任务，默认不自动重传。`--force` 保留旧记录并新建尝试。
+状态为 planned、review_required、submitted、recognized、failed。planned 不联网；review_required 是图包已准备；recognized 只代表识别返回且结构未失败。submitted 中断状态需检查远程任务，默认不自动重传。`--force` 保留旧记录并新建数字后缀尝试；后续普通请求取最新尝试，失败/提交中/缺文件不会被旧成功掩盖。
 
-主 Markdown 不会被精读覆盖；`read` 另列关联记录。图片缓存名含实际源文件SHA、页码与DPI；源内容改变或强制重转后不会复用旧图。
+新记录的 image/context/markdown/record_path 相对主文档目录保存（`path_base=document`），CLI 解析为当前绝对路径。云端记录含 `cloud_task_id`，回执在配置目录旁独立保存，恢复只 GET 并回写精读状态。校正使用追加的 `docvision.correction/1`，与原始内容分离；read 的修订视图不改磁盘 OCR，也不提高 `accuracy_verified`。字段与操作见[长期阅读维护](maintenance.md)。
+
+主 Markdown 不会被精读覆盖；`read` 另列与当前源 SHA、上下文、块坐标匹配的记录。旧证据保留在磁盘但不作为当前关联结果。源变更未重转时 read-image/crop/refine 拒绝沿用旧定位。图片缓存名含实际源文件SHA、页码与DPI；源内容改变或强制重转后不会复用旧图。
 
 批量输出目录以原子操作预留，同名输入也独立保存。`--force` 只复用来源路径相同的已有文档；已有写入占用时明确拒绝，避免覆盖正在生成的结果。异常终止遗留锁时，先确认没有写入进程，再按错误提示清理该锁。
 

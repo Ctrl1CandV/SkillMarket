@@ -9,6 +9,7 @@ import os
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from email import policy
 from email.parser import BytesParser
@@ -22,6 +23,47 @@ from dv.base import DocVisionError, Options
 
 TOKEN_NAMES = ("DOCVISION_PADDLE_TOKEN", "PADDLEOCR_API_TOKEN", "AI_STUDIO_TOKEN", "PADDLEOCR_ACCESS_TOKEN")
 PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")
+
+
+class PaddleCloudParsingTests(unittest.TestCase):
+    def test_recognized_footnote_and_chart_are_retained_once_in_markdown_and_page_read(self):
+        from dv import read
+        from dv.base import RawDoc
+        from dv.output import write_document
+        from dv.providers import paddle_cloud
+        from dv.providers.common import assemble_markdown
+
+        note = r'FootnoteMarker: $q \cdot k = \sum_{i=1}^{d_k} q_i k_i$.'
+        chart = '| ChartMarker | 1.5 |'
+        for already_present in (False, True):
+            with self.subTest(already_present=already_present), tempfile.TemporaryDirectory() as td:
+                root = Path(td)
+                source = root / 'fixture.png'
+                source.write_bytes(PNG)
+                markdown = '# Main body'
+                if already_present:
+                    markdown += '\n\n' + note.replace(' ', '  ') + '\n\n' + chart
+                payload = {'result': {'layoutParsingResults': [{
+                    'markdown': {'text': markdown},
+                    'prunedResult': {'width': 100, 'height': 100, 'parsing_res_list': [
+                        {'block_label': 'footnote', 'block_content': note},
+                        {'block_label': 'chart', 'block_content': chart},
+                    ]},
+                }]}}
+                opts = Options(provider='paddleocr-cloud', images=False)
+                with patch.object(paddle_cloud.util, 'download', side_effect=AssertionError('offline fixture')):
+                    pages, assets = paddle_cloud._parse(json.dumps(payload).encode(), [0], opts,
+                                                        time.monotonic() + 5)
+                raw = RawDoc(markdown=assemble_markdown(pages), pages=pages, assets=assets,
+                             provider='paddleocr-cloud')
+                out = write_document(raw, str(source), opts, out_root=root / 'out', info={'pages': 1})
+                main = (out / f'{out.name}.md').read_text(encoding='utf-8')
+                page = json.loads(read.read(out, page=1, as_json=True))['pages'][0]['markdown']
+                for body in (main, page):
+                    self.assertEqual(body.count('FootnoteMarker'), 1)
+                    self.assertEqual(body.count('ChartMarker'), 1)
+                    self.assertIn(''.join(note.split()), ''.join(body.split()))
+                self.assertEqual(pages[0].blocks[0].text, note)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -81,11 +123,12 @@ class PaddleCloudTests(unittest.TestCase):
         self.image.write_bytes(PNG)
         env = {k: v for k, v in os.environ.items() if k not in TOKEN_NAMES}
         env["PADDLEOCR_ACCESS_TOKEN"] = "fixture-token"
+        env["DOCVISION_CONFIG"] = str(Path(self.tmp.name) / "config.json")
         self.env = patch.dict(os.environ, env, clear=True)
         self.env.start()
         self.addCleanup(self.env.stop)
         self.cfg = patch.object(self.module.config, "load", return_value={
-            "remote": {"paddle_base": self.server.base + "/api/v2/ocr/jobs"}})
+            "remote": {"paddle_base": self.server.base + "/api/v2/ocr/jobs", "consent": "remote"}})
         self.cfg.start()
         self.addCleanup(self.cfg.stop)
         self.server.calls = []
@@ -178,9 +221,12 @@ class PaddleCloudTests(unittest.TestCase):
         self.assertEqual(self.server.calls, [])
 
     def test_all_token_aliases(self):
+        # Preserve OS/OpenSSL environment needed by Windows Python runtimes;
+        # isolate credentials, not the operating system itself.
+        environment = {key: value for key, value in os.environ.items() if key not in TOKEN_NAMES}
         for name in TOKEN_NAMES:
-            with self.subTest(name=name), patch.dict(os.environ, {name: "fixture-token"}, clear=True):
-                doc, _ = self.module.convert(str(self.image), self.opts())
+            with self.subTest(name=name), patch.dict(os.environ, {**environment, name: "fixture-token"}, clear=True):
+                doc, _ = self.module.convert(str(self.image), self.opts(extra={'cloud_new_attempt': True}))
                 self.assertEqual(len(doc.pages), 1)
 
     def test_missing_token_fails_before_submission(self):
@@ -221,7 +267,7 @@ class PaddleCloudTests(unittest.TestCase):
             self.server.submit_status = status
             self.server.submit_body = payload
             with self.subTest(status=status), self.assertRaises(DocVisionError) as caught:
-                self.module.convert(str(self.image), self.opts())
+                self.module.convert(str(self.image), self.opts(extra={'cloud_new_attempt': True}))
             self.assertNotIn("fixture-token", str(caught.exception))
             self.assertEqual(len(self.server.calls), 1)
 
@@ -238,6 +284,25 @@ class PaddleCloudTests(unittest.TestCase):
         with self.assertRaisesRegex(DocVisionError, "timed out"):
             self.module.convert(str(self.image), opts)
         self.assertEqual(sum(c[0] == "POST" for c in self.server.calls), 1)
+
+    def test_loopback_job_is_resumed_after_poll_disconnect_without_second_post(self):
+        from dv import cloud_jobs
+        original_api = self.module._api
+        def interrupted(url, token, deadline, **kwargs):
+            if kwargs.get('body') is not None or kwargs.get('payload') is not None:
+                return original_api(url, token, deadline, **kwargs)
+            raise TimeoutError('fixture disconnected after job receipt')
+        opts = self.opts(keep_raw=True)
+        opts.output = Path(self.tmp.name) / 'recovered'
+        with patch.object(self.module, '_api', side_effect=interrupted):
+            with self.assertRaises(DocVisionError):
+                self.module.convert(str(self.image), opts)
+        task_id = opts.extra['_cloud_task_id']
+        self.assertEqual(cloud_jobs.load(task_id)['job_id'], 'job-1')
+        result = self.module.resume_job(task_id, allow_remote=True, timeout=5)
+        self.assertEqual(result['state'], 'done')
+        self.assertTrue((Path(result['output_dir']) / 'raw' / 'paddle-result.jsonl').is_file())
+        self.assertEqual(sum(c[0] == 'POST' for c in self.server.calls), 1)
 
     def test_malformed_jsonl_fails(self):
         self.server.jsonl = b'{"result":'

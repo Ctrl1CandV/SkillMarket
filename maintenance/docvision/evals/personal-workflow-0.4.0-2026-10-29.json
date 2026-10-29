@@ -1,0 +1,372 @@
+{
+  "date": "2026-10-29",
+  "runtime": "3.12.14",
+  "dependencies": {
+    "pypdf": "6.10.0",
+    "pypdfium2": "5.14.0",
+    "pillow": "12.3.0"
+  },
+  "source_urls": {
+    "attention": "https://arxiv.org/pdf/1706.03762",
+    "resnet": "https://arxiv.org/pdf/1512.03385",
+    "vae": "https://arxiv.org/pdf/1312.6114"
+  },
+  "source_sha256": {
+    "attention.pdf": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+    "resnet.pdf": "1e0651b6810ecba34a3dbc5b5b0209226f889004607c1f203540a48d64e5a93a",
+    "vae.pdf": "bdcb63b79ed88f64f8ee2d43a721930d01dde5441a4dba20ecaa2342b34e017c"
+  },
+  "text_layer_runs": [
+    {
+      "iteration": 1,
+      "phase": "extract",
+      "wall_seconds": 1.7069,
+      "batch_seconds": 1.531,
+      "done": 3,
+      "skipped": 0,
+      "failed": 0,
+      "pages_processed": 41,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 15,
+          "qa": "pass",
+          "seconds": 0.906,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.61,
+            "write_verify": 0.015
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 12,
+          "qa": "pass",
+          "seconds": 0.281,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.266,
+            "write_verify": 0.015
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 14,
+          "qa": "pass",
+          "seconds": 0.344,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.329,
+            "write_verify": 0.015
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "phase": "resume",
+      "wall_seconds": 0.4557,
+      "batch_seconds": 0.297,
+      "done": 0,
+      "skipped": 3,
+      "failed": 0,
+      "pages_processed": 0,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.281,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.0,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.016,
+          "timings_seconds": {
+            "inspect": 0.016,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "phase": "extract",
+      "wall_seconds": 1.6826,
+      "batch_seconds": 1.516,
+      "done": 3,
+      "skipped": 0,
+      "failed": 0,
+      "pages_processed": 41,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 15,
+          "qa": "pass",
+          "seconds": 0.891,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.594,
+            "write_verify": 0.016
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 12,
+          "qa": "pass",
+          "seconds": 0.281,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.265,
+            "write_verify": 0.016
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 14,
+          "qa": "pass",
+          "seconds": 0.344,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.328,
+            "write_verify": 0.016
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "phase": "resume",
+      "wall_seconds": 0.4586,
+      "batch_seconds": 0.297,
+      "done": 0,
+      "skipped": 3,
+      "failed": 0,
+      "pages_processed": 0,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.281,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.016,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.016
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.0,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 3,
+      "phase": "extract",
+      "wall_seconds": 1.693,
+      "batch_seconds": 1.531,
+      "done": 3,
+      "skipped": 0,
+      "failed": 0,
+      "pages_processed": 41,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 15,
+          "qa": "pass",
+          "seconds": 0.906,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.016,
+            "cache": 0.0,
+            "provider": 0.593,
+            "write_verify": 0.016
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 12,
+          "qa": "pass",
+          "seconds": 0.266,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.266,
+            "write_verify": 0.0
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "done",
+          "provider": "text-local",
+          "pages": 14,
+          "qa": "pass",
+          "seconds": 0.359,
+          "timings_seconds": {
+            "inspect": 0.015,
+            "route": 0.0,
+            "cache": 0.0,
+            "provider": 0.328,
+            "write_verify": 0.016
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 3,
+      "phase": "resume",
+      "wall_seconds": 0.4566,
+      "batch_seconds": 0.297,
+      "done": 0,
+      "skipped": 3,
+      "failed": 0,
+      "pages_processed": 0,
+      "per_file": [
+        {
+          "name": "attention.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.281,
+          "timings_seconds": {
+            "inspect": 0.281,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        },
+        {
+          "name": "resnet.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.0,
+          "timings_seconds": {
+            "inspect": 0.0,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        },
+        {
+          "name": "vae.pdf",
+          "state": "skipped",
+          "provider": "text-local",
+          "pages": null,
+          "qa": null,
+          "seconds": 0.016,
+          "timings_seconds": {
+            "inspect": 0.016,
+            "route": 0.0,
+            "cache": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "median_process_wall_seconds": {
+    "extract": 1.693,
+    "resume": 0.4566
+  },
+  "synthetic_cache_lookup": {
+    "documents": 300,
+    "requests": 30,
+    "runs": [
+      {
+        "indexed": false,
+        "metadata_reads": 4380,
+        "seconds": 1.4665
+      },
+      {
+        "indexed": true,
+        "metadata_reads": 330,
+        "seconds": 0.1959
+      }
+    ]
+  },
+  "limitations": [
+    "Text-layer extraction is not OCR accuracy measurement.",
+    "No current-machine MinerU 4 or PaddleOCR 3.7 inference was run.",
+    "No cloud API was called; no claim of new formula/table accuracy gains.",
+    "Extraction repetitions use fresh output folders; model initialization is not measured.",
+    "Synthetic cache timings are not full-paper inference timings."
+  ]
+}

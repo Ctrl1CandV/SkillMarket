@@ -1,5 +1,6 @@
 """Local runtime regressions; subprocess/model boundaries are stubbed only."""
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -7,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / 'docvision' / 'scripts'))
@@ -22,6 +24,68 @@ class LocalTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix='docvision-local-test-')
         self.addCleanup(self.temp.cleanup)
         self.tmp = Path(self.temp.name)
+
+    def test_mineru_nested_algorithm_spans_preserve_text_math_and_order(self):
+        from dv import read
+        from dv.providers.common import raw_from_mineru_zip
+
+        # Shape captured in a real MinerU 4 docvortex code/algorithm block:
+        # code.content -> algorithm_body.content -> text/equation_inline spans.
+        middle = {'schema': 'docvortex.middle', 'pages': [{'page_idx': 0, 'blocks': [{
+            'type': 'code', 'sub_type': 'algorithm', 'bbox': [0.1, 0.1, 0.9, 0.4],
+            'content': [{'type': 'algorithm_body', 'content': [
+                {'type': 'text', 'content': 'Algorithm 1\nrepeat\n    '},
+                {'type': 'equation_inline', 'content': r'\theta, \phi'},
+                {'type': 'text', 'content': ' <- update\nreturn '},
+                {'type': 'equation_inline', 'content': r'\theta, \phi'},
+            ]}],
+        }]}]}
+        expected = 'Algorithm 1\nrepeat\n    $\\theta, \\phi$ <- update\nreturn $\\theta, \\phi$'
+        upstream_md = '<div class="docvortex-algorithm">\n' + expected + '\n</div>'
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as archive:
+            archive.writestr('middle_json.json', json.dumps(middle))
+            archive.writestr('markdown.md', upstream_md)
+        doc = raw_from_mineru_zip(buffer.getvalue(), provider='mineru-local')
+        self.assertEqual(doc.markdown, upstream_md)
+        self.assertEqual(doc.pages[0].blocks[0].text, expected)
+        self.assertEqual(doc.pages[0].blocks[0].markdown, '```\n' + expected + '\n```')
+        source = self.tmp / 'fixture.pdf'
+        source.write_bytes(b'fixture source; no inference or rendering')
+        out = write_document(doc, str(source), Options(), out_root=self.tmp / 'out', info={'pages': 1})
+        page = json.loads(read.read(out, page=1, as_json=True))['pages'][0]
+        self.assertEqual(page['blocks'][0]['text'], expected)
+        self.assertIn('```\n' + expected + '\n```', page['markdown'])
+        self.assertNotIn("{'type':", page['markdown'])
+
+    def test_mineru_table_caption_is_kept_before_html_without_correcting_ocr(self):
+        from dv import read
+        from dv.providers.common import raw_from_mineru_zip
+
+        caption = 'Table 2: Scores on newestest2014.'
+        html = '<table><tr><td>Model</td><td>28.4</td></tr></table>'
+        middle = {'schema': 'docvortex.middle', 'pages': [{'page_idx': 0, 'blocks': [{
+            'type': 'table', 'content': [
+                {'type': 'table_caption', 'content': [{'type': 'text', 'content': caption}]},
+                {'type': 'table_body', 'content': html, 'image_path': 'images/table.png'},
+            ],
+        }]}]}
+        expected = caption + '\n\n' + html
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as archive:
+            archive.writestr('middle_json.json', json.dumps(middle))
+            archive.writestr('markdown.md', expected)
+            archive.writestr('images/table.png', b'fixture image; no rendering')
+        doc = raw_from_mineru_zip(buffer.getvalue(), provider='mineru-local')
+        self.assertEqual(doc.pages[0].blocks[0].text, expected)
+        self.assertEqual(doc.pages[0].blocks[0].asset, 'images/table.png')
+        source = self.tmp / 'fixture.pdf'
+        source.write_bytes(b'fixture source; no inference or rendering')
+        out = write_document(doc, str(source), Options(), out_root=self.tmp / 'out', info={'pages': 1})
+        page = json.loads(read.read(out, page=1, as_json=True))['pages'][0]
+        self.assertEqual(page['markdown'], expected)
+        self.assertEqual(page['blocks'][0]['text'], expected)
+        self.assertEqual(page['markdown'].count(caption), 1)
 
     def test_auto_short_circuits_when_mineru_is_installed(self):
         engine = config.Engine('mineru', available=True)
@@ -141,23 +205,26 @@ class LocalTests(unittest.TestCase):
             self.assertTrue((output / 'assets' / asset).is_file())
 
     def test_install_commands_ignore_user_site(self):
-        py = util.env_python(self.tmp)
-        py.parent.mkdir(parents=True, exist_ok=True)
-        py.touch()
+        candidate = self.tmp / 'candidate'
         seen = []
         def run(cmd, **kwargs):
             seen.append((cmd, kwargs))
+            if 'create' in cmd:
+                py = util.env_python(candidate)
+                py.parent.mkdir(parents=True, exist_ok=True)
+                py.touch()
             return subprocess.CompletedProcess(cmd, 0, '', '')
         with patch.object(setup_cmd, '_conda', return_value='conda'), \
-             patch.object(setup_cmd, '_prefix_for', return_value=self.tmp), patch.object(util, 'run', side_effect=run):
-            setup_cmd._install_env('docvision-test', ['pillow'], manager='conda')
+             patch.object(util, 'run', side_effect=run):
+            setup_cmd._install_env('docvision-test', ['pillow'], manager='conda', prefix=candidate)
         self.assertTrue(all(k.get('env', {}).get('PYTHONNOUSERSITE') == '1' for _, k in seen))
-        self.assertTrue(all('-s' in cmd for cmd, _ in seen))
+        self.assertTrue(all('-s' in cmd for cmd, _ in seen if 'create' not in cmd))
 
     def test_core_setup_saves_python_for_entrypoint(self):
         cfg_path = self.tmp / 'config.json'
         with patch.dict(os.environ, {'DOCVISION_CONFIG': str(cfg_path)}), \
              patch.object(setup_cmd, '_conda', return_value='conda'), \
+             patch.object(setup_cmd, '_validate_candidate', return_value=[]), \
              patch.object(setup_cmd, '_install_env', return_value=(self.tmp, [])):
             self.assertEqual(setup_cmd.run('core', yes=True), 0)
             self.assertEqual(config.load().get('core', {}).get('python'), str(util.env_python(self.tmp)))

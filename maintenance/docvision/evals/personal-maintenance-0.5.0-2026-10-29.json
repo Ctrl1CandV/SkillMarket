@@ -1,0 +1,48 @@
+{
+  "version": "0.5.0",
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "features": ["attributable_corrections", "cloud_job_get_only_recovery", "hash_checked_source_relink", "validated_runtime_switch_and_rollback"],
+  "api_role": "explicit second transcription for uncertain or erroneous regions; adoption requires source-image review",
+  "auto_ocr_refine_provider": "packet",
+  "validation": {
+    "unit_total": 265,
+    "unit_passed": 264,
+    "unit_skipped": 1,
+    "skip_reason": "Windows symbolic-link privilege unavailable",
+    "unit_failures": 0,
+    "unit_errors": 0,
+    "contract_passed": 5,
+    "skill_metadata": "valid",
+    "diff_check": "pass",
+    "external_network_in_tests": "blocked by audit hook",
+    "real_core_pdf_text_and_render": "pass",
+    "installation_and_rollback": "isolated mock tests; no new runtime installed",
+    "cloud_recovery": "mock and localhost protocol tests"
+  },
+  "real_output_smoke": {
+    "source": "Attention Table 2 caption; merged sample page 2 equals original physical page 8",
+    "source_sha256": "16e86e1f79d216e383b696eb3b7ff355e21631815339df58cf7ea48dbc9548ce",
+    "author": "host",
+    "scope": "caption only",
+    "original_typo": "newestest2014",
+    "accepted_spelling": "newstest2014",
+    "source_image_actually_viewed": true,
+    "correction_id": "7bb4680246b2488d85857201b6984ca0",
+    "original_ocr_bytes_preserved": true,
+    "history_bytes_preserved": true,
+    "accepted_correction_survives_move": true,
+    "render_after_move": true,
+    "artifact": "_docvision/maintenance-0.5.0/smoke-result.json"
+  },
+  "new_real_ocr_calls": 0,
+  "new_real_api_calls": 0,
+  "user_runtime_config_changed": false,
+  "limitations": [
+    "No new model accuracy or speed conclusions are implied by engineering regression tests.",
+    "Unknown submissions without jobId cannot safely resume or automatically retry.",
+    "URL-input recovery is rejected because original submitted bytes cannot be verified.",
+    "Runtime rollback retains and requires previous environment/model files.",
+    "Automatic single-page structural validation does not prove OCR accuracy."
+  ]
+}

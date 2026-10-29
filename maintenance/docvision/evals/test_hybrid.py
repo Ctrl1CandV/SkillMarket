@@ -147,7 +147,7 @@ class HybridTests(unittest.TestCase):
         from dv import util
         opts = Options(extra={'model': 'test', 'refine_task': 'figure',
                               'base_url': 'http://127.0.0.1:11434/v1'})
-        with patch.object(util, 'post_json', return_value=(200, json.dumps({
+        with patch.object(util, 'post_local_json', return_value=(200, json.dumps({
                 'choices': [{'finish_reason': 'length', 'message': {'content': 'partial'}}]}).encode())),              patch.object(util, 'env_value', return_value=None):
             with self.assertRaises(DocVisionError):
                 openai_compat.convert(str(self.source), opts)

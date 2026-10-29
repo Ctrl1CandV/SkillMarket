@@ -74,17 +74,21 @@ def _text_from_content(content: Any) -> str:
         parts = []
         for item in content:
             if isinstance(item, dict):
-                t = item.get("content") or item.get("text") or ""
+                # MinerU algorithm_body wraps another span list. Recurse into
+                # that content rather than emitting Python list/dict literals.
+                t = _text_from_content(item.get("content") or item.get("text") or "")
                 if item.get("type") == "equation_inline" and t:
                     t = f"${t}$"
                 elif item.get("type") == "equation_interline" and t:
                     t = f"$$\n{t}\n$$"
-                parts.append(str(t))
+                parts.append(t)
+            elif isinstance(item, list):
+                parts.append(_text_from_content(item))
             elif item is not None:
                 parts.append(str(item))
         return "".join(parts)
     if isinstance(content, dict):
-        return str(content.get("content") or content.get("text") or "")
+        return _text_from_content(content.get("content") or content.get("text") or "")
     return ""
 
 
@@ -114,9 +118,12 @@ def blocks_from_docvortex(middle: dict) -> tuple[list[RawPage], list[str]]:
                         asset = str(item["image_path"])
                         break
             if btype == "table" and isinstance(content, list):
+                # Keep caption/body spans in their source order. Selecting just
+                # table_body discards an already-recognized table caption.
+                parts = [_text_from_content([item]) for item in content]
+                text = "\n\n".join(part for part in parts if part)
                 for item in content:
                     if isinstance(item, dict) and item.get("type") == "table_body":
-                        text = item.get("content") or text
                         asset = asset or item.get("image_path")
             md = block_markdown(mapped, text, level=block.get("level"), asset=asset)
             rp.blocks.append(RawBlock(

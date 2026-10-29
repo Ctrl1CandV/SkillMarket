@@ -40,8 +40,17 @@ class OnboardingTests(unittest.TestCase):
         self.gpu = patch.object(util, 'gpu_summary', return_value={'available': False})
         self.gpu.start()
         self.addCleanup(self.gpu.stop)
+        # These tests isolate dependency/install failures; transactional
+        # single-page validation is exercised in test_setup_transactions.py.
+        self.validation = patch.object(setup_cmd, '_validate_candidate', return_value=[{'state': 'done', 'pages': 1}])
+        self.validation.start()
+        self.addCleanup(self.validation.stop)
+        self.sample = self.root / 'sample.pdf'
+        self.sample.write_bytes(b'%PDF mocked OCR sample')
 
     def invoke(self, profile='core', **kwargs):
+        if profile != 'core' and not kwargs.get('dry_run'):
+            kwargs.setdefault('sample', str(self.sample))
         with patch.object(setup_cmd, '_uv', return_value='uv'), contextlib.redirect_stdout(io.StringIO()):
             return setup_cmd.run(profile, manager='uv', **kwargs)
 
@@ -120,28 +129,29 @@ class OnboardingTests(unittest.TestCase):
         with patch.object(setup_cmd, '_conda', return_value='conda'), \
              patch.object(util, 'conda_envs', return_value={'docvision-mineru': shared}):
             prefix, commands = setup_cmd._install_env('docvision-mineru', ['mineru'], manager='conda', dry_run=True)
-        expected = util.app_dir() / 'envs' / 'docvision-mineru'
-        self.assertEqual(prefix, expected)
-        self.assertEqual(commands[0][1:5], ['create', '-y', '-p', str(expected)])
+        self.assertEqual(prefix.parent, util.app_dir() / 'envs')
+        self.assertTrue(prefix.name.startswith('docvision-mineru-'))
+        self.assertEqual(commands[0][1:5], ['create', '-y', '-p', str(prefix)])
         self.assertNotIn(str(shared), ' '.join(' '.join(cmd) for cmd in commands))
 
-    def test_conda_can_reuse_explicit_configured_runtime(self):
+    def test_conda_update_creates_new_prefix_instead_of_upgrading_configured_runtime(self):
         prefix = self.runtime()
         config.save({'engines': {'mineru': {'python': str(util.env_python(prefix))}}})
         with patch.object(setup_cmd, '_conda', return_value='conda'):
             installed, commands = setup_cmd._install_env('docvision-mineru', ['mineru'], manager='conda', dry_run=True)
-        self.assertEqual(installed, prefix)
-        self.assertFalse(any('create' in cmd for cmd in commands))
+        self.assertNotEqual(installed, prefix)
+        self.assertTrue(any('create' in cmd for cmd in commands))
+        self.assertNotIn(str(util.env_python(prefix)), ' '.join(' '.join(cmd) for cmd in commands))
 
-    def test_uv_can_reuse_explicit_configured_runtime(self):
+    def test_uv_update_creates_new_prefix_instead_of_upgrading_configured_runtime(self):
         prefix = self.runtime()
         python = str(util.env_python(prefix))
         config.save({'core': {'python': python}})
         with patch.object(setup_cmd, '_uv', return_value='uv'):
             installed, commands = setup_cmd._install_env('docvision-core', ['pypdf'], manager='uv', dry_run=True)
-        self.assertEqual(installed, prefix)
-        self.assertFalse(any('venv' in cmd for cmd in commands))
-        self.assertIn(python, commands[0])
+        self.assertNotEqual(installed, prefix)
+        self.assertTrue(any('venv' in cmd for cmd in commands))
+        self.assertNotIn(python, ' '.join(' '.join(cmd) for cmd in commands))
 
     def test_failed_models_download_leaves_configuration_unchanged(self):
         prefix = self.runtime()
@@ -222,7 +232,7 @@ class OnboardingTests(unittest.TestCase):
             self.invoke('mineru', yes=True)
         self.assertFalse(self.cfg.exists())
 
-    def test_successful_setup_uses_one_model_home_without_freezing_derived_default(self):
+    def test_successful_setup_pins_an_isolated_home_for_safe_rollback(self):
         prefix = self.runtime()
         homes = []
         def process(command, **kwargs):
@@ -231,7 +241,9 @@ class OnboardingTests(unittest.TestCase):
         with patch.object(setup_cmd, '_install_env', return_value=(prefix, [])), \
              patch.object(util, 'run', side_effect=process):
             self.assertEqual(self.invoke('mineru', yes=True, models_dir=str(self.root / 'weights')), 0)
-        self.assertEqual(set(homes), {str(self.root / 'weights' / 'mineru')})
+        saved_home = config.load()['engines']['mineru']['model_home']
+        self.assertEqual(set(homes), {saved_home})
+        self.assertTrue(Path(saved_home).is_relative_to(self.root / 'weights' / 'installations'))
         self.assertIsNone(config.load()['engines']['mineru']['mineru_home'])
 
     def test_invalid_paddle_report_fails_cleanly_without_saving(self):
