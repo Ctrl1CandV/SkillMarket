@@ -1,6 +1,7 @@
 ---
 name: submission-gate
 description: 投稿前机械核对与倒排期：页数/checklist/Limitations/匿名性/related work 位置/LLM 使用披露逐项检查，ICLR/NeurIPS/ICML/ACL 截稿日倒计时与冲突检测，rebuttal 意见分类（ARR 无效批评 H1-H17 与有效弱点 M/T/R/G）。触发词：投稿检查、截稿、deadline、desk reject、页数超了、rebuttal、审稿意见怎么回、投稿前核对。不生成审稿意见，不替你决定投哪里。
+argument-hint: "<venue>，如 ICLR / NeurIPS / ACL"
 license: MIT
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: idea-ledger
 description: 选题台账与弯路记录：登记候选研究方向、选入/否决流转（killed 必须给方法级否定理由，环境性失败自动警告）、why-not-selected 排序理由显式化、选题停滞计数提醒。触发词：记个想法、idea 台账、这个方向做过了、选题记录、弯路记录、方向否决、停滞检测。只记录不裁决：杀不杀 idea 由人决定。
+argument-hint: "<登记|列表|选入|否决|停滞> [内容或 id]"
 license: MIT
 ---
 

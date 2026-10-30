@@ -1,6 +1,7 @@
 ---
 name: weekly-brief
 description: 研究生周报与组会汇报材料生成：汇总本周 git 提交、实验 run、论文阅读与 claim 变化，产出四段式周报（本周做了什么/结论/下周计划/需要导师拍板的问题）。触发词：周报、组会、组会汇报、导师汇报、本周进展、weekly。只汇总真实记录，不编造进展。
+argument-hint: "[周数或日期窗口，可省略]"
 license: MIT
 ---
 
