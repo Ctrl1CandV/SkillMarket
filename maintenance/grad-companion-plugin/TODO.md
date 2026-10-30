@@ -1,5 +1,13 @@
 # grad-companion-plugin TODO
 
+## 命令入口去重与小修（2026-10-30）
+
+- [x] 删除 7 个命令：正文都是对应技能规则的压缩复写，模型调用命令时拿不到脚本路径，Claude Code 中两者的描述又同时进入模型上下文。argument-hint 移入技能，调用方式改为 `/grad-companion:<技能名>`；此前“同步命令入口”的维护项随之取消
+- [x] grad-radar 每日发现补充空调用路由；run-provenance 的 `judge_agreement.py` 修复 Python 3.12 以下的 f-string 语法错误
+- [x] experiment-design 0.1.1，见 [experiment-design 待办](../experiment-design/TODO.md)
+- [x] 35 项回归与 8 个技能 frontmatter 解析通过
+- [ ] 更新已安装的插件缓存，在新会话确认技能列表不再出现命令条目
+
 ## 导读主线与技能衔接更新（2026-10-19）
 
 - [x] grad-radar 0.4.0：首次导读建立文章整体，连贯解释作者研究、实际发现与价值；续读/局部追问保留上下文

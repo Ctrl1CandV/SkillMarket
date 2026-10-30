@@ -14,7 +14,7 @@
 | [product-design](product-design/) | [0.1.0 制作与衔接记录](product-design/reports/initial-design-2026-10-25.md)、[用户指导文档原件](product-design/reports/implementation-guide-2026-10-25.md)；已与 frontend-craft 0.4.2 提交至本地 main/dev，效果评价见页面反馈 |
 | [frontend-craft](frontend-craft/) | [0.4.2 产品依据衔接](product-design/reports/initial-design-2026-10-25.md)、[0.4.1 四种页面](frontend-craft/evals/current-skill-showcase-2026-10-25/index.html)、[0.4.1 样式组合](frontend-craft/reports/frontend-craft-0.4.1-style-2026-10-25.md)、[0.4.1 样式示意](frontend-craft/evals/style-pair-2026-10-25/index.html)、[0.4 规则重审](frontend-craft/reports/frontend-craft-0.4-diagnosis-2026-10-25.md)、[交互页面对照](frontend-craft/evals/direct-comparison-2026-10-25/index.html)、[反馈记录](frontend-craft/evals/direct-comparison-2026-10-25/README.md)、历次评测存档 |
 | [grad-companion-plugin](grad-companion-plugin/) | 上游核验、阅读/选文/综述与场景适配审查、35 项回归与真实清单复核、其余待办及历史存档 |
-| [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；真实研究验收待补 |
+| [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；0.1.1 补充基线复现与余量检查，真实研究验收与完整示例见 [TODO](experiment-design/TODO.md) |
 | [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
 | [docvision](docvision/) | [0.2.0 正式发布核验](docvision/reports/release-0.2.0-2026-10-28.md)：真实公式/复杂表格 API 对照、专用区域任务、缓存与并发修复、完整回归；8 GB 与规模准确率待补 |
@@ -38,7 +38,7 @@
 ## 约定
 
 - 技能与插件目录只放运行所需内容；报告、评测、旧版与本目录对应文件夹存放。
-- 2026-10-04 按用户决定移除插件中的宿主适配文件（grad-companion 的 `plugin/` 包裹层、`manifest.json` 与 `LICENSE`；agent-parliament 的 `.zcode-plugin/plugin.json`），仓库只保留技能与命令本身；各报告中记录的清单结构为当时验证状态。
+- 2026-10-04 按用户决定移除插件中的宿主适配文件（grad-companion 的 `plugin/` 包裹层、`manifest.json` 与 `LICENSE`；agent-parliament 的 `.zcode-plugin/plugin.json`），仓库只保留技能与命令本身；各报告中记录的清单结构为当时验证状态。2026-10-30 起 grad-companion 不再保留命令入口，调用方式为 `/grad-companion:<技能名>`。
 - SpecialtyCourses 是 de-ai-flavor 的经验来源，不是其适用范围限制；可复用方法推广到其他文本，个人声线与项目约定不强加给别的作者。
 - 第三方素材保留来源与许可记录；不收入凭据、私人笔记、运行缓存。
 - 历史报告中提到的文件路径可能指向重组前位置，以本目录现状为准。
