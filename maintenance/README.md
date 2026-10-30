@@ -8,8 +8,8 @@
 
 | 目录 | 内容 |
 |---|---|
-| [write-with-judgment](write-with-judgment/reports/revision-0.2.1.md) | 0.2.1 整合取舍与静态审阅记录、0.1.0 完整存档；实际效果待试用 |
-| [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录） |
+| [write-with-judgment](write-with-judgment/) | [0.2.1 整合取舍与静态审阅记录](write-with-judgment/reports/revision-0.2.1.md)、0.1.0 完整存档；[改造建议](write-with-judgment/reports/rework-advice-2026-10-30.md)：实测不如无 Skill 的原因与退役并入方案 |
+| [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录）；[改造建议](de-ai-flavor/reports/rework-advice-2026-10-30.md)：重建问题表、真实范例与盲评验收 |
 | [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
 | [product-design](product-design/) | [0.1.0 制作与衔接记录](product-design/reports/initial-design-2026-10-25.md)、[用户指导文档原件](product-design/reports/implementation-guide-2026-10-25.md)；已与 frontend-craft 0.4.2 提交至本地 main/dev，效果评价见页面反馈 |
 | [frontend-craft](frontend-craft/) | [0.4.2 产品依据衔接](product-design/reports/initial-design-2026-10-25.md)、[0.4.1 四种页面](frontend-craft/evals/current-skill-showcase-2026-10-25/index.html)、[0.4.1 样式组合](frontend-craft/reports/frontend-craft-0.4.1-style-2026-10-25.md)、[0.4.1 样式示意](frontend-craft/evals/style-pair-2026-10-25/index.html)、[0.4 规则重审](frontend-craft/reports/frontend-craft-0.4-diagnosis-2026-10-25.md)、[交互页面对照](frontend-craft/evals/direct-comparison-2026-10-25/index.html)、[反馈记录](frontend-craft/evals/direct-comparison-2026-10-25/README.md)、历次评测存档 |
