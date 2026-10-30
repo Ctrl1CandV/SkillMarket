@@ -148,8 +148,8 @@ def main() -> None:
     if s["cohens_kappa"] is not None:
         print(f"# κ={s['cohens_kappa']} | 一致率 {s['agreement_rate']:.2%} | {head}")
     else:
-        print(f"# κ 未定义（{s['degenerate_reason']}）| 一致率 "
-              f"{f'{s["agreement_rate"]:.2%}' if s['agreement_rate'] is not None else 'N/A'} | {head}")
+        rate = f"{s['agreement_rate']:.2%}" if s["agreement_rate"] is not None else "N/A"
+        print(f"# κ 未定义（{s['degenerate_reason']}）| 一致率 {rate} | {head}")
     for row, cols in confusion.items():
         for col, count in cols.items():
             print(f"  {row} → {col}: {count}")
