@@ -1,6 +1,7 @@
 ---
 name: run-provenance
 description: 实验 claim 与 run 的溯源闭环：登记实验 run（git commit/config 快照/seed/指标）、claim 双轴台账（evidence 脚本机械核对 + support 人的判定）、生成 mean±std LaTeX 表（n=1 标注不伪造误差）、论文草稿数字回查（value_mismatch/suspected_drift/unbacked 候选清单）、评测预算与发布包检查。触发词：登记 run、记录实验、实验台账、数字对不上、论文数字溯源、可复现、seed、error bar、实验表格生成、claim 判定。只记录与核对，绝不执行实验。
+argument-hint: "<登记|补录|绑定|表格|核对|judge|发布包> [参数]"
 license: MIT
 ---
 
