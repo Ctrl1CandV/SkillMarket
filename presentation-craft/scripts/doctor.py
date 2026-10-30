@@ -28,6 +28,26 @@ def find_soffice(explicit=None):
     return str(mac) if mac.is_file() else None
 
 
+def powerpoint_com_status():
+    """Inspect Python support and COM registration without starting PowerPoint."""
+    status = {'available': False, 'python_support': False, 'registered': False,
+              'probe': 'read-only registry and Python module lookup'}
+    if sys.platform != 'win32':
+        return status
+    status['python_support'] = importlib.util.find_spec('win32com') is not None
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, r'PowerPoint.Application\CLSID') as key:
+            clsid = winreg.QueryValueEx(key, '')[0]
+        with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'CLSID\\' + clsid + r'\LocalServer32') as key:
+            server = winreg.QueryValueEx(key, '')[0]
+        status['registered'] = bool(server)
+    except OSError:
+        pass
+    status['available'] = status['python_support'] and status['registered']
+    return status
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--node', help='Node executable; otherwise search PATH')
@@ -49,13 +69,19 @@ def main():
     python_modules = {m: importlib.util.find_spec(m) is not None for m in ('pptx', 'PIL', 'pymupdf', 'fitz')}
     soffice = find_soffice(args.soffice)
     poppler = shutil.which('pdftoppm')
+    powerpoint = powerpoint_com_status()
+    authoring_engines = (['pptxgenjs'] if modules.get('pptxgenjs') else []) + (['python-pptx'] if python_modules['pptx'] else [])
+    renderers = (['libreoffice'] if soffice else []) + (['powerpoint'] if powerpoint['available'] else [])
     print(json.dumps({
         'python': sys.executable, 'node': node, 'node_modules': modules,
         'python_modules': python_modules, 'soffice': soffice, 'pdftoppm': poppler,
-        'native_authoring_available': bool(modules.get('pptxgenjs')),
-        'pptx_visual_render_available': bool(soffice and (poppler or python_modules['pymupdf'] or python_modules['fitz'])),
+        'native_authoring_available': bool(authoring_engines),
+        'native_authoring_engines': authoring_engines,
+        'powerpoint_com': powerpoint,
+        'pptx_visual_renderers': renderers,
+        'pptx_visual_render_available': bool(renderers and (poppler or python_modules['pymupdf'] or python_modules['fitz'])),
         'probe_error': probe_error,
-        'note': 'Available dependencies do not prove content, editability or visual quality.'
+        'note': 'Available dependencies/COM registration do not prove successful export, content, editability or visual quality.'
     }, ensure_ascii=False, indent=2))
 
 

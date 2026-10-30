@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Render the actual PPTX via isolated LibreOffice, then rasterize its exported PDF."""
+"""Render the actual PPTX via LibreOffice or Windows PowerPoint, then rasterize its PDF."""
 import argparse
+import csv
 import hashlib
 import importlib.util
 import json
@@ -11,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 
-from doctor import find_soffice
+from doctor import find_soffice, powerpoint_com_status
 
 
 def sha256(path):
@@ -23,6 +24,52 @@ def run(command, timeout):
     if result.returncode:
         raise RuntimeError(f'Command failed ({result.returncode}): {result.stdout}\n{result.stderr}')
     return result
+
+
+def powerpoint_processes():
+    result = run(['tasklist', '/FI', 'IMAGENAME eq POWERPNT.EXE', '/FO', 'CSV', '/NH'], 15)
+    return {int(row[1]) for row in csv.reader(result.stdout.splitlines())
+            if len(row) > 1 and row[0].upper() == 'POWERPNT.EXE'}
+
+
+def export_powerpoint(source, target):
+    """Open only the requested deck, preserving any existing user PowerPoint session."""
+    import pythoncom
+    import win32com.client
+    before = powerpoint_processes()
+    application = presentation = None
+    owns_process = False
+    pythoncom.CoInitialize()
+    try:
+        application = win32com.client.DispatchEx('PowerPoint.Application')
+        # PowerPoint is a multiuse COM server: DispatchEx may return an
+        # existing process. Claim ownership only when none existed before.
+        owns_process = not before and len(powerpoint_processes()) == 1 and application.Presentations.Count == 0
+        presentation = application.Presentations.Open(str(source), -1, 0, 0)
+        # PDF, screen quality, no frame, slides, include hidden slides, all slides.
+        presentation.ExportAsFixedFormat(str(target), 2, 1, 0, 1, 1, -1, None, 1)
+        return 'Microsoft PowerPoint ' + str(application.Version) + ' COM PDF export'
+    except Exception as exc:
+        raise RuntimeError('PowerPoint PDF export failed: ' + str(exc)) from exc
+    finally:
+        cleanup_errors = []
+        if presentation is not None:
+            try:
+                presentation.Close()
+            except Exception as exc:
+                cleanup_errors.append('close owned presentation: ' + str(exc))
+        if application is not None and owns_process:
+            try:
+                # DispatchEx can reuse a process. Never quit a pre-existing process,
+                # or one in which somebody has since opened another presentation.
+                if application.Presentations.Count == 0:
+                    application.Quit()
+            except Exception as exc:
+                cleanup_errors.append('quit owned empty instance: ' + str(exc))
+        presentation = application = None
+        pythoncom.CoUninitialize()
+        if cleanup_errors:
+            raise RuntimeError('PowerPoint cleanup failed: ' + '; '.join(cleanup_errors))
 
 
 def rasterize(pdf, out_dir, dpi, pdftoppm, timeout):
@@ -68,6 +115,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('deck', type=Path)
     parser.add_argument('--out-dir', type=Path, required=True, help='New or empty directory; never overwrites an existing render')
+    parser.add_argument('--renderer', choices=('auto', 'libreoffice', 'powerpoint'), default='auto',
+                        help='auto prefers LibreOffice, then registered Windows PowerPoint COM')
     parser.add_argument('--soffice')
     parser.add_argument('--pdftoppm')
     parser.add_argument('--dpi', type=int, default=144)
@@ -84,19 +133,30 @@ def main():
             raise ValueError('DPI must be between 72 and 600')
         soffice = find_soffice(args.soffice)
         poppler = args.pdftoppm or shutil.which('pdftoppm')
-        if not soffice:
-            raise ValueError('LibreOffice is unavailable; pass --soffice or use another reliable renderer')
+        renderer = args.renderer
+        if renderer == 'auto':
+            renderer = 'libreoffice' if soffice else 'powerpoint'
+        if renderer == 'libreoffice' and not soffice:
+            raise ValueError('LibreOffice is unavailable; pass --soffice or choose another renderer')
+        if renderer == 'powerpoint' and not powerpoint_com_status()['available']:
+            raise ValueError('PowerPoint COM is unavailable; Windows, installed PowerPoint and pywin32 are required')
         if not poppler and not any(importlib.util.find_spec(m) for m in ('pymupdf', 'fitz')):
             raise ValueError('Install/use pdftoppm or PyMuPDF to rasterize the PDF')
         input_hash = sha256(source)
         out_dir.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='.presentation-render-', dir=out_dir.parent) as temporary:
             temp = Path(temporary)
-            profile = (temp / 'profile').as_uri()
-            result = run([soffice, f'-env:UserInstallation={profile}', '--headless', '--convert-to', 'pdf', '--outdir', str(temp), str(source)], args.timeout)
             generated = temp / (source.stem + '.pdf')
+            if renderer == 'libreoffice':
+                profile = (temp / 'profile').as_uri()
+                result = run([soffice, f'-env:UserInstallation={profile}', '--headless', '--convert-to', 'pdf', '--outdir', str(temp), str(source)], args.timeout)
+                renderer_label = 'LibreOffice PDF export'
+                detail = result.stdout + '\n' + result.stderr
+            else:
+                renderer_label = export_powerpoint(source, generated)
+                detail = ''
             if not generated.is_file() or generated.stat().st_size == 0:
-                raise RuntimeError('LibreOffice produced no PDF: ' + result.stdout + '\n' + result.stderr)
+                raise RuntimeError(renderer + ' produced no PDF: ' + detail)
             if sha256(source) != input_hash:
                 raise RuntimeError('Input changed during rendering; create a fresh render')
             pdf = out_dir / 'export.pdf'
@@ -109,7 +169,7 @@ def main():
         contact_sheet = montage(files, out_dir / 'montage.png')
         manifest = {
             'deck': str(source), 'deck_sha256': input_hash,
-            'renderer': 'LibreOffice PDF export', 'dpi': args.dpi,
+            'renderer': renderer_label, 'dpi': args.dpi,
             'pdf': {'file': pdf.name, 'sha256': sha256(pdf)},
             'pages': [{'page': i, 'file': path.name, 'sha256': sha256(path)} for i, path in enumerate(files, 1)],
             'montage': contact_sheet,
