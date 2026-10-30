@@ -21,7 +21,7 @@ scope、`!`、正文和 footer 都按实际需要；`!` 与 `BREAKING CHANGE:` �
 
 具体标题如 `fix(cache): prevent stale results after invalidation` 或 `docs(install): 补充 Windows 安装步骤`；避免 `update`、`修改文件`、`各种优化`。只有行为未变才叫 refactor，不用它掩盖功能或兼容性变化。标题描述变化，正文解释原因，不复制整份 diff 或 AI 聊天记录。
 
-不编造测试通过、issue 编号、签名、DCO 同意或 Co-authored-by。仓库要求签名或 DCO 时使用已配置的合法身份；不能自行以用户身份宣告未确认的版权授权。
+不编造测试通过、issue 编号、签名、DCO 同意或 Co-authored-by。宿主或用户规定的署名行（如 AI 协作者 trailer）按规定照写，它记录真实参与者，不属于编造。仓库要求签名或 DCO 时使用已配置的合法身份；不能自行以用户身份宣告未确认的版权授权。
 
 ### Agent 提交消息的验收
 

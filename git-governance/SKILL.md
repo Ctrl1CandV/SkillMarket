@@ -2,12 +2,12 @@
 name: git-governance
 description: 为不同项目制定或执行 Git 管理规范，处理分支选择、文件入库与本地保留、忽略规则、提交、同步、PR、发布和安全清理。用于初始化仓库、整理版本管理、准备提交或推送，以及解决 Git 协作问题；按项目现状选择工作流，不把 Gitflow 或 Conventional Commits 强加给所有项目。
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # Git 项目管理
 
-让项目的版本记录可解释、可复现、可协作，同时保留用户已有工作。本技能适用于能读文件或调用 Git 的 AI，不依赖特定模型、托管平台、MCP 或插件。没有执行工具时给出准确的操作方案，并说明未执行的部分。
+让项目的版本记录可解释、可复现、可协作，同时保留用户已有工作。没有执行工具时给出准确的操作方案，并说明未执行的部分。
 
 ## 先分清机制与约定
 
@@ -33,7 +33,7 @@ metadata:
 
 ### 1. 建立仓库事实
 
-先读适用的 `AGENTS.md`、`CONTRIBUTING`、README、已有 Git 规范、CI 与包管理配置；查看 `.gitignore`、`.gitattributes` 和提交约定。根据任务范围执行：
+先读适用的代理说明文件（如 `AGENTS.md`、`CLAUDE.md`）、`CONTRIBUTING`、README、已有 Git 规范、CI 与包管理配置；查看 `.gitignore`、`.gitattributes` 和提交约定。根据任务范围执行：
 
 ```sh
 git --version
