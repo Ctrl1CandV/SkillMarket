@@ -1,0 +1,36 @@
+{
+  "schema": "imagecraft.models/1",
+  "id": "z-image-turbo-fp8",
+  "name": "Z-Image Turbo (INT8 convrot, FP8 mixed text encoder; opt-in low-VRAM profile)",
+  "license": "Apache-2.0",
+  "checked_on": "2026-11-02",
+  "files": [
+    {
+      "role": "diffusion_model",
+      "repo": "Comfy-Org/Z-Image-Turbo",
+      "revision": "6fc90a3b1b653e935a0d175e260736de25b84df5",
+      "source": "split_files/diffusion_models/z_image_turbo_int8_convrot.safetensors",
+      "destination": "diffusion_models/z_image_turbo_int8_convrot.safetensors",
+      "bytes": 6201001296,
+      "sha256": "be517ebd47c912a5626a588e1aeea43e6be4a43c0cdcd2b48a2a780d9f358635"
+    },
+    {
+      "role": "text_encoder",
+      "repo": "Comfy-Org/Z-Image-Turbo",
+      "revision": "6fc90a3b1b653e935a0d175e260736de25b84df5",
+      "source": "split_files/text_encoders/qwen_3_4b_fp8_mixed.safetensors",
+      "destination": "text_encoders/qwen_3_4b_fp8_mixed.safetensors",
+      "bytes": 5631994051,
+      "sha256": "72450b19758172c5a7273cf7de729d1c17e7f434a104a00167624cba94f68f15"
+    },
+    {
+      "role": "vae",
+      "repo": "Comfy-Org/Z-Image-Turbo",
+      "revision": "6fc90a3b1b653e935a0d175e260736de25b84df5",
+      "source": "split_files/vae/ae.safetensors",
+      "destination": "vae/ae.safetensors",
+      "bytes": 335304388,
+      "sha256": "afc8e28272cd15db3919bacdb6918ce9c1ed22e96cb12c4d5ed0fba823529e38"
+    }
+  ]
+}

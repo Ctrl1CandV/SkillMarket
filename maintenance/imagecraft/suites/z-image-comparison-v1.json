@@ -1,0 +1,1181 @@
+{
+  "schema": "imagecraft.eval-suite/1",
+  "name": "z-image-comparison-v1",
+  "purpose": "任务1：FLUX klein FP8(4步) 对 Z-Image Turbo INT8/BF16文本(8步)，完全同题/尺寸/seed；14题×2seed×2模型=56张，无自动重抽。沿用原生正常运行参数，不将步数强制拉平。",
+  "decision_before_results": [
+    "低密度文字明显更好且视觉不差则Z为文生图默认、FLUX保留编辑",
+    "各有胜负则分用途保留",
+    "无明显优势则维持FLUX"
+  ],
+  "review_units": "逐字准确字符串数/指定总出现次数；图示另外核对精确节点与边，不把文字分当拓扑分；视觉逐张可用/不可用及理由",
+  "cases": [
+    {
+      "id": "p1-paper-retrieval-figure-s1",
+      "group": "paper-figure",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4101,
+      "prompt": "A flat vector technical figure for a conference paper on a plain white background. No gradients, no shadows, no 3D, no icons, no photographs, no decorative illustration. Thin dark-gray strokes, very light gray fills, black sans-serif labels, even spacing, everything aligned to a clean grid. Centered title \"Figure 1: Retrieval Pipeline\" in regular weight. Exactly nine separate rounded rectangles labelled: \"Query\", \"Encoder\", \"Index\", \"Retriever\", \"Reranker\", \"Context\", \"Generator\", \"Response\", \"Cache\". Main row left to right: Query, Encoder, Retriever, Reranker, Context, Generator, Response. Index sits below Encoder. Cache sits above Encoder. A thin dashed rectangle encloses Index together with the small label \"Offline index\". Exactly nine thin arrows: Query→Encoder, Encoder→Retriever, Index→Retriever, Retriever→Reranker, Reranker→Context, Context→Generator, Generator→Response, Response→Cache, Cache→Encoder. No other shapes, arrows, legends or text.",
+      "prompt_sha256": "e5ba4e8662a4ed062723582512c92a5af0f7daf2429384e8e537fbddf4a5494c",
+      "texts": [
+        {
+          "text": "Figure 1: Retrieval Pipeline",
+          "count": 1
+        },
+        {
+          "text": "Offline index",
+          "count": 1
+        },
+        {
+          "text": "Query",
+          "count": 1
+        },
+        {
+          "text": "Encoder",
+          "count": 1
+        },
+        {
+          "text": "Index",
+          "count": 1
+        },
+        {
+          "text": "Retriever",
+          "count": 1
+        },
+        {
+          "text": "Reranker",
+          "count": 1
+        },
+        {
+          "text": "Context",
+          "count": 1
+        },
+        {
+          "text": "Generator",
+          "count": 1
+        },
+        {
+          "text": "Response",
+          "count": 1
+        },
+        {
+          "text": "Cache",
+          "count": 1
+        }
+      ],
+      "nodes": [
+        "Query",
+        "Encoder",
+        "Index",
+        "Retriever",
+        "Reranker",
+        "Context",
+        "Generator",
+        "Response",
+        "Cache"
+      ],
+      "directed_edges": [
+        [
+          "Query",
+          "Encoder"
+        ],
+        [
+          "Encoder",
+          "Retriever"
+        ],
+        [
+          "Index",
+          "Retriever"
+        ],
+        [
+          "Retriever",
+          "Reranker"
+        ],
+        [
+          "Reranker",
+          "Context"
+        ],
+        [
+          "Context",
+          "Generator"
+        ],
+        [
+          "Generator",
+          "Response"
+        ],
+        [
+          "Response",
+          "Cache"
+        ],
+        [
+          "Cache",
+          "Encoder"
+        ]
+      ],
+      "intent": "diagram",
+      "label": "p1-paper-retrieval-figure",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p1-paper-retrieval-figure"
+    },
+    {
+      "id": "p1-paper-retrieval-figure-s2",
+      "group": "paper-figure",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4201,
+      "prompt": "A flat vector technical figure for a conference paper on a plain white background. No gradients, no shadows, no 3D, no icons, no photographs, no decorative illustration. Thin dark-gray strokes, very light gray fills, black sans-serif labels, even spacing, everything aligned to a clean grid. Centered title \"Figure 1: Retrieval Pipeline\" in regular weight. Exactly nine separate rounded rectangles labelled: \"Query\", \"Encoder\", \"Index\", \"Retriever\", \"Reranker\", \"Context\", \"Generator\", \"Response\", \"Cache\". Main row left to right: Query, Encoder, Retriever, Reranker, Context, Generator, Response. Index sits below Encoder. Cache sits above Encoder. A thin dashed rectangle encloses Index together with the small label \"Offline index\". Exactly nine thin arrows: Query→Encoder, Encoder→Retriever, Index→Retriever, Retriever→Reranker, Reranker→Context, Context→Generator, Generator→Response, Response→Cache, Cache→Encoder. No other shapes, arrows, legends or text.",
+      "prompt_sha256": "e5ba4e8662a4ed062723582512c92a5af0f7daf2429384e8e537fbddf4a5494c",
+      "texts": [
+        {
+          "text": "Figure 1: Retrieval Pipeline",
+          "count": 1
+        },
+        {
+          "text": "Offline index",
+          "count": 1
+        },
+        {
+          "text": "Query",
+          "count": 1
+        },
+        {
+          "text": "Encoder",
+          "count": 1
+        },
+        {
+          "text": "Index",
+          "count": 1
+        },
+        {
+          "text": "Retriever",
+          "count": 1
+        },
+        {
+          "text": "Reranker",
+          "count": 1
+        },
+        {
+          "text": "Context",
+          "count": 1
+        },
+        {
+          "text": "Generator",
+          "count": 1
+        },
+        {
+          "text": "Response",
+          "count": 1
+        },
+        {
+          "text": "Cache",
+          "count": 1
+        }
+      ],
+      "nodes": [
+        "Query",
+        "Encoder",
+        "Index",
+        "Retriever",
+        "Reranker",
+        "Context",
+        "Generator",
+        "Response",
+        "Cache"
+      ],
+      "directed_edges": [
+        [
+          "Query",
+          "Encoder"
+        ],
+        [
+          "Encoder",
+          "Retriever"
+        ],
+        [
+          "Index",
+          "Retriever"
+        ],
+        [
+          "Retriever",
+          "Reranker"
+        ],
+        [
+          "Reranker",
+          "Context"
+        ],
+        [
+          "Context",
+          "Generator"
+        ],
+        [
+          "Generator",
+          "Response"
+        ],
+        [
+          "Response",
+          "Cache"
+        ],
+        [
+          "Cache",
+          "Encoder"
+        ]
+      ],
+      "intent": "diagram",
+      "label": "p1-paper-retrieval-figure",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p1-paper-retrieval-figure"
+    },
+    {
+      "id": "p2-method-training-flow-s1",
+      "group": "paper-figure",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4102,
+      "prompt": "一张用于中文学术论文的方法流程图，纯白背景，扁平矢量风格。细深灰色线条、极浅灰色方块填充、黑色中文黑体标签，统一字号，水平对齐，间距均匀。禁止渐变、阴影、立体效果、图标、照片或装饰性插画。顶部居中标题\"图 2 训练流程\"。严格八个独立矩形，标签依次为\"数据采样\"、\"分词\"、\"编码器\"、\"注意力\"、\"融合\"、\"解码器\"、\"损失\"、\"更新\"。第一行从左到右：数据采样、分词、编码器、注意力、融合、解码器。第二行：损失在解码器正下方，更新在损失左侧，并有一条箭头从\"更新\"回到\"编码器\"。严格八条细箭头：数据采样→分词；分词→编码器；编码器→注意力；注意力→融合；融合→解码器；解码器→损失；损失→更新；更新→编码器。不要其他方块、箭头、图例或文字。",
+      "prompt_sha256": "13449c11d8622b32bc4edacb009934e3799d3180caa9efb4f03cf0012956d3e2",
+      "texts": [
+        {
+          "text": "图 2 训练流程",
+          "count": 1
+        },
+        {
+          "text": "数据采样",
+          "count": 1
+        },
+        {
+          "text": "分词",
+          "count": 1
+        },
+        {
+          "text": "编码器",
+          "count": 1
+        },
+        {
+          "text": "注意力",
+          "count": 1
+        },
+        {
+          "text": "融合",
+          "count": 1
+        },
+        {
+          "text": "解码器",
+          "count": 1
+        },
+        {
+          "text": "损失",
+          "count": 1
+        },
+        {
+          "text": "更新",
+          "count": 1
+        }
+      ],
+      "nodes": [
+        "数据采样",
+        "分词",
+        "编码器",
+        "注意力",
+        "融合",
+        "解码器",
+        "损失",
+        "更新"
+      ],
+      "directed_edges": [
+        [
+          "数据采样",
+          "分词"
+        ],
+        [
+          "分词",
+          "编码器"
+        ],
+        [
+          "编码器",
+          "注意力"
+        ],
+        [
+          "注意力",
+          "融合"
+        ],
+        [
+          "融合",
+          "解码器"
+        ],
+        [
+          "解码器",
+          "损失"
+        ],
+        [
+          "损失",
+          "更新"
+        ],
+        [
+          "更新",
+          "编码器"
+        ]
+      ],
+      "intent": "diagram",
+      "label": "p2-method-training-flow",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p2-method-training-flow"
+    },
+    {
+      "id": "p2-method-training-flow-s2",
+      "group": "paper-figure",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4202,
+      "prompt": "一张用于中文学术论文的方法流程图，纯白背景，扁平矢量风格。细深灰色线条、极浅灰色方块填充、黑色中文黑体标签，统一字号，水平对齐，间距均匀。禁止渐变、阴影、立体效果、图标、照片或装饰性插画。顶部居中标题\"图 2 训练流程\"。严格八个独立矩形，标签依次为\"数据采样\"、\"分词\"、\"编码器\"、\"注意力\"、\"融合\"、\"解码器\"、\"损失\"、\"更新\"。第一行从左到右：数据采样、分词、编码器、注意力、融合、解码器。第二行：损失在解码器正下方，更新在损失左侧，并有一条箭头从\"更新\"回到\"编码器\"。严格八条细箭头：数据采样→分词；分词→编码器；编码器→注意力；注意力→融合；融合→解码器；解码器→损失；损失→更新；更新→编码器。不要其他方块、箭头、图例或文字。",
+      "prompt_sha256": "13449c11d8622b32bc4edacb009934e3799d3180caa9efb4f03cf0012956d3e2",
+      "texts": [
+        {
+          "text": "图 2 训练流程",
+          "count": 1
+        },
+        {
+          "text": "数据采样",
+          "count": 1
+        },
+        {
+          "text": "分词",
+          "count": 1
+        },
+        {
+          "text": "编码器",
+          "count": 1
+        },
+        {
+          "text": "注意力",
+          "count": 1
+        },
+        {
+          "text": "融合",
+          "count": 1
+        },
+        {
+          "text": "解码器",
+          "count": 1
+        },
+        {
+          "text": "损失",
+          "count": 1
+        },
+        {
+          "text": "更新",
+          "count": 1
+        }
+      ],
+      "nodes": [
+        "数据采样",
+        "分词",
+        "编码器",
+        "注意力",
+        "融合",
+        "解码器",
+        "损失",
+        "更新"
+      ],
+      "directed_edges": [
+        [
+          "数据采样",
+          "分词"
+        ],
+        [
+          "分词",
+          "编码器"
+        ],
+        [
+          "编码器",
+          "注意力"
+        ],
+        [
+          "注意力",
+          "融合"
+        ],
+        [
+          "融合",
+          "解码器"
+        ],
+        [
+          "解码器",
+          "损失"
+        ],
+        [
+          "损失",
+          "更新"
+        ],
+        [
+          "更新",
+          "编码器"
+        ]
+      ],
+      "intent": "diagram",
+      "label": "p2-method-training-flow",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p2-method-training-flow"
+    },
+    {
+      "id": "p3-product-dashboard-s1",
+      "group": "product-page",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4103,
+      "prompt": "A realistic screenshot of a light-theme web analytics dashboard, viewed straight on, filling the frame, no browser chrome, no device frame. Plain white page background, white cards with hairline light-gray borders, one restrained medium-blue accent, regular system sans-serif typography, comfortable spacing, crisp alignment. No neon, no glass, no gradients, no glow, no 3D, no photographs. Top bar: page title \"实验监控\" on the left, navigation items \"概览\", \"实验\", \"数据集\", \"报告\" next to it, and a single blue button \"导出报告\" on the right. Three KPI cards in a row: \"准确率\" with \"92.4%\", \"损失\" with \"0.267\", \"延迟\" with \"18ms\". Below them one table with four column headers \"运行编号\", \"状态\", \"准确率\", \"耗时\" and exactly three rows: \"RUN-021\", \"已完成\", \"92.4%\", \"23m18s\"; \"RUN-020\", \"已完成\", \"91.8%\", \"24m05s\"; \"RUN-019\", \"运行中\", \"91.1%\", \"26m41s\". Print only these exact strings, no other labels, numbers, logos or placeholder text.",
+      "prompt_sha256": "09e549da424a86e4bf2cbd5b8d7fb52862a911c941f6000402333cc2b7ff28b7",
+      "texts": [
+        {
+          "text": "实验监控",
+          "count": 1
+        },
+        {
+          "text": "概览",
+          "count": 1
+        },
+        {
+          "text": "实验",
+          "count": 1
+        },
+        {
+          "text": "数据集",
+          "count": 1
+        },
+        {
+          "text": "报告",
+          "count": 1
+        },
+        {
+          "text": "导出报告",
+          "count": 1
+        },
+        {
+          "text": "准确率",
+          "count": 2
+        },
+        {
+          "text": "92.4%",
+          "count": 2
+        },
+        {
+          "text": "损失",
+          "count": 1
+        },
+        {
+          "text": "0.267",
+          "count": 1
+        },
+        {
+          "text": "延迟",
+          "count": 1
+        },
+        {
+          "text": "18ms",
+          "count": 1
+        },
+        {
+          "text": "运行编号",
+          "count": 1
+        },
+        {
+          "text": "状态",
+          "count": 1
+        },
+        {
+          "text": "耗时",
+          "count": 1
+        },
+        {
+          "text": "RUN-021",
+          "count": 1
+        },
+        {
+          "text": "RUN-020",
+          "count": 1
+        },
+        {
+          "text": "RUN-019",
+          "count": 1
+        },
+        {
+          "text": "已完成",
+          "count": 2
+        },
+        {
+          "text": "91.8%",
+          "count": 1
+        },
+        {
+          "text": "24m05s",
+          "count": 1
+        },
+        {
+          "text": "运行中",
+          "count": 1
+        },
+        {
+          "text": "91.1%",
+          "count": 1
+        },
+        {
+          "text": "26m41s",
+          "count": 1
+        },
+        {
+          "text": "23m18s",
+          "count": 1
+        }
+      ],
+      "nodes": [],
+      "directed_edges": [],
+      "intent": "ui",
+      "label": "p3-product-dashboard",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p3-product-dashboard"
+    },
+    {
+      "id": "p3-product-dashboard-s2",
+      "group": "product-page",
+      "width": 1536,
+      "height": 1024,
+      "seed": 4203,
+      "prompt": "A realistic screenshot of a light-theme web analytics dashboard, viewed straight on, filling the frame, no browser chrome, no device frame. Plain white page background, white cards with hairline light-gray borders, one restrained medium-blue accent, regular system sans-serif typography, comfortable spacing, crisp alignment. No neon, no glass, no gradients, no glow, no 3D, no photographs. Top bar: page title \"实验监控\" on the left, navigation items \"概览\", \"实验\", \"数据集\", \"报告\" next to it, and a single blue button \"导出报告\" on the right. Three KPI cards in a row: \"准确率\" with \"92.4%\", \"损失\" with \"0.267\", \"延迟\" with \"18ms\". Below them one table with four column headers \"运行编号\", \"状态\", \"准确率\", \"耗时\" and exactly three rows: \"RUN-021\", \"已完成\", \"92.4%\", \"23m18s\"; \"RUN-020\", \"已完成\", \"91.8%\", \"24m05s\"; \"RUN-019\", \"运行中\", \"91.1%\", \"26m41s\". Print only these exact strings, no other labels, numbers, logos or placeholder text.",
+      "prompt_sha256": "09e549da424a86e4bf2cbd5b8d7fb52862a911c941f6000402333cc2b7ff28b7",
+      "texts": [
+        {
+          "text": "实验监控",
+          "count": 1
+        },
+        {
+          "text": "概览",
+          "count": 1
+        },
+        {
+          "text": "实验",
+          "count": 1
+        },
+        {
+          "text": "数据集",
+          "count": 1
+        },
+        {
+          "text": "报告",
+          "count": 1
+        },
+        {
+          "text": "导出报告",
+          "count": 1
+        },
+        {
+          "text": "准确率",
+          "count": 2
+        },
+        {
+          "text": "92.4%",
+          "count": 2
+        },
+        {
+          "text": "损失",
+          "count": 1
+        },
+        {
+          "text": "0.267",
+          "count": 1
+        },
+        {
+          "text": "延迟",
+          "count": 1
+        },
+        {
+          "text": "18ms",
+          "count": 1
+        },
+        {
+          "text": "运行编号",
+          "count": 1
+        },
+        {
+          "text": "状态",
+          "count": 1
+        },
+        {
+          "text": "耗时",
+          "count": 1
+        },
+        {
+          "text": "RUN-021",
+          "count": 1
+        },
+        {
+          "text": "RUN-020",
+          "count": 1
+        },
+        {
+          "text": "RUN-019",
+          "count": 1
+        },
+        {
+          "text": "已完成",
+          "count": 2
+        },
+        {
+          "text": "91.8%",
+          "count": 1
+        },
+        {
+          "text": "24m05s",
+          "count": 1
+        },
+        {
+          "text": "运行中",
+          "count": 1
+        },
+        {
+          "text": "91.1%",
+          "count": 1
+        },
+        {
+          "text": "26m41s",
+          "count": 1
+        },
+        {
+          "text": "23m18s",
+          "count": 1
+        }
+      ],
+      "nodes": [],
+      "directed_edges": [],
+      "intent": "ui",
+      "label": "p3-product-dashboard",
+      "checks": [
+        "逐字计分，按指定出现次数计数",
+        "图示核对全部节点及有向边，重复或合并节点不通过",
+        "原图验收，不修字、不改线"
+      ],
+      "source_case_id": "p3-product-dashboard"
+    },
+    {
+      "id": "l1-zh-poster-s1",
+      "group": "low-density-text",
+      "label": "中文海报主标题",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5101,
+      "prompt": "A refined poster with a plain ivory background and one bold, centered Chinese headline reading exactly \"城市慢生活\". A small warm terracotta circle sits below the headline. Clean flat print design, dark charcoal type, wide margins, quiet visual balance.",
+      "texts": [
+        {
+          "text": "城市慢生活",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l1-zh-poster",
+      "prompt_sha256": "cffc068205195ddbf13a748278ab6ad5a8dbe998a7a4f57afbbb1eda792e53f6"
+    },
+    {
+      "id": "l1-zh-poster-s2",
+      "group": "low-density-text",
+      "label": "中文海报主标题",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5201,
+      "prompt": "A refined poster with a plain ivory background and one bold, centered Chinese headline reading exactly \"城市慢生活\". A small warm terracotta circle sits below the headline. Clean flat print design, dark charcoal type, wide margins, quiet visual balance.",
+      "texts": [
+        {
+          "text": "城市慢生活",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l1-zh-poster",
+      "prompt_sha256": "cffc068205195ddbf13a748278ab6ad5a8dbe998a7a4f57afbbb1eda792e53f6"
+    },
+    {
+      "id": "l2-en-slide-s1",
+      "group": "low-density-text",
+      "label": "英文幻灯片封面",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5102,
+      "prompt": "A landscape presentation cover. On a plain white background, set the exact large headline \"RETRIEVAL SYSTEMS\" above the exact smaller subtitle \"From query to grounded answer\". Left-aligned dark navy sans-serif typography and a thin blue horizontal rule give the composition a restrained editorial hierarchy.",
+      "texts": [
+        {
+          "text": "RETRIEVAL SYSTEMS",
+          "count": 1
+        },
+        {
+          "text": "From query to grounded answer",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l2-en-slide",
+      "prompt_sha256": "9d994750f791bf7aa586f5a3af9322fa23c8235300f858afc7cc4d0789cf1d94"
+    },
+    {
+      "id": "l2-en-slide-s2",
+      "group": "low-density-text",
+      "label": "英文幻灯片封面",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5202,
+      "prompt": "A landscape presentation cover. On a plain white background, set the exact large headline \"RETRIEVAL SYSTEMS\" above the exact smaller subtitle \"From query to grounded answer\". Left-aligned dark navy sans-serif typography and a thin blue horizontal rule give the composition a restrained editorial hierarchy.",
+      "texts": [
+        {
+          "text": "RETRIEVAL SYSTEMS",
+          "count": 1
+        },
+        {
+          "text": "From query to grounded answer",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l2-en-slide",
+      "prompt_sha256": "9d994750f791bf7aa586f5a3af9322fa23c8235300f858afc7cc4d0789cf1d94"
+    },
+    {
+      "id": "l3-shop-sign-s1",
+      "group": "low-density-text",
+      "label": "英文单行店招",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5103,
+      "prompt": "A straight-on photograph of a single rectangular cream shop sign on a dark green storefront. Centered dark green uppercase lettering reads exactly \"OPEN DAILY\" on one line. The sign fills most of the frame. Realistic painted lettering and gently diffused daylight.",
+      "texts": [
+        {
+          "text": "OPEN DAILY",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l3-shop-sign",
+      "prompt_sha256": "9b6c8c418a7e66b2e84e6db746f0d9ea78e200d6465a40e858d2cd4db80e81cd"
+    },
+    {
+      "id": "l3-shop-sign-s2",
+      "group": "low-density-text",
+      "label": "英文单行店招",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5203,
+      "prompt": "A straight-on photograph of a single rectangular cream shop sign on a dark green storefront. Centered dark green uppercase lettering reads exactly \"OPEN DAILY\" on one line. The sign fills most of the frame. Realistic painted lettering and gently diffused daylight.",
+      "texts": [
+        {
+          "text": "OPEN DAILY",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l3-shop-sign",
+      "prompt_sha256": "9b6c8c418a7e66b2e84e6db746f0d9ea78e200d6465a40e858d2cd4db80e81cd"
+    },
+    {
+      "id": "l4-three-label-flow-s1",
+      "group": "low-density-text",
+      "label": "三标签简单流程",
+      "intent": "diagram",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5104,
+      "prompt": "A flat vector diagram on white showing exactly three separate rectangular boxes in one horizontal row, labelled exactly \"Input\", \"Encode\", \"Output\". Two thin dark arrows connect Input to Encode and Encode to Output from left to right. Black sans-serif type, pale gray fills, wide clean gaps, consistent line weight.",
+      "texts": [
+        {
+          "text": "Input",
+          "count": 1
+        },
+        {
+          "text": "Encode",
+          "count": 1
+        },
+        {
+          "text": "Output",
+          "count": 1
+        }
+      ],
+      "directed_edges": [
+        [
+          "Input",
+          "Encode"
+        ],
+        [
+          "Encode",
+          "Output"
+        ]
+      ],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l4-three-label-flow",
+      "prompt_sha256": "8b929953ae757d15d5e8fc0e5568285fb00b768d8e771399adc41808f9e047ae"
+    },
+    {
+      "id": "l4-three-label-flow-s2",
+      "group": "low-density-text",
+      "label": "三标签简单流程",
+      "intent": "diagram",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5204,
+      "prompt": "A flat vector diagram on white showing exactly three separate rectangular boxes in one horizontal row, labelled exactly \"Input\", \"Encode\", \"Output\". Two thin dark arrows connect Input to Encode and Encode to Output from left to right. Black sans-serif type, pale gray fills, wide clean gaps, consistent line weight.",
+      "texts": [
+        {
+          "text": "Input",
+          "count": 1
+        },
+        {
+          "text": "Encode",
+          "count": 1
+        },
+        {
+          "text": "Output",
+          "count": 1
+        }
+      ],
+      "directed_edges": [
+        [
+          "Input",
+          "Encode"
+        ],
+        [
+          "Encode",
+          "Output"
+        ]
+      ],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l4-three-label-flow",
+      "prompt_sha256": "8b929953ae757d15d5e8fc0e5568285fb00b768d8e771399adc41808f9e047ae"
+    },
+    {
+      "id": "l5-zh-book-s1",
+      "group": "low-density-text",
+      "label": "中文书封",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5105,
+      "prompt": "A straight-on full-frame book-cover design. The plain warm ivory cover displays the large exact Chinese title \"时间的纹理\" and the small exact author line \"林舟 著\". A single slim terracotta vertical rectangle below the title balances the generous margins. Charcoal typography, quiet modern literary publishing style.",
+      "texts": [
+        {
+          "text": "时间的纹理",
+          "count": 1
+        },
+        {
+          "text": "林舟 著",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l5-zh-book",
+      "prompt_sha256": "2b2fbff5112a157a0a080887664077fa10b8a2d1cb9b1bab5a50ff311664f356"
+    },
+    {
+      "id": "l5-zh-book-s2",
+      "group": "low-density-text",
+      "label": "中文书封",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5205,
+      "prompt": "A straight-on full-frame book-cover design. The plain warm ivory cover displays the large exact Chinese title \"时间的纹理\" and the small exact author line \"林舟 著\". A single slim terracotta vertical rectangle below the title balances the generous margins. Charcoal typography, quiet modern literary publishing style.",
+      "texts": [
+        {
+          "text": "时间的纹理",
+          "count": 1
+        },
+        {
+          "text": "林舟 著",
+          "count": 1
+        }
+      ],
+      "directed_edges": [],
+      "checks": [
+        "逐字与大小写正确才算一项通过",
+        "不得增加标签、合并框或漏掉标签",
+        "视觉可用/不可用，附具体理由"
+      ],
+      "source_case_id": "l5-zh-book",
+      "prompt_sha256": "2b2fbff5112a157a0a080887664077fa10b8a2d1cb9b1bab5a50ff311664f356"
+    },
+    {
+      "id": "13-face-natural-detail-s1",
+      "group": "visual",
+      "label": "写实面部 / 皮肤眼睛发丝",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2113,
+      "prompt": "An extremely detailed but natural editorial head-and-shoulders portrait of an original adult woman in her late twenties, with dark brown wavy hair tucked behind one ear and a simple cream crew-neck shirt. Looking directly at the camera, relaxed closed lips. Face occupies most of the frame. Clearly resolved eyelashes, coherent iris reflections, natural pores, subtle freckles and fine individual hair strands, no waxy airbrushing and no excessive sharpening. Soft large window light from the left, neutral warm-gray studio background, realistic anatomy, honest photographic texture, no jewelry obscuring facial features, no text or logos.",
+      "checks": [
+        "眼睑、虹膜反光、睫毛与嘴部",
+        "毛孔、细发、皮肤不过度磨皮",
+        "面部近看而非仅缩略图好看",
+        "合成人物，无真人身份要求"
+      ],
+      "source_case_id": "13-face-natural-detail",
+      "prompt_sha256": "46617b42e23f6c70fc335a536be45f2fd3ed786df1d15a79a409783d511a5ff2"
+    },
+    {
+      "id": "13-face-natural-detail-s2",
+      "group": "visual",
+      "label": "写实面部 / 皮肤眼睛发丝",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2213,
+      "prompt": "An extremely detailed but natural editorial head-and-shoulders portrait of an original adult woman in her late twenties, with dark brown wavy hair tucked behind one ear and a simple cream crew-neck shirt. Looking directly at the camera, relaxed closed lips. Face occupies most of the frame. Clearly resolved eyelashes, coherent iris reflections, natural pores, subtle freckles and fine individual hair strands, no waxy airbrushing and no excessive sharpening. Soft large window light from the left, neutral warm-gray studio background, realistic anatomy, honest photographic texture, no jewelry obscuring facial features, no text or logos.",
+      "checks": [
+        "眼睑、虹膜反光、睫毛与嘴部",
+        "毛孔、细发、皮肤不过度磨皮",
+        "面部近看而非仅缩略图好看",
+        "合成人物，无真人身份要求"
+      ],
+      "source_case_id": "13-face-natural-detail",
+      "prompt_sha256": "46617b42e23f6c70fc335a536be45f2fd3ed786df1d15a79a409783d511a5ff2"
+    },
+    {
+      "id": "16-body-standing-s1",
+      "group": "visual",
+      "label": "女性全身 / 肩胯膝踝",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2116,
+      "prompt": "A highly detailed full-body studio photograph of an original adult female fitness instructor wearing a fitted muted-teal long-sleeve athletic top, charcoal ankle-length leggings and simple white trainers. Neutral professional sportswear, nonsexual pose. Stand in a relaxed contrapposto with weight on one leg, both arms relaxed away from the torso, both hands fully visible with natural separated fingers. Show the entire head and both feet with margins. Anatomically coherent shoulder, elbow, hip, knee and ankle alignment, realistic fabric tension and body proportions, soft even light, plain warm-gray background, no text or logos.",
+      "checks": [
+        "头到双脚完整、四肢无额外结构",
+        "肩肘髋膝踝关系",
+        "双手五指与衣料受力",
+        "非性感化的成年人运动服肖像"
+      ],
+      "source_case_id": "16-body-standing",
+      "prompt_sha256": "45fde16e9deb47da1d0b2774f92917dcaaa48230b2822a81fb46ec79089da24b"
+    },
+    {
+      "id": "16-body-standing-s2",
+      "group": "visual",
+      "label": "女性全身 / 肩胯膝踝",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2216,
+      "prompt": "A highly detailed full-body studio photograph of an original adult female fitness instructor wearing a fitted muted-teal long-sleeve athletic top, charcoal ankle-length leggings and simple white trainers. Neutral professional sportswear, nonsexual pose. Stand in a relaxed contrapposto with weight on one leg, both arms relaxed away from the torso, both hands fully visible with natural separated fingers. Show the entire head and both feet with margins. Anatomically coherent shoulder, elbow, hip, knee and ankle alignment, realistic fabric tension and body proportions, soft even light, plain warm-gray background, no text or logos.",
+      "checks": [
+        "头到双脚完整、四肢无额外结构",
+        "肩肘髋膝踝关系",
+        "双手五指与衣料受力",
+        "非性感化的成年人运动服肖像"
+      ],
+      "source_case_id": "16-body-standing",
+      "prompt_sha256": "45fde16e9deb47da1d0b2774f92917dcaaa48230b2822a81fb46ec79089da24b"
+    },
+    {
+      "id": "18-face-and-hands-s1",
+      "group": "visual",
+      "label": "面部与双手 / 托杯细节",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2118,
+      "prompt": "A detailed waist-up editorial portrait of an original adult woman in her early thirties seated at a wooden table, wearing a soft beige knit sweater. She holds a small plain ceramic mug in both hands just below her chin, looking toward the camera with a relaxed expression. Clearly show natural finger joints, fingernails and the contact between fingers and the mug; all fingers belong to the correct hand, no fused skin. Sharp facial features with natural skin texture, finely resolved sweater fibers, soft window light and quiet blurred background. No text or logos, no beauty-filter skin.",
+      "checks": [
+        "脸与手同时清晰",
+        "手指数量、关节、指甲与杯子接触",
+        "针织与皮肤不同材质",
+        "遮挡处不凭猜测判五指正确"
+      ],
+      "source_case_id": "18-face-and-hands",
+      "prompt_sha256": "eb36143a4a4e23aaded317f2d35c542d52b72f24dfb861d1db02d65b5a17286a"
+    },
+    {
+      "id": "18-face-and-hands-s2",
+      "group": "visual",
+      "label": "面部与双手 / 托杯细节",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2218,
+      "prompt": "A detailed waist-up editorial portrait of an original adult woman in her early thirties seated at a wooden table, wearing a soft beige knit sweater. She holds a small plain ceramic mug in both hands just below her chin, looking toward the camera with a relaxed expression. Clearly show natural finger joints, fingernails and the contact between fingers and the mug; all fingers belong to the correct hand, no fused skin. Sharp facial features with natural skin texture, finely resolved sweater fibers, soft window light and quiet blurred background. No text or logos, no beauty-filter skin.",
+      "checks": [
+        "脸与手同时清晰",
+        "手指数量、关节、指甲与杯子接触",
+        "针织与皮肤不同材质",
+        "遮挡处不凭猜测判五指正确"
+      ],
+      "source_case_id": "18-face-and-hands",
+      "prompt_sha256": "eb36143a4a4e23aaded317f2d35c542d52b72f24dfb861d1db02d65b5a17286a"
+    },
+    {
+      "id": "19-anime-face-detail-s1",
+      "group": "visual",
+      "label": "动漫近脸 / 眼睛与发丝",
+      "intent": "anime",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2119,
+      "prompt": "A finely finished original anime portrait of an adult female researcher in her late twenties, head and shoulders, short dark indigo hair with subtle individual strands, thoughtful amber eyes and a simple ivory collared shirt. Refined precise linework, coherent pupils and catchlights, delicate layered cel shading around the nose and lips, clean ear anatomy, restrained color harmony, soft rim light, minimal pale blue-gray background. Mature adult character design, no school uniform, no text, no accessories covering the face, polished illustration rather than plastic 3D rendering.",
+      "checks": [
+        "眼睛、瞳孔、反光与发丝线条",
+        "鼻唇耳细部与阴影",
+        "成熟角色风格",
+        "非真实身份照片"
+      ],
+      "source_case_id": "19-anime-face-detail",
+      "prompt_sha256": "80e5936e903879887b34a96cb178d275e208ade9d8de4fb532ce57a705434397"
+    },
+    {
+      "id": "19-anime-face-detail-s2",
+      "group": "visual",
+      "label": "动漫近脸 / 眼睛与发丝",
+      "intent": "anime",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2219,
+      "prompt": "A finely finished original anime portrait of an adult female researcher in her late twenties, head and shoulders, short dark indigo hair with subtle individual strands, thoughtful amber eyes and a simple ivory collared shirt. Refined precise linework, coherent pupils and catchlights, delicate layered cel shading around the nose and lips, clean ear anatomy, restrained color harmony, soft rim light, minimal pale blue-gray background. Mature adult character design, no school uniform, no text, no accessories covering the face, polished illustration rather than plastic 3D rendering.",
+      "checks": [
+        "眼睛、瞳孔、反光与发丝线条",
+        "鼻唇耳细部与阴影",
+        "成熟角色风格",
+        "非真实身份照片"
+      ],
+      "source_case_id": "19-anime-face-detail",
+      "prompt_sha256": "80e5936e903879887b34a96cb178d275e208ade9d8de4fb532ce57a705434397"
+    },
+    {
+      "id": "20-anime-body-detail-s1",
+      "group": "visual",
+      "label": "动漫全身 / 服装手部与动态",
+      "intent": "anime",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2120,
+      "prompt": "A polished full-body illustration of an original adult female field engineer wearing a fitted navy work jacket over a plain light shirt, olive cargo trousers and practical brown boots. She steps forward slightly while holding a small open notebook in her left hand and a pencil in her right. Show the full head, both hands and both boots with margins. Precise anime linework, detailed but coherent hands, natural limb proportions, layered fabric folds, subtle warm and cool cel shading, small utility belt with plausible simple tools, plain warm-ivory background, no text or logos, no sexualized styling.",
+      "checks": [
+        "完整全身与自然动态",
+        "双手、笔和本子的关系",
+        "衣褶、工具、靴子和比例",
+        "成熟角色与非性感化服装"
+      ],
+      "source_case_id": "20-anime-body-detail",
+      "prompt_sha256": "2cb205a5c9c89a89d552b652824f8e4e35835f363b3ff3ce48bcc1407db9c402"
+    },
+    {
+      "id": "20-anime-body-detail-s2",
+      "group": "visual",
+      "label": "动漫全身 / 服装手部与动态",
+      "intent": "anime",
+      "width": 1024,
+      "height": 1536,
+      "seed": 2220,
+      "prompt": "A polished full-body illustration of an original adult female field engineer wearing a fitted navy work jacket over a plain light shirt, olive cargo trousers and practical brown boots. She steps forward slightly while holding a small open notebook in her left hand and a pencil in her right. Show the full head, both hands and both boots with margins. Precise anime linework, detailed but coherent hands, natural limb proportions, layered fabric folds, subtle warm and cool cel shading, small utility belt with plausible simple tools, plain warm-ivory background, no text or logos, no sexualized styling.",
+      "checks": [
+        "完整全身与自然动态",
+        "双手、笔和本子的关系",
+        "衣褶、工具、靴子和比例",
+        "成熟角色与非性感化服装"
+      ],
+      "source_case_id": "20-anime-body-detail",
+      "prompt_sha256": "2cb205a5c9c89a89d552b652824f8e4e35835f363b3ff3ce48bcc1407db9c402"
+    },
+    {
+      "id": "v6-textless-hero-s1",
+      "group": "visual",
+      "label": "无字陶艺Hero底图",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5206,
+      "prompt": "A wide editorial website hero background photograph for a ceramics studio. A matte terracotta teapot, a cream ceramic cup and a folded linen cloth form a coherent still life on the right third of an oak workbench. The left half is a smooth empty warm ivory wall for later typesetting. Soft morning window light, tactile clay and wood grain, restrained warm colors, balanced perspective, a clean unmarked scene.",
+      "checks": [
+        "左半留白可排真实文字",
+        "茶壶杯子和桌面透视可信",
+        "原图视觉可用/不可用并写理由"
+      ],
+      "source_case_id": "v6-textless-hero",
+      "prompt_sha256": "3a642d6ff2218969bc41954418eb3f38da0c25dd335ae6e3440c6caedbfc1566"
+    },
+    {
+      "id": "v6-textless-hero-s2",
+      "group": "visual",
+      "label": "无字陶艺Hero底图",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 5306,
+      "prompt": "A wide editorial website hero background photograph for a ceramics studio. A matte terracotta teapot, a cream ceramic cup and a folded linen cloth form a coherent still life on the right third of an oak workbench. The left half is a smooth empty warm ivory wall for later typesetting. Soft morning window light, tactile clay and wood grain, restrained warm colors, balanced perspective, a clean unmarked scene.",
+      "checks": [
+        "左半留白可排真实文字",
+        "茶壶杯子和桌面透视可信",
+        "原图视觉可用/不可用并写理由"
+      ],
+      "source_case_id": "v6-textless-hero",
+      "prompt_sha256": "3a642d6ff2218969bc41954418eb3f38da0c25dd335ae6e3440c6caedbfc1566"
+    }
+  ]
+}

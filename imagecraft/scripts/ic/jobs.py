@@ -10,7 +10,7 @@ import tempfile
 import time
 import uuid
 
-from download_models import inventory
+from download_models import DEFAULT_MODEL, inventory, manifest_path, workflow_path
 from .client import Client, HTTPFailure
 from .common import Error, SKILL, atomic_json, now, read_json, safe_child, sha256
 from .workflow import build, open_image, reference_png, validate
@@ -20,13 +20,13 @@ def fingerprint(value: dict) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
-def prepare_request(prompt, width, height, seed, intent, references):
+def prepare_request(prompt, width, height, seed, intent, references, model=DEFAULT_MODEL):
     for path in references:
         reference_png(path)  # Validate every reference before a plan or submission.
     return {"prompt": prompt, "width": width, "height": height, "seed": seed, "intent": intent,
             "references": [{"path": str(p), "sha256": sha256(p)} for p in references],
-            "model_manifest_sha256": sha256(SKILL / "models/flux-klein-4b.json"),
-            "workflow_template_sha256": sha256(SKILL / "workflows/flux-klein-4b.api.json")}
+            "model": model, "model_manifest_sha256": sha256(manifest_path(model)),
+            "workflow_template_sha256": sha256(workflow_path(model))}
 
 
 def load_job(root: Path) -> dict:
@@ -165,16 +165,20 @@ def submit(cfg: dict, root: Path, request: dict) -> dict:
                "state": "prepared", "created_at": now(), "endpoint": cfg["url"], "request": request,
                "request_fingerprint": fingerprint(request), "uploads": []}
         save_job(root, job)
+    model = request.get("model", "flux-klein-4b")  # Pre-model-selection receipts always used FLUX.
+    if (sha256(manifest_path(model)) != request["model_manifest_sha256"] or
+            sha256(workflow_path(model)) != request["workflow_template_sha256"]):
+        raise Error("Pinned manifest/workflow changed after planning; inspect the prepared request before submitting")
     client = Client(cfg["url"])
     queue = client.request("/queue")
     if queue.get("queue_running") or queue.get("queue_pending"):
         raise Error("ComfyUI is busy; nothing submitted. Wait for the existing job to finish")
     info = client.request("/object_info")
     graph = build(request["prompt"], request["width"], request["height"], request["seed"],
-                  f"imagecraft/{job['job_id']}", [f"reference-{i}.png" for i in range(len(request["references"]))])
+                  f"imagecraft/{job['job_id']}", [f"reference-{i}.png" for i in range(len(request["references"]))], model=model)
     validate(graph, info)
     # Full hashes at new submission; don't mistake matching filenames or sizes for integrity.
-    models = inventory(Path(cfg["models_root"]), verify=True)
+    models = inventory(Path(cfg["models_root"]), verify=True, model=model)
     if any(f["status"] != "verified" for f in models["files"]):
         raise Error("Pinned models are missing or differ; run models check --verify, do not auto-download")
     job["verified_models"] = [{k: f[k] for k in ("role", "sha256", "bytes", "path")} for f in models["files"]]
@@ -195,7 +199,7 @@ def submit(cfg: dict, root: Path, request: dict) -> dict:
         job["uploads"].append(uploaded)
         save_job(root, job)
     graph = build(request["prompt"], request["width"], request["height"], request["seed"],
-                  f"imagecraft/{job['job_id']}", job["uploads"])
+                  f"imagecraft/{job['job_id']}", job["uploads"], model=model)
     atomic_json(safe_child(root, "workflow.json"), graph)
     queue = client.request("/queue")
     if queue.get("queue_running") or queue.get("queue_pending"):

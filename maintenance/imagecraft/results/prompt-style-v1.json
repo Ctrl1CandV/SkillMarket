@@ -1,0 +1,796 @@
+{
+  "schema": "imagecraft.sanitized-evaluation/1",
+  "date": "2026-11-02",
+  "hardware": {
+    "gpu": "RTX 4070 Ti SUPER",
+    "physical_vram_mib": 16376,
+    "ram_bytes": 34182176768,
+    "os": "Windows 10"
+  },
+  "environment": {
+    "comfyui": "0.31.0",
+    "python": "3.11.15",
+    "pytorch": "2.8.0+cu128"
+  },
+  "memory_scope": "approximately 1-second whole-card and whole-system samples, not process or minimum-VRAM requirements",
+  "evidence": "Original PNGs, private receipts and raw resource logs retained outside repository.",
+  "suite": "prompt-style-v1",
+  "suite_sha256": "9a4818b18fbf4892fbeccaccf8cee1b9cc9b0f37b4c7274002e0079ff37e3c41",
+  "scope": "Three briefs, two lengths, two polarity rewrites, two seeds (24), plus one same-seed color pair. Expansion adds details, not pure token-length causality. No redraws or repairs.",
+  "rows": [
+    {
+      "id": "product-short-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6301,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "9790087505a5d5e09a13be737c6cde20b2a2c22d235378b7703adf884767177b",
+      "image_sha256": "46aa46a63cbc8bbf3b8aaa95ac988404d44506effdd89a45ef2c040a46053211",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "e2790c07e8369b12b3353c32ced717dd6c86c10109c0dc0e761822e56dd529e1",
+      "server_seconds": 5.742,
+      "wall_seconds": 14.078,
+      "gpu_peak_mib": 15059,
+      "system_ram_peak_mib": 16292,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。短写法已满足原 brief，无需为字数扩写。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-short-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6401,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "9790087505a5d5e09a13be737c6cde20b2a2c22d235378b7703adf884767177b",
+      "image_sha256": "78b390a1ac09eb49f094cc4bedb73914b35f218523342a4f47cbee0e21f470d5",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "b61bd2570fa0e2144d9e4c1bf622bdbe6a280e1d96a9273352ce06bb81a8203a",
+      "server_seconds": 3.394,
+      "wall_seconds": 12.438,
+      "gpu_peak_mib": 13325,
+      "system_ram_peak_mib": 16262,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。短写法已满足原 brief，无需为字数扩写。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-short-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6301,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "2ec5a5db908145c2954c5dd841e3cc48e35541d84b9ecd3009f82e1ee2871521",
+      "image_sha256": "2cd99afefd0d130f66d0f55953ad4626580dfdf72e7a3c3f611d1adfad4ffd1a",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "2810a614c6d907f19602f9c80846f77933c640ec3ed45887c68945a65059f3df",
+      "server_seconds": 3.971,
+      "wall_seconds": 12.547,
+      "gpu_peak_mib": 14573,
+      "system_ram_peak_mib": 15604,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。短写法已满足原 brief，无需为字数扩写。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-short-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6401,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "2ec5a5db908145c2954c5dd841e3cc48e35541d84b9ecd3009f82e1ee2871521",
+      "image_sha256": "787181dfad190b551b06bdd0407b575a685e663211d2033ece5023f2584b3a10",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "3168abc912f5850e9d9cabebfcb7d591a902fb18931e8c751bec5f8c8b8a0389",
+      "server_seconds": 3.396,
+      "wall_seconds": 12.531,
+      "gpu_peak_mib": 15752,
+      "system_ram_peak_mib": 15593,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。短写法已满足原 brief，无需为字数扩写。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-long-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6301,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "c2dbc2aed97c09b255183aee814e7860d5d0e6919b7c7021258da8fecde87cda",
+      "image_sha256": "293d56cb6ef2a58cfbf28c1c1cc07e139612d7cdb89ede619d1cd406f26afaa1",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "0d1042082dbab081913d1d765257e84dc96ab4ea09c1efb7f928898a2edfd3c7",
+      "server_seconds": 3.811,
+      "wall_seconds": 12.516,
+      "gpu_peak_mib": 14408,
+      "system_ram_peak_mib": 15685,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。长写法加入的左窗被画进左侧空墙，严格留白契约不通过；杯身孔隙较明确，但并非全面更好。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-long-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6401,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "c2dbc2aed97c09b255183aee814e7860d5d0e6919b7c7021258da8fecde87cda",
+      "image_sha256": "7828446577f57fcfe06517949d83610c1cb9db02fb433b45bd7136afceea6f53",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "d66ffba7696965af6a99045774bc064d310f2cfd28309239db0efbaadf4130c3",
+      "server_seconds": 3.57,
+      "wall_seconds": 12.532,
+      "gpu_peak_mib": 14468,
+      "system_ram_peak_mib": 15684,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。长写法加入的左窗被画进左侧空墙，严格留白契约不通过；杯身孔隙较明确，但并非全面更好。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-long-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6301,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "3312d04f643dc1dcb1ba25070d91e1096a1ef2f1b4c2b7da27b3157a443b2229",
+      "image_sha256": "bf1b1d9f6eb1216b2b90ee77b61f77db9fe9897e4bd4c8d805576dd34c7887a4",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "26d5d5be17ed0f062a309ddd45b504363e65e5461ffb03cf853e707556944d3a",
+      "server_seconds": 3.995,
+      "wall_seconds": 12.562,
+      "gpu_peak_mib": 14454,
+      "system_ram_peak_mib": 15712,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。长写法加入的左窗被画进左侧空墙，严格留白契约不通过；杯身孔隙较明确，但并非全面更好。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "product"
+    },
+    {
+      "id": "product-long-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6401,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "3312d04f643dc1dcb1ba25070d91e1096a1ef2f1b4c2b7da27b3157a443b2229",
+      "image_sha256": "636fea483aa866ebdd356ab3ebfceab43f726e1d3cb7c20396528e4dd7baf74e",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "8a14f4d8f5e669a6753f67371879252f37eae60cbdb26f0e6ce8530de28c51b8",
+      "server_seconds": 3.537,
+      "wall_seconds": 12.5,
+      "gpu_peak_mib": 15111,
+      "system_ram_peak_mib": 15702,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "notes": "单杯与把手完整，右侧主体、左侧留白、陶土与木面可用；未见霓虹、发光边、玻璃底座或文字。长写法加入的左窗被画进左侧空墙，严格留白契约不通过；杯身孔隙较明确，但并非全面更好。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "product"
+    },
+    {
+      "id": "page-short-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6302,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "e9b49b692a295d3009933bc863b4e55080011373465a8e6cf1d6a619503e47f6",
+      "image_sha256": "b422f90ba4f298304125b90251996c0c6117abacf7901d38dced277d1d40a9e3",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "83674977a1ca76ba10df0df9b675808ccd6e56cae256d5c764dff41f8901c4e4",
+      "server_seconds": 3.852,
+      "wall_seconds": 12.391,
+      "gpu_peak_mib": 14471,
+      "system_ram_peak_mib": 15633,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 2,
+        "visible_drop_shadow": false,
+        "forbidden_elements_observed": [],
+        "notes": "两张大卡，未满足四指标块；有左导航、顶栏和主表，只能比较布局方向。未见霓虹、彩色渐变、玻璃、立体卡片或明显投影。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-short-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6402,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "e9b49b692a295d3009933bc863b4e55080011373465a8e6cf1d6a619503e47f6",
+      "image_sha256": "efbf8f74f8c336503209a4229974b3c183e32b21b6f6246a303ffee13223aaeb",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "fd01669d88be7b79541786de2a634e9e8cb41ed4f0f917db07455fea7d479f35",
+      "server_seconds": 3.391,
+      "wall_seconds": 12.468,
+      "gpu_peak_mib": 15787,
+      "system_ram_peak_mib": 15862,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 2,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "两张大卡，未满足四指标块；有左导航、顶栏和主表，只能比较布局方向。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-short-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6302,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "44de08415a0ad5162392f0d56e4a46a447fae3f368d97beeecb2a840c863d352",
+      "image_sha256": "1d41c53a0afad762ef66cf31eb633c272ed39c9513707ded42bf0dae66115c69",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "6cd2b97db46eb518450dac7d19b43eb7b940d112ba797d7e876c3692dc5686d6",
+      "server_seconds": 3.924,
+      "wall_seconds": 12.391,
+      "gpu_peak_mib": 14368,
+      "system_ram_peak_mib": 15630,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 2,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "两张大卡，未满足四指标块；有左导航、顶栏和主表，只能比较布局方向。正面短版额外画出浏览器式深色顶栏与窗口圆点。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-short-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6402,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "44de08415a0ad5162392f0d56e4a46a447fae3f368d97beeecb2a840c863d352",
+      "image_sha256": "edf0dcc757f450c8ba07751c108a41a7f5f6794cf10c24514056018642996f6f",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "315c7d6ded45f50f825907209691cc4e2f90e12b1b3ab9e2e13a000ee3160929",
+      "server_seconds": 3.48,
+      "wall_seconds": 12.453,
+      "gpu_peak_mib": 14399,
+      "system_ram_peak_mib": 15634,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 2,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "两张大卡，未满足四指标块；有左导航、顶栏和主表，只能比较布局方向。正面短版额外画出浏览器式深色顶栏与窗口圆点。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-long-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6302,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "d7751716022f84d5d58805f92f886499df4943689ee1f98539d6b3e2626176b6",
+      "image_sha256": "8b7ee58e3a634ec6306ea265fca8917738a37820c290670dc10270042a5fce4a",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "4abdc38328a7502c262f26d18477811e6a195b96cb3d529464f4ace65a012fc3",
+      "server_seconds": 3.817,
+      "wall_seconds": 12.468,
+      "gpu_peak_mib": 14685,
+      "system_ram_peak_mib": 15576,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 3,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "三张偏高、不等宽指标卡，并非指定四块低矮条；表格与分隔、顶栏搜索头像比短版更明确，但数量和紧凑度仍未遵守。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-long-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6402,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "d7751716022f84d5d58805f92f886499df4943689ee1f98539d6b3e2626176b6",
+      "image_sha256": "f2abd16f90bd1d22f914a52e01daf9fabd9fa679162f1cddaf93128af707b1a2",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "9065c390dcf333b2462b9c07ff0a2861bbd60951f1d81f51952e2aa9a9509121",
+      "server_seconds": 3.461,
+      "wall_seconds": 12.36,
+      "gpu_peak_mib": 15099,
+      "system_ram_peak_mib": 15549,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 3,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "三张偏高、不等宽指标卡，并非指定四块低矮条；表格与分隔、顶栏搜索头像比短版更明确，但数量和紧凑度仍未遵守。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-long-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6302,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "990e0059d85c7c05d9171657a7085aa8b6ab8161f59386fd01e02a882e8bdc60",
+      "image_sha256": "f8a51a4b0e9f827b43d63ec3629516a833496c31cd916bbd35037627a3bf8a96",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "9a68ba1377ef601d9c0f6475b59306e94a6cfb5cfc0f4c1aa064fff341959c36",
+      "server_seconds": 3.943,
+      "wall_seconds": 12.39,
+      "gpu_peak_mib": 14683,
+      "system_ram_peak_mib": 15464,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 3,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "三张偏高、不等宽指标卡，并非指定四块低矮条；表格与分隔、顶栏搜索头像比短版更明确，但数量和紧凑度仍未遵守。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "page"
+    },
+    {
+      "id": "page-long-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6402,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "990e0059d85c7c05d9171657a7085aa8b6ab8161f59386fd01e02a882e8bdc60",
+      "image_sha256": "da368cf01065e358dfd5bbb073323e5fa57588409f5eb831c0e35ae3b6ade97f",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "2f9c74cbd913e680ba94792dd44ddd09fc676116b648ce083c6d7e9d6b7a9f58",
+      "server_seconds": 3.408,
+      "wall_seconds": 12.36,
+      "gpu_peak_mib": 15128,
+      "system_ram_peak_mib": 15465,
+      "review": {
+        "contract_pass": false,
+        "direction_usable": true,
+        "visible_metrics_blocks": 3,
+        "visible_drop_shadow": true,
+        "forbidden_elements_observed": [
+          "drop_shadow"
+        ],
+        "notes": "三张偏高、不等宽指标卡，并非指定四块低矮条；表格与分隔、顶栏搜索头像比短版更明确，但数量和紧凑度仍未遵守。可见外框或卡片投影；未见霓虹、彩色渐变、玻璃或立体卡片。不对伪字和伪数据计准确率，不作为真实财务界面交付。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "page"
+    },
+    {
+      "id": "portrait-short-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6303,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "22b7afa64fa0d3ec6d42b0131636acfcab590db41dc5ee24da26f50048fedfb0",
+      "image_sha256": "cb70ad062b992fdafdd2b2eac5861cbbaf6a4301b6db09da1ed30bfec001efb7",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "87bb8fa1913eb826ccdd0a97f8c938845c208b9b33a3774f18775ee9f3936d7d",
+      "server_seconds": 3.912,
+      "wall_seconds": 12.469,
+      "gpu_peak_mib": 14680,
+      "system_ram_peak_mib": 15468,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。短版已满足头部、材质与普通人像用途；同 seed 正负写法差异较小。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-short-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6403,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "22b7afa64fa0d3ec6d42b0131636acfcab590db41dc5ee24da26f50048fedfb0",
+      "image_sha256": "cfde685cb9d13c92f2bfcb03bd3c97a21e2dd965d80677364f75c4a9868a0050",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "8d32c93ce44e0fec9e1666c9886cb2675743a515fda5c9f6ece07a179c686022",
+      "server_seconds": 3.646,
+      "wall_seconds": 12.594,
+      "gpu_peak_mib": 12816,
+      "system_ram_peak_mib": 15944,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。短版已满足头部、材质与普通人像用途；同 seed 正负写法差异较小。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-short-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6303,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "b1beb7dd152560c5abffb998f5128896c00a140678979214f7aacde3f6245953",
+      "image_sha256": "741eed369de4cd180a0cfe6e9379193d860946a83f7c1ac2be7089946b0bcd3b",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "20276448445da596c2531a64100903e6d6a7a0b5430bcb94b5d462a196b7ffad",
+      "server_seconds": 3.812,
+      "wall_seconds": 12.578,
+      "gpu_peak_mib": 14731,
+      "system_ram_peak_mib": 15631,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。短版已满足头部、材质与普通人像用途；同 seed 正负写法差异较小。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-short-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6403,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "b1beb7dd152560c5abffb998f5128896c00a140678979214f7aacde3f6245953",
+      "image_sha256": "6f3373495ef44415f91ee3fd1fd78a29d93a3d91db8dc487e314780a9d0c6280",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "b0e0fc6ac98b9918d1c8c8358732a23950a681febfcb399437e2abffa66ac74d",
+      "server_seconds": 3.414,
+      "wall_seconds": 12.453,
+      "gpu_peak_mib": 15115,
+      "system_ram_peak_mib": 15623,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。短版已满足头部、材质与普通人像用途；同 seed 正负写法差异较小。"
+      },
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-long-negative-s1",
+      "model": "flux-klein-4b",
+      "seed": 6303,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "396363caeecd4173f3af0cae21081e0371ec66887efd260a467ed24e8ae39653",
+      "image_sha256": "1be736b47bcfbfe23f3b7ca0b4075fb05a423b5133af82d552d257442da690b1",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "2b393e4bdf6904f1d30afb57fb18c0064727b3f6d99325951718487078ead9e3",
+      "server_seconds": 3.971,
+      "wall_seconds": 12.547,
+      "gpu_peak_mib": 14699,
+      "system_ram_peak_mib": 15545,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。长版体现松散束发、侧窗和领口细节，但短版已经可用，无普遍胜负。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-long-negative-s2",
+      "model": "flux-klein-4b",
+      "seed": 6403,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "396363caeecd4173f3af0cae21081e0371ec66887efd260a467ed24e8ae39653",
+      "image_sha256": "3e08707a3357df3b518276521782454d6d35232cdab3dd2f6d63ed5d74c1df18",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "18c79fcf2b6bc86e6a7fb43ceda1297900340a9a6ef299a7c6c85f170a695fe6",
+      "server_seconds": 3.431,
+      "wall_seconds": 12.547,
+      "gpu_peak_mib": 14411,
+      "system_ram_peak_mib": 15539,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。长版体现松散束发、侧窗和领口细节，但短版已经可用，无普遍胜负。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-long-positive-s1",
+      "model": "flux-klein-4b",
+      "seed": 6303,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "b44469a54afc961ba557aeabc53db5f3620500103d2758a8c2122a37bc4789b5",
+      "image_sha256": "54d407ead5eba77192068e64aa60f3b63ed8d1ffa0210b3add301a2d9d4d11ca",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "d521363915599a30e2ee0b1df7dc4465e61f62e1f267fe1a416fd64db74a6f1d",
+      "server_seconds": 3.849,
+      "wall_seconds": 12.484,
+      "gpu_peak_mib": 14726,
+      "system_ram_peak_mib": 15502,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。长版体现松散束发、侧窗和领口细节，但短版已经可用，无普遍胜负。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "portrait-long-positive-s2",
+      "model": "flux-klein-4b",
+      "seed": 6403,
+      "width": 1024,
+      "height": 1536,
+      "prompt_sha256": "b44469a54afc961ba557aeabc53db5f3620500103d2758a8c2122a37bc4789b5",
+      "image_sha256": "b2eee9a6d53544bd52cc00a9b223fc29127a621e0ea2362d9179602b54c52f46",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "63761bb7b024311ba353df53894105d5ecc441fe76ae775b93763b3fd51a9f02",
+      "server_seconds": 3.581,
+      "wall_seconds": 12.485,
+      "gpu_peak_mib": 14374,
+      "system_ram_peak_mib": 15491,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "forbidden_elements_observed": [],
+        "full_crown_and_margin": true,
+        "natural_skin_texture": true,
+        "notes": "成年自然半身肖像，完整头顶主体与边距、奶油圆领、雀斑和可见皮肤纹理；无霓虹轮廓光、蜡皮或夸张首饰。长版体现松散束发、侧窗和领口细节，但短版已经可用，无普遍胜负。"
+      },
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "group": "portrait"
+    },
+    {
+      "id": "color-warm",
+      "model": "flux-klein-4b",
+      "seed": 6304,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "ca2174f5f6e7b4679f629d845aabf425c16bd1e25ba88686fdd9662dddcdbcae",
+      "image_sha256": "5d793f9851a9c621289d6fd513fc58ae8d4ccf5f3640f8fab73180e0162e85ac",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "df554d62f0f5ee658f0f964540358090de07a722833b724b4c0f0495e60ec1e2",
+      "server_seconds": 3.872,
+      "wall_seconds": 12.469,
+      "gpu_peak_mib": 14696,
+      "system_ram_peak_mib": 15425,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "notes": "完整单杯、象牙底、炭黑轮廓，二者均可用。HEX版更偏黄橙，未逐像素命中目标，不能把色值文本当色准保证。",
+        "center_patch_xyxy": [
+          650,
+          400,
+          850,
+          600
+        ],
+        "patch_median_rgb": [
+          220.0,
+          116.0,
+          76.0
+        ],
+        "target_rgb": [
+          200,
+          100,
+          59
+        ],
+        "rgb_euclidean_distance_not_perceptual": 30.741
+      },
+      "factors": {},
+      "group": "color-probe"
+    },
+    {
+      "id": "color-hex",
+      "model": "flux-klein-4b",
+      "seed": 6304,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "a69b59d204cff22503208919204101bbe5ea62cba69a4ac4d23424ea8c416c9e",
+      "image_sha256": "1c9fa7466de27df67bd28c8d360751a54440be31ffd750f0ecc426a00f8a65f5",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "d2eaa4dd8f976eb2fe2d957594d5971b7751e9ef044adbe9c1069ecbcd23efee",
+      "server_seconds": 3.8,
+      "wall_seconds": 12.547,
+      "gpu_peak_mib": 14727,
+      "system_ram_peak_mib": 15596,
+      "review": {
+        "contract_pass": true,
+        "direction_usable": true,
+        "notes": "完整单杯、象牙底、炭黑轮廓，二者均可用。HEX版更偏黄橙，未逐像素命中目标，不能把色值文本当色准保证。",
+        "center_patch_xyxy": [
+          650,
+          400,
+          850,
+          600
+        ],
+        "patch_median_rgb": [
+          213.0,
+          132.0,
+          51.0
+        ],
+        "target_rgb": [
+          200,
+          100,
+          59
+        ],
+        "rgb_euclidean_distance_not_perceptual": 35.454
+      },
+      "factors": {},
+      "group": "color-probe"
+    }
+  ]
+}

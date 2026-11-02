@@ -1,0 +1,545 @@
+{
+  "schema": "imagecraft.eval-suite/1",
+  "name": "prompt-style-v1",
+  "purpose": "任务4：FLUX默认参数，3 brief×长短×否定/正面×2 seed＝24张，加颜色短语/HEX同seed一对，共26张。冻结后不改题、不自动重抽。",
+  "limits": [
+    "扩写增加明确视觉细节，因此检验本次写法而非纯token数因果",
+    "不预设长描述或正面描述优胜，逐张保存全部输出"
+  ],
+  "cases": [
+    {
+      "id": "product-short-negative-s1",
+      "group": "product",
+      "label": "product short negative",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6301,
+      "prompt": "A studio product photograph of one warm terracotta ceramic mug on the right third of an oak table. The left half is an empty warm ivory wall for later typesetting. The complete mug and its handle are visible with generous margins. No neon lighting, no glowing edges, no reflective glass pedestal, no digital text or logos.",
+      "prompt_sha256": "9790087505a5d5e09a13be737c6cde20b2a2c22d235378b7703adf884767177b",
+      "word_count": 56,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-short-negative-s2",
+      "group": "product",
+      "label": "product short negative",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6401,
+      "prompt": "A studio product photograph of one warm terracotta ceramic mug on the right third of an oak table. The left half is an empty warm ivory wall for later typesetting. The complete mug and its handle are visible with generous margins. No neon lighting, no glowing edges, no reflective glass pedestal, no digital text or logos.",
+      "prompt_sha256": "9790087505a5d5e09a13be737c6cde20b2a2c22d235378b7703adf884767177b",
+      "word_count": 56,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-short-positive-s1",
+      "group": "product",
+      "label": "product short positive",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6301,
+      "prompt": "A studio product photograph of one warm terracotta ceramic mug on the right third of an oak table. The left half is an empty warm ivory wall for later typesetting. The complete mug and its handle are visible with generous margins. Diffuse daylight, softly matte edge definition, an opaque oak surface, and entirely unmarked clay give a quiet appearance.",
+      "prompt_sha256": "2ec5a5db908145c2954c5dd841e3cc48e35541d84b9ecd3009f82e1ee2871521",
+      "word_count": 59,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-short-positive-s2",
+      "group": "product",
+      "label": "product short positive",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6401,
+      "prompt": "A studio product photograph of one warm terracotta ceramic mug on the right third of an oak table. The left half is an empty warm ivory wall for later typesetting. The complete mug and its handle are visible with generous margins. Diffuse daylight, softly matte edge definition, an opaque oak surface, and entirely unmarked clay give a quiet appearance.",
+      "prompt_sha256": "2ec5a5db908145c2954c5dd841e3cc48e35541d84b9ecd3009f82e1ee2871521",
+      "word_count": 59,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-long-negative-s1",
+      "group": "product",
+      "label": "product long negative",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6301,
+      "prompt": "A wide studio product photograph for a small ceramics workshop shows one warm terracotta ceramic mug on an oak tabletop. The mug sits within the right third of the frame, with the complete rim, rounded body, base and single handle clearly visible. The left half is a smooth empty warm ivory wall that provides a quiet area for typography to be added later. Natural clay has fine tactile pores, subtle handmade irregularities and a consistent matte finish. A large window to the left creates soft daylight, a gentle contact shadow and restrained warm color. The tabletop has plausible straight perspective and fine oak grain. The camera is level with the mug and slightly above the rim, so the cup opening is coherent. Generous margins separate the object from the image borders. The scene reads as a calm, practical product photograph rather than an elaborate exhibition display. No neon lighting, no glowing edges, no reflective glass pedestal, no digital text or logos.",
+      "prompt_sha256": "c2dbc2aed97c09b255183aee814e7860d5d0e6919b7c7021258da8fecde87cda",
+      "word_count": 161,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-long-negative-s2",
+      "group": "product",
+      "label": "product long negative",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6401,
+      "prompt": "A wide studio product photograph for a small ceramics workshop shows one warm terracotta ceramic mug on an oak tabletop. The mug sits within the right third of the frame, with the complete rim, rounded body, base and single handle clearly visible. The left half is a smooth empty warm ivory wall that provides a quiet area for typography to be added later. Natural clay has fine tactile pores, subtle handmade irregularities and a consistent matte finish. A large window to the left creates soft daylight, a gentle contact shadow and restrained warm color. The tabletop has plausible straight perspective and fine oak grain. The camera is level with the mug and slightly above the rim, so the cup opening is coherent. Generous margins separate the object from the image borders. The scene reads as a calm, practical product photograph rather than an elaborate exhibition display. No neon lighting, no glowing edges, no reflective glass pedestal, no digital text or logos.",
+      "prompt_sha256": "c2dbc2aed97c09b255183aee814e7860d5d0e6919b7c7021258da8fecde87cda",
+      "word_count": 161,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-long-positive-s1",
+      "group": "product",
+      "label": "product long positive",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6301,
+      "prompt": "A wide studio product photograph for a small ceramics workshop shows one warm terracotta ceramic mug on an oak tabletop. The mug sits within the right third of the frame, with the complete rim, rounded body, base and single handle clearly visible. The left half is a smooth empty warm ivory wall that provides a quiet area for typography to be added later. Natural clay has fine tactile pores, subtle handmade irregularities and a consistent matte finish. A large window to the left creates soft daylight, a gentle contact shadow and restrained warm color. The tabletop has plausible straight perspective and fine oak grain. The camera is level with the mug and slightly above the rim, so the cup opening is coherent. Generous margins separate the object from the image borders. The scene reads as a calm, practical product photograph rather than an elaborate exhibition display. Diffuse daylight, softly matte edge definition, an opaque oak surface, and entirely unmarked clay give a quiet appearance.",
+      "prompt_sha256": "3312d04f643dc1dcb1ba25070d91e1096a1ef2f1b4c2b7da27b3157a443b2229",
+      "word_count": 164,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "product-long-positive-s2",
+      "group": "product",
+      "label": "product long positive",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6401,
+      "prompt": "A wide studio product photograph for a small ceramics workshop shows one warm terracotta ceramic mug on an oak tabletop. The mug sits within the right third of the frame, with the complete rim, rounded body, base and single handle clearly visible. The left half is a smooth empty warm ivory wall that provides a quiet area for typography to be added later. Natural clay has fine tactile pores, subtle handmade irregularities and a consistent matte finish. A large window to the left creates soft daylight, a gentle contact shadow and restrained warm color. The tabletop has plausible straight perspective and fine oak grain. The camera is level with the mug and slightly above the rim, so the cup opening is coherent. Generous margins separate the object from the image borders. The scene reads as a calm, practical product photograph rather than an elaborate exhibition display. Diffuse daylight, softly matte edge definition, an opaque oak surface, and entirely unmarked clay give a quiet appearance.",
+      "prompt_sha256": "3312d04f643dc1dcb1ba25070d91e1096a1ef2f1b4c2b7da27b3157a443b2229",
+      "word_count": 164,
+      "brief": "给陶艺工作室做无字产品底图：一只陶土暖色杯在右三分之一，左半空墙留作后期排字，哑光真实材质、柔和日光，避免霓虹/发光/玻璃台/文字。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-short-negative-s1",
+      "group": "page",
+      "label": "page short negative",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6302,
+      "prompt": "A restrained financial dashboard direction on white, with a narrow left sidebar, a compact top bar, four metric blocks and a six-row main table. Charcoal typography and one muted terracotta accent create a quiet hierarchy. The interface is viewed straight on. No neon colors, no gradients, no glassmorphism, no 3D cards, no shadows.",
+      "prompt_sha256": "e9b49b692a295d3009933bc863b4e55080011373465a8e6cf1d6a619503e47f6",
+      "word_count": 53,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-short-negative-s2",
+      "group": "page",
+      "label": "page short negative",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6402,
+      "prompt": "A restrained financial dashboard direction on white, with a narrow left sidebar, a compact top bar, four metric blocks and a six-row main table. Charcoal typography and one muted terracotta accent create a quiet hierarchy. The interface is viewed straight on. No neon colors, no gradients, no glassmorphism, no 3D cards, no shadows.",
+      "prompt_sha256": "e9b49b692a295d3009933bc863b4e55080011373465a8e6cf1d6a619503e47f6",
+      "word_count": 53,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-short-positive-s1",
+      "group": "page",
+      "label": "page short positive",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6302,
+      "prompt": "A restrained financial dashboard direction on white, with a narrow left sidebar, a compact top bar, four metric blocks and a six-row main table. Charcoal typography and one muted terracotta accent create a quiet hierarchy. The interface is viewed straight on. Matte opaque surfaces, solid fills, fine gray separators, flat controls and even illumination keep the screen restrained.",
+      "prompt_sha256": "44de08415a0ad5162392f0d56e4a46a447fae3f368d97beeecb2a840c863d352",
+      "word_count": 58,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-short-positive-s2",
+      "group": "page",
+      "label": "page short positive",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6402,
+      "prompt": "A restrained financial dashboard direction on white, with a narrow left sidebar, a compact top bar, four metric blocks and a six-row main table. Charcoal typography and one muted terracotta accent create a quiet hierarchy. The interface is viewed straight on. Matte opaque surfaces, solid fills, fine gray separators, flat controls and even illumination keep the screen restrained.",
+      "prompt_sha256": "44de08415a0ad5162392f0d56e4a46a447fae3f368d97beeecb2a840c863d352",
+      "word_count": 58,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-long-negative-s1",
+      "group": "page",
+      "label": "page long negative",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6302,
+      "prompt": "A straight-on desktop interface direction for a financial operations dashboard uses a white canvas, charcoal typography and one muted terracotta accent. A narrow left sidebar contains a small brand mark at the top and six evenly spaced navigation rows below. A compact top bar presents a page heading on the left and a small search field with an avatar on the right. Across the main work area, four equally sized metric blocks form a low horizontal strip rather than tall promotional cards. Each block has a short label and a larger numerical value. Below them, a wide six-row main table is the dominant surface, with aligned columns for an identifier, description, status, amount and date. The table has a compact header row, fine separators and consistent cell padding. The layout is an orthographic screen composition with generous outer margins and restrained internal spacing. Content is illustrative; evaluation focuses on region placement, flat material and information hierarchy rather than exact wording. No neon colors, no gradients, no glassmorphism, no 3D cards, no shadows.",
+      "prompt_sha256": "d7751716022f84d5d58805f92f886499df4943689ee1f98539d6b3e2626176b6",
+      "word_count": 172,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-long-negative-s2",
+      "group": "page",
+      "label": "page long negative",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6402,
+      "prompt": "A straight-on desktop interface direction for a financial operations dashboard uses a white canvas, charcoal typography and one muted terracotta accent. A narrow left sidebar contains a small brand mark at the top and six evenly spaced navigation rows below. A compact top bar presents a page heading on the left and a small search field with an avatar on the right. Across the main work area, four equally sized metric blocks form a low horizontal strip rather than tall promotional cards. Each block has a short label and a larger numerical value. Below them, a wide six-row main table is the dominant surface, with aligned columns for an identifier, description, status, amount and date. The table has a compact header row, fine separators and consistent cell padding. The layout is an orthographic screen composition with generous outer margins and restrained internal spacing. Content is illustrative; evaluation focuses on region placement, flat material and information hierarchy rather than exact wording. No neon colors, no gradients, no glassmorphism, no 3D cards, no shadows.",
+      "prompt_sha256": "d7751716022f84d5d58805f92f886499df4943689ee1f98539d6b3e2626176b6",
+      "word_count": 172,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-long-positive-s1",
+      "group": "page",
+      "label": "page long positive",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6302,
+      "prompt": "A straight-on desktop interface direction for a financial operations dashboard uses a white canvas, charcoal typography and one muted terracotta accent. A narrow left sidebar contains a small brand mark at the top and six evenly spaced navigation rows below. A compact top bar presents a page heading on the left and a small search field with an avatar on the right. Across the main work area, four equally sized metric blocks form a low horizontal strip rather than tall promotional cards. Each block has a short label and a larger numerical value. Below them, a wide six-row main table is the dominant surface, with aligned columns for an identifier, description, status, amount and date. The table has a compact header row, fine separators and consistent cell padding. The layout is an orthographic screen composition with generous outer margins and restrained internal spacing. Content is illustrative; evaluation focuses on region placement, flat material and information hierarchy rather than exact wording. Matte opaque surfaces, solid fills, fine gray separators, flat controls and even illumination keep the screen restrained.",
+      "prompt_sha256": "990e0059d85c7c05d9171657a7085aa8b6ab8161f59386fd01e02a882e8bdc60",
+      "word_count": 177,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "page-long-positive-s2",
+      "group": "page",
+      "label": "page long positive",
+      "intent": "ui",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6402,
+      "prompt": "A straight-on desktop interface direction for a financial operations dashboard uses a white canvas, charcoal typography and one muted terracotta accent. A narrow left sidebar contains a small brand mark at the top and six evenly spaced navigation rows below. A compact top bar presents a page heading on the left and a small search field with an avatar on the right. Across the main work area, four equally sized metric blocks form a low horizontal strip rather than tall promotional cards. Each block has a short label and a larger numerical value. Below them, a wide six-row main table is the dominant surface, with aligned columns for an identifier, description, status, amount and date. The table has a compact header row, fine separators and consistent cell padding. The layout is an orthographic screen composition with generous outer margins and restrained internal spacing. Content is illustrative; evaluation focuses on region placement, flat material and information hierarchy rather than exact wording. Matte opaque surfaces, solid fills, fine gray separators, flat controls and even illumination keep the screen restrained.",
+      "prompt_sha256": "990e0059d85c7c05d9171657a7085aa8b6ab8161f59386fd01e02a882e8bdc60",
+      "word_count": 177,
+      "brief": "财务后台页面方向稿：白底、窄左导航、紧凑顶栏、四指标、六行主表，炭黑文字和一种陶土强调色；重布局，不验具体字，避免霓虹/渐变/玻璃/立体卡片。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-short-negative-s1",
+      "group": "portrait",
+      "label": "portrait short negative",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6303,
+      "prompt": "A natural editorial head-and-shoulders portrait of an original adult woman in her early thirties, looking at the camera in a cream crew-neck shirt. Her full head has a clear top margin. Soft window daylight, subtle freckles, natural skin pores and a neutral warm-gray background. No waxy skin, no airbrushing, no neon rim light, no oversized fashion jewelry.",
+      "prompt_sha256": "22b7afa64fa0d3ec6d42b0131636acfcab590db41dc5ee24da26f50048fedfb0",
+      "word_count": 57,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-short-negative-s2",
+      "group": "portrait",
+      "label": "portrait short negative",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6403,
+      "prompt": "A natural editorial head-and-shoulders portrait of an original adult woman in her early thirties, looking at the camera in a cream crew-neck shirt. Her full head has a clear top margin. Soft window daylight, subtle freckles, natural skin pores and a neutral warm-gray background. No waxy skin, no airbrushing, no neon rim light, no oversized fashion jewelry.",
+      "prompt_sha256": "22b7afa64fa0d3ec6d42b0131636acfcab590db41dc5ee24da26f50048fedfb0",
+      "word_count": 57,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "short",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-short-positive-s1",
+      "group": "portrait",
+      "label": "portrait short positive",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6303,
+      "prompt": "A natural editorial head-and-shoulders portrait of an original adult woman in her early thirties, looking at the camera in a cream crew-neck shirt. Her full head has a clear top margin. Soft window daylight, subtle freckles, natural skin pores and a neutral warm-gray background. Authentic finely textured skin, diffuse window illumination, understated styling and small natural tonal variations preserve an ordinary appearance.",
+      "prompt_sha256": "b1beb7dd152560c5abffb998f5128896c00a140678979214f7aacde3f6245953",
+      "word_count": 62,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-short-positive-s2",
+      "group": "portrait",
+      "label": "portrait short positive",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6403,
+      "prompt": "A natural editorial head-and-shoulders portrait of an original adult woman in her early thirties, looking at the camera in a cream crew-neck shirt. Her full head has a clear top margin. Soft window daylight, subtle freckles, natural skin pores and a neutral warm-gray background. Authentic finely textured skin, diffuse window illumination, understated styling and small natural tonal variations preserve an ordinary appearance.",
+      "prompt_sha256": "b1beb7dd152560c5abffb998f5128896c00a140678979214f7aacde3f6245953",
+      "word_count": 62,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "short",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-long-negative-s1",
+      "group": "portrait",
+      "label": "portrait long negative",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6303,
+      "prompt": "A natural editorial head-and-shoulders portrait shows an original adult woman in her early thirties looking calmly toward the camera. Her dark brown hair is loosely tucked behind one ear, and the entire top of her head remains inside the frame with a comfortable margin. She wears a simple cream crew-neck cotton shirt with a visible woven texture at the collar. Relaxed closed lips and a neutral expression give the photograph an ordinary, approachable character. A large window to the left creates soft daylight across the face, coherent catchlights in both eyes and gradual tonal transitions around the cheeks and nose. Fine individual hairs, subtle freckles, small skin pores and natural variations in tone remain visible at a normal portrait viewing distance. The shoulders are level and the neck has plausible proportions. A quiet warm-gray studio wall is softly out of focus behind her. The result is an honest editorial photograph suitable for an everyday human-interest article. No waxy skin, no airbrushing, no neon rim light, no oversized fashion jewelry.",
+      "prompt_sha256": "396363caeecd4173f3af0cae21081e0371ec66887efd260a467ed24e8ae39653",
+      "word_count": 169,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-long-negative-s2",
+      "group": "portrait",
+      "label": "portrait long negative",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6403,
+      "prompt": "A natural editorial head-and-shoulders portrait shows an original adult woman in her early thirties looking calmly toward the camera. Her dark brown hair is loosely tucked behind one ear, and the entire top of her head remains inside the frame with a comfortable margin. She wears a simple cream crew-neck cotton shirt with a visible woven texture at the collar. Relaxed closed lips and a neutral expression give the photograph an ordinary, approachable character. A large window to the left creates soft daylight across the face, coherent catchlights in both eyes and gradual tonal transitions around the cheeks and nose. Fine individual hairs, subtle freckles, small skin pores and natural variations in tone remain visible at a normal portrait viewing distance. The shoulders are level and the neck has plausible proportions. A quiet warm-gray studio wall is softly out of focus behind her. The result is an honest editorial photograph suitable for an everyday human-interest article. No waxy skin, no airbrushing, no neon rim light, no oversized fashion jewelry.",
+      "prompt_sha256": "396363caeecd4173f3af0cae21081e0371ec66887efd260a467ed24e8ae39653",
+      "word_count": 169,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "long",
+        "polarity": "negative"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-long-positive-s1",
+      "group": "portrait",
+      "label": "portrait long positive",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6303,
+      "prompt": "A natural editorial head-and-shoulders portrait shows an original adult woman in her early thirties looking calmly toward the camera. Her dark brown hair is loosely tucked behind one ear, and the entire top of her head remains inside the frame with a comfortable margin. She wears a simple cream crew-neck cotton shirt with a visible woven texture at the collar. Relaxed closed lips and a neutral expression give the photograph an ordinary, approachable character. A large window to the left creates soft daylight across the face, coherent catchlights in both eyes and gradual tonal transitions around the cheeks and nose. Fine individual hairs, subtle freckles, small skin pores and natural variations in tone remain visible at a normal portrait viewing distance. The shoulders are level and the neck has plausible proportions. A quiet warm-gray studio wall is softly out of focus behind her. The result is an honest editorial photograph suitable for an everyday human-interest article. Authentic finely textured skin, diffuse window illumination, understated styling and small natural tonal variations preserve an ordinary appearance.",
+      "prompt_sha256": "b44469a54afc961ba557aeabc53db5f3620500103d2758a8c2122a37bc4789b5",
+      "word_count": 174,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "portrait-long-positive-s2",
+      "group": "portrait",
+      "label": "portrait long positive",
+      "intent": "portrait",
+      "width": 1024,
+      "height": 1536,
+      "seed": 6403,
+      "prompt": "A natural editorial head-and-shoulders portrait shows an original adult woman in her early thirties looking calmly toward the camera. Her dark brown hair is loosely tucked behind one ear, and the entire top of her head remains inside the frame with a comfortable margin. She wears a simple cream crew-neck cotton shirt with a visible woven texture at the collar. Relaxed closed lips and a neutral expression give the photograph an ordinary, approachable character. A large window to the left creates soft daylight across the face, coherent catchlights in both eyes and gradual tonal transitions around the cheeks and nose. Fine individual hairs, subtle freckles, small skin pores and natural variations in tone remain visible at a normal portrait viewing distance. The shoulders are level and the neck has plausible proportions. A quiet warm-gray studio wall is softly out of focus behind her. The result is an honest editorial photograph suitable for an everyday human-interest article. Authentic finely textured skin, diffuse window illumination, understated styling and small natural tonal variations preserve an ordinary appearance.",
+      "prompt_sha256": "b44469a54afc961ba557aeabc53db5f3620500103d2758a8c2122a37bc4789b5",
+      "word_count": 174,
+      "brief": "普通成年人的自然编辑肖像，胸像、头顶留边，奶油色圆领衫、自然毛孔雀斑、窗光；避免蜡皮/磨皮/霓虹轮廓光/时尚首饰。",
+      "factors": {
+        "length": "long",
+        "polarity": "positive"
+      },
+      "checks": [
+        "看是否出现否定目标元素；按 brief 核对位置、数量与画面用途",
+        "同 seed 比较，不自动重抽；2 seed 不能证明普适因果或稳定性"
+      ]
+    },
+    {
+      "id": "color-warm",
+      "group": "color-probe",
+      "label": "warm color description",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6304,
+      "prompt": "A flat product illustration of one simple ceramic mug centered on a plain warm ivory background. The entire mug has a single uniform warm terracotta orange solid fill. Clean charcoal contour, straight-on view, ample margins, restrained minimal print style.",
+      "prompt_sha256": "ca2174f5f6e7b4679f629d845aabf425c16bd1e25ba88686fdd9662dddcdbcae",
+      "checks": [
+        "相同seed仅改颜色短语，核对文字伪影和主物体颜色",
+        "色值不是色准保证；一次pair仅是探针"
+      ]
+    },
+    {
+      "id": "color-hex",
+      "group": "color-probe",
+      "label": "hex color description",
+      "intent": "general",
+      "width": 1536,
+      "height": 1024,
+      "seed": 6304,
+      "prompt": "A flat product illustration of one simple ceramic mug centered on a plain warm ivory background. The entire mug has a single uniform #C8643B solid fill. Clean charcoal contour, straight-on view, ample margins, restrained minimal print style.",
+      "prompt_sha256": "a69b59d204cff22503208919204101bbe5ea62cba69a4ac4d23424ea8c416c9e",
+      "checks": [
+        "相同seed仅改颜色短语，核对文字伪影和主物体颜色",
+        "色值不是色准保证；一次pair仅是探针"
+      ]
+    }
+  ]
+}

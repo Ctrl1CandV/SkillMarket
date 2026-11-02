@@ -1,0 +1,29 @@
+{
+  "schema": "imagecraft.eval-suite/1",
+  "name": "vram-probe-v1",
+  "purpose": "任务2：在16GB物理卡上分别预留6.5/10.5GiB，默认FLUX各跑两种尺寸；仅是卸载策略/可用预算模拟，非物理12GB/8GB验证。",
+  "cases": [
+    {
+      "id": "square-1024",
+      "label": "1024 square hardware probe",
+      "group": "hardware-probe",
+      "intent": "general",
+      "seed": 6201,
+      "width": 1024,
+      "height": 1024,
+      "prompt": "A matte terracotta ceramic teapot beside one cream ceramic cup on a clean oak table. Soft morning window light, a warm ivory wall, balanced product photograph, realistic clay texture, the entire objects visible with generous margins.",
+      "checks": ["解码与尺寸、服务端耗时、约1秒整卡与整机内存采样", "只验一次成功不声称稳定性，不把reserve当物理显存硬隔离"]
+    },
+    {
+      "id": "landscape-1536",
+      "label": "1536 landscape hardware probe",
+      "group": "hardware-probe",
+      "intent": "general",
+      "seed": 6201,
+      "width": 1536,
+      "height": 1024,
+      "prompt": "A matte terracotta ceramic teapot beside one cream ceramic cup on a clean oak table. Soft morning window light, a warm ivory wall, balanced product photograph, realistic clay texture, the entire objects visible with generous margins.",
+      "checks": ["解码与尺寸、服务端耗时、约1秒整卡与整机内存采样", "只验一次成功不声称稳定性，不把reserve当物理显存硬隔离"]
+    }
+  ]
+}

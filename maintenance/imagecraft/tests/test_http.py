@@ -15,7 +15,7 @@ from ic.common import Error
 
 class Handler(BaseHTTPRequestHandler):
     last_body = b""
-    def log_message(self, *args):
+    def log_message(self, format, *args):
         pass
 
     def do_GET(self):

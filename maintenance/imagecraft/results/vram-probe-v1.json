@@ -1,0 +1,127 @@
+{
+  "schema": "imagecraft.sanitized-evaluation/1",
+  "date": "2026-11-02",
+  "hardware": {
+    "gpu": "RTX 4070 Ti SUPER",
+    "physical_vram_mib": 16376,
+    "ram_bytes": 34182176768,
+    "os": "Windows 10"
+  },
+  "environment": {
+    "comfyui": "0.31.0",
+    "python": "3.11.15",
+    "pytorch": "2.8.0+cu128"
+  },
+  "memory_scope": "approximately 1-second whole-card and whole-system samples, not process or minimum-VRAM requirements",
+  "evidence": "Original PNGs, private receipts and raw resource logs retained outside repository.",
+  "suite": "vram-probe-v1",
+  "suite_sha256": "da72483cecb3e56b05bf75030b1f8bf0115dfce84f75a5dda6ad310897ebb391",
+  "scope": "Reserve is an unloading-budget hint, not a physical memory cap. Each size/profile was tested once, not a stability test.",
+  "rows": [
+    {
+      "id": "square-1024",
+      "model": "flux-klein-4b",
+      "seed": 6201,
+      "width": 1024,
+      "height": 1024,
+      "prompt_sha256": "b00eee2834e55385fb1632f0018a9129cfc6afde7af4c470c6363f8312b72d2b",
+      "image_sha256": "869cc730737961240438340e8e5130825a9a387d05be6cd01daf7812184dbde8",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "2ac6acace9b0493c49835148238dffbe1f8790feeaa08c8666b2d9aefd079b40",
+      "server_seconds": 5.292,
+      "wall_seconds": 14.141,
+      "gpu_peak_mib": 11438,
+      "system_ram_peak_mib": 15609,
+      "review": {
+        "contract_pass": true,
+        "notes": "已逐图看过：一壶一杯完整可见，桌面、暖色墙面与自然光可用。此处仅为固定题的硬件探针，不证明模型稳定性。"
+      },
+      "reserve_vram_gib": 6.5
+    },
+    {
+      "id": "landscape-1536",
+      "model": "flux-klein-4b",
+      "seed": 6201,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "b00eee2834e55385fb1632f0018a9129cfc6afde7af4c470c6363f8312b72d2b",
+      "image_sha256": "39b3e951445f174030870c7a8d7bc7ef9a4502279104803eb69376a59737bc81",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "11f5b64f2c139fef05fe136f93f87f29ac6d37535230f47402f77b093774e885",
+      "server_seconds": 3.664,
+      "wall_seconds": 12.562,
+      "gpu_peak_mib": 9976,
+      "system_ram_peak_mib": 15599,
+      "review": {
+        "contract_pass": true,
+        "notes": "已逐图看过：一壶一杯完整可见，桌面、暖色墙面与自然光可用。此处仅为固定题的硬件探针，不证明模型稳定性。"
+      },
+      "reserve_vram_gib": 6.5
+    },
+    {
+      "id": "square-1024",
+      "model": "flux-klein-4b",
+      "seed": 6201,
+      "width": 1024,
+      "height": 1024,
+      "prompt_sha256": "b00eee2834e55385fb1632f0018a9129cfc6afde7af4c470c6363f8312b72d2b",
+      "image_sha256": "869cc730737961240438340e8e5130825a9a387d05be6cd01daf7812184dbde8",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "a7e2de46e12370be2d7c3e9408eea295ecdfa24a7e6efc4eed720e8a30ade9c1",
+      "server_seconds": 4.572,
+      "wall_seconds": 14.265,
+      "gpu_peak_mib": 7343,
+      "system_ram_peak_mib": 15674,
+      "review": {
+        "contract_pass": true,
+        "notes": "已逐图看过：一壶一杯完整可见，桌面、暖色墙面与自然光可用。此处仅为固定题的硬件探针，不证明模型稳定性。"
+      },
+      "reserve_vram_gib": 10.5
+    },
+    {
+      "id": "landscape-1536",
+      "model": "flux-klein-4b",
+      "seed": 6201,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "b00eee2834e55385fb1632f0018a9129cfc6afde7af4c470c6363f8312b72d2b",
+      "image_sha256": "39b3e951445f174030870c7a8d7bc7ef9a4502279104803eb69376a59737bc81",
+      "model_manifest_sha256": "0f188e2e7fc379686607455bfdda941ce3eee63d29ea1197d4ef9732d8440113",
+      "workflow_template_sha256": "e235c9a1dac34521df58389e34caf257efb3540ef95c99f09bcec07442d1e44c",
+      "workflow_sha256": "d22ef3f910a4de8415865885728eff03fc64304f54bf83cc533bb067a23a308b",
+      "server_seconds": 5.616,
+      "wall_seconds": 14.407,
+      "gpu_peak_mib": 7338,
+      "system_ram_peak_mib": 15666,
+      "review": {
+        "contract_pass": true,
+        "notes": "已逐图看过：一壶一杯完整可见，桌面、暖色墙面与自然光可用。此处仅为固定题的硬件探针，不证明模型稳定性。"
+      },
+      "reserve_vram_gib": 10.5
+    },
+    {
+      "id": "landscape-1536",
+      "model": "z-image-turbo-fp8",
+      "seed": 6201,
+      "width": 1536,
+      "height": 1024,
+      "prompt_sha256": "b00eee2834e55385fb1632f0018a9129cfc6afde7af4c470c6363f8312b72d2b",
+      "image_sha256": "d22e11376500e5497c9fa1c486c3cd57a9b93b7fed0bf437ebcdefeddbfb2c3b",
+      "model_manifest_sha256": "4139b9b50486032f87966f91cd29f33276c1d2a4c6748acd73b36259b14bc20a",
+      "workflow_template_sha256": "4a3443e2ca8f2510a90407a7bd2936cc418f35501ce2b577e0bc0b69d4b2aed8",
+      "workflow_sha256": "fa3ff96a30d1d21304dec732a38bb1b9257204a79861a8d2ff4c5c6af162873d",
+      "server_seconds": 23.192,
+      "wall_seconds": 32.266,
+      "gpu_peak_mib": 8863,
+      "system_ram_peak_mib": 16391,
+      "review": {
+        "contract_pass": true,
+        "notes": "已逐图看过：一壶一杯完整可见，桌面、暖色墙面与自然光可用。此处仅为固定题的硬件探针，不证明模型稳定性。"
+      },
+      "reserve_vram_gib": 10.5
+    }
+  ]
+}

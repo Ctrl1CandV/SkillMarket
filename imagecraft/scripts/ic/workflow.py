@@ -6,14 +6,17 @@ import math
 from pathlib import Path
 import warnings
 
-from .common import Error, SKILL
+from download_models import DEFAULT_MODEL, load_manifest, workflow_path
+from .common import Error
 
 CORE_NODES = {
     "UNETLoader", "CLIPLoader", "VAELoader", "CLIPTextEncode", "ConditioningZeroOut",
+    "EmptySD3LatentImage", "ModelSamplingAuraFlow", "KSampler",
     "EmptyFlux2LatentImage", "RandomNoise", "CFGGuider", "KSamplerSelect", "Flux2Scheduler",
     "SamplerCustomAdvanced", "VAEDecode", "SaveImage", "LoadImage", "VAEEncode", "ReferenceLatent",
 }
-CORE_MODULES = {"nodes", "comfy_extras.nodes_flux", "comfy_extras.nodes_custom_sampler", "comfy_extras.nodes_edit_model"}
+CORE_MODULES = {"nodes", "comfy_extras.nodes_flux", "comfy_extras.nodes_custom_sampler", "comfy_extras.nodes_edit_model",
+                "comfy_extras.nodes_sd3", "comfy_extras.nodes_model_advanced"}
 
 
 def pillow():
@@ -84,7 +87,7 @@ def reference_png(path: Path) -> bytes:
     return output.getvalue()
 
 
-def build(prompt: str, width: int, height: int, seed: int, prefix: str, references=()) -> dict:
+def build(prompt: str, width: int, height: int, seed: int, prefix: str, references=(), model: str = DEFAULT_MODEL) -> dict:
     dimensions(width, height)
     if not prompt.strip() or len(prompt) > 12000:
         raise Error("Prompt must contain 1–12,000 characters")
@@ -92,12 +95,21 @@ def build(prompt: str, width: int, height: int, seed: int, prefix: str, referenc
         raise Error("Seed must be an unsigned 64-bit integer")
     if len(references) > 2:
         raise Error("At most two reference images are supported")
-    graph = json.loads((SKILL / "workflows/flux-klein-4b.api.json").read_text(encoding="utf-8"))
+    if references and model != "flux-klein-4b":
+        raise Error("Z-Image Turbo is text-to-image only; select --model flux-klein-4b for reference editing")
+    graph = json.loads(workflow_path(model).read_text(encoding="utf-8"))
+    files = {f["role"]: Path(f["destination"]).name for f in load_manifest(model)["files"]}
+    graph["1"]["inputs"]["unet_name"] = files["diffusion_model"]
+    graph["2"]["inputs"]["clip_name"] = files["text_encoder"]
+    graph["3"]["inputs"]["vae_name"] = files["vae"]
     graph["4"]["inputs"]["text"] = prompt
-    for node in ("6", "10"):
-        graph[node]["inputs"].update(width=width, height=height)
-    graph["7"]["inputs"]["noise_seed"] = seed
     graph["13"]["inputs"]["filename_prefix"] = prefix
+    graph["6"]["inputs"].update(width=width, height=height)
+    if model != "flux-klein-4b":
+        graph["10"]["inputs"]["seed"] = seed
+        return graph
+    graph["10"]["inputs"].update(width=width, height=height)
+    graph["7"]["inputs"]["noise_seed"] = seed
     positive, negative = ["4", 0], ["5", 0]
     for i, filename in enumerate(references):
         base = 20 + 4 * i

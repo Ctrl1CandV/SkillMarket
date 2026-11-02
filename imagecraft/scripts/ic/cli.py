@@ -38,22 +38,23 @@ def configure(args, path: Path):
           "note": "Only this private config was written. No ComfyUI/core/venv/node/launcher changes."})
 
 
-def doctor(cfg: dict, verify=False):
+def doctor(cfg: dict, verify=False, model=download_models.DEFAULT_MODEL):
     report = {"schema": "imagecraft.doctor/1", "client_version": __version__, "gpu": gpu_info(),
               "comfyui_source_version": comfy_version(Path(cfg["comfy_root"])),
-              "models": download_models.inventory(Path(cfg["models_root"]), verify=verify)}
+              "models": download_models.inventory(Path(cfg["models_root"]), verify=verify, model=model)}
     try:
         client = Client(cfg["url"], timeout=5)
         report["server"] = client.request("/system_stats")
         report["queue"] = {k: len(v) for k, v in client.request("/queue").items()}
-        graph = build("preflight only; not submitted", 1024, 1024, 42, "imagecraft/plan", ["reference.png"])
+        graph = build("preflight only; not submitted", 1024, 1024, 42, "imagecraft/plan",
+                      ["reference.png"] if model == "flux-klein-4b" else [], model=model)
         validate(graph, client.request("/object_info"))
         report["native_workflow_compatible"] = True
     except Error as exc:
         report["native_workflow_compatible"], report["server_error"] = False, str(exc)
     report["ready"] = (report["native_workflow_compatible"] and
                        all(f["status"] in {"size_match", "verified"} for f in report["models"]["files"]))
-    report["integrity"] = "full_hashes" if verify else "sizes_only; new submissions hash all three files"
+    report["integrity"] = "full_hashes" if verify else "sizes_only; new submissions hash all selected model files"
     report["note"] = "Ready means prerequisites appear available, not a promise of generation speed, quality or free GPU memory"
     return report
 
@@ -120,11 +121,13 @@ def parser():
     c.add_argument("--replace", action="store_true")
     d = sub.add_parser("doctor")
     d.add_argument("--verify", action="store_true")
+    d.add_argument("--model", choices=download_models.MODEL_IDS, default=download_models.DEFAULT_MODEL)
     s = sub.add_parser("serve", help="Run selected ComfyUI in the foreground; no daemon, install or upgrade")
     s.add_argument("--reserve-vram", type=float, default=2.5,
-                   help="GiB of VRAM ComfyUI leaves unused (0-64). Raising it on a large card approximates a smaller one")
+                   help="ComfyUI unloading-budget reservation in GiB (0-64), not a hard VRAM cap or physical small-card validation")
     m = sub.add_parser("models")
     m.add_argument("action", choices=("plan", "check", "download"))
+    m.add_argument("--model", choices=download_models.MODEL_IDS, default=download_models.DEFAULT_MODEL)
     m.add_argument("--verify", action="store_true")
     m.add_argument("--yes", action="store_true")
     m.add_argument("--transport", choices=("urllib", "hf"), default="urllib")
@@ -137,6 +140,8 @@ def parser():
         g.add_argument("--width", type=int)
         g.add_argument("--height", type=int)
         g.add_argument("--seed", type=int, default=42)
+        g.add_argument("--model", choices=download_models.MODEL_IDS,
+                       help="Explicit model; references default to FLUX, otherwise the evaluated text-to-image default")
         g.add_argument("--intent", choices=("general", "portrait", "anime", "ui", "diagram"), default="general")
         g.add_argument("--reference", type=Path, action="append", default=[])
         if name == "generate":
@@ -155,6 +160,7 @@ def parser():
 
 def main(argv=None) -> int:
     args = parser().parse_args(argv)
+    request: dict | None = None
     try:
         if hasattr(args, "wait") and (not math.isfinite(args.wait) or not 0 <= args.wait <= 86400):
             raise Error("Wait timeout must be finite and between 0 and 86400 seconds; nothing submitted")
@@ -170,8 +176,9 @@ def main(argv=None) -> int:
             prompt = args.prompt if args.prompt is not None else args.prompt_file.read_text(encoding="utf-8-sig")
             references = [p.expanduser().resolve() for p in args.reference]
             width, height = dimensions(args.width, args.height, references[0] if references else None)
-            graph = build(prompt, width, height, args.seed, "imagecraft/plan", [f"reference-{i}.png" for i in range(len(references))])
-            request = jobs.prepare_request(prompt, width, height, args.seed, args.intent, references)
+            model = args.model or ("flux-klein-4b" if references else download_models.DEFAULT_MODEL)
+            graph = build(prompt, width, height, args.seed, "imagecraft/plan", [f"reference-{i}.png" for i in range(len(references))], model=model)
+            request = jobs.prepare_request(prompt, width, height, args.seed, args.intent, references, model=model)
             if args.command == "plan":
                 emit({"schema": "imagecraft.plan/1", "request": request, "workflow": graph,
                       "note": "No files written, images uploaded, GPU jobs queued or models downloaded. intent is a review/prompting hint, not another model."})
@@ -191,7 +198,7 @@ def main(argv=None) -> int:
             return 0
         cfg = config(args.config.expanduser().resolve())
         if args.command == "doctor":
-            report = doctor(cfg, args.verify)
+            report = doctor(cfg, args.verify, args.model)
             emit(report)
             return 0 if report["ready"] else 2
         if args.command == "serve":
@@ -199,7 +206,8 @@ def main(argv=None) -> int:
                 raise Error("--reserve-vram must be between 0 and 64 GiB")
             return serve(cfg, args.reserve_vram)
         if args.command == "models":
-            argv = [args.action, "--models-root", cfg["models_root"], "--transport", args.transport, "--workers", str(args.workers)]
+            argv = [args.action, "--models-root", cfg["models_root"], "--model", args.model,
+                    "--transport", args.transport, "--workers", str(args.workers)]
             if args.verify:
                 argv.append("--verify")
             if args.yes:
@@ -217,7 +225,12 @@ def main(argv=None) -> int:
             return 0 if state in {"completed", "downloaded"} else 2 if state in {"rejected", "failed"} else 3
         root.mkdir(parents=True, exist_ok=True)
         with file_lock(safe_child(root, ".imagecraft.lock")):
-            job = jobs.submit(cfg, root, request) if args.command == "generate" else jobs.load_job(root)
+            if args.command == "generate":
+                if request is None:
+                    raise Error("Generation request was not prepared; nothing submitted")
+                job = jobs.submit(cfg, root, request)
+            else:
+                job = jobs.load_job(root)
             result, code = jobs.wait(cfg, root, job, args.wait)
         emit(result)
         return code

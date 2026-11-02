@@ -1,77 +1,65 @@
-# 云端路径：用已有的 GPT 订阅
+# 云端路径：官方 Codex 订阅脚本
 
-核对日期：2026-11-02。这条路已实际跑通 11 张（9 张满意、2 张需重出），出图的是 OpenAI 官方 Codex 客户端里的原生图像工具，靠用户自己的 ChatGPT 订阅登录，不是 API key。本技能负责写内容契约、提交一张、取回文件、看图验收、记录额度。
+核对日期：2026-11-02；实测客户端 `codex-cli 0.154.0`、ChatGPT Plus。入口为 `scripts/cloud_codex.py`，只用 Python 标准库。它通过官方 CLI 生成一次，再用官方 app-server 查询**同一线程**取回原生 PNG；不读取 cookie、令牌或 `auth.json`，不改用 API key。
 
-当前版本的 Python CLI 只有本机 ComfyUI 后端，云端这一路由宿主按下面的步骤执行。
+## 何时使用与首次准备
 
-## 什么时候走这条
+本机不适合，或需要较高完成度且可接受栅格成果时使用。精确数值、可编辑或要反复修改的成果仍优先原生绘制。提示词和显式参考图会上传 OpenAI，须先得到本次预算与上传授权；私人照片、未公开设计和论文原稿另行确认。
 
-- 本机过不了硬件闸，或没有可复用的 ComfyUI（见 [三层分工](routing.md)）。
-- 图里有较多文字、节点、连线，或要求成品氛围与完成度，并且可以接受栅格图。
-- 以后还要反复改的图不走这里，改一个字就要整张重出。
+由用户安装官方 Codex CLI：`npm install -g @openai/codex`（需 Node.js），安装动作本身也须批准。用 `codex --version` 检查，再执行 `codex login` 登录 ChatGPT；无图形界面可按官方流程用 `codex login --device-auth`，需要的账户安全设置由用户自行决定，不代为更改。`codex login status` 应显示 ChatGPT 模式，API key 模式直接停止。
 
-## 一次性准备：安装与登录
-
-1. **安装官方 Codex CLI**：`npm install -g @openai/codex`（需要 Node.js；npm 全局目录按用户环境放在用户目录下，不用管理员权限）。装好后 `codex --version` 能输出版本号。
-2. **用订阅登录**：`codex login`，在浏览器里登录 ChatGPT 账户。没有图形浏览器的环境（WSL、远程终端）用 `codex login --device-auth`：打开它给出的链接、输入一次性代码；需要先在 ChatGPT 的安全设置里允许设备码登录。登录状态由 Codex 自己保存并自动刷新，之后的会话直接复用。
-3. **确认是订阅模式**：`codex login status` 应显示 ChatGPT 登录。显示 API key 时停下来问用户——API key 走另一套按量计费，不是订阅额度。
-4. **确认网络**：能访问 `chatgpt.com`。曾遇到 DNS 污染把该域名解析到错误地址，表现为"提交了但没有任何产物"；改用 DoH 或让代理做远程解析后恢复，这不是额度或封锁问题。
-5. **征得同意**：用户知道本次提示词和指定参考图会发给 OpenAI，并给出这次允许用多少张或多少额度。私人照片、未公开设计和论文原稿要单独确认。
-
-需要的订阅：Plus、Pro、Business、Edu、Enterprise 的 ChatGPT 登录可以用原生生图；Free 计划当前没有。
+当前脚本要求支持的付费 ChatGPT 账户、官方 OpenAI provider、`imageGeneration` 能力以及可观测的 included-usage 余量；不能只按 Plus/Pro 等计划名保证当前账户一定可用。网络、额度与模型拥堵都可能阻止生成。网络故障只报告，不擅自更改代理、DNS 或 hosts。
 
 ## 每张图怎么做
 
-1. **写内容契约**：逐字列出要出现的文字、节点和边，写清风格与禁止项（GPT 能理解"无渐变、无霓虹"）。做法见 [内容契约法](routing.md#内容契约法)。
-2. **记录提交前额度**：读当前账户的 5 小时窗口已用百分比，写进 `<project>/.imagecraft/jobs/<slug>/` 的记录里。
-3. **提交一张**：非交互方式为 `codex exec --skip-git-repo-check -C <project>/.imagecraft/jobs/<slug> '$imagegen <契约全文>'`，提示词里写明"只生成一张"。Codex 默认把原图存到 `$CODEX_HOME/generated_images/<会话 ID>/`（`$CODEX_HOME` 默认 `~/.codex`）。
-4. **取回并确认**：把 PNG 复制到 `<project>/.imagecraft/jobs/<slug>/image.png`，确认文件能解码、记录实际尺寸。只在聊天里看到预览、找不到文件时，不算生成成功——2026 年 6 月有版本出现过"生成了但不落盘"的回归，先升级客户端再查。
-5. **看图逐项核对**：对照契约检查每个字符串、每个节点和每条边的方向；记下多出来的东西。
-6. **记录提交后额度**：差值就是这张图的近似消耗，连同耗时、实际尺寸和核对结果一起写进记录。
+先保存合成或已授权的内容契约，再用**全新目录**执行一次：
 
-回执不明（命令中断、超时、额度读不到）时，先查这个会话的输出和 `generated_images` 目录，确认没有产物再决定是否重交；每次重交都要算进用户给的预算。
+```text
+<python> <skill>/scripts/cloud_codex.py generate --prompt-file <project>/.imagecraft/briefs/hero.txt --output <project>/.imagecraft/jobs/hero-cloud --approve-cloud --wait 600
+<python> <skill>/scripts/cloud_codex.py status --job <project>/.imagecraft/jobs/hero-cloud
+<python> <skill>/scripts/cloud_codex.py resume --job <project>/.imagecraft/jobs/hero-cloud --wait 600
+```
 
-## 额度怎么看
+`status/resume` 只查询原线程，不提交新回合；已有图片时先离线核对哈希。`--wait` 是有界等待，不代表服务端必定完成。提示词限 1–12000 字符；最多两个显式 `--reference <authorized.png>`，仅支持可解码的非交错 PNG8，先去元数据再上传。不是 JPEG/WebP 通用入口，也不扫描项目里的参考素材。
 
-- 接口和记录里的数字是**已用**百分比（`usedPercent`）。界面显示"剩余 87%"时，接口读到的是 13%。汇报时说清是已用还是剩余。
-- 实测每张约 2–3 个百分点（Plus，5 小时窗口），随尺寸和复杂度浮动。官方说明是：开启生图的回合平均比相似的普通回合快 3–5 倍消耗额度，这是倍数，不是每张 3–5%。
-- 生图与普通对话共用同一个 Codex 额度池；周额度在实测中没有明显变化，但整数取整可能掩盖小消耗。
-- 包含额度用完后，账户里如果有 credits 可能继续扣费。预算紧时先告诉用户剩余额度，再提交。
+流程依次为：官方登录、provider 与能力预检 → 读取提交前额度 → 在 `job.json` 持久化 attempt=1 → 一次 `codex exec` → 原线程取回原生 image item → PNG 解码与哈希 → 提交后额度观测。exec 仅拿本次提示词及显式参考，忽略用户规则，禁 shell、代码执行、搜索、应用和多 agent；控制模型取官方列表的默认项，不把它冒称为底层图像模型。
 
-## 已知限制
+**拿到文件后仍必须打开看。** 对照字符串、数字、节点和边检查，记录多出的内容；没有视觉能力的宿主只能报告技术校验。脚本输出 `downloaded` 不等于内容通过；人工验收另存工作区记录。本机 CLI 的 `review` 不用于云端任务。
 
-- 产物是栅格图：改字、换语言、更新数字都要整张重出。
-- 尺寸由服务端决定，曾请求 1024×1024 得到 1254×1254。需要固定尺寸时，在提示词里写比例，取回后再按比例裁切或留白。
-- 会自作主张加东西（没要求的坐标轴刻度、翻页箭头），也会漏小字或连错一条边（实测 7 条边错 1 条）。少量错误可用 [局部修补](raster-repair.md) 处理，修补后要注明。
-- 单张成功不代表同类任务稳定；目前没有多次重复的统计。
+## 为什么不能只看 exec 输出
 
-## 实测摘要
+0.154.0 实测中，成功的 `codex exec --json` 只给 thread/turn 与 agent 消息，省略原生 image item；最终文本也可能为空。这不是“没有图片”，更不能据此重交。脚本用 `thread/read`（必要时列原线程 turns）取得 native `imageGeneration`：优先原生 `savedPath`，其次原生内联结果，最后该线程 `generated_images` 目录中的唯一可验证 PNG。
 
-| 样例 | 结果 | 回合耗时 | 额度变化 |
-|---|---|---|---|
-| 无字玻璃素材 | 可用；返回 1254×1254 | 44.7 秒 | 0% → 2% |
-| 中文网页视觉稿 | 指定文字与数值全部正确 | 58.9 秒 | 两张合计 2% → 6% |
-| 中文架构图（6 节点 7 边） | 标签全对，1 条边连错，局部修补后通过 | 79.9 秒 | 同上 |
-| 论文图、PPT 结构图、两张产品页、财务后台深浅两版、双栈架构图 | 逐项核对全部正确；有两处自行添加的元素 | — | 每张约 2–3 个百分点 |
+只有预览、agent 自述或随意找到一个 PNG 都不算产物。取图限制在任务目录或对应线程生成目录，检查大小、时效和路径；标准库实际验证 CRC、zlib 数据和扫描行，而非只看 PNG 文件头。发布的 `image.png` 去除元数据，记录源文件与发布文件各自 SHA-256、尺寸和字节数，不覆盖不同图片。当前限制为 32 MiB 文件、2400 万像素的 PNG8。
 
-图像模型 ID 在回执中没有提供；控制回合的模型名不代表图像模型。
+## 回执不明与失败
 
-## 记录什么
+- 已有输出目录一律拒绝新 `generate`。`submission`、`generation`、`retrieval`、`quota` 分开记录；退出码 0 为取图成功，2 为拒绝/失败/无可验证图片，3 为结果不明。策略违规即使有图片也不算成功。
+- exec 开始前就写 attempt=1；早期退出连 thread ID 都没拿到时，仍保持 unknown，不自动换目录重提。交官方客户端排查原历史；脚本没有跨目录的服务端幂等保证。
+- 已有 thread ID 时用上面的 `status/resume`；它们不会新建 turn。只有预览或尚未落盘时保留原回执，不把超时当失败证明。
+- 服务过载也不静默换模型、账户或 API key。本轮第二次授权调用的原线程明确返回 `serverOverloaded`，没有原生 image item；只查询原线程，没有重提。若要再次尝试，须用户重新授权。
+- 额度读取失败不抹掉已校验图片；没有图片也不能凭退出码或 agent 消息宣称成功。异常信息尽量用受控类型/错误码，原始 stderr 不保存，避免带出私有内容。
 
-每张图在 `<project>/.imagecraft/jobs/<slug>/` 里保存：提交的契约全文、使用的客户端与版本、提交前后额度、回合耗时、产物路径与 SHA-256、实际尺寸、逐项核对结果。服务没有提供的字段（seed、图像模型 ID）写"未提供"。云端产物不放进本机 ComfyUI 的任务目录，本机 CLI 的 `verify/review` 只认它自己生成的任务。
+## 额度记录与预算
 
-## 边界
+接口数字是**已用**比例 `usedPercent`。脚本按池保存 `limitId`、各窗口的 `windowDurationMins`、`resetsAt` 与已用比例，不假设 `primary` 必然为五小时。提交前要求 `ordinaryUsageAllowed=true`、可观测窗口均低于 90% 且未触发 spend control；这是保守前置检查，不是消费价格或绝不扣费的服务端保证。不同目录不会共享或强制执行用户给宿主的总张数预算，宿主仍须逐次计数。
 
-- 只用官方客户端和它自己保存的登录；不读取、复制或改写 `auth.json`、浏览器 cookie 或令牌，不把订阅包装成 HTTP 服务，不切换到 API key，不购买 credits。
-- 一个账户对应一个 Codex 配置目录；多个账户分开 `CODEX_HOME`，不轮换账户绕额度。
-- 启动另一个 Codex 会话也是一次委派，按宿主的授权规则来；会话只拿本次契约和参考图，不让它扫描用户仓库。
+本轮可见的是 codex 桶：第一张五小时已用 **0→2%**、周 **31→31%**；第二次调用因拥堵无图，立即后读额度失败，后续原线程查询时仍为 **2%、31%**。这些是该账户、该窗口的整数观测，不能推出独立图像额度池、图像与普通对话必定共用同一池、固定每张 2–3 点或零消耗。重置、并发使用和取整都会影响差值。不购买 credits，不更改账户支付设置，也不轮换账户绕额度。
 
-## 官方依据
+## 已验证与未验证
+
+本轮第一张无字陶艺 Hero 经官方 exec 单次生成，62.911 秒，1536×1024，原线程取回并解码、哈希通过；逐图验收可用，右边额外花瓶/枝叶另记。它是**探针通路成功**，之后据此实现正式入口，不冒称新版 `generate` 已端到端成功。
+
+第二张中文高密度界面用正式 `generate` 实际调用一次，但官方控制模型拥堵，原线程失败、无图；新脚本的成功生成闭环与这张界面的内容验收仍待新增授权。`status/resume` 原线程恢复和拥堵分类已实测；取图三路径、预览拒绝、额度后读失败、丢回执不重提等由本地假 CLI / app-server 回归覆盖。历史网页、论文/PPT 和财务界面样例只说明当时成果，不代替本版入口的真实验收。
+
+产物是栅格图，服务端尺寸、seed 和图像模型 ID 未必提供，未提供就写未提供。PNG 不冒充可编辑文件或可交互网页；改字重出、[局部修补](raster-repair.md) 与原图能力要分清。
+
+## 官方资料
 
 - [Codex 原生生图](https://developers.openai.com/codex/image-generation)
-- [Codex 登录与认证存储](https://developers.openai.com/codex/auth)
-- [Codex app-server 协议](https://developers.openai.com/codex/app-server)
-- [Codex 计划与图像用量](https://developers.openai.com/codex/pricing#image-generation-usage-limits)
+- [登录与认证](https://developers.openai.com/codex/auth)
+- [app-server 协议](https://developers.openai.com/codex/app-server)
+- [计划与用量](https://developers.openai.com/codex/pricing#image-generation-usage-limits)
 - [ChatGPT 与 API 分开计费](https://help.openai.com/en/articles/9039756-managing-billing-for-chatgpt-and-the-api-platform)
 
-产品能力、额度与客户端行为会变，使用前以当前版本的实际表现为准。
+产品能力与客户端行为会变。以当前官方客户端的能力、账户与实际回执为准，不据旧记录自动升级、换源或重交。

@@ -11,7 +11,7 @@
 - [agent-parliament](plugins/agent-parliament-plugin/skills/orchestrator/SKILL.md)：组织规划、质疑、实现、审查与验证，不依赖专用 MCP 服务；可由同一代理顺序执行。
 - [skill-search](skill-search/SKILL.md)：针对明确的技能搜索请求或复杂项目中的能力缺口，寻找能改善任务的技能；检查已有能力、读候选正文、分清指标口径，找不到就停止。
 - [docvision](docvision/SKILL.md)：0.5.0，数字 PDF 批量筛读与本地 OCR；疑难区域按需用 PaddleOCR API 对照纠错，图表与架构图实际看图。保留原稿和有依据的校正，支持云任务续接、文献搬家、环境验收与回退。
-- [imagecraft](imagecraft/SKILL.md)：0.2.0，辅助型生图：文章配图、前端页面方案比较，也为没有生图能力的宿主补上出图链路。首次使用先判断本机条件，能跑则复用现有 ComfyUI 与 FLUX.2 klein 4B，不适合则走用户已有的 GPT 订阅；内容要精确或还需反复修改时改用 HTML/SVG/TikZ。固定权重来源与哈希、实际看图验收，产物与中间文件放项目工作区便于清理。
+- [imagecraft](imagecraft/SKILL.md)：0.2.1，辅助文章配图、页面方案与无字素材，也为没有生图能力的宿主补上出图链路。首次判断硬件并复用现有 ComfyUI，FLUX 默认作极速素材/编辑，Z-Image Turbo 显式用于短文字；另有官方 GPT 订阅脚本，须授权并预检，不保证服务随时可用。精确内容与反复修改优先 HTML/SVG/TikZ/PPT。固定权重与哈希、实际看图验收，产物集中项目工作区。
 - [presentation-craft](presentation-craft/SKILL.md)：面向论文组会与实验进展，提供 12 种学术样式、科研页型、数据图表选型与表格展示规则及样张；用免费本地工具生成 PPTX 与基本点击动画，检查实际导出与放映。
 - [git-governance](git-governance/SKILL.md)：按项目需要选择 Git 工作流，管理分支、文件入库与本地保留、提交、协作、发布和安全清理；区分 Git 机制、团队约定与发布清单。
 

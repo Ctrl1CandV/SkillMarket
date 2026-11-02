@@ -5,8 +5,8 @@
 技能代码、模型、运行状态、生成产物分开放置。技能可以复制到支持 `SKILL.md` 的宿主目录；宿主不支持自动发现时，显式读取入口并执行同一个 CLI，不必安装 MCP 插件。不要把某宿主的工作目录或用户盘符写进运行文件。
 
 - **客户端**：Python 3.10+；发现、配置、下载和文生图规划使用标准库。参考图和输出校验需要 Pillow，现有 ComfyUI 环境通常已有。优先选择它的解释器；没有时先说明缺什么，再由用户决定建立独立客户端环境，不能污染系统 Python。
-- **后端**：支持 FLUX.2 klein 和所列原生节点的现有 ComfyUI。已知版本号不代替 `/object_info` 和实测；不自动升级 core、PyTorch、CUDA wheel、自定义节点或前端包。
-- **模型**：`models/flux-klein-4b.json` 固定来源、revision、精确大小、SHA-256 和目录布局。仅下载一个通用模型组，不包含 LoRA、ControlNet、放大器或专用模型。
+- **后端**：支持所选 FLUX.2 klein 或 Z-Image Turbo 及所列原生节点的现有 ComfyUI。已知版本号不代替 `/object_info` 和实测；不自动升级 core、PyTorch、CUDA wheel、自定义节点或前端包。
+- **模型**：默认 `models/flux-klein-4b.json`；文字用途可显式选 `z-image-turbo.json`，FP8 mixed 文本备选为 `z-image-turbo-fp8.json`。各自固定来源、revision、精确大小、SHA-256 和布局；不预装全部配置，不自动换精度，不包含 LoRA、ControlNet 或放大器。
 - **状态**：默认 Windows `%LOCALAPPDATA%/imagecraft`；其他系统 `$XDG_STATE_HOME/imagecraft` 或 `~/.local/state/imagecraft`。可用 `IMAGECRAFT_HOME` 指定状态根目录，也可在子命令前传 `--config <absolute-config.json>`。
 - **产物**：每次生成使用外部独立目录。交付 `image.png`；其余 JSON 为私有记录，含提示词、参考文件路径或服务配置，不默认分享。
 
@@ -20,7 +20,7 @@
 4. 已运行的服务直接接入。原生节点兼容性及文件枚举会预检，但 HTTP API 不能完全证明另一进程实际从哪个重名路径载入权重；有重复名称/外部搜索路径时必须核对，不把客户端文件哈希误说成服务端远程证明。
 5. 服务未运行时，`serve` 复用选中的核心和 Python，使用独立 runtime 目录及启动参数。额外模型映射设为优先，但不改原映射文件；停掉该进程后，原启动器仍按原参数工作。
 
-`serve` 默认只监听配置的回环地址，关闭自动打开浏览器、第三方节点、云 API 节点和 PNG 提示词元数据，并在本次子进程设置 Hugging Face/Transformers 离线与禁遥测选项。采用保守的 low-VRAM、默认 2.5 GiB 预留（`serve --reserve-vram <GiB>` 可调；在大显存卡上调高可近似小卡）及关闭 pinned memory/async offload；这些是单次进程参数，不是全局配置。它拒绝占用已有端口，并检查 8188/8189 的其他 ComfyUI 服务；这不能探测所有端口上的 GPU 任务，操作者仍须查 GPU 和相关服务队列。
+`serve` 默认只监听配置的回环地址，关闭自动打开浏览器、第三方节点、云 API 节点和 PNG 提示词元数据，并在本次子进程设置 Hugging Face/Transformers 离线与禁遥测选项。采用保守的 low-VRAM、默认 2.5 GiB 预留（`serve --reserve-vram <GiB>` 可调；在大显存卡上调高仅模拟卸载预算，不是显存硬上限或真小卡验证）及关闭 pinned memory/async offload；这些是单次进程参数，不是全局配置。它拒绝占用已有端口，并检查 8188/8189 的其他 ComfyUI 服务；这不能探测所有端口上的 GPU 任务，操作者仍须查 GPU 和相关服务队列。
 
 该模式不是操作系统级网络沙箱，也不是独立 Python 环境；冻结共享依赖、禁用自定义节点不能证明整个后端没有外部行为。若现有环境不兼容，先给出隔离部署计划、磁盘和回退成本，得到批准后另建环境并共享可复用权重，不边测边升级原环境。
 
@@ -34,6 +34,12 @@
 | 合计 | | 12,451,817,860 | 12.45 |
 
 GB 为十进制磁盘大小，不是运行显存。显存、系统内存、模型卸载行为与分辨率和后端版本有关，不承诺“三个文件能同时驻留 16GB VRAM”。
+
+显式增配 Z 时，INT8 扩散为 6,201,001,296 字节、专用 VAE 为 335,304,388 字节，与 FLUX 共用同哈希的 BF16 Qwen3 文本编码器，总计 14,581,287,732 字节；已有 FLUX 时只需新增 **6,536,305,684 字节**。两个 VAE 哈希不同，不能按通用名称相互替代。`models plan --model z-image-turbo` 会列出与 FLUX 共享的编码器和当前根目录已有文件；散落在别处的同哈希文件仍须先选对共享根，不宣称全盘自动去重。
+
+`z-image-turbo-fp8` 只把文本编码器改为 5,631,994,051 字节的 FP8 mixed 文件，完整组 12,168,299,735 字节；不是 FLUX 的自动低显存档，也未证明与 BF16 质量等价。显式 `--model` 同时适用于 `models plan/download`、`models check --verify`、`doctor` 和 `plan/generate`。Z 只文生图，有参考图时选 FLUX。
+
+16GB＋32GB RAM 为实机完整验证；本卡 reserve 6.5/10.5 下的成功只是小预算探针，真 12GB/8GB 及 16GB 系统 RAM 未验证。先按 [硬件闸](routing.md#第一层硬件与复用) 选择，不把权重总大小或整卡缓存读数当最低显存。
 
 默认单连接下载可续传自己标记过的 `.imagecraft.part`；只有完整大小和 SHA-256 都通过才发布到正式路径。部分文件或哈希失败不会被当成可用模型，也不会覆盖已有正式文件。官方 HTTPS 源固定到 revision；不禁用 TLS 校验、不读账户 token，不自动改用第三方镜像。
 

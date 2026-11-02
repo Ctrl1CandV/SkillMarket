@@ -1,0 +1,172 @@
+{
+  "schema": "imagecraft.sanitized-evaluation/1",
+  "date": "2026-11-02",
+  "client": "codex-cli 0.154.0",
+  "subscription": "ChatGPT Plus",
+  "budget": {
+    "authorized_maximum": 2,
+    "exec_attempts": 2,
+    "images_retrieved": 1,
+    "automatic_resubmissions": 0,
+    "further_submission_requires_new_approval": true
+  },
+  "privacy": "Original images, prompts, thread receipts and logs retained outside repository; no account identity or auth files included.",
+  "rows": [
+    {
+      "id": "textless-ceramics-hero",
+      "route": "official exec probe, then same-thread app-server native image retrieval",
+      "submission": {
+        "state": "accepted",
+        "attempts": 1
+      },
+      "generation": "completed",
+      "retrieval": "decoded",
+      "artifact": {
+        "file": "image.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 2025234,
+        "sha256": "f01edf0882d7ce45b018d582d6f1e77066bf4da67c46473cd9985044c962c0d2",
+        "source_sha256": "a52cd926e440ea0a338eefd34fce47ca616cb5f130f1ee85cdd622afe9485bd7",
+        "source": "native_saved_path",
+        "format": "PNG",
+        "decoder": "stdlib PNG8; decompressed and scanline-unfiltered"
+      },
+      "exec_wall_seconds": 62.911,
+      "quota": {
+        "before": {
+          "state": "observed",
+          "at": "2026-11-02T10:01:10.346206+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {
+                "usedPercent": 0,
+                "windowDurationMins": 300,
+                "resetsAt": 1793631671
+              },
+              "secondary": {
+                "usedPercent": 31,
+                "windowDurationMins": 10080,
+                "resetsAt": 1793775898
+              },
+              "spendControlReached": false
+            }
+          }
+        },
+        "after": {
+          "state": "observed",
+          "at": "2026-11-02T10:02:15.878234+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {
+                "usedPercent": 2,
+                "windowDurationMins": 300,
+                "resetsAt": 1793631686
+              },
+              "secondary": {
+                "usedPercent": 31,
+                "windowDurationMins": 10080,
+                "resetsAt": 1793775898
+              },
+              "spendControlReached": false
+            }
+          }
+        }
+      },
+      "visual_review": {
+        "verdict": "accepted-with-notes",
+        "reviewer": "host visual inspection of original PNG",
+        "notes": "陶壶、单个奶油杯和亚麻布均可见，主体靠右、左墙可排字；真实材质与光影可用。右边额外花瓶/枝叶未指定，作为偏离记录，不声称完美复现。没有文字、logo或水印。"
+      },
+      "new_generate_cli_success": false,
+      "native_source": {
+        "bytes": 2047127,
+        "sha256": "a52cd926e440ea0a338eefd34fce47ca616cb5f130f1ee85cdd622afe9485bd7"
+      },
+      "metadata_only_derivative": {
+        "new_cloud_submission": false,
+        "source_sha256": "a52cd926e440ea0a338eefd34fce47ca616cb5f130f1ee85cdd622afe9485bd7",
+        "pixel_bytes_unchanged": true,
+        "removed_chunk_types": [
+          "caBX"
+        ]
+      }
+    },
+    {
+      "id": "dense-chinese-dashboard",
+      "route": "cloud_codex.py generate, exactly one exec attempt; status/resume query original thread only",
+      "submission": {
+        "state": "accepted",
+        "attempts": 1
+      },
+      "generation": {
+        "state": "failed",
+        "failure_code": "server_overloaded"
+      },
+      "retrieval": {
+        "state": "unavailable"
+      },
+      "artifact": null,
+      "exec_wall_seconds": null,
+      "timing_note": "Initial script did not persist duration on early error; a few-second failure was observed but no precise inference time is claimed.",
+      "quota": {
+        "before": {
+          "state": "observed",
+          "at": "2026-11-02T11:02:22.309767+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {
+                "usedPercent": 2,
+                "windowDurationMins": 300,
+                "resetsAt": 1793631686
+              },
+              "secondary": {
+                "usedPercent": 31,
+                "windowDurationMins": 10080,
+                "resetsAt": 1793775898
+              },
+              "spendControlReached": false
+            }
+          }
+        },
+        "after": {
+          "state": "observed",
+          "at": "2026-11-02T11:28:57.666212+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {
+                "usedPercent": 2,
+                "windowDurationMins": 300,
+                "resetsAt": 1793631687
+              },
+              "secondary": {
+                "usedPercent": 31,
+                "windowDurationMins": 10080,
+                "resetsAt": 1793775898
+              },
+              "spendControlReached": false
+            }
+          }
+        }
+      },
+      "quota_note": "Immediate after-read failed with RPC -32603; these after values are from a later read-only original-thread query, not an immediate per-call cost.",
+      "visual_review": {
+        "status": "not_possible_no_image"
+      },
+      "new_generate_cli_success": false
+    }
+  ],
+  "validation_limit": "Probe generated one verified image. The formal script successful generate-to-retrieval path and new dense UI visual review remain unverified because the second authorized attempt failed with server overload; no retry or model switch."
+}

@@ -17,6 +17,8 @@ import urllib.request
 from contextlib import contextmanager
 
 SKILL = Path(__file__).resolve().parents[1]
+MODEL_IDS = ("flux-klein-4b", "z-image-turbo", "z-image-turbo-fp8")
+DEFAULT_MODEL = "flux-klein-4b"  # Paired evaluation: fastest assets/editing default; Z is opt-in for short text.
 MANIFEST = SKILL / "models" / "flux-klein-4b.json"
 CHUNK = 4 * 1024 * 1024
 
@@ -33,8 +35,19 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_manifest() -> dict:
-    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+def manifest_path(model: str) -> Path:
+    if model not in MODEL_IDS:
+        raise ModelError("Unknown model; choose one of: " + ", ".join(MODEL_IDS))
+    return SKILL / "models" / f"{model}.json"
+
+
+def workflow_path(model: str) -> Path:
+    manifest_path(model)  # Validate the ID before constructing a path.
+    return SKILL / "workflows" / ("flux-klein-4b.api.json" if model == "flux-klein-4b" else "z-image-turbo.api.json")
+
+
+def load_manifest(model: str = DEFAULT_MODEL) -> dict:
+    data = json.loads(manifest_path(model).read_text(encoding="utf-8"))
     if data.get("schema") != "imagecraft.models/1":
         raise ModelError("Unsupported model manifest")
     for item in data["files"]:
@@ -42,7 +55,7 @@ def load_manifest() -> dict:
             raise ModelError("An immutable model revision is required")
         if not re.fullmatch(r"[a-f0-9]{64}", item["sha256"]):
             raise ModelError("A SHA-256 digest is required")
-        if item["repo"] not in {"black-forest-labs/FLUX.2-klein-4b-fp8", "Comfy-Org/Flux-2-Klein-4B"}:
+        if item["repo"] not in {"black-forest-labs/FLUX.2-klein-4b-fp8", "Comfy-Org/Flux-2-Klein-4B", "Comfy-Org/Z-Image-Turbo"}:
             raise ModelError("Model repository is not approved")
         for key in ("source", "destination"):
             p = PurePosixPath(item[key])
@@ -108,20 +121,23 @@ def file_lock(path: Path):
                 fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
 
-def inventory(root: Path, verify: bool = False) -> dict:
+def inventory(root: Path, verify: bool = False, model: str = DEFAULT_MODEL) -> dict:
     files = []
-    for item in load_manifest()["files"]:
+    manifests = {name: load_manifest(name) for name in MODEL_IDS}
+    for item in manifests[model]["files"]:
         path = destination(root, item)
         actual = path.stat().st_size if path.is_file() else None
         status = "missing" if actual is None else "size_match" if actual == item["bytes"] else "conflict"
         if status == "size_match" and verify:
             status = "verified" if sha256(path) == item["sha256"] else "conflict"
-        files.append({**item, "path": str(path), "status": status})
+        shared = [name for name, other in manifests.items() if name != model and any(
+            f["destination"] == item["destination"] and f["sha256"] == item["sha256"] for f in other["files"])]
+        files.append({**item, "path": str(path), "status": status, "shared_with_models": shared})
     missing = sum(x["bytes"] for x in files if x["status"] == "missing")
     existing = root
     while not existing.exists():
         existing = existing.parent
-    return {"schema": "imagecraft.model-plan/1", "model_root": str(root), "files": files,
+    return {"schema": "imagecraft.model-plan/1", "model": model, "model_root": str(root), "files": files,
             "missing_bytes": missing, "total_bytes": sum(x["bytes"] for x in files),
             "free_bytes": shutil.disk_usage(existing).free,
             "note": "size_match is not a hash verification; download never overwrites an existing model"}
@@ -172,7 +188,7 @@ def download_one(root: Path, item: dict, *, opener=None) -> dict:
         start = part.stat().st_size if part.exists() else 0
         if start == item["bytes"]:
             break
-        headers = {"User-Agent": "imagecraft/0.2", "Accept-Encoding": "identity", "Cache-Control": "no-cache"}
+        headers = {"User-Agent": "imagecraft/0.2.1", "Accept-Encoding": "identity", "Cache-Control": "no-cache"}
         if start:
             headers["Range"] = f"bytes={start}-"
         try:
@@ -241,7 +257,7 @@ def download_parallel(root: Path, item: dict, workers: int = 8, *, opener_factor
         if path.is_file() and path.stat().st_size == end - start + 1:
             return path
         for attempt in range(3):
-            request = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity", "User-Agent": "imagecraft/0.2"})
+            request = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity", "User-Agent": "imagecraft/0.2.1"})
             try:
                 with opener_factory().open(request, timeout=90) as response:
                     expected = f"bytes {start}-{end}/{item['bytes']}"
@@ -342,6 +358,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("plan", "check", "download"))
     parser.add_argument("--models-root", required=True)
+    parser.add_argument("--model", choices=MODEL_IDS, default=DEFAULT_MODEL)
     parser.add_argument("--verify", action="store_true", help="Hash existing models, not just sizes")
     parser.add_argument("--yes", action="store_true", help="Approve the pinned downloads")
     parser.add_argument("--transport", choices=("urllib", "hf"), default="urllib", help="hf uses an existing huggingface_hub/Xet install; never installs one")
@@ -349,7 +366,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         root = checked_root(args.models_root)
-        plan = inventory(root, args.verify)
+        plan = inventory(root, args.verify, args.model)
         if args.action != "download" or not args.yes:
             print(json.dumps(plan, ensure_ascii=False, indent=2))
             return 0 if args.action == "plan" else int(any(f["status"] in {"missing", "conflict"} for f in plan["files"]))
@@ -369,7 +386,7 @@ def main(argv=None) -> int:
                 transfer = lambda root, item: download_parallel(root, item, args.workers)
             else:
                 transfer = download_one
-            result = [transfer(root, item) for item in load_manifest()["files"]]
+            result = [transfer(root, item) for item in load_manifest(args.model)["files"]]
         print(json.dumps({"schema": "imagecraft.download/1", "files": result}, ensure_ascii=False, indent=2))
         return 0
     except KeyboardInterrupt:

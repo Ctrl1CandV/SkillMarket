@@ -1,3 +1,4 @@
+from http.client import HTTPMessage
 import io
 import json
 from pathlib import Path
@@ -6,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 import uuid
+from urllib.request import Request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "imagecraft/scripts"))
 from ic import jobs
@@ -22,17 +24,17 @@ def object_info():
     return result
 
 
-class FakeClient:
+class FakeClient(Client):
     posts = 0
     fail_post = False
     busy = False
-    history_value = None
-    image_bytes = None
+    history_value: dict | None = None
+    image_bytes: bytes | None = None
 
     def __init__(self, *args, **kwargs):
         pass
 
-    def request(self, path, payload=None):
+    def request(self, path, payload=None, *, raw=None, content_type=None, binary=False):
         if path == "/queue":
             return {"queue_running": [[0, str(uuid.uuid4()), {}, {}]] if self.busy else [], "queue_pending": []}
         if path == "/object_info":
@@ -45,6 +47,7 @@ class FakeClient:
             FakeClient.posts += 1
             if self.fail_post:
                 raise Error("simulated lost receipt")
+            assert payload is not None  # Fixture callers must supply the POST body.
             return {"prompt_id": payload["prompt_id"]}
         raise AssertionError(path)
 
@@ -52,6 +55,7 @@ class FakeClient:
         return self.history_value
 
     def view(self, image):
+        assert self.image_bytes is not None
         return self.image_bytes
 
 
@@ -76,8 +80,8 @@ class Runtime(unittest.TestCase):
         self.assertEqual(endpoint("http://[::1]:8188"), "http://[::1]:8188")
 
     def test_redirect_refused(self):
-        with self.assertRaises(Error):
-            NoRedirects().redirect_request(None, None, 302, "", {}, "https://outside.test")
+        with io.BytesIO() as stream, self.assertRaises(Error):
+            NoRedirects().redirect_request(Request("http://127.0.0.1:8188"), stream, 302, "", HTTPMessage(), "https://outside.test")
 
     def test_graph_reference_and_bounds(self):
         graph = build("keep product shape, change color", 1024, 1024, 42, "test", ["a.png", "b.png"])

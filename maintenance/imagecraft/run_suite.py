@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 from importlib import import_module
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -21,6 +23,8 @@ sys.path.insert(0, str(REPO / "imagecraft/scripts"))
 _common = import_module("ic.common")
 Error, atomic_json, now = _common.Error, _common.atomic_json, _common.now
 dimensions = import_module("ic.workflow").dimensions
+MODEL_IDS = import_module("download_models").MODEL_IDS
+Client = import_module("ic.client").Client
 
 
 def load_suite(path: Path) -> dict:
@@ -67,6 +71,36 @@ def plan(suite: dict) -> dict:
             "policy": "one attempt each; no new weights; no cloud calls; all outputs retained; visual review required"}
 
 
+def safety(cfg: dict):
+    """Re-check immediately before every submission; never stop a user's process."""
+    if os.name == "nt":
+        result = subprocess.run(["tasklist", "/FO", "CSV", "/NH"], capture_output=True, text=True, check=True, timeout=15)
+        names = {row[0].lower() for row in csv.reader(result.stdout.splitlines()) if row}
+        games = {"league of legends.exe", "cs2.exe", "valorant-win64-shipping.exe", "genshinimpact.exe"}
+        if names & games:
+            raise ValueError("Known competing game detected; suite paused without submitting or stopping any process")
+    # Read utilization/state/power in ONE sample: separate queries race desktop bursts.
+    # WDDM remote-desktop compositing can report 20–30% in the 15 W P8 idle state.
+    for attempt in range(30):
+        gpu = subprocess.run(["nvidia-smi", "--query-gpu=utilization.gpu,pstate,power.draw", "--format=csv,noheader,nounits"],
+                             capture_output=True, text=True, check=True, timeout=10)
+        rows = [x.split(",") for x in gpu.stdout.splitlines() if x.strip()]
+        if rows and all(len(row) == 3 and (int(row[0]) <= 10 or (row[1].strip() == "P8" and float(row[2]) <= 35)) for row in rows):
+            break
+        if attempt == 29:
+            raise ValueError("GPU is not idle (active compute/power state or no reading); nothing submitted")
+        time.sleep(1)
+    client = Client(cfg["url"], timeout=10)
+    queue = client.request("/queue")
+    if queue.get("queue_running") or queue.get("queue_pending"):
+        raise ValueError("GPU queue busy; nothing submitted")
+    stats = client.request("/system_stats")
+    args = [str(x).replace("\\", "/").lower() for x in stats.get("system", {}).get("argv", [])]
+    expected = str(Path(cfg["runtime_root"]) / "output").replace("\\", "/").lower()
+    if expected not in args:
+        raise ValueError("Endpoint is not the selected isolated runtime; inspect before submitting")
+
+
 def execute(base: list[str], command: list[str], output: Path, case: dict) -> dict:
     samples: list[dict] = []
     done = threading.Event()
@@ -108,6 +142,7 @@ def main(argv=None) -> int:
     p.add_argument("--python", default=sys.executable)
     p.add_argument("--config", type=Path)
     p.add_argument("--output", type=Path)
+    p.add_argument("--model", choices=MODEL_IDS, default="flux-klein-4b")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args(argv)
     try:
@@ -117,22 +152,26 @@ def main(argv=None) -> int:
             return 0
         if not args.config or not args.config.is_file() or not args.output or not args.output.is_absolute():
             raise ValueError("A selected private config and a new absolute output directory are required")
+        cfg = _common.config(args.config.resolve())
+        safety(cfg)
         output = args.output.resolve()
         if output == REPO or REPO in output.parents:
             raise ValueError("Keep real samples and evidence outside the repository")
         output.mkdir(parents=True, exist_ok=False)
         atomic_json(output / "suite.json", suite)
         report = {"schema": "imagecraft.suite-result/1", "suite": suite["name"], "started_at": now(), "state": "running",
-                  "suite_source_sha256": hashlib.sha256(args.suite.read_bytes()).hexdigest(), "planned_jobs": len(suite["cases"]),
+                  "model": args.model, "suite_source_sha256": hashlib.sha256(args.suite.read_bytes()).hexdigest(), "planned_jobs": len(suite["cases"]),
                   "memory_scope": "approximately 1-second whole-GPU and whole-system RAM samples, not process/PyTorch peaks", "cases": []}
         atomic_json(output / "report.json", report)
         base = [args.python, "-B", str(REPO / "imagecraft/scripts/imagecraft.py"), "--config", str(args.config.resolve())]
         for case in suite["cases"]:
+            safety(cfg)
             name = case["id"]
             prompt_file = output / f"{name}.prompt.txt"
             prompt_file.write_text(case["prompt"], encoding="utf-8")
             command = ["generate", "--prompt-file", str(prompt_file), "--width", str(case["width"]), "--height", str(case["height"]),
-                       "--seed", str(case["seed"]), "--intent", case["intent"], "--output", str(output / name), "--wait", "900"]
+                       "--seed", str(case["seed"]), "--intent", case["intent"], "--model", args.model,
+                       "--output", str(output / name), "--wait", "900"]
             for source_id in case.get("references", []):
                 source = output / source_id / "image.png"
                 if not source.is_file():
