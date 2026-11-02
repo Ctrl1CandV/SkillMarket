@@ -64,7 +64,7 @@ def launch(command, root):
 
 
 def initialize(server):
-    server.rpc("initialize", {"clientInfo": {"name": "imagecraft", "version": "0.2.1"},
+    server.rpc("initialize", {"clientInfo": {"name": "imagecraft", "version": "0.3.0"},
                               "capabilities": {"experimentalApi": True}})
     server.send({"method": "initialized", "params": {}})
 
