@@ -22,7 +22,7 @@
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
 | [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办 |
 | [git-governance](git-governance/) | Git 官方来源核验、隔离仓库中的 9 项操作语义检查与场景复核记录 |
-| [imagecraft](imagecraft/) | [第二轮交接](imagecraft/review-2026-11-02.md)：56 张 Z/FLUX 配对、五次显存预留探针、26 张提示词对照；官方订阅脚本在新增一次授权后，无字素材正式闭环与同任务复查通过；中文界面先前拥堵无图，仍未验收。88 项回归与静态复核；历史评测、逐图脱敏记录和运行入口见 [README](imagecraft/README.md) |
+| [imagecraft](imagecraft/) | [第二轮交接](imagecraft/review-2026-11-02.md)：56 张 Z/FLUX 配对、五次显存预留探针、26 张提示词对照；官方订阅脚本无字素材及中文界面已分别授权实测，中文 130 处指定可见内容匹配，额外刻度和尺寸偏离另记，不称完整契约通过。88 项回归与静态复核；历史评测、逐图脱敏记录和运行入口见 [README](imagecraft/README.md) |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。
 

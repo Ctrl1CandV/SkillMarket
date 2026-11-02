@@ -4,14 +4,15 @@
   "client": "codex-cli 0.154.0",
   "subscription": "ChatGPT Plus",
   "budget": {
-    "authorized_maximum": 3,
-    "exec_attempts": 3,
-    "images_retrieved": 2,
+    "authorized_maximum": 4,
+    "exec_attempts": 4,
+    "images_retrieved": 3,
     "automatic_resubmissions": 0,
     "further_submission_requires_new_approval": true,
     "approval_phases": [
       {"scope": "initial-round2", "authorized_maximum": 2, "exec_attempts": 2, "images_retrieved": 1},
-      {"scope": "user-authorized-formal-script-followup", "authorized_maximum": 1, "exec_attempts": 1, "images_retrieved": 1}
+      {"scope": "user-authorized-formal-script-followup", "authorized_maximum": 1, "exec_attempts": 1, "images_retrieved": 1},
+      {"scope": "user-authorized-remaining-dashboard-acceptance", "authorized_maximum": 1, "exec_attempts": 1, "images_retrieved": 1}
     ]
   },
   "privacy": "Original images, prompts, thread receipts and logs retained outside repository; no account identity or auth files included.",
@@ -247,7 +248,36 @@
       },
       "new_generate_cli_success": true,
       "high_density_chinese_acceptance": "not_performed"
+    },
+    {
+      "id": "formal-script-dense-chinese-dashboard-followup",
+      "route": "committed cloud_codex.py generate; one separately authorized call using the same frozen prompt as the failed initial UI attempt",
+      "source_commit": "f916e1280563bbe1cfa98907010611705565b0f8",
+      "prompt_sha256": "dfaf8d9185cd5bf45f82d9668e5ef5dd7315e3a53a250fc40c486db556971bd4",
+      "submission": {"state": "accepted", "attempts": 1},
+      "generation": "completed",
+      "retrieval": "decoded",
+      "artifact": {
+        "file": "image.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 1257208,
+        "sha256": "b3332328ff93f5e8a2eddfd7122f3a8755a384bc604acb7277d172ec38f610cb",
+        "source_sha256": "ddf100b2d813b6ca610b911e9de3c39b329b23d36ee6afe7404c3305224ef070",
+        "source": "native_saved_path",
+        "format": "PNG",
+        "decoder": "stdlib PNG8; decompressed and scanline-unfiltered"
+      },
+      "controller_turn_seconds": 114.149,
+      "exec_seconds_including_cleanup": 124.158,
+      "client_receipt_interval_seconds": 131.525,
+      "quota_observation": {"pool": "codex", "window_minutes": [300, 10080], "before_used_percent": [15, 33], "after_used_percent": [18, 33], "not_a_per_image_price": true},
+      "local_gpu_inference": false,
+      "new_generate_cli_success": true,
+      "same_job_status_resume_verified": true,
+      "visual_review": {"verdict": "accepted-with-notes", "required_visible_slots": 130, "matched_visible_slots": 130, "extra_axis_and_month_labels": 18, "full_contract_pass": false, "ui_direction_usable": true, "single_sample_only": true},
+      "detailed_acceptance": "cloud-dashboard-acceptance-v1.json"
     }
   ],
-  "validation_limit": "Formal textless generate-to-native-PNG retrieval and same-job offline status/resume passed after one separately authorized follow-up call. The dense Chinese UI visual review remains unperformed because its initial attempt failed with server overload; no new dense UI submission, automatic retry, or model/account switch."
+  "validation_limit": "Formal textless and dense Chinese UI technical paths and same-job offline status/resume passed under separate explicit approvals. The dense UI's 130 required visible slots matched, but 18 added chart labels and approximate pixel-size/layout deviations prevent full contract compliance. These are single samples, not stability or universal accuracy evidence; no automatic retry, model/account switch, or local GPU inference."
 }

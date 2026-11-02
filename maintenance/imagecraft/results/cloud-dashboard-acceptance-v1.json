@@ -1,0 +1,128 @@
+{
+  "schema": "imagecraft.sanitized-cloud-dashboard-acceptance/1",
+  "date": "2026-11-02",
+  "source_commit": "f916e1280563bbe1cfa98907010611705565b0f8",
+  "prompt_sha256": "dfaf8d9185cd5bf45f82d9668e5ef5dd7315e3a53a250fc40c486db556971bd4",
+  "predeclared_text_slots": 130,
+  "maximum_authorized_calls": 1,
+  "exec_attempts": 1,
+  "native_images": 1,
+  "technical_acceptance": "passed",
+  "content_acceptance_completed": true,
+  "local_gpu_inference": false,
+  "runtime_code_changed": false,
+  "artifact": {
+    "file": "image.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1257208,
+    "sha256": "b3332328ff93f5e8a2eddfd7122f3a8755a384bc604acb7277d172ec38f610cb",
+    "source_sha256": "ddf100b2d813b6ca610b911e9de3c39b329b23d36ee6afe7404c3305224ef070",
+    "source": "native_saved_path",
+    "format": "PNG",
+    "decoder": "stdlib PNG8; decompressed and scanline-unfiltered"
+  },
+  "native_source_bytes": 1279101,
+  "source_and_published_pixels_identical": true,
+  "controller_turn_seconds": 114.149,
+  "exec_seconds_including_cleanup": 124.158,
+  "client_receipt_interval_seconds": 131.525,
+  "client_version": "codex-cli 0.154.0",
+  "controller_model": "gpt-6-astra",
+  "image_model": null,
+  "seed": null,
+  "quota": {
+    "before": {
+      "state": "observed",
+      "at": "2026-11-02T14:26:16.430279+00:00",
+      "ordinaryUsageAllowed": true,
+      "pools": {
+        "codex": {
+          "limitId": "codex",
+          "planType": "plus",
+          "primary": {"usedPercent": 15, "windowDurationMins": 300, "resetsAt": 1793631686},
+          "secondary": {"usedPercent": 33, "windowDurationMins": 10080, "resetsAt": 1793775898},
+          "spendControlReached": false
+        }
+      }
+    },
+    "after": {
+      "state": "observed",
+      "at": "2026-11-02T14:28:26.199759+00:00",
+      "ordinaryUsageAllowed": true,
+      "pools": {
+        "codex": {
+          "limitId": "codex",
+          "planType": "plus",
+          "primary": {"usedPercent": 18, "windowDurationMins": 300, "resetsAt": 1793631686},
+          "secondary": {"usedPercent": 33, "windowDurationMins": 10080, "resetsAt": 1793775898},
+          "spendControlReached": false
+        }
+      }
+    }
+  },
+  "same_job_checks": {
+    "status": {"exit_code": 0, "receipt_unchanged": true, "attempts_unchanged": true, "thread_unchanged": true, "image_hash_unchanged": true, "offline_existing_artifact_verification": true},
+    "resume": {"exit_code": 0, "receipt_unchanged": true, "attempts_unchanged": true, "thread_unchanged": true, "image_hash_unchanged": true, "offline_existing_artifact_verification": true}
+  },
+  "cleanup": {"exec": "terminated_own_process", "app_server": "exited_after_stdin_close", "job_lock_reacquired_and_released": true},
+  "visual_review": {
+    "state": "accepted-with-notes",
+    "reviewer": "host visual inspection of full original pixels and eight viewing-only crops; no OCR",
+    "visible_text_slots": {
+      "expected": 130,
+      "matched": 130,
+      "mismatch": 0,
+      "missing": 0,
+      "areas": [
+        {"area": "topbar", "expected_slots": 5, "matched_slots": 5},
+        {"area": "sidebar", "expected_slots": 11, "matched_slots": 11},
+        {"area": "metric-1", "expected_slots": 3, "matched_slots": 3},
+        {"area": "metric-2", "expected_slots": 3, "matched_slots": 3},
+        {"area": "metric-3", "expected_slots": 3, "matched_slots": 3},
+        {"area": "metric-4", "expected_slots": 3, "matched_slots": 3},
+        {"area": "chart", "expected_slots": 6, "matched_slots": 6},
+        {"area": "approval", "expected_slots": 7, "matched_slots": 7},
+        {"area": "budget", "expected_slots": 7, "matched_slots": 7},
+        {"area": "balances", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transactions-toolbar", "expected_slots": 5, "matched_slots": 5},
+        {"area": "transactions-headers", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-1", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-2", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-3", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-4", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-5", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-6", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transaction-row-7", "expected_slots": 7, "matched_slots": 7},
+        {"area": "transactions-footer", "expected_slots": 1, "matched_slots": 1},
+        {"area": "invoices-title-headers", "expected_slots": 5, "matched_slots": 5},
+        {"area": "invoice-row-1", "expected_slots": 4, "matched_slots": 4},
+        {"area": "invoice-row-2", "expected_slots": 4, "matched_slots": 4}
+      ]
+    },
+    "literal_source_text_codepoints_verified": false,
+    "spacing_and_unicode_note": "Visible text/number matches, not proof of whitespace or Unicode codepoints in original text; raster only.",
+    "layout_core_observed": {"metric_cards": 4, "right_rail_cards": 3, "transaction_columns": 7, "transaction_rows": 7, "invoice_columns": 4, "invoice_rows": 2, "short_chart_and_table_dominant": true, "grouped_sidebar": true},
+    "transactions_row_mapping_correct": true,
+    "invoice_row_mapping_correct": true,
+    "amounts_signs_units_and_statuses_visually_correct": true,
+    "extra_visible_text": {
+      "chart_y_axis": ["0", "300,000", "600,000", "900,000", "1,200,000", "1,500,000"],
+      "chart_month_labels": ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+    },
+    "extra_text_labels": 18,
+    "approximate_source_pixel_measurements": {"metric_card_height": 103, "metric_card_requested_height": 72, "transaction_row_height": 35, "transaction_row_requested_height": 40, "main_table_width": 1050, "invoice_table_width": 1050, "measurement_note": "Approximate visible PNG box measurements, not CSS/DOM verification."},
+    "deviations": [
+      "Chart adds six numeric axis labels and twelve month labels despite the exact-strings-only instruction. Curve values were not supplied; they are illustrative, not verified financial data.",
+      "Metric cards are about 103 PNG pixels tall rather than requested 72; transaction rows about 35 rather than 40.",
+      "Invoice card has the same visible width as main table, not narrower if interpreted as width."
+    ],
+    "full_contract_pass": false,
+    "useful_for_intended_ui_visual_direction": true,
+    "editable_or_interactive": false,
+    "original_image_repaired": false,
+    "view_crops_only": true,
+    "single_sample_not_stability_evidence": true
+  },
+  "privacy": "Synthetic finance content only; original image, frozen 130-slot plan, per-slot review, account identity, original thread receipt and viewing crops stay outside repository."
+}
