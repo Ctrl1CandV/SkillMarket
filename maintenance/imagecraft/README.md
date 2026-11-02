@@ -6,7 +6,7 @@
 
 本技能是**辅助型技能**，不是生图产品：交付标准是“任务能不能往前走”，而不是成图能多惊艳。典型用途是文章配图、页面方案比较、需要一张图才能继续的讨论；另一种情况是宿主本身没有生图能力，由本技能补上出图、取回、校验与记录的链路。
 
-先看内容是否必须精确、以后是否要改：是则选 HTML/SVG/TikZ/PPT 原生绘制；可接受栅格成果时再选通道。本机保持 FLUX 默认作极速素材/编辑，Z 显式用于低密度文字；16GB＋32GB 是唯一完整实机配置，reserve 6.5/10.5 仅有卸载模拟证据，不称真 12GB/8GB 验证。订阅脚本已有入口，但本轮正式 generate 遇官方拥堵，成功闭环仍待新增授权，详见下方任务 3。当前选路以 [三层分工](../../imagecraft/references/routing.md) 为准。
+先看内容是否必须精确、以后是否要改：是则选 HTML/SVG/TikZ/PPT 原生绘制；可接受栅格成果时再选通道。本机保持 FLUX 默认作极速素材/编辑，Z 显式用于低密度文字；16GB＋32GB 是唯一完整实机配置，reserve 6.5/10.5 仅有卸载模拟证据，不称真 12GB/8GB 验证。订阅脚本在新增一次用户授权后，以无字素材完成正式 generate 到原生 PNG 的成功闭环，status/resume 同任务复查通过；先前拥堵的中文界面仍未验收，详见下方任务 3。当前选路以 [三层分工](../../imagecraft/references/routing.md) 为准。
 
 产物与中间文件统一放用户项目的 `.imagecraft/`（briefs、jobs、scratch、evidence），可整目录删除，不散落到家目录。
 
@@ -72,7 +72,7 @@
 
 - [任务 1：56 张 Z / FLUX 配对](eval-z-image-turbo-2026-11-02.md)：Z 短字 14/18 对 6/18，视觉用途 8/12 对 10/12；保留分工，不切默认。完整 [逐图结果](results/z-image-comparison-v1.json)。
 - [任务 2：五次显存预留探针](eval-vram-probe-2026-11-02.md)：FLUX 两预算/尺寸成功，Z FP8 整卡仍超过 8 GiB；[逐图结果](results/vram-probe-v1.json)。
-- [任务 3：官方订阅入口](eval-cloud-codex-2026-11-02.md)：探针单图成功、正式界面调用拥堵无图；仅查原线程、未重交。新增标准库脚本及假 CLI / JSON-RPC 测试，不把夹具成功当真实 generate 成功；[脱敏结果](results/cloud-codex-v1.json)。
+- [任务 3：官方订阅入口](eval-cloud-codex-2026-11-02.md)：首批探针成功、界面调用拥堵无图；随后独立授权一次，正式脚本无字素材闭环与离线 status/resume 复查通过，未用本机 GPU。中文界面仍未验收，不把夹具或历史图补成通过；[脱敏结果](results/cloud-codex-v1.json)。
 - [任务 4：26 张提示词对照](eval-prompt-style-2026-11-02.md)：撤回强制词数、正面写法必胜和 HEX 更稳的建议；[逐图结果](results/prompt-style-v1.json)。
 
 ## 当前限制

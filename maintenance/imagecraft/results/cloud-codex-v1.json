@@ -4,11 +4,15 @@
   "client": "codex-cli 0.154.0",
   "subscription": "ChatGPT Plus",
   "budget": {
-    "authorized_maximum": 2,
-    "exec_attempts": 2,
-    "images_retrieved": 1,
+    "authorized_maximum": 3,
+    "exec_attempts": 3,
+    "images_retrieved": 2,
     "automatic_resubmissions": 0,
-    "further_submission_requires_new_approval": true
+    "further_submission_requires_new_approval": true,
+    "approval_phases": [
+      {"scope": "initial-round2", "authorized_maximum": 2, "exec_attempts": 2, "images_retrieved": 1},
+      {"scope": "user-authorized-formal-script-followup", "authorized_maximum": 1, "exec_attempts": 1, "images_retrieved": 1}
+    ]
   },
   "privacy": "Original images, prompts, thread receipts and logs retained outside repository; no account identity or auth files included.",
   "rows": [
@@ -166,7 +170,84 @@
         "status": "not_possible_no_image"
       },
       "new_generate_cli_success": false
+    },
+    {
+      "id": "formal-script-textless-hero",
+      "route": "committed cloud_codex.py generate; native savedPath retrieved automatically",
+      "source_commit": "92ede44cf7b27cf9917b32133ab3daf72f8c7a72",
+      "runtime_code_changed": false,
+      "local_gpu_inference": false,
+      "local_comfyui_started": false,
+      "technical_acceptance": "passed",
+      "submission": {"state": "accepted", "attempts": 1},
+      "generation": "completed",
+      "retrieval": "decoded",
+      "native_image_items": 1,
+      "artifact": {
+        "file": "image.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 2156668,
+        "sha256": "ce8a682c92729834d09eeb26692a5ada97ff09aa93139300d750213aa3c7c9bd",
+        "source_sha256": "3f45ef071c31d7e179dbb93d4db1088c5c26e6d7f653a9d2e05a964a22d173ef",
+        "source": "native_saved_path",
+        "format": "PNG",
+        "decoder": "stdlib PNG8; decompressed and scanline-unfiltered"
+      },
+      "native_source_bytes": 2178561,
+      "source_and_published_pixels_identical": true,
+      "controller_model": "gpt-6-astra",
+      "image_model": null,
+      "seed": null,
+      "controller_turn_seconds": 71.664,
+      "exec_seconds_including_cleanup": 81.674,
+      "client_receipt_interval_seconds": 96.278,
+      "timing_note": "Controller turn, CLI exec including cleanup, and receipt interval are distinct; no pure image-service inference duration is available.",
+      "quota": {
+        "before": {
+          "state": "observed",
+          "at": "2026-11-02T14:00:59.578138+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {"usedPercent": 13, "windowDurationMins": 300, "resetsAt": 1793631686},
+              "secondary": {"usedPercent": 33, "windowDurationMins": 10080, "resetsAt": 1793775898},
+              "spendControlReached": false
+            }
+          }
+        },
+        "after": {
+          "state": "observed",
+          "at": "2026-11-02T14:02:29.867331+00:00",
+          "ordinaryUsageAllowed": true,
+          "pools": {
+            "codex": {
+              "limitId": "codex",
+              "planType": "plus",
+              "primary": {"usedPercent": 15, "windowDurationMins": 300, "resetsAt": 1793631686},
+              "secondary": {"usedPercent": 33, "windowDurationMins": 10080, "resetsAt": 1793775898},
+              "spendControlReached": false
+            }
+          }
+        }
+      },
+      "same_job_checks": {
+        "status": {"exit_code": 0, "receipt_unchanged": true, "attempts_unchanged": true, "thread_unchanged": true, "image_hash_unchanged": true, "offline_existing_artifact_verification": true},
+        "resume": {"exit_code": 0, "receipt_unchanged": true, "attempts_unchanged": true, "thread_unchanged": true, "image_hash_unchanged": true, "offline_existing_artifact_verification": true}
+      },
+      "cleanup": {"exec": "terminated_own_process", "app_server": "exited_after_stdin_close", "job_lock_reacquired_and_released": true},
+      "visual_review": {
+        "verdict": "accepted-with-notes",
+        "reviewer": "host visual inspection of full published PNG",
+        "notes": "陶壶、单个奶油杯、亚麻布及木纹可用；主体靠右、左墙可排字，没有可见文字/logo/水印。额外右侧花瓶与枝叶、布料裁边记为偏离，不称完美复现。",
+        "exact_prompt_match": false,
+        "useful_for_intended_textless_hero": true
+      },
+      "new_generate_cli_success": true,
+      "high_density_chinese_acceptance": "not_performed"
     }
   ],
-  "validation_limit": "Probe generated one verified image. The formal script successful generate-to-retrieval path and new dense UI visual review remain unverified because the second authorized attempt failed with server overload; no retry or model switch."
+  "validation_limit": "Formal textless generate-to-native-PNG retrieval and same-job offline status/resume passed after one separately authorized follow-up call. The dense Chinese UI visual review remains unperformed because its initial attempt failed with server overload; no new dense UI submission, automatic retry, or model/account switch."
 }
