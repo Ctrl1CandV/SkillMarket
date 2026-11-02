@@ -79,13 +79,10 @@ def external_path(value: str | Path) -> Path:
     if not raw.is_absolute():
         raise Error("Use an absolute path for local state, models and outputs")
     path = raw.resolve()
-    boundary = SKILL
-    for parent in SKILL.parents:
-        if (parent / ".git").exists():
-            boundary = parent
-            break
-    if path == boundary or boundary in path.parents:
-        raise Error("Keep private configuration, inputs and generated outputs outside the skill repository")
+    # Only the skill directory itself is off limits. A project-scope install lives inside
+    # the user's project repository, whose .imagecraft/ workspace is the intended output.
+    if path == SKILL or SKILL in path.parents:
+        raise Error("Keep private configuration, inputs and generated outputs outside the skill directory")
     return path
 
 

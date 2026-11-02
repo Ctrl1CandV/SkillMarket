@@ -29,7 +29,7 @@ class Client:
     def request(self, path, payload=None, *, raw=None, content_type=None, binary=False):
         if not path.startswith("/") or path.startswith("//"):
             raise Error("Invalid API path")
-        headers = {"User-Agent": "imagecraft/0.1"}
+        headers = {"User-Agent": "imagecraft/0.2"}
         if payload is not None:
             raw = json.dumps(payload).encode("utf-8")
             content_type = "application/json"

@@ -58,7 +58,7 @@ def doctor(cfg: dict, verify=False):
     return report
 
 
-def serve(cfg: dict) -> int:
+def serve(cfg: dict, reserve_vram: float = 2.5) -> int:
     """Foreground child only. The terminal/job owner controls its lifetime."""
     root, python = Path(cfg["comfy_root"]), Path(cfg["python"])
     if not (root / "main.py").is_file() or not python.is_file():
@@ -92,7 +92,7 @@ def serve(cfg: dict) -> int:
                "--extra-model-paths-config", str(mapping), "--input-directory", str(runtime / "input"),
                "--output-directory", str(runtime / "output"), "--temp-directory", str(runtime / "temp"),
                "--user-directory", str(runtime / "user"), "--disable-pinned-memory", "--disable-async-offload",
-               "--reserve-vram", "2.5", "--lowvram", "--cache-classic"]
+               "--reserve-vram", f"{reserve_vram:g}", "--lowvram", "--cache-classic"]
     source = (root / "comfy/cli_args.py").read_text(encoding="utf-8")
     missing = [flag for flag in command if flag.startswith("--") and flag not in source]
     if missing:
@@ -120,7 +120,9 @@ def parser():
     c.add_argument("--replace", action="store_true")
     d = sub.add_parser("doctor")
     d.add_argument("--verify", action="store_true")
-    sub.add_parser("serve", help="Run selected ComfyUI in the foreground; no daemon, install or upgrade")
+    s = sub.add_parser("serve", help="Run selected ComfyUI in the foreground; no daemon, install or upgrade")
+    s.add_argument("--reserve-vram", type=float, default=2.5,
+                   help="GiB of VRAM ComfyUI leaves unused (0-64). Raising it on a large card approximates a smaller one")
     m = sub.add_parser("models")
     m.add_argument("action", choices=("plan", "check", "download"))
     m.add_argument("--verify", action="store_true")
@@ -193,7 +195,9 @@ def main(argv=None) -> int:
             emit(report)
             return 0 if report["ready"] else 2
         if args.command == "serve":
-            return serve(cfg)
+            if not math.isfinite(args.reserve_vram) or not 0 <= args.reserve_vram <= 64:
+                raise Error("--reserve-vram must be between 0 and 64 GiB")
+            return serve(cfg, args.reserve_vram)
         if args.command == "models":
             argv = [args.action, "--models-root", cfg["models_root"], "--transport", args.transport, "--workers", str(args.workers)]
             if args.verify:

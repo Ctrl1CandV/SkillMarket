@@ -4,6 +4,26 @@
 
 共同前提：把“必须出现的文字”和“必须避免的元素”写成清单。清单越具体，越少重抽。
 
+## 本机提示词怎么写
+
+FLUX.2 klein 是 4 步蒸馏模型，CFG 固定为 1，没有负向提示；它读的是 Qwen3 文本编码器，完整的英文段落比关键词堆砌更稳。小模型自己不会补细节，宿主模型就是现成的提示词扩写器：把 brief 展开成一段 120–300 词的英文"看图描述"再提交，原 brief 存在 `briefs/` 里作为验收依据。
+
+扩写的顺序（参考 ComfyUI 官方 Qwen-Image 2.1 模板随附的改写说明）：
+
+1. **开头一句定性**：媒介、风格、主体、背景与色调，例如 "A wide editorial photograph of a ceramic teapot on a weathered oak desk, warm ivory background."
+2. **按画面位置走一遍**：先背景，再从上到下、从左到右写每个区域，多用 "in the upper-left corner""across the lower third" 这样的位置短语；人物或单个物体则从姿态到面部、衣物、手中物依次写。
+3. **要出现的字**：每段文字写清位置、字重、颜色和内容，用英文直引号原样给出，中文就写中文；越短越好。不需要可读的字写成 "blurred, too small to read"，别让模型编字。
+4. **单独一句写光线**：光源、方向、软硬和阴影。
+5. **一句收尾**：整体构图、配色和情绪。
+
+另外几条：
+
+- **想避免的写成正面描述**。"no gradient, no neon" 里的 gradient、neon 本身就是提示，可能被画出来；改写成 "flat matte colors, soft daylight, plain off-white background"。GPT 能正确理解禁止项，两条通道的写法不同。
+- **不加质量咒语**："masterpiece, 8K, highly detailed" 对这类模型没有约束力，换成具体的材质（brushed metal, coarse linen, frosted glass）。
+- **颜色带修饰词或色值**（"muted terracotta #C8643B"），比"暖色调"更稳定。
+- **中文长句、多处小字不要指望本机写对**，留白后用真实字体叠加（[局部修补](raster-repair.md)）。
+- **比较方向时固定其他条件**：同一段提示词换 2–4 个 seed 挑构图；比较风格时固定 seed，只改风格那一句。
+
 ## 通用任务
 
 把主体及动作写在前面，然后写空间关系、视角/构图、材料/光线、风格和少数不可违反的约束。需要产品结构准确、人物一致或品牌约束时使用有权使用的参考图，区分“必须保留”和“允许变化”；不借参考图暗示结果具有来源认证或真实拍摄身份。

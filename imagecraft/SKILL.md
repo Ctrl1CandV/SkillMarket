@@ -1,8 +1,8 @@
 ---
 name: imagecraft
-description: 辅助型生图技能：为文章配图、前端页面方案比较、以及需要图像才能推进的任务提供图片；也能为本身没有生图能力的模型补上出图链路，让它完成原本做不到的事。优先复用本机已有的 ComfyUI 与 FLUX.2 klein，本机不适合时改走用户已有的 GPT 订阅。内容与排版必须精确、或者以后还要反复修改的图，改用 HTML/SVG/TikZ 原生绘制。首次使用先判断本机条件，产物与中间文件放项目工作区，便于清理。
+description: 辅助型生图：为文章与汇报配图、前端页面方案比较、图标底图与无字素材、需要一张图才能继续讨论的任务出图；也为本身不能生图的模型补上出图、取回、核对与记录的链路。用户说“画一张”“生成图片”“配图”“出几版视觉稿”“做个封面/插画/背景”时使用。本机有合适显卡时复用现有 ComfyUI 与 FLUX.2 klein，不适合时走用户已有的 GPT 订阅登录；内容与数字必须精确、或以后还要反复修改的图改用 HTML/SVG/TikZ 原生绘制。首次使用先判断本机条件，产物与中间文件放项目 .imagecraft/ 便于清理。不用于数据图表绘制、可交互网页实现或照片修图。
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Imagecraft：辅助生图
@@ -33,11 +33,11 @@ metadata:
 
 ## 首次使用：先判断这台机器
 
-不要在没判断前就下载 12 GB 权重。按顺序问三件事，任何一步不成立就直接走 GPT，不折腾安装。
+下载 12 GB 权重之前先判断这台机器值不值得。按顺序看三件事，任何一步不成立就先走 GPT 订阅，把本机部署留给用户决定。
 
-1. **有没有可用的 ComfyUI**：跑 `discover`。找到就复用，尤其是已经能跑 FLUX 或视频的那一套——不要再装第二套。没找到就问用户路径，不自动安装。
-2. **显存与内存够不够**：本机唯一完整验证过的配置是 16 GB 显存＋32 GB 内存，1536×1024 峰值约 15.8 GB。12 GB 及以下没有验证过，只能标"未验证，可试 1024×1024"，不承诺能跑。没有独立 N 卡或显存明显不足时，直接建议 GPT。
-3. **权重在不在**：三个文件共 12.45 GB。已有同哈希文件就复用（`--models-root` 指向共享根），缺了再申请下载，并说明磁盘另需约 25 GB 峰值。
+1. **显卡与内存**：跑 `nvidia-smi` 看显卡型号与显存（绑定之后 `doctor` 也会报告）。完整验证过的是 16 GB 显存＋32 GB 内存（实测系统内存峰值约 14 GB）。12 GB 显存可以试，先用 1024×1024，并如实告诉用户这一档还没验证；8 GB 及以下、核显或没有 N 卡，直接建议 GPT。测评里的"峰值约 15.8 GB"是整卡读数，含桌面占用和 ComfyUI 的模型缓存，不是最低要求。
+2. **有没有可用的 ComfyUI**：跑 `discover`。找到就复用，尤其是已经能跑 FLUX 或视频的那一套。没找到时先问用户安装在哪；确实没有、硬件也够，就说明两种选择——现在走 GPT，或由用户自己装官方 ComfyUI（Desktop 或 Portable），装好后再回来绑定。本技能自己不运行安装器。
+3. **权重在不在**：三个文件共 12.45 GB。已有同哈希文件就复用（`--models-root` 指向共享根），缺了再征得同意下载，并说明下载期间磁盘峰值约 25 GB。
 
 判断、绑定、模型落位与迁移的完整做法见 [部署与复用](references/deployment.md)。绑定只需一次：
 
@@ -45,19 +45,23 @@ metadata:
 <python> <skill>/scripts/imagecraft.py discover
 <python> <skill>/scripts/imagecraft.py configure --comfy-root <existing-ComfyUI> --python <existing-python> --url http://127.0.0.1:8188
 <python> <skill>/scripts/imagecraft.py models plan
+<python> <skill>/scripts/imagecraft.py serve          # 服务没在跑时，放在单独终端前台运行
 <python> <skill>/scripts/imagecraft.py doctor --verify
 ```
+
+`<python>` 用那套 ComfyUI 自己的解释器（Portable 版是 `python_embeded/python.exe`，手动安装通常是其 `.venv` 或 conda 环境）。服务已经在跑就直接接入，不再起第二个。
 
 模型放 `ComfyUI/models/` 下的 `diffusion_models/`、`text_encoders/`、`vae/`，不另建一套目录树；已有 `extra_model_paths.yaml` 的机器按原映射走。本技能不升级 ComfyUI、不装自定义节点、不改原启动器。
 
 ## 每次任务怎么做
 
-先把要求写成能核对的东西，再出图。这一步省不得——"专业、精美、高质量"这类词对结果没有约束力，逐字的文案清单和明确的风格禁令才有。
+先把要求写成能核对的东西，再出图。这一步省不得——"专业、精美、高质量"这类词对结果没有约束力，逐字的文案清单和明确的风格约束才有。
 
 1. **写 brief**：主体、用途、画幅、必须出现的文字、必须避免的元素。按任务类型套 [需求与验收](references/task-briefs.md) 的模板；密集页面与架构图用清单式写法。
-2. **生成**：本机用 `plan` 看清楚要提交什么，再用新的输出目录 `generate`；云端一次只提交一张，不自动重抽。
-3. **必须打开看**：脚本说成功只代表像素生成了。文字、节点、箭头、数值逐项核对，缺一个就不算完成。技术校验不能替代看图。
-4. **交付**：给出绝对路径、尺寸、seed、实际观察到的问题。云端产物要说明它是栅格图、改字需重出。
+2. **按通道改写提示词**：本机模型由你把 brief 扩写成一段 120–300 词的英文看图描述（顺序见 [本机提示词](references/task-briefs.md#本机提示词怎么写)），要出现的文字用引号原样给出；想避免的东西改成正面描述（"flat matte colors, plain white background"），因为本机模型没有负向提示，写"no neon"反而可能把霓虹招来。GPT 能理解禁止项，可以直接写"无渐变、无霓虹"。
+3. **生成**：本机用 `plan` 看清楚要提交什么，再用新的输出目录 `generate`。素材、插画、风格这类凭感觉挑的图，本机一张只要几秒，换 2–4 个 seed 各出一张再挑；结构或文字错了换 seed 没用，改 brief 或换通道。云端按 [云端路径](references/cloud-fallback.md) 的六步走，一次只提交一张，不自动重抽。
+4. **必须打开看**：脚本说成功只代表像素生成了。文字、节点、箭头、数值逐项核对，缺一个就不算完成。技术校验不能替代看图。
+5. **交付**：给出绝对路径、尺寸、seed、实际观察到的问题。云端产物要说明它是栅格图、改字需重出。
 
 ```text
 <python> <skill>/scripts/imagecraft.py plan --prompt-file <brief.txt> --intent general --seed 42
@@ -105,7 +109,7 @@ metadata:
 | 内容要精确、文字要可控 | [内容前置](references/content-first.md) |
 | 只错几个字或一条线 | [局部修补](references/raster-repair.md) |
 | 首次部署、复用现有 ComfyUI、迁移 | [部署与复用](references/deployment.md) |
-| 走 GPT 订阅这条路 | [云端路径](references/cloud-fallback.md) |
+| 走 GPT 订阅：安装、登录、提交与额度 | [云端路径](references/cloud-fallback.md) |
 | 模型与工作流的出处 | [来源](references/sources.md) |
 
 所有相对路径以本文件所在目录为基准，不要按当前工作目录猜。

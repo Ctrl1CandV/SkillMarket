@@ -168,7 +168,7 @@ def submit(cfg: dict, root: Path, request: dict) -> dict:
     client = Client(cfg["url"])
     queue = client.request("/queue")
     if queue.get("queue_running") or queue.get("queue_pending"):
-        raise Error("ComfyUI is busy; nothing submitted. Wait for the existing H3/image job to finish")
+        raise Error("ComfyUI is busy; nothing submitted. Wait for the existing job to finish")
     info = client.request("/object_info")
     graph = build(request["prompt"], request["width"], request["height"], request["seed"],
                   f"imagecraft/{job['job_id']}", [f"reference-{i}.png" for i in range(len(request["references"]))])
