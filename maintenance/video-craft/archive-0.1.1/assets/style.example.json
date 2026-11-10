@@ -1,0 +1,48 @@
+{
+  "name": "data-story-dark",
+  "canvas": { "width": 1080, "height": 1920, "fps": 30 },
+  "color": {
+    "bg": "#111418",
+    "surface": "#1A1F26",
+    "grid": "#2A313B",
+    "text": "#EEF1F5",
+    "muted": "#8B95A3",
+    "focus": "#4DA3FF",
+    "context": "#4A515C",
+    "highlight": "#FFD166"
+  },
+  "font": {
+    "display": "Noto Sans SC",
+    "body": "Noto Sans SC",
+    "numeric": "Inter",
+    "numeric_features": "tnum",
+    "mono": "JetBrains Mono",
+    "weight": { "display": 900, "title": 700, "label": 500 }
+  },
+  "type": { "title": 104, "shot_title": 72, "big_number": 180, "label": 46, "subtitle": 54, "min": 40 },
+  "layout": {
+    "columns": 6,
+    "margin_x": 72,
+    "safe": { "top": 160, "bottom": 450, "left": 64, "right": 160 },
+    "subtitle_baseline": 1400
+  },
+  "line": { "chart": 6, "grid": 2, "icon": 4 },
+  "radius": { "card": 24, "chip": 999 },
+  "texture": { "grain_opacity": 0.02, "glow": { "color": "#4DA3FF", "opacity": 0.1 } },
+  "motion": {
+    "enter": { "ease": "cubic-bezier(0.16, 1, 0.3, 1)", "duration": 0.5 },
+    "exit": { "ease": "cubic-bezier(0.7, 0, 0.84, 0)", "duration": 0.3 },
+    "move": { "ease": "cubic-bezier(0.65, 0, 0.35, 1)" },
+    "stagger": 0.1,
+    "direction": "left",
+    "camera_push": [1.0, 1.06]
+  },
+  "subtitle": {
+    "font": "Noto Sans SC",
+    "weight": 700,
+    "size": 54,
+    "color": "#FFFFFF",
+    "stroke": { "color": "#000000", "width": 3 },
+    "max_chars": 14
+  }
+}

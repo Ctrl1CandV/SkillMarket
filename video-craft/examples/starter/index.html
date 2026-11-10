@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>starter</title>
+<style>
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  canvas { position: absolute; inset: 0; }
+  #caps { position: absolute; inset: 0; pointer-events: none; color: #F4F6FA; }
+  .cap { position: absolute; left: 140px; bottom: 120px; font: 700 56px/1.4 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; text-shadow: 0 2px 22px rgba(0,0,0,0.35); }
+  .cap.title { bottom: auto; top: 380px; font-size: 104px; line-height: 1.25; }
+  /* each line rises out of a mask; the padding keeps the text shadow from being cut into a box */
+  .cap .ln { overflow: hidden; padding: 40px 80px; margin: -40px -80px; }
+  .cap .ln span { display: inline-block; }
+</style></head>
+<body><div id="stage"><canvas id="cv" width="1920" height="1080"></canvas><div id="caps"></div></div>
+<script type="module" src="scene.js"></script></body></html>

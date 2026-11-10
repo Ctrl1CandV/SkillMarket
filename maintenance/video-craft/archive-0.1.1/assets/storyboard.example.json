@@ -1,0 +1,137 @@
+{
+  "title": "每天进步 1%，一年后是多少",
+  "takeaway": "小差距乘上足够长的时间，会变成大差距",
+  "audience": "刷短视频的大学生，知道百分比，没想过复利",
+  "format": { "width": 1080, "height": 1920, "fps": 30, "platform": "douyin" },
+  "language": "zh",
+  "target_duration": 38,
+  "style": "style.json",
+  "transitions": ["cut-on-motion", "shared-element", "zoom-through"],
+  "shots": [
+    {
+      "id": "s01-hook",
+      "role": "hook",
+      "purpose": "两秒内抛出一个能算、但没人算过的问题",
+      "duration": 4.0,
+      "hero": "巨大的 1.01",
+      "layout": "center-hero",
+      "shot_size": "close",
+      "camera": "slow push 1.00→1.06",
+      "vo": "每天进步百分之一，一年后是多少？",
+      "onscreen": ["1.01^365 = ?"],
+      "motion": "1.01 从下方 60 px 缓出到位（0.5 s）；说到“一年后”时右上角弹出 365（back out）；问号最后出现并停住",
+      "carry_out": "1.01 缩小成一个圆点，向左下滑到下一镜坐标原点，成为曲线起点",
+      "transition": "shared-element",
+      "sfx": [{ "at": 1.6, "name": "pop", "gain": -16 }]
+    },
+    {
+      "id": "s02-setup",
+      "role": "setup",
+      "purpose": "让观众先感受到前期增长很慢",
+      "duration": 5.0,
+      "hero": "从原点开始画的增长曲线",
+      "layout": "chart",
+      "shot_size": "medium",
+      "camera": "static",
+      "vo": "前一个月，几乎看不出变化，只到一点三五。",
+      "onscreen": ["第 30 天", "1.35"],
+      "motion": "坐标轴先画出，曲线头部的圆点沿曲线前进，计数器跟着圆点从 1.00 数到 1.35",
+      "beats": [
+        { "at": 0.3, "event": "横轴（天数 0–30）和纵轴画出，0.5 s" },
+        { "at": 0.9, "event": "曲线开始绘制，几乎是一条平线" },
+        { "at": 3.6, "event": "到达第 30 天，计数停在 1.35，标签贴在曲线末端" }
+      ],
+      "carry_out": "横轴刻度向左压缩，曲线继续向右延伸",
+      "transition": "cut-on-motion"
+    },
+    {
+      "id": "s03-turn",
+      "role": "reveal",
+      "purpose": "拉远看到 365 天，曲线后段陡然抬头",
+      "duration": 7.0,
+      "hero": "后段陡峭上升的曲线和 37.8",
+      "layout": "chart",
+      "shot_size": "wide",
+      "camera": "pull back 1.0→0.55 over 2.5 s (ease in-out)",
+      "vo": "每天都在前一天的基础上再长一点，一年后，是三十七点八。",
+      "onscreen": ["37.8"],
+      "motion": "镜头拉远露出完整 365 天；曲线继续前进，越来越陡；到第 365 天静止 0.5 s，37.8 用高亮色出现",
+      "beats": [
+        { "at": 0.0, "event": "舞台开始拉远" },
+        { "at": 2.5, "event": "曲线过第 200 天（7.32），开始明显上扬" },
+        { "at": 4.4, "event": "曲线到达第 365 天，静止" },
+        { "at": 4.9, "event": "37.8 高亮出现，计数器停在准确值" }
+      ],
+      "carry_out": "整张图向上移动到画面上半部，给下一条曲线让出位置",
+      "transition": "cut-on-motion",
+      "sfx": [{ "at": 4.9, "name": "hit", "gain": -14 }]
+    },
+    {
+      "id": "s04-compare",
+      "role": "compare",
+      "purpose": "用退步 1% 的曲线做对照，差距变得具体",
+      "duration": 6.0,
+      "hero": "下半部向下衰减的灰色曲线",
+      "layout": "split",
+      "shot_size": "medium",
+      "camera": "static",
+      "vo": "反过来，每天退步百分之一，一年后只剩零点零三。",
+      "onscreen": ["0.99^365", "0.03"],
+      "motion": "上半部保留 1.01 曲线并降到 50% 不透明度；下半部 0.99 曲线从 1.0 向下衰减，到底时 0.03 出现",
+      "beats": [
+        { "at": 0.4, "event": "下半部坐标出现" },
+        { "at": 1.0, "event": "0.99 曲线开始衰减" },
+        { "at": 4.2, "event": "0.03 出现，两条曲线末端各自标注" }
+      ],
+      "carry_out": "两个末端数字飞向画面中央，叠成下一镜的乘法式",
+      "transition": "shared-element"
+    },
+    {
+      "id": "s05-why",
+      "role": "step",
+      "purpose": "解释原因：差别来自重复相乘的次数",
+      "duration": 7.0,
+      "hero": "不断堆高的 ×1.01 方块",
+      "layout": "stack",
+      "shot_size": "close",
+      "camera": "follow up, tilt with the stack",
+      "vo": "差别不在百分之一，在于它被乘了三百六十五次。",
+      "onscreen": ["× 365 次"],
+      "motion": "方块一个接一个落下叠高，越落越快，镜头跟着向上；说到“三百六十五次”时整列压缩成一个 ×365",
+      "beats": [
+        { "at": 0.2, "event": "第一个 ×1.01 方块落下" },
+        { "at": 1.5, "event": "落下间隔逐渐缩短，镜头开始上移" },
+        { "at": 4.3, "event": "整列压缩成 ×365 标签" }
+      ],
+      "carry_out": "×365 标签向前放大穿过镜头",
+      "transition": "zoom-through"
+    },
+    {
+      "id": "s06-payoff",
+      "role": "payoff",
+      "purpose": "把结论说成一句能记住的话",
+      "duration": 6.0,
+      "hero": "结论句",
+      "layout": "type",
+      "shot_size": "close",
+      "camera": "slow push 1.00→1.04",
+      "vo": "小差距，乘上足够长的时间，就是大差距。",
+      "onscreen": ["小差距 × 时间", "= 大差距"],
+      "motion": "两行文字按短语依次出现，“大差距”用高亮色底色从左向右扫入",
+      "carry_out": "文字向上淡出，底部的两个数字留在原位进入结尾",
+      "transition": "cut-on-motion"
+    },
+    {
+      "id": "s07-outro",
+      "role": "outro",
+      "purpose": "留下可截图的结果和数值来源",
+      "duration": 3.0,
+      "hero": "并排的 37.8 与 0.03",
+      "layout": "center-hero",
+      "shot_size": "medium",
+      "camera": "static",
+      "onscreen": ["1.01^365 ≈ 37.8", "0.99^365 ≈ 0.03"],
+      "motion": "静止停留；角落小字标注计算方式"
+    }
+  ]
+}
