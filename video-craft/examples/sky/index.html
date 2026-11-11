@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>sky</title>
+<style>
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  canvas { position: absolute; inset: 0; }
+  #caps { position: absolute; inset: 0; pointer-events: none; color: #F6F7FA; }
+  .cap { position: absolute; }
+  .cap .ln { overflow: hidden; padding: 46px 90px; margin: -46px -90px; }
+  .cap .ln span { display: inline-block; will-change: transform; }
+  .narr { left: 140px; bottom: 112px; font: 700 54px/1.42 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: 0.02em; text-shadow: 0 2px 22px rgba(0,0,0,0.35); }
+  .title { left: 140px; top: 150px; font: 700 104px/1.25 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif; letter-spacing: 0.02em; text-shadow: 0 4px 40px rgba(0,20,60,0.35); }
+  .title.right { left: auto; right: 140px; text-align: right; }
+  .end { left: 140px; top: 300px; font: 700 128px/1.22 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif; text-shadow: 0 4px 40px rgba(40,10,0,0.45); }
+  .end .ln:nth-child(2) { font-size: 84px; }
+  .end .ln:nth-child(3) { margin-top: 28px; font: 500 38px/1.4 'Ubuntu', 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: 0.12em; color: rgba(255,236,220,0.85); }
+  em { font-style: normal; }
+  em.b { color: #A9CEFF; } em.r { color: #FFB592; }
+</style></head>
+<body><div id="stage"><canvas id="cv" width="1920" height="1080"></canvas><div id="caps"></div></div>
+<script type="module" src="scene.js"></script></body></html>

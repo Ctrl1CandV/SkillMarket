@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>liangqing promo</title>
+<style>
+  :root {
+    --ink: #151A22; --ink2: #5B6370; --paper: #EEF0EB; --screen: #F7F8F4; --card: #FFFFFF;
+    --seal: #D9382E; --green: #179F6A; --coral: #EE6A4C; --dark: #10141B;
+  }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--dark); font-family: 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; color: var(--ink); }
+  .abs { position: absolute; }
+  #darkbg { inset: 0; background: radial-gradient(1200px 800px at 66% 52%, #1B2230 0%, #10141B 60%, #0B0E13 100%); }
+  #light { inset: 0; background: radial-gradient(700px 520px at 70% 56%, rgba(217,56,46,0.07), rgba(217,56,46,0) 70%), radial-gradient(900px 700px at 18% 20%, rgba(47,107,255,0.05), rgba(47,107,255,0) 70%), radial-gradient(1300px 900px at 64% 48%, #F8F9F5 0%, #EEF0EB 55%, #E3E6E0 100%); }
+  #world { inset: 0; transform-origin: 1270px 540px; }
+
+  /* ---- chat (scene A) ---- */
+  #chat { left: 0; top: 0; width: 1920px; height: 1080px; }
+  .msg { position: absolute; left: 0; top: 0; display: flex; gap: 16px; align-items: flex-start; transform-origin: 30% 50%; filter: drop-shadow(0 18px 30px rgba(0,0,0,0.35)); }
+  .av { flex: none; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; }
+  .msg .av { width: 64px; height: 64px; font-size: 30px; }
+  .msg .who { font-size: 22px; color: #8D96A6; margin: 0 0 6px 4px; }
+  .msg .bub { position: relative; background: #252C38; color: #EEF1F6; font-size: 36px; line-height: 1.3; padding: 16px 26px; border-radius: 6px 24px 24px 24px; white-space: nowrap; }
+  .msg .bub b { color: #fff; font-family: 'Ubuntu', 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 700; }
+  .msg .chip { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 0 22px; border-radius: 16px; background: #fff; color: var(--ink); font-size: 26px; font-weight: 700; opacity: 0; box-shadow: 0 14px 30px rgba(20,30,40,0.18); }
+  .msg .chip span:last-child { font-family: 'Ubuntu'; }
+  #chathead { left: 950px; width: 640px; top: 0; height: 150px; background: linear-gradient(#10141B 55%, rgba(16,20,27,0)); display: flex; align-items: center; gap: 14px; font-size: 26px; color: #C9D0DB; padding-top: 10px; }
+  #chathead .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--coral); }
+  #unread { margin-left: auto; background: var(--coral); color: #fff; font: 700 22px 'Ubuntu'; padding: 4px 14px; border-radius: 20px; }
+
+  /* ---- phone ---- */
+  #phone { left: 1055px; top: 90px; width: 430px; height: 900px; border-radius: 70px; background: linear-gradient(135deg, #2A2F37, #0E1116 60%, #23272E); box-shadow: 0 70px 120px rgba(25,35,45,0.28), 0 24px 40px rgba(25,35,45,0.18), inset 0 0 0 2px rgba(255,255,255,0.08); }
+  #phone .btn-side { position: absolute; width: 5px; border-radius: 3px; background: #1A1E25; }
+  .screen { position: absolute; inset: 14px; border-radius: 57px; background: var(--screen); overflow: hidden; }
+  .island { position: absolute; left: 50%; top: 14px; width: 118px; height: 34px; margin-left: -59px; border-radius: 20px; background: #0B0D10; z-index: 5; }
+  .status { position: absolute; left: 0; right: 0; top: 18px; display: flex; justify-content: space-between; padding: 0 38px; font: 700 20px 'Ubuntu'; color: var(--ink); }
+  .page { position: absolute; inset: 0; padding: 74px 22px 0; }
+  .trip { font-size: 30px; font-weight: 700; margin: 6px 4px 2px; }
+  .sub { font-size: 18px; color: var(--ink2); margin: 0 4px 14px; }
+  .avs { display: flex; margin: 0 4px 14px; }
+  .avs .av { width: 40px; height: 40px; font-size: 18px; margin-right: -8px; box-shadow: 0 0 0 3px var(--screen); }
+  .label { font-size: 18px; color: var(--ink2); margin: 6px 4px 8px; }
+  .row { display: flex; align-items: center; gap: 14px; height: 70px; padding: 0 14px; margin-bottom: 8px; background: var(--card); border-radius: 18px; box-shadow: 0 2px 6px rgba(20,30,40,0.05); }
+  .cat { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 21px; font-weight: 700; }
+  .row .t { font-size: 21px; font-weight: 700; line-height: 1.2; }
+  .row .p { font-size: 15px; color: var(--ink2); }
+  .row .amt { margin-left: auto; font: 700 23px 'Ubuntu'; }
+  .sum { margin-top: 14px; padding: 18px 20px; border-radius: 20px; background: var(--ink); color: #fff; display: flex; align-items: flex-end; justify-content: space-between; }
+  .sum .k { font-size: 16px; color: #AEB6C2; }
+  .sum .v { font: 700 40px 'Ubuntu'; letter-spacing: 0.01em; }
+  .sum .v small { font-size: 22px; margin-right: 2px; }
+  .sum .v2 { font: 700 28px 'Ubuntu'; text-align: right; }
+  .go { position: absolute; left: 22px; right: 22px; bottom: 34px; height: 76px; border-radius: 22px; background: var(--seal); color: #fff; display: grid; place-items: center; font-size: 28px; font-weight: 700; letter-spacing: 0.2em; box-shadow: 0 12px 24px rgba(217,56,46,0.3); }
+  .bal { display: flex; justify-content: space-between; margin: 4px 4px 16px; }
+  .bal .one { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 66px; }
+  .bal .av { width: 46px; height: 46px; font-size: 20px; }
+  .bal .n { font: 700 16px 'Ubuntu'; padding: 2px 8px; border-radius: 10px; }
+  .tr { display: flex; align-items: center; gap: 10px; height: 84px; padding: 0 14px; margin-bottom: 10px; background: var(--card); border-radius: 18px; }
+  .tr .av { width: 40px; height: 40px; font-size: 18px; }
+  .tr .arrow { width: 26px; height: 2px; background: var(--ink2); position: relative; }
+  .tr .arrow::after { content: ''; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left: 9px solid var(--ink2); border-right: 0; }
+  .tr .amt { font: 700 24px 'Ubuntu'; margin-left: 6px; }
+  .tr .st { margin-left: auto; width: 104px; height: 40px; border-radius: 20px; position: relative; font-size: 17px; font-weight: 700; }
+  .tr .st > div { position: absolute; inset: 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .st .a { border: 2px solid var(--ink); color: var(--ink); }
+  .st .b { background: #E4E6E2; color: var(--ink2); }
+  .st .c { background: var(--green); color: #fff; }
+  .remind { position: absolute; left: 22px; right: 22px; bottom: 34px; height: 76px; border-radius: 22px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 26px; font-weight: 700; letter-spacing: 0.12em; }
+  #finger { width: 74px; height: 74px; border-radius: 50%; background: rgba(21,26,34,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.85), 0 10px 24px rgba(0,0,0,0.25); }
+  #ripple { width: 74px; height: 74px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.9); }
+
+  /* ---- seal ---- */
+  .seal { width: 230px; height: 230px; border-radius: 22px; background: var(--seal); color: #FFF6F0; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 92px/1.04 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', serif; box-shadow: inset 0 0 0 9px var(--seal), inset 0 0 0 14px #FFF0E8; }
+  #seal { left: 0; top: 0; transform-origin: 50% 50%; }
+
+  /* ---- graph (scene D) ---- */
+  #graph { inset: 0; background: var(--screen); }
+  #graph svg { position: absolute; inset: 0; }
+  .node { position: absolute; width: 136px; margin-left: -68px; display: flex; flex-direction: column; align-items: center; }
+  .node .av { width: 120px; height: 120px; font-size: 52px; box-shadow: 0 16px 30px rgba(20,30,40,0.18), 0 0 0 7px var(--screen); }
+  .node .nm { margin-top: 12px; font-size: 30px; font-weight: 700; }
+  .node .net { margin-top: 8px; font: 700 28px 'Ubuntu'; padding: 3px 14px; border-radius: 16px; }
+  .money { position: absolute; padding: 6px 18px; border-radius: 26px; background: #fff; font: 700 36px 'Ubuntu'; box-shadow: 0 10px 24px rgba(20,30,40,0.16); transform-origin: 50% 50%; white-space: nowrap; }
+  #counter { left: 140px; top: 300px; }
+  #counter .lab { font-size: 48px; font-weight: 700; color: var(--ink2); height: 70px; position: relative; }
+  #counter .lab div { position: absolute; left: 0; top: 0; white-space: nowrap; }
+  #counter .num { font: 700 260px/1 'Ubuntu'; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 18px; margin-top: 10px; }
+  #counter .num small { font: 700 72px 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+  #counter .note { font-size: 40px; font-weight: 700; color: var(--green); margin-top: 18px; }
+
+  /* ---- captions ---- */
+  #caps { inset: 0; pointer-events: none; }
+  .cap { position: absolute; left: 140px; top: 380px; font: 700 92px/1.28 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: 0.01em; }
+  .cap.dark { color: #F3F5F8; }
+  .cap .ln { overflow: hidden; padding: 30px 60px; margin: -30px -60px; }
+  .cap .ln span { display: inline-block; white-space: nowrap; }
+  .cap em { font-style: normal; color: var(--seal); }
+  #end { inset: 0; }
+  #tag { left: 0; right: 0; top: 690px; text-align: center; font: 700 84px 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: 0.06em; }
+  #tag2 { left: 0; right: 0; top: 820px; text-align: center; font-size: 30px; color: var(--ink2); letter-spacing: 0.2em; }
+  #grain { inset: -256px; mix-blend-mode: overlay; opacity: 0.06; pointer-events: none; }
+  #vig { inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, rgba(10,14,20,0.16) 100%); }
+</style></head>
+<body>
+<div id="stage">
+  <div id="darkbg" class="abs"></div>
+  <div id="light" class="abs"></div>
+  <div id="world" class="abs">
+    <div id="chat" class="abs"></div>
+    <div id="phone" class="abs">
+      <div class="btn-side" style="left:-4px;top:200px;height:60px"></div><div class="btn-side" style="left:-4px;top:280px;height:90px"></div><div class="btn-side" style="right:-4px;top:250px;height:120px"></div>
+      <div class="screen" id="screen">
+        <div class="island"></div>
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="page" id="ledger"></div>
+        <div class="page" id="transfers"></div>
+      </div>
+    </div>
+    <div id="graph" class="abs"><svg width="1920" height="1080" id="gsvg"></svg></div>
+    <div id="counter" class="abs"><div class="lab"><div id="lab1">各转各的</div><div id="lab2">两清一算</div></div><div class="num"><span id="num">0</span><small>笔转账</small></div><div class="note" id="note">少转 16 笔</div></div>
+    <div id="finger" class="abs"></div><div id="ripple" class="abs"></div>
+  </div>
+  <div id="end" class="abs"><div id="tag" class="abs">旅行账，一次算清</div><div id="tag2" class="abs">两清 · 旅行 AA 记账</div></div>
+  <div id="seal" class="abs seal"><span>两</span><span>清</span></div>
+  <div id="caps" class="abs"></div>
+  <div id="vig" class="abs"></div>
+  <div id="grain" class="abs"></div>
+</div>
+<script type="module" src="scene.js"></script></body></html>
