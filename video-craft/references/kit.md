@@ -24,6 +24,8 @@ npx playwright install chromium        # 或 chromium-headless-shell
 
 有些沙箱需要额外设置 `LD_LIBRARY_PATH`（缺系统库时）和 `FONTCONFIG_FILE`（没有中文字体时）。`node kit/doctor.mjs` 会报告浏览器版本、WebGL 渲染器、WebCodecs 支持哪些编码、语音数量，以及 ffmpeg 有没有 VP9/H.264/AAC 编码器，并给出建议。
 
+Ubuntu/WSL 上 `sudo apt install ffmpeg` 就够了（22.04 的 4.4.2 自带 libx264 和 aac）。目标文件名写成 `.mp4` 时，`render.mjs` 输出 H.264（yuv420p、faststart），合入音轨时转成 AAC 192k。实测 28 秒的 DOM 宣传片在 crf 18 下约 19 MB；带颗粒的片子码率更高，59 秒约 41 MB，用于网络分享时可以用 `--crf 20`–`23`。
+
 只有最简 ffmpeg 时（只有 libvpx），交付 WebM：VP9 视频加 Opus 音频，Chrome、Edge、Firefox、VLC 都能播。需要 MP4 时，在有完整 ffmpeg 的机器上转一下：
 
 ```text

@@ -102,7 +102,7 @@ if (mode === 'stills') {
   console.log('video', n, 'frames →', target, ((Date.now() - t0) / 1000).toFixed(0) + 's');
   if (opt('audio')) {
     const muxed = opt('mux', target.replace(/\.(webm|mp4)$/, '-av.$1'));
-    const acodec = muxed.endsWith('.mp4') ? ['-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k'] : ['-c', 'copy'];
+    const acodec = muxed.endsWith('.mp4') ? ['-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart'] : ['-c', 'copy'];
     await new Promise((r, j) => spawn(FFMPEG, ['-y', '-loglevel', 'error', '-i', target, '-i', opt('audio'), '-map', '0:v', '-map', '1:a', ...acodec, '-shortest', muxed], { stdio: 'inherit' }).on('close', (c) => (c === 0 ? r() : j(new Error('mux ' + c)))));
     console.log('muxed →', muxed);
   }
