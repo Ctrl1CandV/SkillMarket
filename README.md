@@ -9,7 +9,7 @@
 - [frontend-craft](frontend-craft/SKILL.md)：依据项目方向完成页面级内容编排、构图、排版、配色和交互细节，并通过实际画面修订；与 product-design 配合，局部精修也可直接使用。
 - [grad-companion](plugins/grad-companion-plugin/)：辅助读研期间的论文阅读、研究记录、实验积累与阶段复盘；新增 [experiment-design](plugins/grad-companion-plugin/skills/experiment-design/SKILL.md)，把研究想法转成可执行、有判别力的实验计划。
 - [agent-parliament](plugins/agent-parliament-plugin/skills/orchestrator/SKILL.md)：组织规划、质疑、实现、审查与验证，不依赖专用 MCP 服务；可由同一代理顺序执行。
-- [skill-search](skill-search/SKILL.md)：针对明确的技能搜索请求或复杂项目中的能力缺口，寻找能改善任务的技能；检查已有能力、读候选正文、分清指标口径，找不到就停止。
+- [skill-search](skill-search/SKILL.md)：0.3.0，针对明确的技能搜索请求或复杂项目中的能力缺口，寻找能直接使用、或开发时值得借鉴的技能；检查已有能力、读候选正文、分清指标口径与许可，找不到就停止。
 - [docvision](docvision/SKILL.md)：0.5.0，数字 PDF 批量筛读与本地 OCR；疑难区域按需用 PaddleOCR API 对照纠错，图表与架构图实际看图。保留原稿和有依据的校正，支持云任务续接、文献搬家、环境验收与回退。
 - [imagecraft](imagecraft/SKILL.md)：0.3.0，辅助型生图：文章配图、页面方案比较、无字素材，也为没有生图能力的宿主补上出图链路。首次使用先判断本机硬件并复用现有 ComfyUI：FLUX.2 klein 默认用于极速素材与参考编辑，Z-Image Turbo 可选用于短中文标题；本机不合适时用官方 Codex 订阅脚本出图（需授权，一次一张）。内容要精确或还要反复修改时改用 HTML/SVG/TikZ。固定权重来源与哈希，实际看图验收，产物放项目 `.imagecraft/` 便于清理。
 - [presentation-craft](presentation-craft/SKILL.md)：面向论文组会与实验进展，提供 12 种学术样式、科研页型、数据图表选型与表格展示规则及样张；用免费本地工具生成 PPTX 与基本点击动画，检查实际导出与放映。
