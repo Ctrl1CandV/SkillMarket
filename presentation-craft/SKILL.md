@@ -1,6 +1,8 @@
 ---
 name: presentation-craft
 description: 用于制作或改进研究生论文组会、实验进展、开题答辩、课程 presentation 等现场汇报的幻灯片，尤其适合需要学术风格选择、基于数据的图表选型与展示、科研排版和可编辑 PPTX 的任务。不用于仅查找工具或仅写普通文章。
+metadata:
+  version: "0.2.0"
 ---
 
 # Presentation craft
