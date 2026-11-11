@@ -4,7 +4,7 @@
 
 - [write-with-judgment](write-with-judgment/SKILL.md)：结合材料、组织、语言和阅读感受，指导新写、实质改稿与审校；现有 de-ai-flavor 继续保留。
 - [de-ai-flavor](de-ai-flavor/SKILL.md)：识别空泛、绕口、重复等常见 AI 味问题，改善新写或已有的文稿、页面文案与回复。
-- [readable-reply](readable-reply/SKILL.md)：让 AI 回复更容易读懂，避免碎句、过度排版和冗长堆砌。
+- [readable-reply](readable-reply/SKILL.md)：2.0.0，让任何 Agent 的回复先给答案、删掉铺垫与重复、少用标题加粗，更容易抓住重点；附可粘进全局指令的短版。
 - [product-design](product-design/SKILL.md)：为新建产品、整体重设计与核心流程调整建立设计依据，把用户任务、真实内容和对象关系转成页面职责、展示重点与表现方向，再衔接界面实现。
 - [frontend-craft](frontend-craft/SKILL.md)：依据项目方向完成页面级内容编排、构图、排版、配色和交互细节，并通过实际画面修订；与 product-design 配合，局部精修也可直接使用。
 - [grad-companion](plugins/grad-companion-plugin/)：辅助读研期间的论文阅读、研究记录、实验积累与阶段复盘；新增 [experiment-design](plugins/grad-companion-plugin/skills/experiment-design/SKILL.md)，把研究想法转成可执行、有判别力的实验计划。
