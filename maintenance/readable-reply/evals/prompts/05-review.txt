@@ -1,0 +1,5 @@
+帮我看看这个函数有什么问题。
+
+def get_user(conn, name):
+    cur = conn.execute("SELECT * FROM users WHERE name = '%s'" % name)
+    return cur.fetchone()[0]

@@ -1,0 +1,1 @@
+两个应用实例各自先 SELECT id FROM jobs WHERE status='queued' LIMIT 1，再 UPDATE jobs SET status='running' WHERE id=$1，两条语句各自自动提交。偶尔同一个任务执行两次。请解释原因，给一个可以改的 SQL 方案和验证步骤。任务在数据库事务之外执行，失败后需要重试，不要承诺 exactly-once。

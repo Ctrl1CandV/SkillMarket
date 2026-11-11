@@ -1,0 +1,2 @@
+read /tmp/claude-1001/tmp.OxNx6mbOmr
+read .

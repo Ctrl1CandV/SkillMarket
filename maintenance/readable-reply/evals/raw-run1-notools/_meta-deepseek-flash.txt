@@ -1,0 +1,4 @@
+date: 2026-11-11T16:31:15+01:00
+model_pattern: deepseek/deepseek-flash:off
+pi: 1.5.0
+skill_dir: /home/claude-dev/projects/SkillMarket-dev/readable-reply

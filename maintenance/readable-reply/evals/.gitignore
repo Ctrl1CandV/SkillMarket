@@ -1,0 +1,3 @@
+# pi 事件流体积大（约 3 MB）且可用 run_pi.sh 重新生成；空 stderr 文件无用
+raw*/*.jsonl
+raw*/*.err
