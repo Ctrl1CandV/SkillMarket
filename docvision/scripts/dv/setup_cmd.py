@@ -381,7 +381,8 @@ def run(profile: str, *, manager: str = "auto", device: str = "auto",
     hardware = doctor.hardware_plan(util.platform_summary(), util.total_ram_gb(), util.gpu_summary(), storage)
     print('\n'.join(hardware['notes']))
     for name, item in storage.items():
-        print(f"{name} storage: {item['path']} ({item.get('free_gb')} GB free)")
+        free = item.get('free_gb')
+        print(f"{name} storage: {item['path']} ({'unknown' if free is None else f'{free:.1f}'} GB free)")
     gpu = device in {'auto', 'cuda', 'gpu'} and hardware['paddle_device'] == 'gpu:0'
     if 'paddle' in profiles and device in {'cuda', 'gpu'} and not gpu:
         raise SystemExit('CUDA requested but no supported NVIDIA GPU/host was detected; use --device cpu or verify the driver/platform.')

@@ -18,6 +18,13 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 if __name__ == "__main__":
+    # A pipe on Chinese Windows defaults to GBK, which cannot print paper text such as ϕ or the ﬁ ligature.
+    for stream in (sys.stdout, sys.stderr):
+        if (getattr(stream, "encoding", "") or "").lower().replace("-", "") != "utf8":
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, ValueError):
+                pass
     from dv import util
     core_command = util.core_reexec_command(sys.argv[1:])
     if core_command:

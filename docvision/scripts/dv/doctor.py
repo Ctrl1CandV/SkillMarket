@@ -243,7 +243,8 @@ def render(report: dict) -> str:
     lines.append(f"  local feasibility: {hardware.get('local_feasibility', 'unverified')}; Paddle plan: {hardware.get('paddle_device', 'cpu')}")
     lines.extend(f"    - {note}" for note in hardware.get("notes", []))
     for name, item in report.get("storage", {}).items():
-        lines.append(f"  {name} storage: {item['path']} ({item.get('free_gb')} GB free)")
+        free = item.get('free_gb')
+        lines.append(f"  {name} storage: {item['path']} ({'unknown' if free is None else f'{free:.1f}'} GB free)")
     lines.append("  core modules:")
     for name, item in report["core_python_modules"].items():
         lines.append(f"    [{mark(item['ok'])}] {name}: {item['detail']}")
@@ -260,14 +261,14 @@ def render(report: dict) -> str:
     lines.append(f"  models root: {report.get('models_dir')}")
     for engine_name, path in (report.get("models_effective") or {}).items():
         lines.append(f"    {engine_name}: {path}")
-    lines.append("  remote keys (values never printed):")
+    lines.append(f"  remote keys (values never printed; file: {report.get('credentials_path')}):")
     for name, item in report["remote"].items():
         probe = item.get("probe") or {}
         detail = "set" if item["configured"] else "not set"
         if probe.get("detail"):
             detail += f"; probe: {probe.get('detail')}"
         lines.append(f"    [{mark(item['configured'])}] {name}: {detail}")
-    lines.append(f"  remote consent: {report.get('remote_consent')}  (file: {report.get('credentials_path')})")
+    lines.append(f"  remote consent: {report.get('remote_consent')}  (recorded in {report.get('config_path')})")
     lines.append(f"  health: {'OK' if report['healthy'] else 'NOT READY'}")
     if report.get("next_actions"):
         lines.append("  next actions:")

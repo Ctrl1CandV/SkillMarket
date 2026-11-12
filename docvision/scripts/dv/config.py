@@ -168,7 +168,14 @@ def _exe_version(exe: str, *, args: list[str] | None = None) -> tuple[str | None
         text = (proc.stdout or "").strip() or (proc.stderr or "").strip()
         first = text.splitlines()[0] if text else ""
         if proc.returncode != 0:
-            return first[:120] or None, f"exit {proc.returncode}"
+            # A crash prints "Traceback (most recent call last):" first; the cause is the last line.
+            last = (proc.stderr or proc.stdout or "").strip().splitlines()
+            cause = last[-1].strip()[:160] if last else ""
+            hint = ""
+            if "ModuleNotFoundError" in cause and os.environ.get("PYTHONNOUSERSITE"):
+                hint = ("; PYTHONNOUSERSITE is set and this runtime may rely on the user site-packages: "
+                        "unset it, or install the missing package into this environment")
+            return None, f"exit {proc.returncode}" + (f": {cause}" if cause else "") + hint
         # MinerU's Windows console may emit Chinese in the local code page;
         # keep the version number, not mojibake, and never print a secret.
         if "MinerU" in first or "mineru" in first:
