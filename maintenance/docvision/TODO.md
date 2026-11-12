@@ -1,5 +1,12 @@
 # docvision 待办
 
+## 0.5.1 显卡检测修正（2026-11-12）
+
+起因：在 WSL 的受限沙箱里，`doctor` 报告 CPU-only，我和被测模型（deepseek-flash，imagecraft 实测中）都据此说成“这台机器没有显卡”。实际驱动工具在 `/usr/lib/wsl/lib/nvidia-smi`（不在 PATH），执行时报 `GPU access blocked by the operating system`。
+
+- [x] `gpu_summary` 在 PATH 找不到时再查 WSL 驱动目录，并区分 `not_detected` 与 `present_but_inaccessible`；`doctor` 的显示行和硬件建议说明“驱动在但访问不到，请在普通终端复查”。补 5 项测试（共 270 项，2 项跳过）。
+- [ ] 本轮只修了检测。完整一轮优化（真实论文上的筛读路线、有显卡时的本地 OCR）等样本和显卡访问到位后进行。
+
 ## 0.5.0 单人长期阅读维护（2026-10-29）
 
 - [x] API 定位调整为疑难区域的纠错候选来源；auto OCR 精读只生成 packet，显式选择 API 后才上传，候选核对后才可作为校正。

@@ -84,6 +84,10 @@ def hardware_plan(platform: dict, ram_gb: float | None, gpu: dict, storage: dict
         notes.append("Less than 16 GB RAM detected: assess core/page rendering or economy/basic models before standard; 16 GB is only a starting recommendation.")
     elif ram_gb is None:
         notes.append("RAM could not be measured; check available memory before downloading local models.")
+    if gpu.get("state") == "present_but_inaccessible":
+        notes.append("NVIDIA driver tools are installed but the GPU query failed, usually because this shell runs in a sandbox "
+                     "or container without GPU device access. The machine may have a usable GPU: ask the user to run nvidia-smi "
+                     "in an ordinary terminal and rerun doctor there before settling on CPU or economy. Do not report this as no GPU.")
     if not cuda:
         notes.append("Paddle installation plan uses CPU; CPU OCR may be slow. No CUDA GPU is selected automatically.")
         notes.append("Without confirmed acceleration, start with economy/basic or text-only/core; verify any non-CUDA backend separately.")
@@ -230,7 +234,11 @@ def render(report: dict) -> str:
         for g in gpu.get("gpus", []):
             lines.append(f"  GPU: {g['name']} ({g['vram']}, driver {g['driver']})")
     else:
-        lines.append(f"  GPU: {gpu.get('detail', 'not detected')}")
+        detail = " ".join(str(gpu.get('detail', 'not detected')).split())
+        if gpu.get('state') == 'present_but_inaccessible':
+            lines.append(f"  GPU: driver tools present but GPU not accessible from this shell ({detail})")
+        else:
+            lines.append(f"  GPU: not detected ({detail})")
     hardware = report.get("hardware_plan") or {}
     lines.append(f"  local feasibility: {hardware.get('local_feasibility', 'unverified')}; Paddle plan: {hardware.get('paddle_device', 'cpu')}")
     lines.extend(f"    - {note}" for note in hardware.get("notes", []))
