@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>巷口面包房 · 店里用</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+  .bar { display: flex; align-items: center; gap: 20px; padding: 0 28px; height: 68px; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 5; }
+  .bar .brand { font-size: 30px; line-height: 1; }
+  .bar .day { color: var(--ink-2); font-size: 16px; }
+  .bar .spacer { flex: 1; }
+  .seg { display: inline-flex; background: var(--sunk); border-radius: 12px; padding: 4px; }
+  .seg button { border: 0; background: transparent; padding: 0 26px; height: 44px; border-radius: 9px; font-size: 18px; font-weight: 600; color: var(--ink-2); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .clock { color: var(--ink-2); font-size: 14px; text-align: right; line-height: 1.3; }
+  .clock b { display: block; font-size: 22px; color: var(--ink); font-weight: 400; }
+
+  main { flex: 1; padding: 24px 28px 40px; width: 100%; max-width: 1480px; margin: 0 auto; }
+  [hidden] { display: none !important; }
+
+  /* —— 备货：像车站的发车牌，隔着操作台也读得出；表头只写一次 —— */
+  .prep { max-width: 1180px; margin: 0 auto; }
+  .prep h1, .pick h1 { font-size: 18px; font-weight: 600; margin: 0 0 12px; display: flex; align-items: baseline; gap: 12px; }
+  .prep h1 small { font-weight: 400; color: var(--ink-2); font-size: 15px; }
+  .board { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .bhead, .brow { display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 132px) 240px; align-items: center; padding: 0 32px; }
+  .bhead { height: 64px; font-size: 14px; line-height: 1.3; color: var(--ink-2); border-bottom: 2px solid var(--ink); text-align: right; }
+  .bhead b { color: var(--ink); font-weight: 600; font-size: 16px; display: block; }
+  .bhead > :last-child { padding-right: calc(8px + 1.2em * 20 / 14); }
+  .bhead > :first-child { text-align: left; }
+  .brow { height: clamp(100px, 14.6vh, 132px); border-top: 1px solid var(--line); }
+  .bhead + .brow { border-top: 0; }
+  .brow .name { font-size: clamp(26px, 2.7vw, 38px); font-weight: 700; line-height: 1.2; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .brow .slice { font-size: 16px; font-weight: 700; color: #6E3209; background: var(--crust-soft); border-radius: 6px; padding: 3px 10px; white-space: nowrap; }
+  .cap { display: flex; align-items: center; gap: 12px; margin-top: 8px; font-size: 15px; color: var(--ink-2); }
+  .cap i { display: block; width: 160px; height: 6px; border-radius: 3px; background: var(--sunk); overflow: hidden; }
+  .cap i u { display: block; height: 100%; background: var(--ink-2); }
+  .cap.full { color: var(--crust); font-weight: 700; } .cap.full i u { background: var(--crust); }
+  .part { text-align: right; font-size: 44px; line-height: 1; }
+  .part.zero { color: var(--line); }
+  .total { text-align: right; white-space: nowrap; }
+  .total b { font-size: clamp(76px, 12vh, 108px); line-height: 1; font-weight: 600; }
+  .parts-m { display: none; }
+  .total span { font-size: 20px; color: var(--ink-2); margin-left: 8px; display: inline-block; width: 1.2em; text-align: left; }
+
+  /* —— 取货：先认尾号，再看要装什么 —— */
+  .tools { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .search { flex: 1 1 320px; position: relative; }
+  .search input { width: 100%; height: 60px; border: 2px solid var(--ink); border-radius: 12px; background: var(--surface); padding: 0 56px 0 20px; font-size: 22px; }
+  .search input::placeholder { color: var(--ink-2); font-size: 19px; }
+  .search button { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border: 0; border-radius: 8px; background: var(--sunk); font-size: 22px; line-height: 1; }
+  .jump { display: flex; gap: 8px; }
+  .jump button { height: 60px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 0 18px; text-align: left; line-height: 1.25; min-width: 132px; }
+  .jump button b { display: block; font-size: 17px; }
+  .jump button span { font-size: 14px; color: var(--ink-2); }
+  .jump button.now { border-color: var(--ink); border-width: 2px; }
+  .jump button.late span { color: var(--late); font-weight: 700; }
+
+  .slot { margin-top: 20px; }
+  .slot > header { position: sticky; top: 68px; z-index: 3; background: var(--paper); display: flex; align-items: baseline; gap: 12px; padding: 12px 0 10px; border-bottom: 2px solid var(--ink); }
+  .slot > header h2 { margin: 0; font-size: 24px; font-weight: 700; }
+  .slot > header h2 .num { font-weight: 600; font-size: 26px; margin-left: 6px; }
+  .slot > header .left { font-size: 17px; }
+  .slot > header .tag { font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--ink); color: var(--surface); align-self: center; }
+  .slot.late > header .left { color: var(--late); font-weight: 700; }
+  .slot.late > header .tag { background: var(--late); }
+  .slot.done > header .left { color: var(--ok); }
+
+  .row { display: grid; grid-template-columns: 112px 190px minmax(0, 1fr) 84px 124px; gap: 16px; align-items: center; min-height: 78px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .row .tail { font-size: 34px; font-weight: 600; line-height: 1; }
+  .row .who { font-size: 20px; font-weight: 700; line-height: 1.3; }
+  .row .note { display: inline-block; margin-top: 4px; font-size: 14px; background: var(--crust-soft); color: #6E3209; padding: 2px 8px; border-radius: 4px; font-weight: 400; }
+  .row .items { font-size: 18px; line-height: 1.5; display: flex; flex-wrap: wrap; gap: 2px 18px; }
+  .row .items span { white-space: nowrap; }
+  .row .items b { font-family: var(--num); font-size: 22px; font-weight: 600; margin-left: 5px; }
+  .row .items .many b { color: var(--crust); }
+  .row .sum { text-align: right; font-size: 15px; color: var(--ink-2); white-space: nowrap; }
+  .row .sum b { font-size: 24px; color: var(--ink); font-weight: 600; }
+  .row .act button { width: 100%; height: 56px; border-radius: 12px; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); font-size: 19px; font-weight: 700; }
+  .row .act button:hover { background: var(--ink); color: var(--surface); }
+  .row .act button:active { transform: translateY(1px); }
+  .row.picked { color: var(--ink-2); min-height: 56px; }
+  .row.picked .tail { font-size: 24px; } .row.picked .who { font-size: 17px; font-weight: 400; }
+  .row.picked .items { font-size: 15px; } .row.picked .items b { font-size: 16px; color: inherit !important; }
+  .row.picked .sum b { font-size: 17px; color: inherit; }
+  .row.picked .act button { height: 40px; background: transparent; border: 1px solid var(--line); color: var(--ink-2); font-size: 15px; font-weight: 400; }
+  .row.picked .note { display: none; }
+  /* 矩阵排法：每款面包固定一列，像纸质订货单 */
+  .mx .row, .mx .mhead { grid-template-columns: 112px 190px repeat(5, minmax(56px, 1fr)) 84px 124px; }
+  .mhead { display: grid; gap: 16px; align-items: end; padding: 10px 0 8px; font-size: 15px; color: var(--ink-2); text-align: center; border-bottom: 1px solid var(--line); }
+  .mhead > :nth-child(-n+2) { text-align: left; } .mhead > :nth-last-child(2) { text-align: right; }
+  .mx .cell { text-align: center; font-size: 30px; line-height: 1; font-weight: 600; }
+  .mx .cell.many { color: var(--crust); } .mx .cell.none { color: var(--line); font-weight: 400; }
+  .mx .row.picked .cell { font-size: 20px; color: inherit; }
+  .sub { font-size: 14px; color: var(--ink-2); padding: 14px 0 2px; display: flex; align-items: center; gap: 10px; }
+  .sub::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .sub.ok { color: var(--ok); font-weight: 700; }
+  .cancelled { font-size: 14px; color: var(--ink-2); padding: 10px 0; }
+  .cancelled s { margin-right: 14px; }
+  .empty { padding: 36px 0; font-size: 18px; color: var(--ink-2); }
+  mark { background: #FFE08A; color: inherit; border-radius: 3px; padding: 0 1px; }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: var(--ink); color: var(--surface); border-radius: 14px; padding: 12px 12px 12px 22px; display: flex; align-items: center; gap: 18px; font-size: 17px; box-shadow: 0 8px 28px rgba(42, 31, 23, .28); z-index: 9; }
+  .toast button { border: 0; background: var(--surface); color: var(--ink); height: 44px; padding: 0 18px; border-radius: 9px; font-weight: 700; }
+
+  @media (max-width: 900px) {
+    .bar { padding: 0 16px; gap: 12px; height: 60px; } .bar .brand { font-size: 24px; } .bar .day, .clock { display: none; }
+    .seg button { padding: 0 20px; }
+    main { padding: 16px 16px 32px; }
+    .bhead { display: none; }
+    .brow { grid-template-columns: minmax(0, 1fr) auto; height: auto; padding: 14px 16px; gap: 2px 12px; }
+    .brow > :first-child { grid-column: 1 / -1; }
+    .brow .part { display: none; }
+    .brow .total { grid-column: 2; grid-row: 2; } .total b { font-size: 64px; }
+    .brow .parts-m { display: block; grid-column: 1; grid-row: 2; align-self: end; color: var(--ink-2); font-size: 16px; padding-bottom: 8px; }
+    .slot > header { top: 60px; }
+    .jump { width: 100%; } .jump button { flex: 1; min-width: 0; padding: 0 12px; }
+    .jump button b .num { display: none; }
+    .row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px 12px; padding: 14px 0; align-items: center; }
+    .row .tail { font-size: 30px; }
+    .row .sum { grid-column: 3; grid-row: 1; }
+    .row .items { grid-column: 1 / 3; grid-row: 2; font-size: 17px; gap: 0 16px; }
+    .row .act { grid-column: 3; grid-row: 2; width: 104px; } .row .act button { height: 48px; font-size: 17px; }
+    .row.picked .tail { font-size: 22px; }
+    .cap i { width: 96px; flex: none; }
+  }
+  @media print {
+    .bar .seg, .clock, .pick, .toast { display: none !important; } .prep[hidden] { display: block !important; }
+    body { background: #fff; } .bar { position: static; border: 0; } .board { border-color: #000; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">巷口面包房</div>
+  <div class="day" id="day"></div>
+  <div class="spacer"></div>
+  <div class="seg" role="group" aria-label="切换视图">
+    <button type="button" data-view="prep" aria-pressed="false">备货</button>
+    <button type="button" data-view="pick" aria-pressed="false">取货</button>
+  </div>
+  <div class="clock">示例时间<b class="num" id="clock"></b></div>
+</header>
+
+<main>
+  <section class="prep" id="prep" hidden>
+    <h1>今天要做 <small id="prep-meta"></small></h1>
+    <div class="board" id="board"></div>
+  </section>
+
+  <section class="pick" id="pick" hidden>
+    <div class="tools">
+      <div class="search">
+        <label class="sr" for="q">按手机尾号或称呼找订单</label>
+        <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="输手机尾号或称呼，例如 8560、李">
+        <button type="button" id="clear" aria-label="清空" hidden>×</button>
+      </div>
+      <nav class="jump" id="jump" aria-label="跳到时段"></nav>
+    </div>
+    <div id="slots"></div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="undo">撤销</button></div>
+
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script>
+(function () {
+  const B = window.Bakery, $ = (id) => document.getElementById(id);
+  const now = B.demoClock('07:40');
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const SLOT_NAME = { morning: '早上', noon: '中午', evening: '傍晚' }, SLOT_SHORT = { morning: '早', noon: '午', evening: '晚' };
+  const tail = (o) => o.phone.slice(-4);
+  const short = (p) => p.name.replace(/（.*）/, '');   // 店里人知道小贝是 4 个一盒，不用每行都写
+  const d = new Date(B.shop.pickup_date + 'T00:00:00');
+  $('day').textContent = `${d.getMonth() + 1} 月 ${d.getDate()} 日 周${'日一二三四五六'[d.getDay()]} · 到店自取`;
+  $('clock').textContent = now.label;
+
+  function slotState(id) { const [a, b] = B.SLOT_HOURS[id]; return now.minutes < a ? 'later' : now.minutes < b ? 'now' : 'past'; }
+
+  // —— 备货 ——
+  function renderPrep() {
+    const live = B.live();
+    let pieces = 0;
+    const head = `<div class="bhead"><div>品种</div>${B.slots.map(s => `<div><b>${SLOT_NAME[s.id]}</b><span class="num">${s.label}</span></div>`).join('')}<div><b>一共要做</b>6:00 出炉</div></div>`;
+    $('board').innerHTML = head + B.products.map(p => {
+      const by = { morning: 0, noon: 0, evening: 0 }; let slice = 0;
+      live.forEach(o => o.items.forEach(i => { if (i.product === p.id) { by[o.slot] += i.qty; if (p.id === 'toast' && /切片/.test(o.note)) slice += i.qty; } }));
+      const sum = by.morning + by.noon + by.evening; pieces += sum;
+      const left = p.daily_limit - sum;
+      return `<div class="brow">
+        <div><div class="name">${esc(short(p))}${slice ? `<span class="slice">其中 ${slice} ${p.unit}要切片</span>` : ''}</div>
+          <div class="cap${left > 0 ? '' : ' full'}"><i><u style="width:${Math.min(100, sum / p.daily_limit * 100)}%"></u></i>${left > 0 ? `上限 ${p.daily_limit}，还能接 ${left} ${p.unit}` : `上限 ${p.daily_limit}，订满了`}</div></div>
+        ${B.slots.map(s => `<div class="part num${by[s.id] ? '' : ' zero'}">${by[s.id] || '–'}</div>`).join('')}
+        <div class="parts-m">${B.slots.map(s => `${SLOT_SHORT[s.id]} <b class="num">${by[s.id]}</b>`).join(' · ')}</div>
+        <div class="total"><b class="num">${sum}</b><span>${p.unit}</span></div></div>`;
+    }).join('');
+    $('prep-meta').textContent = `${live.length} 位顾客，共 ${pieces} 件`;
+  }
+
+  // —— 取货 ——
+  let query = '';
+  const MATRIX = /[?&]layout=matrix/.test(location.search) && window.matchMedia('(min-width: 901px)').matches;
+  if (MATRIX) $('pick').classList.add('mx');
+  const mhead = () => MATRIX ? `<div class="mhead"><div>尾号</div><div>称呼</div>${B.products.map(p => `<div>${esc(short(p).replace('全麦', '').replace('老面', ''))}</div>`).join('')}<div>应收</div><div></div></div>` : '';
+  const hit = (text) => query ? esc(text).replace(new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), m => `<mark>${m}</mark>`) : esc(text);
+  function rowHtml(o) {
+    const picked = o.status === 'picked';
+    if (MATRIX) {
+      const cells = B.products.map(p => { const it = o.items.find(i => i.product === p.id); return `<div class="cell num${!it ? ' none' : it.qty > 1 ? ' many' : ''}">${it ? it.qty : '·'}</div>`; }).join('');
+      return `<div class="row${picked ? ' picked' : ''}" data-id="${o.id}">
+        <div class="tail num">${hit(tail(o))}</div>
+        <div><div class="who">${hit(o.name)}</div>${o.note ? `<span class="note">${esc(o.note)}</span>` : ''}</div>${cells}
+        <div class="sum"><b class="num">${B.total(o)}</b> 元</div>
+        <div class="act"><button type="button" data-act="${picked ? 'undo' : 'pick'}">${picked ? '改回没取' : '取走了'}</button></div></div>`;
+    }
+    const items = o.items.map(i => `<span class="${i.qty > 1 ? 'many' : ''}">${esc(short(B.productById[i.product]))}<b>×${i.qty}</b></span>`).join('');
+    return `<div class="row${picked ? ' picked' : ''}" data-id="${o.id}">
+      <div class="tail num">${hit(tail(o))}</div>
+      <div><div class="who">${hit(o.name)}</div>${o.note ? `<span class="note">${esc(o.note)}</span>` : ''}</div>
+      <div class="items">${items}</div>
+      <div class="sum"><b class="num">${B.total(o)}</b> 元</div>
+      <div class="act"><button type="button" data-act="${picked ? 'undo' : 'pick'}">${picked ? '改回没取' : '取走了'}</button></div></div>`;
+  }
+  function renderPick() {
+    const all = B.orders();
+    // 数字按手机后四位找；输到 5 位以上才按完整手机号找，免得中间几位碰巧相同的人混进来
+    const match = (o) => !query || (/^\d+$/.test(query) ? (query.length <= 4 ? tail(o).includes(query) : o.phone.includes(query)) : o.name.includes(query));
+    let shown = 0;
+    $('slots').innerHTML = B.slots.map(s => {
+      const mine = all.filter(o => o.slot === s.id && match(o));
+      const waiting = mine.filter(o => o.status === 'reserved'), picked = mine.filter(o => o.status === 'picked'), gone = mine.filter(o => o.status === 'cancelled');
+      if (query && !mine.length) return '';
+      shown += waiting.length + picked.length;
+      const st = slotState(s.id), late = st === 'past' && waiting.length > 0, done = !waiting.length && picked.length > 0;
+      const left = waiting.length ? `还有 ${waiting.length} 位没来` : picked.length ? '都取走了' : '没有订单';
+      return `<section class="slot${late ? ' late' : ''}${done ? ' done' : ''}" id="slot-${s.id}">
+        <header><h2>${SLOT_NAME[s.id]}<span class="num">${s.label}</span></h2><span class="left">${left}</span>
+          ${st === 'now' ? '<span class="tag">现在</span>' : late ? '<span class="tag">时段已过</span>' : ''}</header>
+        ${waiting.length || picked.length ? mhead() : ''}${waiting.map(rowHtml).join('')}
+        ${picked.length ? `<div class="sub ok">已取 ${picked.length} 位</div>${picked.map(rowHtml).join('')}` : ''}
+        ${gone.length ? `<div class="cancelled">已取消 ${gone.length} 位：${gone.map(o => `<s>尾号 ${tail(o)} ${esc(o.name)}</s>`).join('')}</div>` : ''}
+      </section>`;
+    }).join('') || '';
+    if (query && !shown) $('slots').innerHTML = `<div class="empty">没有找到“${esc(query)}”。可以只输手机后四位，或者只输姓。</div>`;
+    $('jump').innerHTML = B.slots.map(s => {
+      const waiting = all.filter(o => o.slot === s.id && o.status === 'reserved').length, st = slotState(s.id);
+      return `<button type="button" data-slot="${s.id}" class="${st === 'now' ? 'now' : ''}${st === 'past' && waiting ? ' late' : ''}"><b>${SLOT_NAME[s.id]} <span class="num">${s.label}</span></b><span>${waiting ? `没来 ${waiting} 位` : '都取走了'}</span></button>`;
+    }).join('');
+    $('clear').hidden = !query;
+  }
+
+  let lastAction = null, toastTimer = 0;
+  function toast(text, undo) { $('toast-text').textContent = text; lastAction = undo; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').hidden = true; }, 6000); }
+  $('undo').onclick = () => { if (lastAction) lastAction(); $('toast').hidden = true; renderAll(); };
+  $('slots').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-act]'); if (!btn) return;
+    const id = btn.closest('.row').dataset.id, o = B.orders().find(x => x.id === id);
+    if (btn.dataset.act === 'pick') { B.setStatus(id, 'picked'); toast(`尾号 ${tail(o)} ${o.name} 已取，收 ${B.total(o)} 元`, () => B.setStatus(id, 'reserved')); }
+    else { B.setStatus(id, 'reserved'); $('toast').hidden = true; }
+    renderAll();
+  });
+  $('q').addEventListener('input', (e) => { query = e.target.value.trim(); renderPick(); });
+  $('clear').onclick = () => { $('q').value = ''; query = ''; renderPick(); $('q').focus(); };
+  $('jump').addEventListener('click', (e) => { const b = e.target.closest('button[data-slot]'); if (!b) return;
+    if (query) { $('q').value = ''; query = ''; renderPick(); }
+    document.getElementById('slot-' + b.dataset.slot).scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+  function show(view) {
+    $('prep').hidden = view !== 'prep'; $('pick').hidden = view !== 'pick';
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  }
+  document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button[data-view]'); if (b) { show(b.dataset.view); window.scrollTo(0, 0); } });
+  function renderAll() { renderPrep(); renderPick(); }
+  window.addEventListener('bakery:changed', renderAll);
+  renderAll();
+  const forced = /[?&]view=(prep|pick)/.exec(location.search);
+  show(forced ? forced[1] : now.minutes < 7 * 60 ? 'prep' : 'pick');   // 7 点前默认看备货，开始取货后默认看取货
+})();
+</script>
+</body>
+</html>

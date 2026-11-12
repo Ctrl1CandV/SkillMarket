@@ -1,0 +1,67 @@
+{
+  "shop": {
+    "name": "巷口面包房",
+    "address": "梧桐路 128 号，小区东门对面",
+    "phone": "0571-8812 3456",
+    "bake_time": "06:00",
+    "order_cutoff": "21:00",
+    "pickup_date": "2026-11-13",
+    "today": "2026-11-12"
+  },
+  "slots": [
+    {
+      "id": "morning",
+      "label": "7:00–9:00"
+    },
+    {
+      "id": "noon",
+      "label": "11:00–13:00"
+    },
+    {
+      "id": "evening",
+      "label": "17:00–19:00"
+    }
+  ],
+  "products": [
+    {
+      "id": "toast",
+      "name": "老面吐司",
+      "price": 18,
+      "unit": "条",
+      "daily_limit": 30,
+      "note": "老面发酵 18 小时，整条不切片；需要切片请备注"
+    },
+    {
+      "id": "pretzel",
+      "name": "碱水结",
+      "price": 9,
+      "unit": "个",
+      "daily_limit": 50,
+      "note": "外皮咸香，当天吃口感最好"
+    },
+    {
+      "id": "walnut",
+      "name": "全麦核桃包",
+      "price": 15,
+      "unit": "个",
+      "daily_limit": 20,
+      "note": "全麦粉约六成，少糖"
+    },
+    {
+      "id": "croissant",
+      "name": "可颂",
+      "price": 12,
+      "unit": "个",
+      "daily_limit": 40,
+      "note": "黄油可颂，出炉后两小时内最酥"
+    },
+    {
+      "id": "floss",
+      "name": "肉松小贝（4 个装）",
+      "price": 22,
+      "unit": "盒",
+      "daily_limit": 12,
+      "note": "含沙拉酱，需冷藏，当天食用"
+    }
+  ]
+}

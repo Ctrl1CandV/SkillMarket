@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>巷口面包房 · 预订明天的面包</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  body { font-size: 18px; padding-bottom: 104px; }
+  .page { max-width: 520px; margin: 0 auto; padding: 0 20px; }
+  .top { padding: 28px 0 20px; }
+  .top .brand { font-size: 40px; line-height: 1.1; margin: 0; }
+  .top p { margin: 10px 0 0; font-size: 18px; }
+  .top .lead { font-size: 18px; line-height: 1.6; }
+  .top .lead b { white-space: nowrap; }
+  .state { margin-top: 8px; font-size: 16px; color: var(--ink-2); }
+  .state.closed { margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: var(--late-soft); color: var(--ink); font-size: 16px; }
+
+  h2 { font-size: 22px; margin: 34px 0 4px; display: flex; align-items: baseline; gap: 10px; }
+  h2 .n { font-family: var(--num); font-size: 30px; font-weight: 600; color: var(--crust); line-height: 1; }
+  .hint { margin: 0 0 6px; color: var(--ink-2); font-size: 16px; }
+
+  .bread { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .bread:first-of-type { border-top: 2px solid var(--ink); }
+  .bread .name { font-size: 22px; font-weight: 700; line-height: 1.3; }
+  .bread .price { font-family: var(--num); font-size: 22px; font-weight: 600; margin-right: 2px; }
+  .bread .meta { font-size: 16px; color: var(--ink-2); }
+  .bread .few { color: var(--crust); font-weight: 700; }
+  .bread .desc { grid-column: 1 / -1; font-size: 16px; color: var(--ink-2); line-height: 1.45; }
+  .bread.sold .name, .bread.sold .meta, .bread.sold .desc { color: var(--ink-2); }
+  .bread.sold .price { color: var(--ink-2); }
+  .bread .soldout { font-size: 16px; font-weight: 700; color: var(--ink-2); background: var(--sunk); border-radius: 999px; padding: 10px 16px; }
+  .step { display: flex; align-items: center; }
+  .step button { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); font-size: 30px; line-height: 1; display: grid; place-items: center; padding: 0 0 3px; }
+  .step button:disabled { border-color: var(--line); color: var(--line); cursor: default; }
+  .step output { width: 46px; text-align: center; font-family: var(--num); font-size: 30px; font-weight: 600; }
+  .step.zero .minus, .step.zero output { display: none; }
+  .step:not(.zero) .plus { background: var(--ink); color: var(--surface); }
+
+  .slots { display: grid; gap: 10px; margin-top: 12px; }
+  .slots label { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 8px 18px; border: 2px solid var(--line); border-radius: 14px; background: var(--surface); cursor: pointer; }
+  .slots input { appearance: none; width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 50%; margin: 0; flex: none; display: grid; place-items: center; }
+  .slots input:checked::after { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); }
+  .slots label:has(input:checked) { border-color: var(--ink); }
+  .slots .when { font-size: 22px; font-weight: 700; }
+  .slots .time { font-family: var(--num); font-size: 22px; margin-left: auto; }
+
+  .field { margin-top: 16px; }
+  .field label { display: block; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .field label small { font-weight: 400; color: var(--ink-2); font-size: 16px; margin-left: 6px; }
+  .field input, .field textarea { width: 100%; height: 58px; border: 2px solid var(--ink); border-radius: 12px; background: var(--surface); padding: 0 16px; font-size: 22px; }
+  .field textarea { height: 92px; padding: 12px 16px; resize: vertical; line-height: 1.5; }
+  .field .err { display: none; color: var(--late); font-size: 16px; font-weight: 700; margin-top: 6px; }
+  .field.bad input { border-color: var(--late); background: #FFF7F4; } .field.bad .err { display: block; }
+  .linkish { border: 0; background: none; padding: 12px 0; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; font-size: 16px; }
+  .shop { margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+  .demo { margin-top: 10px; font-size: 14px; color: var(--ink-2); }
+
+  .dock { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 24px rgba(42, 31, 23, .08); z-index: 5; }
+  .dock .in { max-width: 520px; margin: 0 auto; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 14px; }
+  .dock .sum { flex: 1; min-width: 0; line-height: 1.25; }
+  .dock .sum b { font-family: var(--num); font-size: 30px; font-weight: 600; }
+  .dock .sum span { display: block; font-size: 16px; color: var(--ink-2); }
+  .dock button { height: 60px; padding: 0 28px; border: 0; border-radius: 14px; background: var(--crust); color: #fff; font-size: 22px; font-weight: 700; white-space: nowrap; }
+  .dock button:disabled { background: var(--sunk); color: var(--ink-2); cursor: default; }
+
+  /* —— 订好了 —— */
+  .done { padding-top: 36px; }
+  .done h1 { font-size: 40px; margin: 0; line-height: 1.2; }
+  .done .lead { margin: 8px 0 0; font-size: 18px; }
+  .ticket { margin-top: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .ticket .say { padding: 20px 22px 18px; border-bottom: 1px dashed var(--line); }
+  .ticket .say span { font-size: 16px; color: var(--ink-2); }
+  .ticket .say b { display: block; font-family: var(--num); font-size: 76px; line-height: 1; font-weight: 600; letter-spacing: .04em; margin-top: 6px; }
+  .ticket dl { margin: 0; padding: 6px 22px 10px; }
+  .ticket dl div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .ticket dl div:last-child { border-bottom: 0; }
+  .ticket dt { color: var(--ink-2); white-space: nowrap; } .ticket dd { margin: 0; text-align: right; font-weight: 700; }
+  .ticket dd .num { font-size: 22px; }
+  .after { margin-top: 20px; display: grid; gap: 4px; justify-items: start; }
+  .confirm { margin-top: 8px; padding: 16px; border-radius: 12px; background: var(--late-soft); font-size: 16px; }
+  .confirm div { display: flex; gap: 10px; margin-top: 12px; }
+  .confirm button { height: 52px; padding: 0 20px; border-radius: 10px; border: 2px solid var(--ink); background: var(--surface); font-weight: 700; font-size: 16px; }
+  .confirm button.danger { background: var(--late); border-color: var(--late); color: #fff; }
+  [hidden] { display: none !important; }
+  @media (min-width: 700px) { .top { padding-top: 48px; } }
+</style>
+</head>
+<body>
+<div class="page" id="form-view">
+  <header class="top">
+    <h1 class="brand">巷口面包房</h1>
+    <p class="lead" id="lead"></p>
+    <div class="state" id="state"></div>
+  </header>
+
+  <section aria-labelledby="h-bread">
+    <h2 id="h-bread"><span class="n">1</span>选面包</h2>
+    <div id="breads"></div>
+  </section>
+
+  <section aria-labelledby="h-slot">
+    <h2 id="h-slot"><span class="n">2</span>什么时候来取</h2>
+    <div class="slots" id="slots" role="radiogroup" aria-labelledby="h-slot"></div>
+  </section>
+
+  <section aria-labelledby="h-who">
+    <h2 id="h-who"><span class="n">3</span>怎么找到您</h2>
+    <div class="field" id="f-name"><label for="name">称呼</label><input id="name" autocomplete="name" placeholder="例如 王阿姨"><div class="err">请填一个称呼，取货时好核对。</div></div>
+    <div class="field" id="f-phone"><label for="phone">手机号<small>取货时报后四位就行</small></label><input id="phone" inputmode="numeric" autocomplete="tel" maxlength="11" placeholder="11 位手机号"><div class="err">手机号是 11 位数字，请再看一下。</div></div>
+    <button type="button" class="linkish" id="add-note">想嘱咐一句（比如吐司切片）</button>
+    <div class="field" id="f-note" hidden><label for="note">嘱咐<small>选填</small></label><textarea id="note" maxlength="40" placeholder="比如：吐司帮忙切片"></textarea></div>
+  </section>
+
+  <footer class="shop">
+    <div>梧桐路 128 号，小区东门对面</div>
+    <div>电话 <span class="num">0571-8812 3456</span> · 今晚 21:00 前可以取消</div>
+    <div class="demo" id="demo"></div>
+  </footer>
+</div>
+
+<div class="page done" id="done-view" hidden></div>
+
+<div class="dock" id="dock"><div class="in">
+  <div class="sum" id="sum"></div>
+  <button type="button" id="submit">提交预订</button>
+</div></div>
+
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script>
+(function () {
+  const B = window.Bakery, $ = (id) => document.getElementById(id);
+  const now = B.demoClock('19:30');
+  const cutoff = 21 * 60, open = now.minutes < cutoff;
+  const SLOT_NAME = { morning: '早上', noon: '中午', evening: '傍晚' };
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const d = new Date(B.shop.pickup_date + 'T00:00:00');
+  const dayText = `${d.getMonth() + 1} 月 ${d.getDate()} 日 周${'日一二三四五六'[d.getDay()]}`;
+  const cart = {}; let slot = null;
+
+  function renderState() {
+    const left = cutoff - now.minutes;
+    $('state').className = 'state' + (open ? '' : ' closed');
+    $('state').innerHTML = open
+      ? `每天早上 6 点出炉 · 今晚 21:00 截止，还有 ${left >= 60 ? Math.floor(left / 60) + ' 小时 ' : ''}${left % 60} 分`
+      : `<span><b>今天的预订 21:00 已经截止。</b>明天的面包可以到店看看还有没有，或者打电话 <span class="num">0571-8812 3456</span>。</span>`;
+    $('lead').innerHTML = `今晚订，<b>明天（${dayText}）</b>到店取，到店再付钱。`;
+    $('demo').textContent = `示例页面：按示例时间 11 月 12 日 ${now.label} 演示，顾客和订单都是编的。`;
+  }
+  function renderBreads() {
+    $('breads').innerHTML = B.products.map(p => {
+      const left = B.remaining(p.id), q = cart[p.id] || 0, sold = left <= 0;
+      const meta = sold ? '' : left <= 5 ? `<span class="few">只剩 ${left} ${p.unit}</span>` : '';
+      return `<div class="bread${sold ? ' sold' : ''}" data-id="${p.id}">
+        <div><div class="name">${esc(p.name)}</div><div class="meta"><span class="price">${p.price}</span>元/${p.unit}${meta ? ' · ' + meta : ''}</div></div>
+        ${sold ? '<div class="soldout">明天订满了</div>' : `<div class="step${q ? '' : ' zero'}">
+          <button type="button" class="minus" aria-label="${esc(p.name)}减一${p.unit}">−</button><output aria-live="polite">${q}</output>
+          <button type="button" class="plus" aria-label="${esc(p.name)}加一${p.unit}" ${q >= left || !open ? 'disabled' : ''}>+</button></div>`}
+        <div class="desc">${esc(p.note)}</div></div>`;
+    }).join('');
+  }
+  function renderSlots() {
+    $('slots').innerHTML = B.slots.map(s => `<label><input type="radio" name="slot" value="${s.id}" ${slot === s.id ? 'checked' : ''} ${open ? '' : 'disabled'}><span class="when">${SLOT_NAME[s.id]}</span><span class="time">${s.label}</span></label>`).join('');
+  }
+  function renderDock() {
+    const count = Object.values(cart).reduce((a, b) => a + b, 0);
+    const money = Object.entries(cart).reduce((a, [id, q]) => a + q * B.productById[id].price, 0);
+    $('sum').innerHTML = count ? `<b>${money}</b> 元<span>共 ${count} 件 · 到店付款</span>` : `<span style="font-size:16px">${open ? '还没选面包' : '今天已截止'}</span>`;
+    $('submit').disabled = !open || !count;
+  }
+  $('breads').addEventListener('click', (e) => {
+    const btn = e.target.closest('.step button'); if (!btn) return;
+    const id = btn.closest('.bread').dataset.id, left = B.remaining(id);
+    cart[id] = Math.max(0, Math.min(left, (cart[id] || 0) + (btn.classList.contains('plus') ? 1 : -1)));
+    if (!cart[id]) delete cart[id];
+    renderBreads(); renderDock();
+    const again = document.querySelector(`.bread[data-id="${id}"] .${btn.classList.contains('plus') ? 'plus' : 'minus'}`);
+    (again && !again.disabled && again.offsetParent ? again : document.querySelector(`.bread[data-id="${id}"] .plus`)).focus({ preventScroll: true });
+  });
+  $('slots').addEventListener('change', (e) => { slot = e.target.value; $('slots').dataset.bad = ''; });
+  $('add-note').onclick = () => { $('add-note').hidden = true; $('f-note').hidden = false; $('note').focus(); };
+  ['name', 'phone'].forEach(id => $(id).addEventListener('input', () => $('f-' + id).classList.remove('bad')));
+
+  $('submit').onclick = () => {
+    const name = $('name').value.trim(), phone = $('phone').value.replace(/\s/g, '');
+    const badName = !name, badPhone = !/^1\d{10}$/.test(phone);
+    $('f-name').classList.toggle('bad', badName); $('f-phone').classList.toggle('bad', badPhone);
+    if (!slot) { $('h-slot').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('slots').querySelector('input').focus({ preventScroll: true }); flash('请选一个取货时段'); return; }
+    if (badName || badPhone) { (badName ? $('name') : $('phone')).focus(); return; }
+    // 提交前再核一次余量：别人可能刚把最后几个订走
+    const short = Object.entries(cart).find(([id, q]) => q > B.remaining(id));
+    if (short) { cart[short[0]] = B.remaining(short[0]); if (!cart[short[0]]) delete cart[short[0]]; renderBreads(); renderDock(); flash(`${B.productById[short[0]].name}刚被订走了一些，数量已帮您改好，请再看一眼`); return; }
+    B.addOrder({ name, phone, slot, note: $('note').value.trim(), items: Object.entries(cart).map(([product, qty]) => ({ product, qty })) });
+    showDone();
+  };
+  let flashTimer = 0;
+  function flash(text) { $('sum').innerHTML = `<span style="font-size:16px;color:var(--late);font-weight:700">${esc(text)}</span>`; clearTimeout(flashTimer); flashTimer = setTimeout(renderDock, 3200); }
+
+  function showDone() {
+    const o = B.mine(); if (!o || o.status === 'cancelled') return showForm();
+    $('form-view').hidden = true; $('dock').hidden = true; $('done-view').hidden = false; window.scrollTo(0, 0);
+    $('done-view').innerHTML = `<h1>订好了，${esc(o.name)}</h1>
+      <p class="lead">明天（${dayText}）${SLOT_NAME[o.slot]}来取，到店再付钱。</p>
+      <div class="ticket">
+        <div class="say"><span>到店报手机后四位</span><b>${o.phone.slice(-4)}</b></div>
+        <dl>
+          <div><dt>取货</dt><dd>${SLOT_NAME[o.slot]} <span class="num">${B.slotById[o.slot].label}</span></dd></div>
+          ${o.items.map(i => `<div><dt>${esc(B.productById[i.product].name)}</dt><dd><span class="num">×${i.qty}</span></dd></div>`).join('')}
+          ${o.note ? `<div><dt>嘱咐</dt><dd>${esc(o.note)}</dd></div>` : ''}
+          <div><dt>到店付</dt><dd><span class="num">${B.total(o)}</span> 元</dd></div>
+          <div><dt>地址</dt><dd style="font-weight:400">梧桐路 128 号，小区东门对面</dd></div>
+        </dl>
+      </div>
+      <div class="after">
+        ${open ? '<button type="button" class="linkish" id="cancel">不要了，取消这单</button>' : '<p class="hint">已过 21:00，取消请打电话 0571-8812 3456。</p>'}
+        <div class="confirm" id="confirm" hidden>确定取消吗？取消后面包会留给别人。<div><button type="button" class="danger" id="yes">取消这单</button><button type="button" id="no">先留着</button></div></div>
+        <button type="button" class="linkish" id="more">再帮别人订一单</button>
+      </div>`;
+    if (open) { $('cancel').onclick = () => { $('confirm').hidden = false; $('cancel').hidden = true; $('no').focus(); };
+      $('no').onclick = () => { $('confirm').hidden = true; $('cancel').hidden = false; };
+      $('yes').onclick = () => { B.setStatus(o.id, 'cancelled'); showForm('已取消。想再订可以重新选。'); }; }
+    $('more').onclick = () => showForm();
+  }
+  function showForm(message) {
+    Object.keys(cart).forEach(k => delete cart[k]); slot = null;
+    $('form-view').hidden = false; $('dock').hidden = false; $('done-view').hidden = true;
+    const me = B.remembered(); if (me) { $('name').value = me.name; $('phone').value = me.phone; }   // 熟客不用每次重填
+    renderState(); renderBreads(); renderSlots(); renderDock(); window.scrollTo(0, 0);
+    if (message) flash(message);
+  }
+  const mine = B.mine();
+  if (mine && mine.status === 'reserved' && !/[?&]new=1/.test(location.search)) showDone(); else showForm();
+})();
+</script>
+</body>
+</html>
