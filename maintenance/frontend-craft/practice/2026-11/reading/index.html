@@ -77,6 +77,7 @@
   footer.end { margin-top: 64px; padding-top: 20px; border-top: 2px solid var(--ink); font-size: 14px; line-height: 1.7; color: var(--ink-2); }
   footer.end ol { padding-left: 1.4em; margin: 8px 0 0; } footer.end li { margin: .5em 0; }
 
+  .t-mix h2 { font-family: var(--sans); font-size: 24px; }   /* 一级标题保持宋体，二级标题用粗黑体 */
   .t-sans h1, .t-sans h2, .t-sans blockquote { font-family: var(--sans); }
   .t-sans h1 { font-weight: 700; letter-spacing: 0; } .t-sans blockquote { font-weight: 700; font-size: 26px; }
   @media (max-width: 1080px) {
@@ -189,7 +190,7 @@
 
 <script>
 (function () {
-  if (/[?&]title=sans/.test(location.search)) document.documentElement.classList.add('t-sans');
+  const tv = (/[?&]title=(sans|mix)/.exec(location.search) || [])[1]; if (tv) document.documentElement.classList.add('t-' + tv);
   const forced = /[?&]theme=(dark|light)/.exec(location.search); if (forced) document.documentElement.dataset.theme = forced[1];
   // 阅读进度
   const bar = document.getElementById('bar');
