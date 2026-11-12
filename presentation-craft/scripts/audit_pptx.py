@@ -6,6 +6,7 @@ import json
 import math
 from pathlib import Path
 import posixpath
+import re
 import sys
 import zipfile
 from xml.etree import ElementTree as ET
@@ -17,6 +18,8 @@ NS = {'p': 'http://schemas.openxmlformats.org/presentationml/2006/main',
 REL = '{http://schemas.openxmlformats.org/package/2006/relationships}'
 EMU = 914400
 IDENTITY = (1, 0, 0, 1, 0, 0)
+CJK = re.compile('[　-〿㐀-鿿豈-﫿＀-￯]')
+EAST_ASIAN = ('zh', 'ja', 'ko')
 
 
 def sha256(path):
@@ -157,7 +160,49 @@ def type_scale(slide, canvas_width_in):
     return by_size, unsized
 
 
-def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=14.0):
+def title_size(page_shapes, canvas_height, scale):
+    """Largest explicit run size (4+ characters) in shapes starting in the top quarter: the title band."""
+    best = None
+    for node, bounds, kind in page_shapes:
+        if kind != 'sp' or not bounds or bounds[1] > canvas_height * 0.25:
+            continue
+        for run in node.findall('.//a:r', NS):
+            props = run.find('a:rPr', NS)
+            chars = len(''.join(t.text or '' for t in run.findall('a:t', NS)).strip())
+            if chars >= 4 and props is not None and props.get('sz'):
+                size = round(int(props.get('sz')) / 100 * scale, 1)
+                best = size if best is None else max(best, size)
+    return best
+
+
+def default_language(presentation):
+    """Deck-wide default run language, if the package declares one."""
+    for path in ('p:defaultTextStyle/a:defPPr/a:defRPr', 'p:defaultTextStyle/a:lvl1pPr/a:defRPr'):
+        node = presentation.find(path, NS)
+        if node is not None and node.get('lang'):
+            return node.get('lang')
+    return None
+
+
+def cjk_runs_without_east_asian_language(slide, default_lang):
+    """Runs holding Chinese/Japanese/Korean text whose language is not East Asian.
+
+    PowerPoint applies East Asian line breaking only to text tagged with such a
+    language; untagged or en-US text may start a line with ，。； or ）.
+    """
+    count, example = 0, None
+    for run in slide.findall('.//a:r', NS):
+        if not CJK.search(''.join(t.text or '' for t in run.findall('a:t', NS))):
+            continue
+        props = run.find('a:rPr', NS)
+        lang = (props.get('lang') if props is not None else None) or default_lang
+        if not lang or not lang.lower().startswith(EAST_ASIAN):
+            count += 1
+            example = example or (lang or 'missing')
+    return count, example
+
+
+def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=14.0, title_ratio=2.0):
     path = Path(path).resolve()
     findings, pages = [], []
     report = {'deck': str(path), 'deck_sha256': sha256(path), 'pages': pages, 'findings': findings}
@@ -182,6 +227,8 @@ def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=1
                 raise ValueError('Invalid slide canvas dimensions')
             report['canvas_inches'] = [round(width/EMU, 4), round(height/EMU, 4)]
             rels = relationships(archive, 'ppt/presentation.xml')
+            deck_lang = default_language(root)
+            untagged_cjk = {}
             ids = root.findall('p:sldIdLst/p:sldId', NS)
             report['slide_count'] = len(ids)
             if not ids:
@@ -215,6 +262,10 @@ def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=1
                         main_pt = key
                         break
                 small_chars = sum(v for k, v in by_size.items() if k < small_pt)
+                title_pt = title_size(page_shapes, height, 13.333 / (width / EMU))
+                untagged, untagged_example = cjk_runs_without_east_asian_language(slide, deck_lang)
+                if untagged:
+                    untagged_cjk[number] = (untagged, untagged_example)
                 if motion['invalid_target_ids'] or motion['ambiguous_target_ids'] or motion['duplicate_time_ids']:
                     add('error', 'invalid_animation_reference', 'Animation has missing/ambiguous shape targets or duplicate timing IDs', number)
                 notes_text = ''
@@ -233,15 +284,23 @@ def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=1
                               'type_chars_by_pt': {str(k): v for k, v in sorted(by_size.items())},
                               'type_chars_unsized': unsized,
                               'type_median_pt': main_pt,
-                              'type_small_chars': small_chars})
+                              'type_small_chars': small_chars,
+                              'title_pt': title_pt,
+                              'cjk_runs_without_east_asian_lang': untagged})
                 if main_pt is not None and main_pt < body_pt and sized_chars >= 60:
                     add('warning', 'body_type_small',
                         f'Half of the text on this slide is {main_pt:g} pt or smaller (caption size; threshold {body_pt:g} pt '
                         'on a 13.33 in wide canvas). Shorten, split the slide or move explanation to notes instead of shrinking type. '
-                        'The threshold is a floor, not a goal: aim for body text around 22-24 pt and tables or labels around 18-22 pt', number)
+                        'This is a floor: on dense evidence slides 16-20 pt body text is fine, and hierarchy comes from a larger title, '
+                        'not from larger body text', number)
                 elif small_chars > max(80, 0.25 * sized_chars):
                     add('warning', 'small_type',
                         f'{small_chars} characters are below {small_pt:g} pt; keep that size for short source lines only', number)
+                if main_pt and title_pt and sized_chars >= 60 and title_pt < title_ratio * main_pt:
+                    add('warning', 'title_scale_weak',
+                        f'Title {title_pt:g} pt is only {title_pt / main_pt:.1f}x the body text ({main_pt:g} pt); below '
+                        f'{title_ratio:g}x the hierarchy reads flat in the rendered slide. Enlarge the title (for example '
+                        '34-36 pt over 16-18 pt body; shorten a long title) rather than enlarging the body text', number)
                 if not page_shapes:
                     add('warning', 'empty_slide', 'No direct slide objects; inspect inherited layout/background', number)
                 if len(text) > text_warning:
@@ -262,12 +321,21 @@ def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=1
                             add('error', 'missing_media', f'Embedded image missing: {rid}', number)
                     if linked:
                         add('warning', 'linked_media', 'Image depends on an external link; embed for offline delivery', number)
+            if untagged_cjk:
+                runs = sum(n for n, _ in untagged_cjk.values())
+                seen = sorted({example for _, example in untagged_cjk.values()})
+                add('warning', 'cjk_lang_unset',
+                    f'{runs} text runs with Chinese/Japanese/Korean characters on pages {sorted(untagged_cjk)} have no East Asian '
+                    f'language (lang: {", ".join(seen)}). PowerPoint then breaks these lines by Western rules and can start a line '
+                    'with ，。；：）. Tag the runs lang="zh-CN" (PptxGenJS: text option lang: "zh-CN"; python-pptx: '
+                    'run.font._rPr.set("lang", "zh-CN")) and render again')
     except (zipfile.BadZipFile, ET.ParseError, KeyError, ValueError, TypeError) as exc:
         add('error', 'invalid_package', str(exc))
     report['structural_pass'] = not any(f['severity'] == 'error' for f in findings)
     sized = [p for p in pages if p.get('type_median_pt') is not None]
     report['type_summary'] = {
         'reference_canvas_width_in': 13.333, 'body_pt_threshold': body_pt, 'small_pt_threshold': small_pt,
+        'title_ratio_threshold': title_ratio,
         'pages_median_pt': {str(p['page']): p['type_median_pt'] for p in sized},
         'pages_below_body_threshold': sorted({f['page'] for f in findings if f['code'] == 'body_type_small'}),
         'note': 'Median run size by character count, scaled to a 13.33 in wide canvas. Inherited sizes and text inside pictures are not measured.'}
@@ -285,9 +353,11 @@ def main():
                         help='Warn when half of the text on a slide is set below this size (13.33 in wide canvas)')
     parser.add_argument('--small-pt', type=float, default=14.0,
                         help='Warn when more than a short source line is set below this size')
+    parser.add_argument('--title-ratio', type=float, default=2.0,
+                        help='Warn when the title band is smaller than this multiple of the median body size')
     args = parser.parse_args()
     try:
-        result = audit(args.deck, args.expected_slides, args.text_warning, args.body_pt, args.small_pt)
+        result = audit(args.deck, args.expected_slides, args.text_warning, args.body_pt, args.small_pt, args.title_ratio)
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'structural_pass': result['structural_pass'], 'slides': result.get('slide_count'),

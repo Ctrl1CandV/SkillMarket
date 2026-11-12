@@ -6,13 +6,22 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import posixpath
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+from xml.etree import ElementTree as ET
+import zipfile
 
 from doctor import find_soffice, powerpoint_com_status
+
+P = '{http://schemas.openxmlformats.org/presentationml/2006/main}'
+A = '{http://schemas.openxmlformats.org/drawingml/2006/main}'
+R = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
+# A line should not start with these; PowerPoint does it when CJK text is not tagged as East Asian.
+CLOSING = set('，。、；：！？）」』》】〉,.;:!?)]}%')
 
 
 def sha256(path):
@@ -86,6 +95,83 @@ def rasterize(pdf, out_dir, dpi, pdftoppm, timeout):
             page.get_pixmap(matrix=api.Matrix(dpi / 72, dpi / 72), alpha=False).save(path)
             files.append(path)
     return files
+
+
+def source_segments(deck):
+    """Paragraph texts per slide, in presentation order; a forced line break starts a new segment."""
+    pages = []
+    with zipfile.ZipFile(deck) as archive:
+        root = ET.fromstring(archive.read('ppt/presentation.xml'))
+        rels = ET.fromstring(archive.read('ppt/_rels/presentation.xml.rels'))
+        targets = {rel.get('Id'): rel.get('Target') for rel in rels}
+        for slide_id in root.findall(P + 'sldIdLst/' + P + 'sldId'):
+            target = targets[slide_id.get(R + 'id')]
+            part = target.lstrip('/') if target.startswith('/') else posixpath.normpath(posixpath.join('ppt', target))
+            segments = []
+            for paragraph in ET.fromstring(archive.read(part)).iter(A + 'p'):
+                text = ''
+                for node in paragraph.iter():
+                    if node.tag == A + 't':
+                        text += node.text or ''
+                    elif node.tag == A + 'br':
+                        segments.append(text)
+                        text = ''
+                segments.append(text)
+            pages.append([s for s in segments if s.strip()])
+    return pages
+
+
+def pdf_lines(pdf):
+    """Visual lines of the exported PDF as (text, bbox), in extraction order."""
+    name = next((m for m in ('pymupdf', 'fitz') if importlib.util.find_spec(m)), None)
+    if not name:
+        raise ImportError('PyMuPDF is needed to read the exported PDF text layer')
+    api = __import__(name)
+    pages = []
+    with api.open(pdf) as document:
+        for page in document:
+            pages.append([(''.join(span['text'] for span in line['spans']), line['bbox'])
+                          for block in page.get_text('dict')['blocks'] for line in block.get('lines', [])])
+    return pages
+
+
+def squeeze(text):
+    kept = [(i, c) for i, c in enumerate(text) if not c.isspace()]
+    return ''.join(c for _, c in kept), [i for i, _ in kept]
+
+
+def text_flags(segments_by_page, lines_by_page):
+    """Line breaks in the real render that a reader notices but a glance at the page misses.
+
+    Two consecutive PDF lines count as one wrapped paragraph only when the end of the
+    upper line plus the lower line occur together in one source paragraph.
+    """
+    flags = []
+    for page, (segments, lines) in enumerate(zip(segments_by_page, lines_by_page), 1):
+        sources = [squeeze(s) for s in segments]
+        for (upper, upper_box), (lower, lower_box) in zip(lines, lines[1:]):
+            upper_flat, head = squeeze(upper)[0], squeeze(lower)[0]
+            tail = upper_flat[-12:]
+            if not tail or not head or lower_box[1] < upper_box[1] + 0.5 * (upper_box[3] - upper_box[1]):
+                continue
+            for flat, index in sources:
+                at = flat.find(tail + head)
+                if at < 0:
+                    continue
+                cut = at + len(tail)
+                kinds = []
+                if head[0] in CLOSING:
+                    kinds.append('line_start_punct')
+                left, right = flat[cut - 1], flat[cut]
+                if left.isascii() and left.isalnum() and right.isascii() and right.isalnum() and index[cut] == index[cut - 1] + 1:
+                    kinds.append('split_word')
+                # One or two characters left under a much longer line; a narrow two-line label is fine.
+                if len(head) <= 2 and len(upper_flat) >= 4 * len(head) and cut + len(head) == len(flat):
+                    kinds.append('short_last_line')
+                if kinds:
+                    flags.append({'page': page, 'kinds': kinds, 'text': tail + ' | ' + head[:12]})
+                break
+    return flags
 
 
 def montage(files, target):
@@ -167,17 +253,36 @@ def main():
         if sha256(source) != input_hash:
             raise RuntimeError('Input changed during rasterization; create a fresh render')
         contact_sheet = montage(files, out_dir / 'montage.png')
+        try:
+            text_check = {'checked': True, 'flags': text_flags(source_segments(source), pdf_lines(pdf)),
+                          'note': 'Read from the exported PDF text layer: a line that starts with closing punctuation '
+                                  '(line_start_punct), a word or number split across lines (split_word), or a paragraph '
+                                  'whose last line holds one or two characters (short_last_line). Text in charts and '
+                                  'pictures is not checked; this does not replace looking at every page.'}
+        except (ImportError, KeyError, ET.ParseError, zipfile.BadZipFile) as exc:
+            text_check = {'checked': False, 'reason': str(exc)}
         manifest = {
             'deck': str(source), 'deck_sha256': input_hash,
             'renderer': renderer_label, 'dpi': args.dpi,
             'pdf': {'file': pdf.name, 'sha256': sha256(pdf)},
             'pages': [{'page': i, 'file': path.name, 'sha256': sha256(path)} for i, path in enumerate(files, 1)],
             'montage': contact_sheet,
+            'text_check': text_check,
             'note': 'Rendered files exist; they have not yet been visually reviewed.'
         }
         manifest_path = out_dir / 'manifest.json'
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8')
-        print(json.dumps({'pages': len(files), 'manifest': str(manifest_path), 'montage': contact_sheet}, ensure_ascii=False))
+        summary = {'pages': len(files), 'manifest': str(manifest_path), 'montage': contact_sheet}
+        if text_check['checked']:
+            flags = text_check['flags']
+            summary['text_flags'] = len(flags)
+            if flags:
+                summary['text_flag_pages'] = sorted({f['page'] for f in flags})
+                summary['text_flag_hint'] = ('Line breaks to fix (details in manifest text_check): tag Chinese runs '
+                                             'lang="zh-CN", widen or reword the box, then render again')
+        else:
+            summary['text_flags'] = 'not checked: ' + text_check['reason']
+        print(json.dumps(summary, ensure_ascii=False))
         return 0
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         print(str(exc), file=sys.stderr)
