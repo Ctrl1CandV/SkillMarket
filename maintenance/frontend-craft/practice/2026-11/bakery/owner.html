@@ -38,6 +38,18 @@
   .cap i { display: block; width: 160px; height: 6px; border-radius: 3px; background: var(--sunk); overflow: hidden; }
   .cap i u { display: block; height: 100%; background: var(--ink-2); }
   .cap.full { color: var(--crust); font-weight: 700; } .cap.full i u { background: var(--crust); }
+  .pnotes { margin-top: 28px; }
+  .pnotes h2 { font-size: 18px; font-weight: 600; margin: 0 0 4px; display: flex; align-items: baseline; gap: 12px; }
+  .pnotes h2 small { font-weight: 400; color: var(--ink-2); font-size: 15px; }
+  .pnotes ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+  .pnotes li { display: grid; grid-template-columns: 250px 56px minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .pnotes .what { font-size: 18px; font-weight: 700; }
+  .pnotes .n { font-family: var(--num); font-size: 24px; font-weight: 600; text-align: right; }
+  .pnotes .n small { font-family: var(--sans); font-size: 14px; font-weight: 400; color: var(--ink-2); margin-left: 3px; }
+  .pnotes .who { font-size: 15px; color: var(--ink-2); line-height: 1.7; }
+  .pnotes .who b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+  .pnotes .who > span { white-space: nowrap; margin-right: 16px; }
+  .pnotes .who > span + b { margin-left: 8px; }
   .part { text-align: right; font-size: 44px; line-height: 1; }
   .part.zero { color: var(--line); }
   .total { text-align: right; white-space: nowrap; }
@@ -88,7 +100,7 @@
   .row.picked .act button { height: 40px; background: transparent; border: 1px solid var(--line); color: var(--ink-2); font-size: 15px; font-weight: 400; }
   .row.picked .note { display: none; }
   /* 矩阵排法：每款面包固定一列，像纸质订货单 */
-  .mx .row, .mx .mhead { grid-template-columns: 112px 190px repeat(5, minmax(56px, 1fr)) 84px 124px; }
+  .mx .row, .mx .mhead { grid-template-columns: 112px 190px repeat(var(--kinds, 5), minmax(56px, 1fr)) 84px 124px; }
   .mhead { display: grid; gap: 16px; align-items: end; padding: 10px 0 8px; font-size: 15px; color: var(--ink-2); text-align: center; border-bottom: 1px solid var(--line); }
   .mhead > :nth-child(-n+2) { text-align: left; } .mhead > :nth-last-child(2) { text-align: right; }
   .mx .cell { text-align: center; font-size: 30px; line-height: 1; font-weight: 600; }
@@ -125,6 +137,7 @@
     .row .act { grid-column: 3; grid-row: 2; width: 104px; } .row .act button { height: 48px; font-size: 17px; }
     .row.picked .tail { font-size: 22px; }
     .cap i { width: 96px; flex: none; }
+    .pnotes li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; } .pnotes .who { grid-column: 1 / -1; }
   }
   @media print {
     .bar .seg, .clock, .pick, .toast { display: none !important; } .prep[hidden] { display: block !important; }
@@ -148,6 +161,7 @@
   <section class="prep" id="prep" hidden>
     <h1>今天要做 <small id="prep-meta"></small></h1>
     <div class="board" id="board"></div>
+    <div class="pnotes" id="pnotes"></div>
   </section>
 
   <section class="pick" id="pick" hidden>
@@ -198,12 +212,21 @@
         <div class="total"><b class="num">${sum}</b><span>${p.unit}</span></div></div>`;
     }).join('');
     $('prep-meta').textContent = `${live.length} 位顾客，共 ${pieces} 件`;
+    // 备注：同样的话合并成一行，写清是哪个时段的谁。20 条备注其实只有几种说法。
+    const groups = new Map();
+    live.filter(o => o.note).forEach(o => { if (!groups.has(o.note)) groups.set(o.note, []); groups.get(o.note).push(o); });
+    const order = (o) => B.slots.findIndex(s => s.id === o.slot);
+    const rows = [...groups].sort((a, b) => /切片/.test(b[0]) - /切片/.test(a[0]) || b[1].length - a[1].length);
+    $('pnotes').innerHTML = rows.length ? `<h2>顾客备注 <small>${rows.reduce((n, r) => n + r[1].length, 0)} 条，同样的话合在一行</small></h2><ul>${rows.map(([note, list]) =>
+      `<li><div class="what">${esc(note)}</div><div class="n">${list.length}<small>位</small></div><div class="who">${B.slots.map(s => { const mine = list.filter(o => o.slot === s.id); return mine.length ? `<b>${SLOT_NAME[s.id]}</b>${mine.map(o => `<span><span class="num">${tail(o)}</span> ${esc(o.name)}</span>`).join('')}` : ''; }).join('')}</div></li>`).join('')}</ul>` : '';
   }
 
   // —— 取货 ——
   let query = '';
-  const MATRIX = /[?&]layout=matrix/.test(location.search) && window.matchMedia('(min-width: 901px)').matches;
-  if (MATRIX) $('pick').classList.add('mx');
+  // 品种不多时每款一列，像纸质订货单；超过 6 款列不下，自动改成逐项列出。网址加 ?layout=list 或 matrix 可以强制。
+  const forcedLayout = (/[?&]layout=(matrix|list)/.exec(location.search) || [])[1];
+  const MATRIX = (forcedLayout ? forcedLayout === 'matrix' : B.products.length <= 6) && window.matchMedia('(min-width: 901px)').matches;
+  if (MATRIX) { $('pick').classList.add('mx'); $('pick').style.setProperty('--kinds', B.products.length); }
   const mhead = () => MATRIX ? `<div class="mhead"><div>尾号</div><div>称呼</div>${B.products.map(p => `<div>${esc(short(p).replace('全麦', '').replace('老面', ''))}</div>`).join('')}<div>应收</div><div></div></div>` : '';
   const hit = (text) => query ? esc(text).replace(new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), m => `<mark>${m}</mark>`) : esc(text);
   function rowHtml(o) {
