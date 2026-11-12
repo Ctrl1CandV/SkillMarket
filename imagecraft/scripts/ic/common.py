@@ -173,6 +173,36 @@ def find_nvidia_smi() -> str | None:
     return None
 
 
+GPU_BUSY_UTILIZATION = 40  # percent, averaged over the samples
+
+
+def gpu_load(samples: int = 4, interval: float = 0.5) -> dict | None:
+    """Sample whole-GPU utilization before a local submission. None when it cannot be measured.
+
+    Desktop compositing and video playback stay well below the threshold; a running LLM, game,
+    render or another image job does not. Utilization is used rather than memory because an idle
+    ComfyUI that already holds its models uses a lot of memory and no compute.
+    """
+    import time
+    exe = find_nvidia_smi()
+    if not exe:
+        return None
+    readings = []
+    for index in range(samples):
+        try:
+            result = subprocess.run([exe, "--query-gpu=utilization.gpu,memory.used,memory.total",
+                                     "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=10)
+            utilization, used, total = (float(v) for v in result.stdout.strip().splitlines()[0].split(","))
+        except (OSError, subprocess.SubprocessError, ValueError, IndexError):
+            return None
+        readings.append((utilization, used, total))
+        if index + 1 < samples:
+            time.sleep(interval)
+    average = sum(r[0] for r in readings) / len(readings)
+    return {"utilization_percent": round(average), "memory_used_mib": round(readings[-1][1]),
+            "memory_total_mib": round(readings[-1][2]), "busy": average >= GPU_BUSY_UTILIZATION}
+
+
 def gpu_info() -> dict:
     """Report the NVIDIA GPU, and tell "no tool found" apart from "tool found but GPU unreachable"."""
     exe = find_nvidia_smi()

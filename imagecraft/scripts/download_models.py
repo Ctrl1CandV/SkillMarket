@@ -188,7 +188,7 @@ def download_one(root: Path, item: dict, *, opener=None) -> dict:
         start = part.stat().st_size if part.exists() else 0
         if start == item["bytes"]:
             break
-        headers = {"User-Agent": "imagecraft/0.3.1", "Accept-Encoding": "identity", "Cache-Control": "no-cache"}
+        headers = {"User-Agent": "imagecraft/0.3.2", "Accept-Encoding": "identity", "Cache-Control": "no-cache"}
         if start:
             headers["Range"] = f"bytes={start}-"
         try:
@@ -257,7 +257,7 @@ def download_parallel(root: Path, item: dict, workers: int = 8, *, opener_factor
         if path.is_file() and path.stat().st_size == end - start + 1:
             return path
         for attempt in range(3):
-            request = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity", "User-Agent": "imagecraft/0.3.1"})
+            request = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity", "User-Agent": "imagecraft/0.3.2"})
             try:
                 with opener_factory().open(request, timeout=90) as response:
                     expected = f"bytes {start}-{end}/{item['bytes']}"

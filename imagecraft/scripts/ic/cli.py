@@ -15,7 +15,7 @@ import download_models
 from . import __version__
 from .client import Client
 from .common import (Error, atomic_json, comfy_version, config, discover, emit, endpoint,
-                     external_path, file_lock, gpu_info, home, safe_child)
+                     external_path, file_lock, gpu_info, gpu_load, home, safe_child)
 from . import jobs
 from .workflow import build, dimensions, validate
 
@@ -147,6 +147,8 @@ def parser():
         if name == "generate":
             g.add_argument("--output", required=True, help="Absolute path to a new job directory, outside source control")
             g.add_argument("--wait", type=float, default=600)
+            g.add_argument("--allow-busy-gpu", action="store_true",
+                           help="Submit although another workload is using the GPU; only after the user agreed")
     for name in ("status", "resume", "verify", "review"):
         r = sub.add_parser(name)
         r.add_argument("--job", required=True)
@@ -223,6 +225,14 @@ def main(argv=None) -> int:
                 jobs.verify_artifacts(root, job)
             emit(jobs.summary(root, job, state))
             return 0 if state in {"completed", "downloaded"} else 2 if state in {"rejected", "failed"} else 3
+        if args.command == "generate" and not args.allow_busy_gpu:
+            load = gpu_load()
+            if load and load["busy"]:
+                raise Error(f"GPU is busy: {load['utilization_percent']}% utilization, {load['memory_used_mib']} of "
+                            f"{load['memory_total_mib']} MiB in use. Something else is computing on it (the user's LLM, game "
+                            "or render, or another image job; `nvidia-smi` and `ollama ps` show what). Nothing was submitted. "
+                            "Ask the user whether to wait or go ahead; rerun with --allow-busy-gpu only after they agree. "
+                            "Do not stop their process.")
         root.mkdir(parents=True, exist_ok=True)
         with file_lock(safe_child(root, ".imagecraft.lock")):
             if args.command == "generate":
