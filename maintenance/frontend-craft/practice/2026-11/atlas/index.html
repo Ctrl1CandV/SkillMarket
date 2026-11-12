@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>校园树叶图鉴</title>
+<style>
+  :root {
+    --bg: #ECEFEE; --tile: #FFFFFF; --ink: #17211D; --ink-2: #5B6662; --line: #D5DAD8; --wash: #E2E6E4;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    --display: "Songti SC", "STZhongsong", "Source Han Serif SC", "SimSun", serif; --latin: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+  button, input { font: inherit; color: inherit; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; transition: padding-right .2s; }
+  header { display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  h1 { font: 700 44px/1.2 var(--display); margin: 0; letter-spacing: .04em; }
+  header p { margin: 6px 0 0; color: var(--ink-2); max-width: 40em; text-wrap: pretty; }
+  .tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .seg { display: inline-flex; background: var(--wash); border-radius: 10px; padding: 3px; }
+  .seg button { border: 0; background: transparent; height: 38px; padding: 0 16px; border-radius: 8px; cursor: pointer; color: var(--ink-2); font-weight: 600; }
+  .seg button[aria-pressed="true"] { background: var(--tile); color: var(--ink); box-shadow: 0 1px 2px rgba(23, 33, 29, .16); }
+
+  .find { margin-top: 22px; display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px 28px; align-items: start; }
+  .search input { width: 100%; height: 48px; border: 2px solid var(--ink); border-radius: 10px; background: var(--tile); padding: 0 16px; font-size: 16px; }
+  .groups { display: grid; gap: 8px; }
+  .grp { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .grp > span { width: 4.5em; color: var(--ink-2); font-size: 14px; flex: none; }
+  .chip { height: 40px; flex: none; padding: 0 14px; border-radius: 999px; border: 1px solid #B4BCB8; background: transparent; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+  .chip small { color: var(--ink-2); font-size: 12px; font-family: var(--latin); }
+  .chip:hover { border-color: var(--ink); }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; } .chip[aria-pressed="true"] small { color: #C9D1CE; }
+  .chip:disabled { color: #A6AEAA; border-color: var(--line); cursor: default; } .chip:disabled small { color: #B9C0BC; }
+  .status { margin: 22px 0 14px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; min-height: 34px; }
+  .status b { font-size: 16px; }
+  .clear { border: 0; background: none; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 6px 0; }
+  :focus-visible { outline: 3px solid #2F6B3F; outline-offset: 2px; }
+
+  /* —— 网格：每格一样大，界面不带颜色，颜色都留给叶子 —— */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 14px; }
+  .card { background: var(--tile); border: 0; border-radius: 12px; padding: 10px 14px 14px; text-align: left; cursor: pointer; display: block; width: 100%; transition: transform .15s, box-shadow .15s; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(23, 33, 29, .1); }
+  .card.on { outline: 3px solid var(--ink); }
+  .card svg { display: block; width: 100%; height: auto; }
+  .card .nm { font: 700 20px/1.3 var(--display); display: block; margin-top: 2px; }
+  .card .lt { font: italic 13px/1.4 var(--latin); color: var(--ink-2); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .tg { display: block; margin-top: 8px; font-size: 13px; color: var(--ink-2); }
+  .aka { display: block; font-size: 13px; color: #8A5A00; background: #FBF0D9; border-radius: 4px; padding: 0 6px; width: fit-content; margin: 2px 0; }
+  /* —— 列表：一行一种，方便对着比 —— */
+  .list { background: var(--tile); border-radius: 12px; overflow: hidden; }
+  .row { display: grid; grid-template-columns: 64px 150px minmax(0, 1fr) 84px 84px 84px; gap: 16px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--wash); background: none; padding: 6px 18px 6px 10px; text-align: left; cursor: pointer; }
+  .row:first-child { border-top: 0; } .row:hover, .row.on { background: #F5F7F6; }
+  .row svg { width: 60px; height: 66px; display: block; }
+  .row .nm { font: 700 18px var(--display); } .row .lt { font: italic 13px var(--latin); color: var(--ink-2); display: block; }
+  .row .key { color: var(--ink-2); font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .row .tag { font-size: 13px; }
+  .lhead { display: grid; grid-template-columns: 64px 150px minmax(0, 1fr) 84px 84px 84px; gap: 16px; padding: 10px 18px 10px 10px; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--line); }
+  .empty { background: var(--tile); border-radius: 12px; padding: 48px 24px; text-align: center; color: var(--ink-2); }
+  .empty b { display: block; color: var(--ink); font: 700 22px var(--display); margin-bottom: 6px; }
+
+  /* —— 详情：从右边出来，网格让开位置，不盖住 —— */
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; width: 440px; background: var(--tile); border-left: 1px solid var(--line); padding: 20px 28px 28px; overflow-y: auto; z-index: 6; }
+  body.open .wrap { padding-right: 472px; }
+  .panel .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .icon { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--tile); cursor: pointer; font-size: 18px; line-height: 1; }
+  .icon:hover { border-color: var(--ink); } .icon:disabled { color: #B9C0BC; cursor: default; border-color: var(--wash); }
+  .panel .pic { background: var(--bg); border-radius: 14px; padding: 8px 40px; }
+  .panel .pic svg { display: block; width: 100%; height: auto; }
+  .panel h2 { font: 700 34px/1.25 var(--display); margin: 18px 0 0; }
+  .panel .lt { font: italic 16px var(--latin); color: var(--ink-2); }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+  .facts span { font-size: 13px; padding: 4px 12px; border-radius: 999px; background: var(--wash); }
+  .panel h3 { font-size: 13px; letter-spacing: .12em; color: var(--ink-2); margin: 22px 0 6px; font-weight: 600; }
+  .panel p { margin: 0; font-size: 16px; line-height: 1.75; }
+  [hidden] { display: none !important; }
+  footer { margin-top: 40px; font-size: 13px; color: var(--ink-2); }
+
+  @media (max-width: 1100px) { body.open .wrap { padding-right: 32px; } .panel { box-shadow: -24px 0 60px rgba(23, 33, 29, .28); } }
+  @media (max-width: 720px) {
+    .wrap, body.open .wrap { padding: 18px 14px 60px; } h1 { font-size: 32px; }
+    .find { grid-template-columns: 1fr; gap: 12px; }
+    .grp { flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 0 14px; scrollbar-width: none; } .grp::-webkit-scrollbar { display: none; } .grp > span { width: auto; min-width: 2.4em; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .card { padding: 6px 10px 12px; } .card .nm { font-size: 18px; }
+    .lhead { display: none; } .row { grid-template-columns: 56px minmax(0, 1fr); gap: 10px; padding: 8px 12px 8px 6px; } .row .key, .row .tag { display: none; } .row svg { width: 52px; height: 58px; }
+    .panel { width: 100%; border-left: 0; padding: 14px 18px 28px; } .panel .pic { padding: 0 56px; } .panel h2 { font-size: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .card, .wrap { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>校园树叶图鉴</h1><p>二十种校园和街边常见的树。捡到一片叶子，按它的样子筛一筛，看看是谁的。</p></div>
+    <div class="tools">
+      <div class="seg" id="season" role="group" aria-label="季节"><button type="button" data-v="summer">夏天的样子</button><button type="button" data-v="autumn">秋天的样子</button></div>
+      <div class="seg" id="view" role="group" aria-label="排法"><button type="button" data-v="grid">图</button><button type="button" data-v="list">表</button></div>
+    </div>
+  </header>
+
+  <div class="find">
+    <div class="search"><label class="sr" for="q" hidden>按名字找</label><input id="q" type="search" placeholder="知道名字就直接搜，比如 银杏" autocomplete="off"></div>
+    <div class="groups" id="groups"></div>
+  </div>
+
+  <div class="status"><b id="count" role="status"></b><span id="active"></span><button type="button" class="clear" id="clear" hidden>清空条件</button></div>
+  <div id="results"></div>
+  <footer>练习页面：叶子是按形态特征用代码画的示意图，不是照片；大小不成比例。文字资料按常见的植物学描述整理，只供认树入门。</footer>
+</div>
+
+<aside class="panel" id="panel" hidden aria-label="详情"></aside>
+
+<script src="leaves.js"></script>
+<script>
+(function () {
+  const { TREES, draw } = window.Leaves, $ = (id) => document.getElementById(id);
+  const GROUPS = [
+    ['type', '叶子', [['single', '一片一片（单叶）'], ['compound', '一串小叶（复叶）'], ['needle', '针或条形']]],
+    ['margin', '边缘', [['entire', '光滑'], ['serrate', '有锯齿'], ['lobed', '有裂口']]],
+    ['habit', '冬天', [['deciduous', '落叶'], ['evergreen', '常绿']]],
+    ['autumn', '秋天', [['yellow', '变黄'], ['red', '变红'], ['brown', '变褐'], ['none', '不变色']]],
+  ];
+  const LABEL = Object.fromEntries(GROUPS.flatMap(g => g[2].map(o => [g[0] + ':' + o[0], o[1].replace(/（.*）/, '')])));
+  const state = { q: '', season: 'summer', view: 'grid', open: null, f: { type: [], margin: [], habit: [], autumn: [] } };
+  try { const h = new URLSearchParams(location.hash.slice(1)); if (h.get('season')) state.season = h.get('season'); if (h.get('view')) state.view = h.get('view'); if (h.get('q')) state.q = h.get('q'); if (h.get('open')) state.open = h.get('open');
+    GROUPS.forEach(g => { if (h.get(g[0])) state.f[g[0]] = h.get(g[0]).split(','); }); } catch (e) {}
+
+  const hitAlias = (t, q) => q && !t.name.includes(q) ? (t.alias || []).find(a => a.includes(q)) : null;
+  const match = (t, f, q) => (!q || t.name.includes(q) || (t.alias || []).some(a => a.includes(q)) || t.latin.toLowerCase().includes(q.toLowerCase()) || t.family.includes(q)) && GROUPS.every(g => !f[g[0]].length || f[g[0]].includes(t[g[0]]));
+  const filtered = () => TREES.filter(t => match(t, state.f, state.q.trim()));
+  const svg = (t) => `<svg viewBox="0 0 200 220" aria-hidden="true">${draw(t, state.season)}</svg>`;
+  const TYPE = { single: '单叶', compound: '复叶', needle: '针叶' };
+  const tags = (t) => [TYPE[t.type], LABEL['margin:' + t.margin], LABEL['habit:' + t.habit]];
+  const also = (t) => { const a = hitAlias(t, state.q.trim()); return a ? `<span class="aka">俗称“${a}”</span>` : ''; };
+
+  function renderFilters() {
+    $('groups').innerHTML = GROUPS.map(([key, title, opts]) => `<div class="grp" role="group" aria-label="${title}"><span>${title}</span>${opts.map(([v, label]) => {
+      const on = state.f[key].includes(v);
+      // 这个选项点下去之后还剩几种：把这一组换成只选它，其他组不变
+      const n = TREES.filter(t => match(t, Object.assign({}, state.f, { [key]: [v] }), state.q.trim())).length;
+      return `<button type="button" class="chip" data-g="${key}" data-v="${v}" aria-pressed="${on}" ${!n && !on ? 'disabled' : ''}>${label}<small>${n}</small></button>`; }).join('')}</div>`).join('');
+  }
+  function renderResults() {
+    const list = filtered(), any = state.q.trim() || GROUPS.some(g => state.f[g[0]].length);
+    $('count').textContent = any ? `${TREES.length} 种里找到 ${list.length} 种` : `全部 ${TREES.length} 种`;
+    $('active').textContent = GROUPS.flatMap(g => state.f[g[0]].map(v => LABEL[g[0] + ':' + v])).join(' · ');
+    $('clear').hidden = !any;
+    if (!list.length) { $('results').innerHTML = `<div class="empty"><b>没有同时符合这些条件的树</b>${state.q.trim() ? '这本图鉴只收了二十种，没有“' + state.q.trim().replace(/[<>&]/g, '') + '”可能是还没收录。也可以清空搜索，按叶子的样子筛。' : '去掉一个条件试试。'}</div>`; return; }
+    if (state.view === 'list') $('results').innerHTML = `<div class="list"><div class="lhead"><span></span><span>名字</span><span>怎么认</span><span>叶子</span><span>边缘</span><span>冬天</span></div>${list.map(t => `<button type="button" class="row${state.open === t.id ? ' on' : ''}" data-id="${t.id}">${svg(t)}<span><span class="nm">${t.name}</span>${also(t)}<span class="lt">${t.latin}</span></span><span class="key">${t.key}</span>${tags(t).map(x => `<span class="tag">${x}</span>`).join('')}</button>`).join('')}</div>`;
+    else $('results').innerHTML = `<div class="grid">${list.map(t => `<button type="button" class="card${state.open === t.id ? ' on' : ''}" data-id="${t.id}">${svg(t)}<span class="nm">${t.name}</span>${also(t)}<span class="lt">${t.latin}</span><span class="tg">${tags(t).join(' · ')}</span></button>`).join('')}</div>`;
+  }
+  function renderPanel() {
+    const list = filtered(), t = TREES.find(x => x.id === state.open);
+    document.body.classList.toggle('open', !!t); $('panel').hidden = !t; if (!t) return;
+    const i = list.findIndex(x => x.id === t.id);
+    $('panel').innerHTML = `<div class="bar"><span><button type="button" class="icon" id="prev" aria-label="上一种" ${i <= 0 ? 'disabled' : ''}>←</button> <button type="button" class="icon" id="next" aria-label="下一种" ${i < 0 || i >= list.length - 1 ? 'disabled' : ''}>→</button> <span style="color:var(--ink-2);font-size:13px;margin-left:8px">${i >= 0 ? `${i + 1} / ${list.length}` : '不在当前筛选结果里'}</span></span><button type="button" class="icon" id="close" aria-label="关闭详情">×</button></div>
+      <div class="pic">${svg(t)}</div><h2>${t.name}</h2><div class="lt">${t.latin} · ${t.family}</div>${t.alias && t.alias.length ? `<p style="font-size:14px;color:var(--ink-2);margin-top:4px">也叫：${t.alias.join('、')}</p>` : ''}
+      <div class="facts">${tags(t).concat(t.habit === 'deciduous' ? [LABEL['autumn:' + t.autumn] ? '秋天' + LABEL['autumn:' + t.autumn] : ''] : []).filter(Boolean).map(x => `<span>${x}</span>`).join('')}</div>
+      <h3>怎么认</h3><p>${t.key}</p>${t.similar ? `<h3>容易和谁弄混</h3><p>${t.similar}</p>` : ''}<h3>什么时候看</h3><p>${t.when}</p>`;
+    $('close').onclick = () => { state.open = null; sync(); };
+    $('prev').onclick = () => { state.open = list[i - 1].id; sync(); }; $('next').onclick = () => { state.open = list[i + 1].id; sync(); };
+  }
+  function sync() {
+    ['season', 'view'].forEach(k => $(k).querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === state[k]))));
+    renderFilters(); renderResults(); renderPanel();
+    const h = new URLSearchParams(); if (state.season !== 'summer') h.set('season', state.season); if (state.view !== 'grid') h.set('view', state.view); if (state.q.trim()) h.set('q', state.q.trim()); if (state.open) h.set('open', state.open);
+    GROUPS.forEach(g => { if (state.f[g[0]].length) h.set(g[0], state.f[g[0]].join(',')); });
+    history.replaceState(null, '', h.toString() ? '#' + h.toString() : location.pathname + location.search);   // 条件写进网址，能把这一页原样发给别人
+  }
+  $('groups').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b || b.disabled) return; const a = state.f[b.dataset.g], v = b.dataset.v; state.f[b.dataset.g] = a.includes(v) ? a.filter(x => x !== v) : a.concat(v); sync(); });
+  $('season').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.season = b.dataset.v; sync(); } });
+  $('view').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.view = b.dataset.v; sync(); } });
+  $('q').value = state.q; $('q').addEventListener('input', (e) => { state.q = e.target.value; renderFilters(); renderResults(); renderPanel(); });
+  $('clear').onclick = () => { state.q = ''; $('q').value = ''; GROUPS.forEach(g => { state.f[g[0]] = []; }); sync(); };
+  $('results').addEventListener('click', (e) => { const b = e.target.closest('[data-id]'); if (b) { state.open = state.open === b.dataset.id ? null : b.dataset.id; sync(); } });
+  addEventListener('keydown', (e) => { if (!state.open || /input/i.test(e.target.tagName)) return; if (e.key === 'Escape') { state.open = null; sync(); } if (e.key === 'ArrowRight') $('next') && !$('next').disabled && $('next').click(); if (e.key === 'ArrowLeft') $('prev') && !$('prev').disabled && $('prev').click(); });
+  sync();
+})();
+</script>
+</body>
+</html>

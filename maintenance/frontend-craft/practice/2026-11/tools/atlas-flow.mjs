@@ -1,0 +1,26 @@
+// Click through the leaf atlas: filters and their counts, search, season, list view, detail panel, empty state, shareable URL.
+import { createRequire } from 'node:module'; import path from 'node:path'; import { pathToFileURL } from 'node:url';
+const require = createRequire(path.join(process.env.FC_NODE_MODULES, 'x.js')); const { chromium } = require('playwright-core');
+const [file, out] = process.argv.slice(2); const url = pathToFileURL(file).href;
+const browser = await chromium.launch({ executablePath: process.env.FC_CHROME, headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } }); const errors = []; page.on('pageerror', e => errors.push(e.message));
+const count = async () => (await page.locator('#count').innerText()) + ' | cards ' + (await page.locator('[data-id]').count());
+const names = async () => (await page.locator('[data-id] .nm').allInnerTexts()).join('、');
+await page.goto(url); console.log('start      :', await count()); await page.screenshot({ path: path.join(out, 'a1-all.png') });
+await page.locator('.chip[data-g="margin"][data-v="lobed"]').click(); console.log('lobed      :', await count(), '|', await names());
+await page.locator('.chip[data-g="autumn"][data-v="red"]').click(); console.log('+ red      :', await count(), '|', await names());
+console.log('  disabled chips now:', (await page.locator('.chip:disabled').allInnerTexts()).map(s => s.replace(/\s+/g, '')).join(' '));
+await page.locator('#season button[data-v="autumn"]').click(); await page.screenshot({ path: path.join(out, 'a2-filtered-autumn.png') });
+await page.locator('[data-id="maple"]').click(); console.log('panel      :', await page.locator('#panel h2').innerText(), '|', (await page.locator('#panel .bar').innerText()).replace(/\s+/g, ' '));
+await page.screenshot({ path: path.join(out, 'a3-panel.png') });
+await page.keyboard.press('ArrowRight'); console.log('next       :', await page.locator('#panel h2').innerText());
+console.log('url        :', decodeURIComponent(page.url().split('#')[1] || ''));
+const shared = await browser.newPage({ viewport: { width: 1440, height: 900 } }); await shared.goto(page.url()); console.log('shared url :', await shared.locator('#count').innerText(), '| panel', await shared.locator('#panel h2').innerText());
+await page.keyboard.press('Escape'); await page.locator('#clear').click(); console.log('cleared    :', await count());
+await page.fill('#q', '玉兰'); console.log('search 玉兰 :', await count(), '|', await names());
+await page.fill('#q', '银杏'); await page.locator('.chip[data-g="habit"][data-v="evergreen"]').click({ force: true }).catch(() => {}); console.log('银杏 + 常绿  :', await count());
+await page.fill('#q', '梧桐'); console.log('search 梧桐 :', (await page.locator('#results').innerText()).replace(/\s+/g, ' ').slice(0, 70));
+await page.locator('#clear').click(); await page.locator('#view button[data-v="list"]').click(); await page.locator('#season button[data-v="summer"]').click(); console.log('list view  :', await count()); await page.screenshot({ path: path.join(out, 'a4-list.png') });
+const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }); await m.goto(url); await m.screenshot({ path: path.join(out, 'm1.png') });
+await m.locator('[data-id="ginkgo"]').tap(); await m.screenshot({ path: path.join(out, 'm2-panel.png') });
+console.log('errors:', errors.length, errors.slice(0, 2)); await browser.close();
