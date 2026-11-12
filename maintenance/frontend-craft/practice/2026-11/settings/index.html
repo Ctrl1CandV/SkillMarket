@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>通知设置 · 课题组日程</title>
+<style>
+  :root {
+    --bg: #FAFAF7; --surface: #FFFFFF; --ink: #1B1D22; --ink-2: #5E636E; --line: #E3E2DC; --wash: #F1F0EA;
+    --blue: #2357C6; --blue-wash: #E6EDFB; --warn: #9A5B00; --warn-wash: #FBF0D9; --red: #B3261E; --red-wash: #FBE9E7;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif; --num: "Bahnschrift", "DIN Alternate", var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+  button, select, input { font: inherit; color: inherit; }
+  .page { max-width: 1040px; margin: 0 auto; padding: 28px 28px 140px; display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 0 48px; }
+  .crumbs { grid-column: 1 / -1; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+  h1 { grid-column: 1 / -1; font-size: 28px; line-height: 1.3; margin: 0 0 22px; }
+  nav.toc { position: sticky; top: 20px; align-self: start; display: grid; gap: 2px; font-size: 14px; }
+  nav.toc a { text-decoration: none; color: var(--ink-2); padding: 7px 12px; border-radius: 8px; border-left: 2px solid transparent; }
+  nav.toc a:hover { background: var(--wash); color: var(--ink); }
+  nav.toc a.on { color: var(--ink); font-weight: 700; border-left-color: var(--ink); border-radius: 0 8px 8px 0; }
+  main { min-width: 0; max-width: 720px; }
+
+  /* 现在的设置合起来是什么效果：用一段话说清，改任何一项它都跟着变 */
+  .now { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 8px; }
+  .now h2 { font-size: 13px; color: var(--ink-2); font-weight: 500; margin: 0 0 6px; letter-spacing: .04em; }
+  .now ul { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.75; }
+  .now li { padding-left: 18px; position: relative; } .now li::before { content: ""; position: absolute; left: 2px; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+  .now li.off::before { background: var(--line); } .now li.off { color: var(--ink-2); }
+  .now b { font-weight: 700; }
+  .paused { background: var(--warn-wash); border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; display: flex; gap: 14px; align-items: center; justify-content: space-between; color: #5A3600; }
+
+  section { padding-top: 36px; }
+  section > h2 { font-size: 20px; margin: 0 0 2px; }
+  section > p.lead { color: var(--ink-2); margin: 0 0 10px; }
+  .item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; align-items: center; padding: 16px 0; border-top: 1px solid var(--line); }
+  .item:last-child { border-bottom: 1px solid var(--line); }
+  .item .t { font-size: 16px; font-weight: 600; } .item .d { color: var(--ink-2); font-size: 14px; grid-column: 1 / -1; }
+  .item .more { grid-column: 1 / -1; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 14px; }
+  .item.dim .t, .item.dim .d { color: var(--ink-2); }
+  /* 开关把状态写成字，不只靠颜色 */
+  .sw { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-size: 14px; color: var(--ink-2); min-height: 40px; }
+  .sw input { appearance: none; width: 46px; height: 28px; border-radius: 999px; background: #C9C8C1; position: relative; margin: 0; cursor: pointer; transition: background .15s; flex: none; }
+  .sw input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .15s; }
+  .sw input:checked { background: var(--blue); } .sw input:checked::after { transform: translateX(18px); }
+  .sw input:checked + span { color: var(--ink); font-weight: 700; }
+  .sw span { min-width: 2.2em; }
+  input:focus-visible, button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  select { height: 40px; border: 1px solid #BDBBB2; border-radius: 8px; background: var(--surface); padding: 0 10px; }
+  select:disabled, .ghost:disabled { color: #A3A199; background: var(--wash); border-color: var(--line); cursor: default; }
+  .ghost { height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #BDBBB2; background: var(--surface); cursor: pointer; font-size: 14px; }
+  .ghost:hover:not(:disabled) { border-color: var(--ink); }
+  .ck { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; min-height: 40px; } .ck input { width: 20px; height: 20px; accent-color: var(--blue); margin: 0; }
+  .ck.dis { color: #A3A199; cursor: default; }
+  .hint { color: var(--warn); background: var(--warn-wash); padding: 2px 8px; border-radius: 4px; font-size: 13px; }
+
+  /* 事件 × 渠道：一张表，列头只写一次 */
+  table { border-collapse: collapse; width: 100%; margin-top: 4px; }
+  th, td { border-top: 1px solid var(--line); padding: 12px 0; text-align: left; vertical-align: middle; }
+  thead th { border-top: 0; font-size: 13px; color: var(--ink-2); font-weight: 500; padding: 8px 0; position: sticky; top: 0; background: var(--bg); z-index: 1; }
+  th.c, td.c { width: 92px; text-align: center; }
+  td .t { font-size: 16px; font-weight: 600; } td .d { font-size: 14px; color: var(--ink-2); }
+  td.c input { width: 22px; height: 22px; accent-color: var(--blue); cursor: pointer; margin: 0; vertical-align: middle; }
+  td.c input:disabled { cursor: default; }
+  td.c label { display: inline-grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
+  th.c.offcol, td.c.offcol { color: #A3A199; }
+  tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+  th.c button { font: inherit; color: var(--blue); background: none; border: 0; padding: 4px; cursor: pointer; display: block; margin: 2px auto 0; font-size: 12px; }
+  th.c button:disabled { color: #A3A199; cursor: default; }
+  .danger .item .t { color: var(--ink); } .ghost.red { color: var(--red); border-color: #E2B5B0; } .ghost.red:hover { border-color: var(--red); background: var(--red-wash); }
+
+  /* 保存：底部一条，始终说清现在是什么状态 */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); z-index: 5; }
+  .bar .in { max-width: 1040px; margin: 0 auto; padding: 12px 28px; display: flex; align-items: center; gap: 14px; min-height: 64px; }
+  .bar .msg { flex: 1; font-size: 14px; color: var(--ink-2); } .bar .msg b { color: var(--ink); }
+  .bar.dirty { background: var(--blue-wash); border-top-color: #BFD0F3; } .bar.dirty .msg { color: var(--ink); }
+  .primary { height: 42px; padding: 0 22px; border-radius: 8px; border: 0; background: var(--blue); color: #fff; font-weight: 700; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 860px) {
+    .page { grid-template-columns: 1fr; padding: 18px 16px 150px; } nav.toc { display: none; } h1 { font-size: 24px; margin-bottom: 14px; }
+    .now { padding: 14px 16px; } .now ul { font-size: 15px; }
+    th.c, td.c { width: 56px; } td .t { font-size: 15px; } td .d { font-size: 13px; }
+    thead th.c { font-size: 12px; } th.c button { display: none; }
+    .bar .in { padding: 10px 16px; flex-wrap: wrap; gap: 8px 10px; } .bar .msg { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="crumbs">课题组日程 / 个人设置</div>
+  <h1>通知设置</h1>
+  <nav class="toc" id="toc" aria-label="本页目录">
+    <a href="#s-now">现在的效果</a><a href="#s-channel">发到哪里</a><a href="#s-event">什么事提醒我</a><a href="#s-quiet">什么时候别打扰</a><a href="#s-digest">攒起来一起发</a><a href="#s-stop">暂停</a>
+  </nav>
+  <main>
+    <div class="paused" id="paused" hidden></div>
+    <div class="now" id="s-now"><h2 id="now-title">现在的设置合起来是这样</h2><ul id="now"></ul></div>
+
+    <section id="s-channel">
+      <h2>发到哪里</h2><p class="lead">站内消息一直都有。邮件和手机推送可以整个关掉。</p>
+      <div class="item"><div class="t">邮件</div><label class="sw"><input type="checkbox" data-k="email"><span></span></label><div class="d">发到 zhou.yan@lab.example.edu</div></div>
+      <div class="item"><div class="t">手机推送</div><label class="sw"><input type="checkbox" data-k="push"><span></span></label><div class="d">已绑定 1 台手机，上次在线：今天 09:12</div>
+        <div class="more"><button type="button" class="ghost" id="test">发一条测试通知</button><span id="test-msg" role="status"></span></div></div>
+    </section>
+
+    <section id="s-event">
+      <h2>什么事提醒我</h2><p class="lead">一行是一类事情，勾上就会从那个渠道发给你。每件事在站内都会留一条消息，这里不用选。</p>
+      <table><thead><tr><th>事情</th><th class="c" data-col="email">邮件<button type="button" data-all="email">全选</button></th><th class="c" data-col="push">手机<button type="button" data-all="push">全选</button></th></tr></thead><tbody id="matrix"></tbody></table>
+      <div class="item" style="border-top:0"><div class="t">截稿日期提前几天提醒</div><select data-k="deadlineDays"><option value="1">提前 1 天</option><option value="3">提前 3 天</option><option value="7">提前 7 天</option></select><div class="d">只影响“截稿日期临近”这一行</div></div>
+    </section>
+
+    <section id="s-quiet">
+      <h2>什么时候别打扰</h2><p class="lead">免打扰期间不推送到手机。站内消息和邮件照常，回头能看到。</p>
+      <div class="item"><div class="t">夜间免打扰</div><label class="sw"><input type="checkbox" data-k="quiet"><span></span></label><div class="d" id="quiet-d"></div>
+        <div class="more" id="quiet-more"><span>从</span><select data-k="quietFrom" aria-label="开始时间"></select><span>到第二天</span><select data-k="quietTo" aria-label="结束时间"></select></div></div>
+      <div class="item"><div class="t">周末也免打扰</div><label class="sw"><input type="checkbox" data-k="weekend"><span></span></label><div class="d">周六、周日全天不推送到手机</div></div>
+      <div class="item"><div class="t">这些事情不受免打扰限制</div><div></div><div class="d">夜里训练挂了，早点知道可以少浪费几个小时的机时。</div>
+        <div class="more"><label class="ck"><input type="checkbox" data-k="breakFail"><span>实验失败</span></label><label class="ck"><input type="checkbox" data-k="breakMentor"><span>导师留言和 @我</span></label></div></div>
+    </section>
+
+    <section id="s-digest">
+      <h2>攒起来一起发</h2><p class="lead">不急的邮件可以合成一封。只影响邮件，不影响手机推送和站内消息。</p>
+      <div class="item"><div class="t">邮件汇总</div><select data-k="digest"><option value="none">不汇总，有事就发</option><option value="daily">每天早上 8:00 一封</option><option value="weekly">每周一早上 8:00 一封</option></select><div class="d" id="digest-d"></div>
+        <div class="more"><label class="ck" id="urgent-ck"><input type="checkbox" data-k="digestUrgent"><span>实验失败、导师留言不进汇总，仍然立刻发邮件</span></label></div></div>
+    </section>
+
+    <section id="s-stop" class="danger">
+      <h2>暂停</h2><p class="lead">出差、休假或者赶稿的时候用。上面的设置都会保留。</p>
+      <div class="item"><div class="t">暂停全部手机推送和邮件</div><div><button type="button" class="ghost" data-pause="24">暂停 24 小时</button> <button type="button" class="ghost" data-pause="168">暂停 7 天</button></div><div class="d">站内消息照常记录，恢复后可以回看。</div></div>
+      <div class="item"><div class="t">恢复默认设置</div><button type="button" class="ghost red" id="reset">恢复默认</button><div class="d">把这一页所有选项改回刚加入课题组时的样子。</div></div>
+    </section>
+  </main>
+</div>
+
+<div class="bar" id="bar"><div class="in"><div class="msg" id="bar-msg" role="status"></div><button type="button" class="ghost" id="undo" hidden></button><button type="button" class="primary" id="save" hidden>保存</button></div></div>
+
+<script>
+(function () {
+  const EVENTS = [
+    ['meeting', '组会和日程变动', '组会改期、换教室、新加的安排'],
+    ['deadline', '截稿日期临近', '你关注的会议和期刊'],
+    ['done', '实验跑完', '训练任务正常结束'],
+    ['fail', '实验失败', '任务报错、被抢占或者中断'],
+    ['mentor', '导师留言和 @我', '导师的留言，以及任何人 @你'],
+    ['comment', '同学评论我的文档', '周报、论文草稿下面的评论'],
+    ['papers', '文献订阅更新', '你订阅的方向每天的新论文'],
+  ];
+  const DEFAULTS = { email: true, push: true, quiet: true, quietFrom: 22, quietTo: 8, weekend: false, breakFail: true, breakMentor: false, digest: 'daily', digestUrgent: true, deadlineDays: 3, pausedUntil: 0,
+    on: { meeting: ['site', 'email'], deadline: ['site', 'email', 'push'], done: ['site'], fail: ['site', 'email', 'push'], mentor: ['site', 'email', 'push'], comment: ['site', 'email'], papers: ['site', 'email'] } };
+  const KEY = 'lab-notify-settings.v1', MANUAL = /[?&]save=manual/.test(location.search), $ = (id) => document.getElementById(id), clone = (o) => JSON.parse(JSON.stringify(o));
+  let saved = clone(DEFAULTS); try { const s = JSON.parse(localStorage.getItem(KEY + (MANUAL ? '.m' : ''))); if (s) saved = Object.assign(clone(DEFAULTS), s); } catch (e) {}
+  let draft = clone(saved), last = null, savedAt = null;   // last：上一步改动之前的样子，用来撤销
+  const persist = () => { try { localStorage.setItem(KEY + (MANUAL ? '.m' : ''), JSON.stringify(saved)); } catch (e) {} };
+  const hh = (h) => String(h).padStart(2, '0') + ':00', name = (id) => EVENTS.find(e => e[0] === id)[1];
+  const list = (ids) => ids.map(name).join('、');
+
+  function summary(s) {
+    const out = [], paused = s.pausedUntil > Date.now();
+    if (paused) return [['off', `手机推送和邮件都<b>暂停</b>了，站内消息照常记录。`]];
+    const pushIds = s.push ? EVENTS.map(e => e[0]).filter(id => s.on[id].includes('push')) : [];
+    if (pushIds.length) out.push(['', `<b>立刻推送到手机：</b>${list(pushIds)}。`]); else out.push(['off', s.push ? '没有任何事情会推送到手机。' : '手机推送整个关着。']);
+    if (s.push && pushIds.length && (s.quiet || s.weekend)) { const ex = pushIds.filter(id => (id === 'fail' && s.breakFail) || (id === 'mentor' && s.breakMentor));
+      out.push(['', `<b>免打扰：</b>${[s.quiet ? `每天 ${hh(s.quietFrom)} 到第二天 ${hh(s.quietTo)} ` : '', s.weekend ? '周末全天' : ''].filter(Boolean).join('，以及')}不推送${ex.length ? `，<b>${list(ex)}除外</b>` : ''}。`]); }
+    const mailIds = s.email ? EVENTS.map(e => e[0]).filter(id => s.on[id].includes('email')) : [];
+    if (!s.email) out.push(['off', '邮件整个关着。']);
+    else if (!mailIds.length) out.push(['off', '没有任何事情会发邮件。']);
+    else if (s.digest === 'none') out.push(['', `<b>邮件有事就发：</b>${list(mailIds)}。`]);
+    else { const urgent = s.digestUrgent ? mailIds.filter(id => id === 'fail' || id === 'mentor') : [], rest = mailIds.filter(id => !urgent.includes(id));
+      if (rest.length) out.push(['', `<b>${s.digest === 'daily' ? '每天' : '每周一'}早上 8:00 一封汇总邮件：</b>${list(rest)}。`]);
+      if (urgent.length) out.push(['', `<b>立刻发邮件：</b>${list(urgent)}。`]); }
+    const siteOnly = EVENTS.map(e => e[0]).filter(id => !pushIds.includes(id) && !mailIds.includes(id));
+    if (siteOnly.length) out.push(['off', `只在站内能看到：${list(siteOnly)}。`]);
+    return out;
+  }
+  const count = (a, b) => { let n = 0; for (const k in a) { if (k === 'on') { for (const e in a.on) for (const c of ['email', 'push']) if (a.on[e].includes(c) !== b.on[e].includes(c)) n++; } else if (a[k] !== b[k]) n++; } return n; };
+
+  function render() {
+    const s = draft, paused = s.pausedUntil > Date.now(), dirty = MANUAL ? count(draft, saved) : 0;
+    $('now').innerHTML = summary(s).map(([c, t]) => `<li class="${c}">${t}</li>`).join('');
+    $('now-title').textContent = dirty ? '保存之后，合起来会是这样' : '现在的设置合起来是这样';
+    $('paused').hidden = !paused;
+    if (paused) { const d = new Date(s.pausedUntil); $('paused').innerHTML = `<span>已暂停，到 <b>${d.getMonth() + 1} 月 ${d.getDate()} 日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</b> 自动恢复。</span><button type="button" class="ghost" id="resume">现在恢复</button>`; $('resume').onclick = () => change(d2 => { d2.pausedUntil = 0; }, '已恢复通知'); }
+    document.querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; if (el.type === 'checkbox') { el.checked = !!s[k]; const sp = el.nextElementSibling; if (sp && el.closest('.sw')) sp.textContent = el.checked ? '开着' : '关着'; } else el.value = String(s[k]); });
+    $('matrix').innerHTML = EVENTS.map(([id, t, d]) => `<tr><td><div class="t">${t}</div><div class="d">${d}${id === 'deadline' ? `，提前 ${s.deadlineDays} 天` : ''}</div></td>
+      ${['email', 'push'].map(c => `<td class="c${s[c] ? '' : ' offcol'}"><label><input type="checkbox" data-e="${id}" data-c="${c}" ${s.on[id].includes(c) ? 'checked' : ''} ${s[c] ? '' : 'disabled'} aria-label="${t}，${c === 'email' ? '邮件' : '手机推送'}"></label></td>`).join('')}</tr>`).join('');
+    ['email', 'push'].forEach(c => { const th = document.querySelector(`th[data-col="${c}"]`), b = th.querySelector('button'), allOn = EVENTS.every(e => s.on[e[0]].includes(c));
+      th.classList.toggle('offcol', !s[c]); b.disabled = !s[c]; b.textContent = !s[c] ? '已关闭' : allOn ? '全不选' : '全选'; });
+    // 依赖关系：上一级关了，下一级变灰并说明原因
+    document.querySelectorAll('[data-k="quietFrom"], [data-k="quietTo"]').forEach(el => { el.disabled = !s.quiet || !s.push; });
+    $('quiet-d').innerHTML = !s.push ? '<span class="hint">手机推送关着，免打扰现在不起作用</span>' : s.quiet ? `每天 ${hh(s.quietFrom)} 到第二天 ${hh(s.quietTo)}` : '关着，夜里也会推送';
+    document.querySelectorAll('[data-k="weekend"], [data-k="quiet"], [data-k="breakFail"], [data-k="breakMentor"]').forEach(el => { el.disabled = !s.push; });
+    document.querySelectorAll('[data-k="breakFail"], [data-k="breakMentor"]').forEach(el => { const off = !s.push || !(s.quiet || s.weekend); el.disabled = off; el.closest('.ck').classList.toggle('dis', off); });
+    const dg = document.querySelector('[data-k="digest"]'); dg.disabled = !s.email;
+    $('digest-d').innerHTML = !s.email ? '<span class="hint">邮件关着，汇总现在不起作用</span>' : s.digest === 'none' ? '每件事单独一封邮件' : '合成一封，早上 8:00 发';
+    const du = document.querySelector('[data-k="digestUrgent"]'); du.disabled = !s.email || s.digest === 'none'; $('urgent-ck').classList.toggle('dis', du.disabled);
+    $('test').disabled = !s.push || paused;
+    document.querySelectorAll('[data-pause]').forEach(b => { b.disabled = paused; });
+    // 底部状态条
+    $('bar').classList.toggle('dirty', dirty > 0); $('save').hidden = !MANUAL || !dirty;
+    if (MANUAL) { $('bar-msg').innerHTML = dirty ? `<b>有 ${dirty} 处改动还没保存。</b>离开这一页前记得保存。` : savedAt ? `已保存，${savedAt}。` : '没有改动。改完要点“保存”才生效。';
+      $('undo').hidden = !dirty; $('undo').textContent = '放弃改动'; }
+    else { $('bar-msg').innerHTML = savedAt ? `<b>已自动保存</b>，${savedAt}。${lastNote ? lastNote : ''}` : '改动会自动保存，不用点保存。';
+      $('undo').hidden = !last; $('undo').textContent = '撤销上一步'; }
+  }
+  let lastNote = '';
+  function change(fn, note) {
+    const before = clone(draft); fn(draft);
+    if (!MANUAL) { last = before; saved = clone(draft); persist(); const n = new Date(); savedAt = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0'); lastNote = note ? ' ' + note + '。' : ''; }
+    render();
+  }
+  document.addEventListener('change', (e) => { const el = e.target;
+    if (el.dataset.k) { const k = el.dataset.k, v = el.type === 'checkbox' ? el.checked : (isNaN(+el.value) ? el.value : +el.value); change(d => { d[k] = v; }); }
+    if (el.dataset.e) { const { e: id, c } = el.dataset; change(d => { d.on[id] = el.checked ? d.on[id].concat(c) : d.on[id].filter(x => x !== c); }); } });
+  document.addEventListener('click', (e) => { const all = e.target.closest('[data-all]'), pause = e.target.closest('[data-pause]');
+    if (all) { const c = all.dataset.all, on = !EVENTS.every(ev => draft.on[ev[0]].includes(c)); change(d => { EVENTS.forEach(ev => { d.on[ev[0]] = d.on[ev[0]].filter(x => x !== c).concat(on ? [c] : []); }); }); }
+    if (pause) change(d => { d.pausedUntil = Date.now() + +pause.dataset.pause * 3600e3; }, '已暂停'); });
+  $('undo').onclick = () => { if (MANUAL) { draft = clone(saved); render(); } else if (last) { draft = last; last = null; saved = clone(draft); persist(); lastNote = ' 已撤销上一步。'; render(); } };
+  $('save').onclick = () => { saved = clone(draft); persist(); const n = new Date(); savedAt = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0'); render(); };
+  $('reset').onclick = (ev) => { const b = ev.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = '确定恢复默认？再点一次'; setTimeout(() => { delete b.dataset.sure; b.textContent = '恢复默认'; }, 4000); return; }
+    delete b.dataset.sure; b.textContent = '恢复默认'; change(d => { Object.assign(d, clone(DEFAULTS)); }, '已恢复默认设置'); };
+  $('test').onclick = () => { $('test-msg').textContent = '已发送，看一下手机。'; setTimeout(() => { $('test-msg').textContent = ''; }, 4000); };
+  if (MANUAL) addEventListener('beforeunload', (e) => { if (count(draft, saved)) { e.preventDefault(); e.returnValue = ''; } });
+  ['quietFrom', 'quietTo'].forEach(k => { const el = document.querySelector(`[data-k="${k}"]`), hours = k === 'quietFrom' ? [20, 21, 22, 23, 0] : [6, 7, 8, 9, 10]; el.innerHTML = hours.map(h => `<option value="${h}">${hh(h)}</option>`).join(''); });
+  // 左侧目录跟着滚动高亮
+  const links = [...document.querySelectorAll('#toc a')], io = new IntersectionObserver((es) => { es.forEach(en => { if (en.isIntersecting) links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }); }, { rootMargin: '-10% 0px -70% 0px' });
+  links.forEach(a => io.observe(document.querySelector(a.getAttribute('href'))));
+  render();
+})();
+</script>
+</body>
+</html>
