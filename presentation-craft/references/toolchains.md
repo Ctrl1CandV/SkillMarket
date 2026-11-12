@@ -4,7 +4,7 @@
 
 宿主提供文档/幻灯片运行时或依赖加载入口时，优先使用它返回的 Node、Python 与包目录；没有时使用已有环境或任务内依赖。不要将某台机器的绝对路径写进源稿或技能。
 
-`scripts/doctor.py` 报告当前 Node、PptxGenJS、Python-PPTX、LibreOffice、Windows PowerPoint COM 和 PDF 栅格工具的可用性，分别列出原生制作引擎与渲染路线。PowerPoint 只探测 Python 支持和 COM 注册，不启动软件；注册存在不保证授权、导出或字体正常。缺失的可选引擎不意味着所有路线失败。探测不安装软件、不访问模型服务、不证明生成效果。
+`scripts/doctor.py` 报告当前 Node、PptxGenJS、Python-PPTX、LibreOffice、Windows PowerPoint COM 和 PDF 栅格工具的可用性，分别列出原生制作引擎与渲染路线。没有可用渲染路线时，输出里的 `no_renderer_advice` 给出处理办法：常规安装只试一次，不行就停止补环境，做完成品并如实说明未做渲染验证。PowerPoint 只探测 Python 支持和 COM 注册，不启动软件；注册存在不保证授权、导出或字体正常。缺失的可选引擎不意味着所有路线失败。探测不安装软件、不访问模型服务、不证明生成效果。
 
 宿主返回的 Node 与包目录没有进入默认搜索路径时，在当前任务进程临时设置 `NODE_PATH` 为该包目录，再运行 `doctor.py --node <宿主Node可执行文件>`；不用因此重复安装包或修改系统环境。运行时路径从宿主获取，不硬编码到技能和源稿。
 

@@ -135,7 +135,29 @@ def animation_info(slide):
             'ambiguous_target_ids': sorted({item for item in targets if object_ids.count(item) > 1})}
 
 
-def audit(path, expected_slides=None, text_warning=900):
+def type_scale(slide, canvas_width_in):
+    """Characters per explicit run size, scaled to a 13.333 in wide canvas.
+
+    Only run-level sizes are visible here; text that inherits its size from a
+    layout or master is counted as unsized and never triggers a warning.
+    """
+    scale = 13.333 / canvas_width_in if canvas_width_in else 1.0
+    by_size, unsized = {}, 0
+    for run in slide.findall('.//a:r', NS):
+        chars = len(''.join((t.text or '') for t in run.findall('a:t', NS)).strip())
+        if not chars:
+            continue
+        props = run.find('a:rPr', NS)
+        size = props.get('sz') if props is not None else None
+        if size:
+            key = round(int(size) / 100 * scale, 1)
+            by_size[key] = by_size.get(key, 0) + chars
+        else:
+            unsized += chars
+    return by_size, unsized
+
+
+def audit(path, expected_slides=None, text_warning=900, body_pt=16.0, small_pt=14.0):
     path = Path(path).resolve()
     findings, pages = [], []
     report = {'deck': str(path), 'deck_sha256': sha256(path), 'pages': pages, 'findings': findings}
@@ -183,6 +205,16 @@ def audit(path, expected_slides=None, text_warning=900):
                 native_text_shapes = sum(bool(node.findall('.//a:t', NS)) for node, _, _ in page_shapes)
                 font_sizes = [int(r.get('sz'))/100 for r in slide.findall('.//a:rPr', NS) if r.get('sz')]
                 motion = animation_info(slide)
+                by_size, unsized = type_scale(slide, width / EMU)
+                sized_chars = sum(by_size.values())
+                # Median size by character count: half of the sized text is at or below it.
+                main_pt, seen = None, 0
+                for key in sorted(by_size):
+                    seen += by_size[key]
+                    if seen * 2 >= sized_chars:
+                        main_pt = key
+                        break
+                small_chars = sum(v for k, v in by_size.items() if k < small_pt)
                 if motion['invalid_target_ids'] or motion['ambiguous_target_ids'] or motion['duplicate_time_ids']:
                     add('error', 'invalid_animation_reference', 'Animation has missing/ambiguous shape targets or duplicate timing IDs', number)
                 notes_text = ''
@@ -197,7 +229,19 @@ def audit(path, expected_slides=None, text_warning=900):
                               'native_text_shapes': native_text_shapes, 'images': image_count,
                               'native_charts': chart_count, 'notes': notes_text,
                               'animation': motion,
-                              'explicit_min_font_pt': min(font_sizes) if font_sizes else None})
+                              'explicit_min_font_pt': min(font_sizes) if font_sizes else None,
+                              'type_chars_by_pt': {str(k): v for k, v in sorted(by_size.items())},
+                              'type_chars_unsized': unsized,
+                              'type_median_pt': main_pt,
+                              'type_small_chars': small_chars})
+                if main_pt is not None and main_pt < body_pt and sized_chars >= 60:
+                    add('warning', 'body_type_small',
+                        f'Half of the text on this slide is {main_pt:g} pt or smaller (caption size; threshold {body_pt:g} pt '
+                        'on a 13.33 in wide canvas). Shorten, split the slide or move explanation to notes instead of shrinking type. '
+                        'The threshold is a floor, not a goal: aim for body text around 22-24 pt and tables or labels around 18-22 pt', number)
+                elif small_chars > max(80, 0.25 * sized_chars):
+                    add('warning', 'small_type',
+                        f'{small_chars} characters are below {small_pt:g} pt; keep that size for short source lines only', number)
                 if not page_shapes:
                     add('warning', 'empty_slide', 'No direct slide objects; inspect inherited layout/background', number)
                 if len(text) > text_warning:
@@ -221,6 +265,12 @@ def audit(path, expected_slides=None, text_warning=900):
     except (zipfile.BadZipFile, ET.ParseError, KeyError, ValueError, TypeError) as exc:
         add('error', 'invalid_package', str(exc))
     report['structural_pass'] = not any(f['severity'] == 'error' for f in findings)
+    sized = [p for p in pages if p.get('type_median_pt') is not None]
+    report['type_summary'] = {
+        'reference_canvas_width_in': 13.333, 'body_pt_threshold': body_pt, 'small_pt_threshold': small_pt,
+        'pages_median_pt': {str(p['page']): p['type_median_pt'] for p in sized},
+        'pages_below_body_threshold': sorted({f['page'] for f in findings if f['code'] == 'body_type_small'}),
+        'note': 'Median run size by character count, scaled to a 13.33 in wide canvas. Inherited sizes and text inside pictures are not measured.'}
     report['limitations'] = 'No OOXML schema validation, slideshow playback test, visual judgement, font fit, factual review or guarantee of full editability.'
     return report
 
@@ -231,14 +281,20 @@ def main():
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--expected-slides', type=int)
     parser.add_argument('--text-warning', type=int, default=900)
+    parser.add_argument('--body-pt', type=float, default=16.0,
+                        help='Warn when half of the text on a slide is set below this size (13.33 in wide canvas)')
+    parser.add_argument('--small-pt', type=float, default=14.0,
+                        help='Warn when more than a short source line is set below this size')
     args = parser.parse_args()
     try:
-        result = audit(args.deck, args.expected_slides, args.text_warning)
+        result = audit(args.deck, args.expected_slides, args.text_warning, args.body_pt, args.small_pt)
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'structural_pass': result['structural_pass'], 'slides': result.get('slide_count'),
                           'errors': sum(f['severity'] == 'error' for f in result['findings']),
                           'warnings': sum(f['severity'] == 'warning' for f in result['findings']),
+                          'warning_codes': sorted({f['code'] for f in result['findings'] if f['severity'] == 'warning'}),
+                          'pages_below_body_type': result.get('type_summary', {}).get('pages_below_body_threshold', []),
                           'report': str(args.report.resolve())}, ensure_ascii=False))
         return 0 if result['structural_pass'] else 1
     except OSError as exc:
