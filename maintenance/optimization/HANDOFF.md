@@ -68,7 +68,7 @@
 | skill-search | 0.3.0 | 区分“直接使用”和“借鉴参考” | 借鉴用途没在真实检索里试过 |
 | presentation-craft | 0.4.0 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
 | imagecraft | 0.3.1 | 显卡检测能分清“没发现”和“驱动在但访问不到”；出图通道都用不了时的做法 | **没有一张图来自生图模型**；本机出图、订阅出图、交互式会话里的“先问”都没测 |
-| docvision | 0.5.1 | 只修了同样的显卡误判 | 完整一轮没开始 |
+| docvision | 0.5.2 | 真实论文筛读和真实扫描页 OCR 实测通过；fast 档报告页面上看不见的文字；中文 Windows 输出不再崩溃；doctor 显示引擎崩溃原因 | 每个条件只跑 1 次；中文扫描件、PaddleOCR 本地路线没测；MinerU 环境缺依赖靠用户目录补，待用户决定是否装进环境 |
 | video-craft | 0.3.0 | Windows 回归通过；联系表标出冻住的画面；starter 加缓慢推近；修 audiocheck 的 Windows 路径 | 每个版本只跑 1 次；用户对改前改后两条成片的盲选待补；真人配音没测 |
 
 ## 五、迁到 Windows 后先做什么
@@ -77,7 +77,7 @@
 
 1. ~~presentation-craft 补看真实画面~~（2026-11-12 完成，0.4.0，见 `maintenance/presentation-craft/evals/pi-run-2026-11-12/README.md`）。
 2. ~~video-craft~~（2026-11-12 完成一轮，0.3.0，见 `maintenance/video-craft/evals/2026-11-12-caffeine/README.md`）。
-3. **docvision。** 在普通终端跑 `python docvision/scripts/docvision.py doctor` 确认显卡，用用户实际在读的论文测数字 PDF 的筛读路线，再用一页扫描件验收本地 OCR。
+3. ~~docvision~~（2026-11-12 完成一轮，0.5.2，见 `maintenance/docvision/evals/2026-11-12-real-run/README.md`）。
 4. **imagecraft。** 跑 `python imagecraft/scripts/imagecraft.py discover` 看显卡和现有 ComfyUI，再用 `pi-tasks/cover` 这个任务验证真正的出图。走本机还是 GPT 订阅由用户定；订阅出图每张都要用户授权。
 5. 四个技能都补完后，进入第三阶段。
 
@@ -86,7 +86,7 @@
 ```text
 python maintenance/presentation-craft/evals/check.py                      # 17 项
 python -B -m unittest discover -s maintenance/imagecraft/tests            # 93 项
-python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 270 项，2 项跳过
+python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 276 项，Windows 上跳过 1 项
 python maintenance/docvision/evals/check.py                                # 5 项
 ```
 

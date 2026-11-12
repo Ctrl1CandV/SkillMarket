@@ -2,7 +2,7 @@
 name: docvision
 description: 读取 PDF、扫描件、截图和论文中的正文、公式、表格、图表与架构图，生成带页码和区域定位的内容。默认本地 OCR；疑难或出错区域可在用户同意后用 PaddleOCR API 提供纠错候选，核对原图后保存人工或宿主校正。图表与架构图由当前对话视觉能力看图解释。不用于 PDF 编辑、图片生成或普通纯文本阅读。
 metadata:
-  version: "0.5.1"
+  version: "0.5.2"
 ---
 
 # Docvision

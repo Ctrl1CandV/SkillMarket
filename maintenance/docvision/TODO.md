@@ -1,5 +1,18 @@
 # docvision 待办
 
+## 0.5.2 Windows 本机真实论文与扫描件实测（2026-11-12）
+
+记录见 [evals/2026-11-12-real-run/README.md](evals/2026-11-12-real-run/README.md)。
+
+- [x] doctor 在本机正确识别 RTX 4070 Ti SUPER；MinerU 单页 13 秒。
+- [x] 真实论文（arXiv 2611.14286）走 fast 筛读路线，deepseek-flash 改前改后各 1 次，四题全对。
+- [x] 真实扫描页（Shannon 1948 第 393 页）走本地 MinerU，gpt-6.1-sol 1 次，结果与原图逐字一致。
+- [x] fast 档报告页面上看不见的文字（插图里裁掉的部分）；`read` 在该页和列表里重复警告。
+- [x] 入口统一 UTF-8 输出，中文 Windows 管道不再因 ϕ、ﬁ 等字符崩溃。
+- [x] doctor 显示引擎崩溃的真正原因；磁盘空间保留一位小数；同意记录写对文件位置。
+- [ ] `docvision-mineru` 环境缺十几个依赖，靠用户目录的 site-packages 补上。装进环境需用户同意。
+- [ ] 中文扫描件、PaddleOCR 本地路线、`refine` 精读包被模型主动使用的情况，都还没测。
+
 ## 0.5.1 显卡检测修正（2026-11-12）
 
 起因：在 WSL 的受限沙箱里，`doctor` 报告 CPU-only，我和被测模型（deepseek-flash，imagecraft 实测中）都据此说成“这台机器没有显卡”。实际驱动工具在 `/usr/lib/wsl/lib/nvidia-smi`（不在 PATH），执行时报 `GPU access blocked by the operating system`。
