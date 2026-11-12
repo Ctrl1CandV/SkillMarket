@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>昼长 · 一年里的三百六十五个白天</title>
+<style>
+  :root { --wall: #F4F3EF; --ink: #17171A; --ink-2: #66665F; --rule: #D8D6CE;
+    --display: "Songti SC", "STZhongsong", "Source Han Serif SC", "SimSun", serif;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif; --num: "Bahnschrift", "DIN Alternate", var(--sans); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--wall); color: var(--ink); font: 16px/1.8 var(--sans); }
+  button, input { font: inherit; color: inherit; }
+  .top { max-width: 1280px; margin: 0 auto; padding: 18px 40px 0; display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); letter-spacing: .12em; }
+  .hall { max-width: 1280px; margin: 0 auto; padding: 26px 40px 96px; display: grid; grid-template-columns: 168px minmax(0, 1fr); gap: 0 44px; }
+  /* 标题竖排，像展墙上的题签 */
+  .title { writing-mode: vertical-rl; font: 700 148px/1 var(--display); letter-spacing: .12em; margin: 0; height: fit-content; }
+  .side p { margin: 26px 0 0; font-size: 14px; line-height: 1.9; color: var(--ink-2); text-wrap: pretty; }
+  .side p b { color: var(--ink); font-weight: 600; }
+  .controls { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .cities { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid transparent; background: transparent; cursor: pointer; font-size: 14px; color: var(--ink-2); }
+  .chip:hover { color: var(--ink); border-color: var(--rule); }
+  .chip[aria-pressed="true"] { color: var(--wall); background: var(--ink); }
+  .seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 999px; padding: 2px; }
+  .seg button { border: 0; background: transparent; height: 32px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-size: 14px; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--wall); }
+  :focus-visible { outline: 3px solid #C2553F; outline-offset: 3px; }
+
+  .work { position: relative; line-height: 0; cursor: crosshair; touch-action: pan-y; }
+  .work canvas { display: block; width: 100%; border-radius: 2px; }
+  .work svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .work svg text { font: 12px var(--sans); fill: var(--ink-2); }
+  .work.ring { max-width: 660px; margin: 0 auto; }
+  .axis-pad { padding: 24px 0 26px 44px; }   /* 给坐标文字和节气名留的边 */
+  .work.ring.axis-pad { padding: 26px; }
+
+  .read { margin-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 40px; align-items: end; border-top: 1px solid var(--ink); padding-top: 16px; }
+  .read .date { font: 700 44px/1.1 var(--display); white-space: nowrap; }
+  .read .nums { display: flex; flex-wrap: wrap; gap: 6px 36px; justify-content: flex-end; }
+  .read .nums div { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+  .read .nums b { display: block; font: 600 34px/1.1 var(--num); color: var(--ink); }
+  .read .nums b small { font: 14px var(--sans); color: var(--ink-2); margin-left: 3px; }
+  .read .delta { grid-column: 1 / -1; font-size: 14px; color: var(--ink-2); }
+  .lat { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
+  .lat input { flex: 1; max-width: 420px; accent-color: var(--ink); height: 28px; }
+  .lat b { font: 600 18px var(--num); color: var(--ink); min-width: 5.5em; }
+  .label { margin-top: 56px; max-width: 34em; }
+  .label h2 { font: 700 26px/1.4 var(--display); margin: 0 0 10px; }
+  .label p { margin: 0 0 1em; }
+  .label .fine { font-size: 13px; color: var(--ink-2); line-height: 1.8; border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 26px; }
+
+  @media (max-width: 900px) {
+    .top { padding: 14px 18px 0; } .hall { grid-template-columns: minmax(0, 1fr); padding: 14px 18px 64px; }   /* 写成 1fr 的话，这一栏会被里面那排不换行的城市按钮撑宽 */
+    .title { writing-mode: horizontal-tb; font-size: 72px; letter-spacing: .08em; } .side p { margin-top: 10px; } .side { margin-bottom: 18px; }
+    .cities { flex-wrap: nowrap; overflow-x: auto; margin: 0 -18px; padding: 0 18px; scrollbar-width: none; } .cities::-webkit-scrollbar { display: none; } .chip { flex: none; height: 40px; }
+    .axis-pad { padding-left: 34px; }
+    .read { grid-template-columns: 1fr; gap: 10px; } .read .date { font-size: 34px; } .read .nums { justify-content: flex-start; gap: 6px 26px; } .read .nums b { font-size: 28px; }
+    .label { margin-top: 40px; }
+    .lat { flex-wrap: wrap; gap: 6px 12px; } .lat > span:first-child { white-space: nowrap; } .lat .tip { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><span>练习 · 一件作品</span><span>2026</span></div>
+<div class="hall">
+  <aside class="side">
+    <h1 class="title">昼长</h1>
+    <p><b>一年，三百六十五个白天。</b><br><span id="how"></span></p>
+  </aside>
+  <main>
+    <div class="controls">
+      <div class="cities" id="cities" role="group" aria-label="地点"></div>
+      <div class="seg" id="view" role="group" aria-label="画法"><button type="button" data-v="band">条带</button><button type="button" data-v="ring">年轮</button></div>
+    </div>
+    <div class="work axis-pad" id="work" tabindex="0" role="img" aria-describedby="read"><canvas id="cv"></canvas><svg id="ov"></svg></div>
+    <div class="read" id="read" aria-live="polite"></div>
+    <div class="lat"><span>纬度</span><input type="range" id="lat" min="-70" max="70" step="0.1" aria-label="纬度"><b id="lat-v"></b><span class="tip">拖动它，看这幅画怎么变形</span></div>
+
+    <section class="label">
+      <h2>同一个太阳，不同的一年</h2>
+      <p>在赤道，这幅画几乎是一条直直的带子：全年每天都是十二个小时出头。越往北，带子在夏天越鼓、在冬天越瘪，变成一只眼睛的形状。过了北极圈，夏天的白昼顶到了画的上下两边，冬天的白昼干脆断开，只剩一段不肯亮起来的暮色。</p>
+      <p>仔细看，这只“眼睛”并不对称。日出最晚的那一天不是冬至，而是冬至之后的一月初；日落最早的那一天在冬至之前。这是因为地球的轨道是椭圆，地轴又是斜的，太阳每天到达正南的时刻会前后摆动十几分钟。画上每一条线都算进了这一点。</p>
+      <p class="fine">算法：太阳赤纬和均时差用常见的傅里叶近似式，逐点计算太阳高度角；日出日落取太阳中心在地平线下 0.833°（含大气折射和太阳半径），晨昏的紫色是地平线下 6° 以内。时间是当地的太阳时，正午太阳最高，和手表上的时间会差几分钟到一个多小时。按 365 天计算。节气日期取 2026 年北京时间。这是一件练习作品，不用于导航或者天文观测。</p>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  const RAD = Math.PI / 180, $ = (id) => document.getElementById(id), cv = $('cv'), ctx = cv.getContext('2d'), work = $('work'), ov = $('ov');
+  const CITIES = [['新加坡', 1.3], ['广州', 23.1], ['上海', 31.2], ['北京', 39.9], ['哈尔滨', 45.8], ['漠河', 53.5], ['雷克雅未克', 64.1], ['特罗姆瑟', 69.7], ['悉尼', -33.9]];
+  const MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], TERMS = [['春分', 79], ['夏至', 172], ['秋分', 266], ['冬至', 356]];
+  // 每一天的赤纬（弧度）和均时差（分钟）
+  const DEC = [], EQ = [];
+  for (let n = 1; n <= 365; n++) { const g = 2 * Math.PI / 365 * (n - 1);
+    EQ.push(229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g)));
+    DEC.push(0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g)); }
+  // 太阳高度（度）→ 颜色：深夜、晨昏的紫和玫红、贴着地平线的橙、越升越淡的金
+  const STOPS = [[-18, 11, 16, 38], [-12, 21, 32, 74], [-6, 58, 47, 107], [-3, 154, 63, 106], [-0.833, 226, 106, 59], [3, 244, 165, 71], [8, 246, 206, 122], [20, 248, 227, 168], [45, 251, 241, 207], [75, 253, 248, 230]];
+  const LUT = new Uint8Array(1101 * 3);   // 高度 -20° 到 90°，每 0.1° 一格
+  for (let i = 0; i <= 1100; i++) { const a = -20 + i / 10; let k = 0; while (k < STOPS.length - 2 && a > STOPS[k + 1][0]) k++; const s0 = STOPS[k], s1 = STOPS[k + 1], t = Math.max(0, Math.min(1, (a - s0[0]) / (s1[0] - s0[0])));
+    for (let c = 0; c < 3; c++) LUT[i * 3 + c] = Math.round(s0[c + 1] + (s1[c + 1] - s0[c + 1]) * t); }
+  const state = { lat: 39.9, view: 'band', day: Math.min(365, Math.max(1, Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5))) };
+  try { const h = new URLSearchParams(location.hash.slice(1)); if (h.get('lat')) state.lat = +h.get('lat'); if (h.get('view')) state.view = h.get('view'); if (h.get('day')) state.day = +h.get('day'); } catch (e) {}
+
+  function events(n, lat) {   // 某一天的日出、日落（分钟，地方太阳时）
+    const d = DEC[n - 1], c = Math.cos(90.833 * RAD) / (Math.cos(lat * RAD) * Math.cos(d)) - Math.tan(lat * RAD) * Math.tan(d);
+    if (c < -1) return { all: 'day', len: 1440 }; if (c > 1) return { all: 'night', len: 0 };
+    const ha = Math.acos(c) / RAD; return { rise: 720 - 4 * ha - EQ[n - 1], set: 720 + 4 * ha - EQ[n - 1], len: 8 * ha };
+  }
+  const hm = (m) => { m = Math.round(m); return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); };
+  const dateOf = (n) => { let m = 0; while (n > MONTH[m]) { n -= MONTH[m]; m++; } return [m + 1, n]; };
+
+  let geo = null;
+  function paint() {
+    const ring = state.view === 'ring', dpr = Math.min(2, window.devicePixelRatio || 1);
+    work.classList.toggle('ring', ring);
+    const cssW = cv.clientWidth, cssH = ring ? cssW : Math.round(Math.max(260, Math.min(560, cssW * (cssW < 600 ? 0.9 : 0.5))));
+    cv.style.height = cssH + 'px'; const W = Math.round(cssW * dpr), H = Math.round(cssH * dpr); cv.width = W; cv.height = H;
+    const img = ctx.createImageData(W, H), px = img.data, sl = Math.sin(state.lat * RAD), cl = Math.cos(state.lat * RAD);
+    const sd = DEC.map(Math.sin), cd = DEC.map(Math.cos);
+    const put = (o, n, minute) => { const hAng = ((minute + EQ[n]) - 720) / 4 * RAD, alt = Math.asin(sl * sd[n] + cl * cd[n] * Math.cos(hAng)) / RAD, i = Math.round((Math.max(-20, Math.min(90, alt)) + 20) * 10) * 3;
+      px[o] = LUT[i]; px[o + 1] = LUT[i + 1]; px[o + 2] = LUT[i + 2]; px[o + 3] = 255; };
+    if (!ring) { for (let x = 0; x < W; x++) { const n = Math.min(364, Math.floor(x / W * 365)); for (let y = 0; y < H; y++) put((y * W + x) * 4, n, y / H * 1440); } geo = { ring, cssW, cssH }; }
+    else { const cx = W / 2, cy = H / 2, r1 = W / 2, r0 = r1 * 0.3;   // 内圈和外圈都是午夜，圆环正中是正午
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const dx = x - cx, dy = y - cy, r = Math.sqrt(dx * dx + dy * dy), o = (y * W + x) * 4;
+        if (r < r0 || r > r1) { px[o + 3] = 0; continue; } let th = Math.atan2(dx, -dy); if (th < 0) th += 2 * Math.PI;
+        put(o, Math.min(364, Math.floor(th / (2 * Math.PI) * 365)), (r - r0) / (r1 - r0) * 1440);
+        const edge = Math.min(r - r0, r1 - r); if (edge < dpr) px[o + 3] = Math.round(255 * edge / dpr); }
+      geo = { ring, cssW, cssH, r0: cssW / 2 * 0.3, r1: cssW / 2 }; }
+    ctx.putImageData(img, 0, 0); overlay();
+  }
+  function overlay() {
+    const { ring, cssW: W, cssH: H } = geo, n = state.day, e = events(n, state.lat); let s = '';
+    if (!ring) {
+      [0, 6, 12, 18, 24].forEach(h => { s += `<text x="-10" y="${H * h / 24 + 4}" text-anchor="end">${h} 时</text>`; });
+      let acc = 0; MONTH.forEach((d, m) => { const x = W * (acc + d / 2) / 365; if (W > 560 || m % 2 === 0) s += `<text x="${x}" y="${H + 20}" text-anchor="middle">${m + 1} 月</text>`; acc += d; });
+      TERMS.forEach(([name, dn]) => { const x = W * (dn - 0.5) / 365; s += `<line x1="${x}" x2="${x}" y1="0" y2="${H}" stroke="#fff" stroke-opacity=".35" stroke-dasharray="2 5"/><text x="${x}" y="-8" text-anchor="middle" style="fill:#17171A">${name}</text>`; });
+      const x = W * (n - 0.5) / 365; s += `<line x1="${x}" x2="${x}" y1="-4" y2="${H + 4}" stroke="#17171A" stroke-width="1.5"/><line x1="${x}" x2="${x}" y1="0" y2="${H}" stroke="#fff" stroke-width=".6"/>`;
+      if (!e.all) [e.rise, e.set].forEach(m => { s += `<circle cx="${x}" cy="${H * m / 1440}" r="5" fill="#fff" stroke="#17171A" stroke-width="1.5"/>`; });
+    } else {
+      const c = W / 2, { r0, r1 } = geo, pt = (dn, r) => { const th = (dn - 0.5) / 365 * 2 * Math.PI; return [c + r * Math.sin(th), c - r * Math.cos(th)]; };
+      let acc = 0; MONTH.forEach((d, m) => { const [x, y] = pt(acc + d / 2, r1 + 14); s += `<text x="${x}" y="${y + 4}" text-anchor="middle">${m + 1} 月</text>`; acc += d; });
+      const [x0, y0] = pt(n, r0 - 6), [x1, y1] = pt(n, r1 + 4); s += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#17171A" stroke-width="1.5"/>`;
+      if (!e.all) [e.rise, e.set].forEach(m => { const [x, y] = pt(n, r0 + (r1 - r0) * m / 1440); s += `<circle cx="${x}" cy="${y}" r="5" fill="#fff" stroke="#17171A" stroke-width="1.5"/>`; });
+      const [mo, da] = dateOf(n); s += `<text x="${c}" y="${c - 6}" text-anchor="middle" style="font:700 ${Math.round(r0 * 0.3)}px var(--display);fill:#17171A">${mo} 月 ${da} 日</text><text x="${c}" y="${c + r0 * 0.28}" text-anchor="middle" style="font:600 ${Math.round(r0 * 0.2)}px var(--num);fill:#66665F">${e.all ? (e.all === 'day' ? '整天是白昼' : '整天是黑夜') : hm(e.len)}</text>`;
+    }
+    ov.setAttribute('viewBox', `0 0 ${W} ${H}`); ov.style.cssText = ring ? 'inset:26px;width:calc(100% - 52px);height:calc(100% - 52px)' : `left:${getComputedStyle(work).paddingLeft};top:${getComputedStyle(work).paddingTop};width:${W}px;height:${H}px`; ov.innerHTML = s;
+    const [mo, da] = dateOf(n), prev = events(n === 1 ? 365 : n - 1, state.lat), diff = Math.round((e.len - prev.len) * 60), city = CITIES.find(cy => Math.abs(cy[1] - state.lat) < 0.05);
+    $('read').innerHTML = `<div class="date">${mo} 月 ${da} 日</div><div class="nums">${e.all ? `<div><b>${e.all === 'day' ? '太阳不落' : '太阳不升'}</b>${e.all === 'day' ? '极昼' : '极夜'}</div>` : `<div><b class="num">${hm(e.rise)}</b>日出</div><div><b class="num">${hm(e.set)}</b>日落</div><div><b class="num">${Math.floor(Math.round(e.len) / 60)}<small>小时</small>${String(Math.round(e.len) % 60).padStart(2, '0')}<small>分</small></b>白昼</div>`}</div>
+      <div class="delta">${city ? city[0] : '北纬南纬'.slice(state.lat >= 0 ? 0 : 2, state.lat >= 0 ? 2 : 4) + ' ' + Math.abs(state.lat).toFixed(1) + '°'}。${e.all || prev.all ? '' : diff === 0 ? '白昼和前一天一样长。' : `白昼比前一天${diff > 0 ? '长' : '短'} ${Math.abs(diff) >= 60 ? Math.floor(Math.abs(diff) / 60) + ' 分 ' : ''}${Math.abs(diff) % 60} 秒。`}在画上移动，或者按左右键，换一天。</div>`;
+    $('how').textContent = ring ? '每一条半径是一天，一月在正上方，顺时针转一圈是一年。从里到外是零点到二十四点。颜色只取决于那一刻太阳在天上有多高。' : '每一条竖线是一天，从上到下是零点到二十四点。颜色只取决于那一刻太阳在天上有多高。';
+    $('lat-v').textContent = (state.lat >= 0 ? '北纬 ' : '南纬 ') + Math.abs(state.lat).toFixed(1) + '°';
+    history.replaceState(null, '', `#lat=${state.lat}&view=${state.view}&day=${state.day}`);
+  }
+  function controls() {
+    $('cities').innerHTML = CITIES.map(([name, lat]) => `<button type="button" class="chip" data-lat="${lat}" aria-pressed="${Math.abs(lat - state.lat) < 0.05}">${name}</button>`).join('');
+    $('view').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === state.view))); $('lat').value = state.lat;
+  }
+  let raf = 0; const repaint = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { controls(); paint(); }); };
+  $('cities').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) { state.lat = +b.dataset.lat; repaint(); } });
+  $('view').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.view = b.dataset.v; repaint(); } });
+  $('lat').addEventListener('input', (e) => { state.lat = +e.target.value; repaint(); });
+  const pick = (ev) => { const r = cv.getBoundingClientRect(), p = ev.touches ? ev.touches[0] : ev, x = p.clientX - r.left, y = p.clientY - r.top; let n;
+    if (!geo.ring) n = Math.floor(x / r.width * 365) + 1; else { let th = Math.atan2(x - r.width / 2, -(y - r.height / 2)); if (th < 0) th += 2 * Math.PI; n = Math.floor(th / (2 * Math.PI) * 365) + 1; }
+    n = Math.min(365, Math.max(1, n)); if (n !== state.day) { state.day = n; overlay(); } };
+  work.addEventListener('mousemove', pick); work.addEventListener('touchstart', pick, { passive: true }); work.addEventListener('touchmove', pick, { passive: true });
+  work.addEventListener('keydown', (e) => { const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!step) return; e.preventDefault(); state.day = (state.day - 1 + step * (e.shiftKey ? 7 : 1) + 365) % 365 + 1; overlay(); });
+  let w = 0; new ResizeObserver(() => { if (cv.clientWidth !== w) { w = cv.clientWidth; paint(); } }).observe(work);
+  controls(); paint();
+})();
+</script>
+</body>
+</html>
