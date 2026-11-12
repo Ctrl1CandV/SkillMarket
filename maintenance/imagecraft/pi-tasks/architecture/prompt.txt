@@ -1,0 +1,1 @@
+帮我画一张系统架构图，要放进项目 README。系统是这样的：浏览器前端（React）通过 API 网关（Nginx）访问三个后端服务：用户服务、订单服务、检索服务。用户服务和订单服务读写 PostgreSQL；三个服务都用 Redis 做缓存；检索服务查询 Elasticsearch。订单服务下单后往 RabbitMQ 发消息，通知服务（Worker）消费消息并发邮件。所有服务的日志都写到 Loki。图放在 docs/ 目录下。

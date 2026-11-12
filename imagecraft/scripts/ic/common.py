@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import tempfile
 import urllib.parse
@@ -154,14 +155,41 @@ def discover(roots: list[str]) -> dict:
                     interpreters.add((base / relative).resolve())
     return {"schema": "imagecraft.discovery/1", "comfyui": [{"root": str(p), "version": comfy_version(p)} for p in sorted(candidates)],
             "python_candidates": [str(p) for p in sorted(interpreters)],
-            "searched_roots": [str(p) for p in seeds],
+            "searched_roots": [str(p) for p in seeds], "gpu": gpu_info(),
             "note": "Not found does not mean not installed. Supply --root or ask the owner for the installation path. No environment was executed or modified."}
 
 
+# WSL ships nvidia-smi here without putting it on PATH.
+NVIDIA_SMI_FALLBACKS = ("/usr/lib/wsl/lib/nvidia-smi",)
+
+
+def find_nvidia_smi() -> str | None:
+    found = shutil.which("nvidia-smi")
+    if found:
+        return found
+    for candidate in NVIDIA_SMI_FALLBACKS:
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
+
 def gpu_info() -> dict:
+    """Report the NVIDIA GPU, and tell "no tool found" apart from "tool found but GPU unreachable"."""
+    exe = find_nvidia_smi()
+    if not exe:
+        return {"available": False, "state": "not_detected",
+                "note": "nvidia-smi not found on PATH or in the WSL driver directory; this does not prove no GPU exists"}
     try:
-        result = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total,memory.used,driver_version", "--format=csv,noheader,nounits"],
-                                capture_output=True, text=True, timeout=10, check=True)
-        return {"nvidia_smi": result.stdout.strip().splitlines(), "memory_unit": "MiB", "scope": "whole GPU, not this job's allocation"}
-    except (OSError, subprocess.SubprocessError):
-        return {"available": False, "note": "nvidia-smi unavailable; this does not prove no GPU exists"}
+        result = subprocess.run([exe, "--query-gpu=name,memory.total,memory.used,driver_version", "--format=csv,noheader,nounits"],
+                                capture_output=True, text=True, timeout=10)
+    except (OSError, subprocess.SubprocessError) as exc:
+        result, detail = None, str(exc)
+    if result is not None and result.returncode == 0 and result.stdout.strip():
+        return {"available": True, "state": "ok", "nvidia_smi": result.stdout.strip().splitlines(),
+                "memory_unit": "MiB", "scope": "whole GPU, not this job's allocation"}
+    if result is not None:
+        detail = (result.stderr or result.stdout or "").strip()[-300:]
+    return {"available": False, "state": "present_but_inaccessible", "nvidia_smi_path": exe, "detail": detail,
+            "note": "NVIDIA driver tools are installed but the query failed. A sandbox or container without access to the "
+                    "GPU device is the usual cause. The machine may well have a usable GPU: ask the user to run nvidia-smi "
+                    "in an ordinary terminal before choosing a route, and do not report this as 'no GPU'."}
