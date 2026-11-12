@@ -54,7 +54,10 @@ class Gallery:
         run.font.bold, run.font.color.rgb = bold, rgb(ink or self.theme['text'])
         ea = OxmlElement('a:ea')
         ea.set('typeface', self.font)
-        run._r.get_or_add_rPr().append(ea)
+        props = run._r.get_or_add_rPr()
+        # Without an East Asian language PowerPoint breaks Chinese by Western rules (，at line start).
+        props.set('lang', 'zh-CN')
+        props.append(ea)
 
     def text(self, slide, value, x, y, w, h, size=18, ink=None, bold=False, center=False):
         box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
@@ -77,7 +80,7 @@ class Gallery:
         slide.background.fill.solid()
         slide.background.fill.fore_color.rgb = rgb(self.theme['background'])
         self.text(slide, f'图表样张 / {kind}', .65, .32, 11.8, .32, 14, BLUE, True)
-        self.text(slide, title, .65, .93, 12.0, .68, 30, bold=True)
+        self.text(slide, title, .65, .88, 12.0, .78, 36, bold=True)
         self.text(slide, DEMO, .65, 7.06, 11.2, .22, 11, self.theme['muted'])
         self.text(slide, f'{len(self.prs.slides):02d}', 12.12, 7.02, .5, .3, 12,
                   self.theme['muted'])
@@ -384,6 +387,8 @@ def main():
                         if ea is None:
                             ea = OxmlElement('a:ea'); props.append(ea)
                         ea.set('typeface', g.font)
+                        if props.tag.endswith('}defRPr') or props.tag.endswith('}rPr'):
+                            props.set('lang', 'zh-CN')
         stream = BytesIO(); g.prs.save(stream)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with args.output.open('xb') as destination:

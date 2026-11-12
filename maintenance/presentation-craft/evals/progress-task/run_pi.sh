@@ -16,6 +16,11 @@ OUT="$(cd "$OUT" && pwd)"
 # 有项目虚拟环境时让 python 指向它（需要 python-pptx、Pillow）
 # 项目虚拟环境：Linux/macOS 在 .venv/bin，Windows（Git Bash）在 .venv/Scripts
 for V in "$ROOT/.venv/bin" "$ROOT/.venv/Scripts"; do [ -d "$V" ] && export PATH="$V:$PATH"; done
+# 也可用 PY_ENV_DIR 指定一个 conda 环境目录（Windows 上 python.exe 在环境根目录）；
+# 同时屏蔽用户级 site-packages，免得混进环境外的包。
+if [ -n "${PY_ENV_DIR:-}" ]; then
+  export PATH="$PY_ENV_DIR:$PY_ENV_DIR/Scripts:$PY_ENV_DIR/bin:$PATH" PYTHONNOUSERSITE=1
+fi
 cd "$OUT/task" || exit 1
 date -u +%FT%TZ > "$OUT/log/start.txt"
 timeout 2700 pi --mode json --no-session --tools read,bash,edit,write \

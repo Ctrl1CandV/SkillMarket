@@ -18,6 +18,7 @@ sys.path.insert(0, str(SCRIPTS))
 from animate_pptx import animate, inventory
 from audit_pptx import audit, NS, sha256
 from finalize import finalize
+from render_pptx import text_flags
 
 
 def package_parts():
@@ -133,7 +134,8 @@ class BehaviorChecks(unittest.TestCase):
     def test_caption_sized_body_text_is_warned_and_scaled_to_canvas(self):
         def deck_with(size, canvas='12192000'):
             parts = copy.deepcopy(self.parts)
-            run = f'<a:r><a:rPr sz="{size}"/><a:t>{"x" * 120}</a:t></a:r><a:r><a:rPr sz="1100"/><a:t>source line</a:t></a:r>'
+            run = (f'<a:r><a:rPr sz="4000"/><a:t>Main title</a:t></a:r><a:r><a:rPr sz="{size}"/><a:t>{"x" * 120}</a:t></a:r>'
+                   '<a:r><a:rPr sz="1100"/><a:t>source line</a:t></a:r>')
             for name in ('ppt/slides/slide1.xml', 'ppt/slides/slide2.xml'):
                 parts[name] = parts[name].replace(b'<a:r><a:t>First evidence</a:t></a:r>', run.encode())
             parts['ppt/presentation.xml'] = parts['ppt/presentation.xml'].replace(b'cx="12192000"', f'cx="{canvas}"'.encode())
@@ -147,6 +149,56 @@ class BehaviorChecks(unittest.TestCase):
         self.assertEqual(normal['findings'], [])
         # 13 pt on a 10 in wide canvas equals 17.3 pt on the 13.33 in reference canvas.
         self.assertEqual(deck_with(1300, canvas='9144000')['findings'], [])
+
+    def test_title_smaller_than_twice_the_body_is_warned(self):
+        def deck_with(title_size, title_y='914400'):
+            parts = copy.deepcopy(self.parts)
+            run = f'<a:r><a:rPr sz="{title_size}"/><a:t>Main title</a:t></a:r><a:r><a:rPr sz="1600"/><a:t>{"x" * 120}</a:t></a:r>'
+            for name in ('ppt/slides/slide1.xml', 'ppt/slides/slide2.xml'):
+                parts[name] = parts[name].replace(b'<a:r><a:t>First evidence</a:t></a:r>', run.encode()).replace(
+                    b'<a:off x="914400" y="914400"/>', f'<a:off x="914400" y="{title_y}"/>'.encode())
+            target = self.work / f'title-{title_size}-{title_y}.pptx'
+            self.write_package(target, parts)
+            report = audit(target)
+            return [f['page'] for f in report['findings'] if f['code'] == 'title_scale_weak'], report['pages'][0]['title_pt']
+        self.assertEqual(deck_with(2600), ([1, 2], 26.0))
+        self.assertEqual(deck_with(3600), ([], 36.0))
+        # Text that starts below the top quarter of the slide is not a title band.
+        self.assertEqual(deck_with(2600, title_y='2743200'), ([], None))
+
+    def test_chinese_text_without_east_asian_language_is_warned(self):
+        def deck_with(run_props, default=''):
+            parts = copy.deepcopy(self.parts)
+            run = f'<a:r>{run_props}<a:t>还没走平。</a:t></a:r>'
+            for name in ('ppt/slides/slide1.xml', 'ppt/slides/slide2.xml'):
+                parts[name] = parts[name].replace(b'<a:r><a:t>First evidence</a:t></a:r>', run.encode())
+            if default:
+                style = f'<p:defaultTextStyle><a:defPPr><a:defRPr lang="{default}"/></a:defPPr></p:defaultTextStyle>'
+                parts['ppt/presentation.xml'] = parts['ppt/presentation.xml'].replace(
+                    b'</p:presentation>', style.encode() + b'</p:presentation>').replace(
+                    b'<p:presentation ', f'<p:presentation xmlns:a="{NS["a"]}" '.encode())
+            target = self.work / f'lang-{len(run_props)}-{default}.pptx'
+            self.write_package(target, parts)
+            return [f for f in audit(target)['findings'] if f['code'] == 'cjk_lang_unset']
+        for untagged in (deck_with(''), deck_with('<a:rPr lang="en-US"/>'), deck_with('', 'en-US')):
+            self.assertEqual(len(untagged), 1)
+            self.assertIn('[1, 2]', untagged[0]['message'])
+        self.assertEqual(deck_with('<a:rPr lang="zh-CN"/>'), [])
+        self.assertEqual(deck_with('', 'zh-CN'), [])
+
+    def test_render_text_flags_only_breaks_inside_one_paragraph(self):
+        segments = [['15k 到 77.9，还没走平。', 'Dense+CE', 'depth 固定 50，重测端到端延迟', '合并候选', '甲', '，乙']]
+        line = lambda text, top: (text, (0, top, 100, top + 20))
+        lines = [[line('15k 到 77.9', 0), line('，还没走平。', 22),
+                  line('Dense+C', 60), line('E', 82),
+                  line('depth 固定 50，重测端到端延', 120), line('迟', 142),
+                  line('合并', 180), line('候选', 202),
+                  line('甲', 240), line('，乙', 262),           # separate paragraphs: not a wrap
+                  line('15k 到', 300), line('77.9，还没走平。', 300)]]  # same baseline: not a wrap
+        found = {(f['text'].split(' | ')[1], tuple(f['kinds'])) for f in text_flags(segments, lines)}
+        self.assertEqual(found, {('，还没走平。', ('line_start_punct',)),
+                                 ('E', ('split_word', 'short_last_line')),
+                                 ('迟', ('short_last_line',))})
 
     def test_duplicate_zip_parts_are_rejected(self):
         with warnings.catch_warnings():

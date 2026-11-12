@@ -66,7 +66,7 @@
 | readable-reply | 2.0.0 | 重写为“先给答案”的简洁规则，附可粘进全局指令的短版 | 只测了一个模型、每题一次；用户还没盲评原始回复；按需加载的技能在普通问答里 6 次都没被触发，实际起作用的是全局指令短版 |
 | git-governance | 1.1.0 | 提交前的文件去向清单、提交标题怎么定 | 没做模型实测；用户是否有固定的“私人文件夹”约定未知 |
 | skill-search | 0.3.0 | 区分“直接使用”和“借鉴参考” | 借鉴用途没在真实检索里试过 |
-| presentation-craft | 0.3.0 | 缺渲染器时补环境只试一次；结构审查报告字号并给警告 | **真实渲染一次都没看过**；“16 pt 是底线不是目标”这句没复测；论文组会场景没测；动画放映没测 |
+| presentation-craft | 0.4.0 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
 | imagecraft | 0.3.1 | 显卡检测能分清“没发现”和“驱动在但访问不到”；出图通道都用不了时的做法 | **没有一张图来自生图模型**；本机出图、订阅出图、交互式会话里的“先问”都没测 |
 | docvision | 0.5.1 | 只修了同样的显卡误判 | 完整一轮没开始 |
 | video-craft | 0.2.0 | 没动 | 整轮没开始 |
@@ -75,7 +75,7 @@
 
 原环境缺的东西在本机大多现成，所以先把欠下的验证补上，再继续往后做。建议顺序：
 
-1. **presentation-craft 补看真实画面。** 步骤和要回答的三个问题见 `maintenance/presentation-craft/evals/pi-run-2026-11-12/README.md`。两份实测成品已保存在那里。
+1. ~~presentation-craft 补看真实画面~~（2026-11-12 完成，0.4.0，见 `maintenance/presentation-craft/evals/pi-run-2026-11-12/README.md`）。
 2. **video-craft。** 先跑 `node video-craft/kit/doctor.mjs` 确认浏览器、ffmpeg 可用，再渲染自带示例做回归，然后按第三节的流程做一个真实小任务。它刚发布并做过评测，预期以回归检查为主。
 3. **docvision。** 在普通终端跑 `python docvision/scripts/docvision.py doctor` 确认显卡，用用户实际在读的论文测数字 PDF 的筛读路线，再用一页扫描件验收本地 OCR。
 4. **imagecraft。** 跑 `python imagecraft/scripts/imagecraft.py discover` 看显卡和现有 ComfyUI，再用 `pi-tasks/cover` 这个任务验证真正的出图。走本机还是 GPT 订阅由用户定；订阅出图每张都要用户授权。
@@ -84,13 +84,21 @@
 各技能的自测（都不调用模型）：
 
 ```text
-python maintenance/presentation-craft/evals/check.py                      # 14 项
+python maintenance/presentation-craft/evals/check.py                      # 17 项
 python -B -m unittest discover -s maintenance/imagecraft/tests            # 93 项
 python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 270 项，2 项跳过
 python maintenance/docvision/evals/check.py                                # 5 项
 ```
 
-需要的 Python 包：pillow、numpy、opencv-python-headless、pymupdf、python-pptx、pypdf、pypdfium2。原环境装在仓库根的 `.venv`（已被忽略）。这些自测只在 Linux 上跑过，Windows 上先跑一遍确认。
+需要的 Python 包：pillow、numpy、opencv-python-headless、pymupdf、python-pptx、pypdf、pypdfium2。原环境装在仓库根的 `.venv`（已被忽略）。
+
+**Windows 本机（2026-11-12 摸底，用户同意后安装）：**
+
+- `python` 命令指向微软商店占位程序，不能用。上面的包和 pywin32（PowerPoint COM 渲染要用）装在 conda 环境 `skillmarket`（`C:\Users\11487\.conda\envs\skillmarket\python.exe`）。用户级 site-packages 里有别的包（easyocr、opencv 等）会混进同版本的 Python，跑自测和实测时设 `PYTHONNOUSERSITE=1`。conda 的默认频道配置里有失效的镜像 `pkgs/pro`，建环境时用 `--override-channels -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main`。
+- pi 实测：`PY_ENV_DIR=/c/Users/11487/.conda/envs/skillmarket bash maintenance/presentation-craft/evals/progress-task/run_pi.sh <输出目录>`，脚本会把该环境放到 PATH 最前并屏蔽用户级 site-packages。
+- video-craft：playwright-core 装在 `%LOCALAPPDATA%\video-craft-kit`，运行前设 `VC_NODE_MODULES` 指向它、`VC_CHROME` 指向本机 Chrome。全局 npm 缓存配在 `D:\Program Files\nodejs\node_cache`，普通权限写不进去，安装时加 `--cache <可写目录>`。
+- 已有：Node 24.19、pi 1.4.0、ffmpeg 8.1.1、Chrome 157、PowerPoint 16.0（无 LibreOffice）、WPS 12.1、RTX 4070 Ti SUPER 16 GB、微软雅黑等中文字体与 Noto Sans SC、ComfyUI 0.31（`D:\ComfyUI-H3`）、MinerU 和 PaddleOCR 各自的 conda 环境。
+- 四组自测在 Windows 上都通过；docvision 跳过 1 项（这台机器的用户不能建符号链接）。
 
 ## 六、第三阶段（前端）已经知道的
 
@@ -110,7 +118,7 @@ python maintenance/docvision/evals/check.py                                # 5 �
 
 - readable-reply：用户盲评 `maintenance/readable-reply/evals/raw/` 里的原始回复；可选再用 GPT 跑一遍同样的测试。
 - git-governance：用户是否有固定的“私人文件夹”约定。
-- presentation-craft：是否把近似预览做成技能自带的零件；字号阈值是否提到 18 pt。两者都等真实渲染。
+- presentation-craft：近似预览不收（已定）；字号阈值留 16 pt，改为要求标题约为正文 2 倍（用户盲选两组对照，已定）。
 - 远端的 `product` 分支是很早以前的旧分支，这轮没有动过。
 
 ## 八、没有随仓库带走的东西

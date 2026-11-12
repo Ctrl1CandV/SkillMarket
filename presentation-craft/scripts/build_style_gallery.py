@@ -53,6 +53,8 @@ def style_run(run, theme, size, ink, bold=False):
     run.font.bold = bold
     run.font.color.rgb = color(ink)
     properties = run._r.get_or_add_rPr()
+    # Without an East Asian language PowerPoint breaks Chinese by Western rules (，at line start).
+    properties.set('lang', 'zh-CN')
     east_asian = properties.find('{http://schemas.openxmlformats.org/drawingml/2006/main}ea')
     if east_asian is None:
         east_asian = OxmlElement('a:ea')

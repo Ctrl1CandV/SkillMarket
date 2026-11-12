@@ -2,7 +2,7 @@
 name: presentation-craft
 description: 用于制作或改进研究生论文组会、实验进展、开题答辩、课程 presentation 等现场汇报的幻灯片，尤其适合需要学术风格选择、基于数据的图表选型与展示、科研排版和可编辑 PPTX 的任务。不用于仅查找工具或仅写普通文章。
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Presentation craft
@@ -60,12 +60,14 @@ python scripts/build_style_gallery.py --output task/style-options.pptx --theme s
 
 用 [质量检查](references/quality.md) 对内容、画面与导出分别检查。动画在最终文件上添加，再做审查。下列脚本只是确定性的辅助，不判断学术真实性或审美，也不替代看图和放映。
 
-结构审查在做出前两三页时就先跑一次，不留到最后：它会报告每页的中位字号，半数文字不到 16 pt（按 13.33 英寸宽画布折算）的页面给出 `body_type_small` 警告。出现这个警告说明这页装得太满，按“删、拆、移入备注”的顺序处理，不靠缩字解决。16 pt 只是底线，不是目标，正文仍按 [视觉设计](references/design.md) 的 22–24 pt 起排，不要把字号正好调到警告消失为止；确属表格密集、需要保留的页面，在交付说明里写明哪几页字小、为什么保留。
+结构审查在做出前两三页时就先跑一次，不留到最后：它会报告每页的中位字号，半数文字不到 16 pt（按 13.33 英寸宽画布折算）的页面给出 `body_type_small` 警告。出现这个警告说明这页装得太满，按“删、拆、移入备注”的顺序处理，不靠缩字解决。16 pt 只是底线；确属表格密集、需要保留的页面，在交付说明里写明哪几页字小、为什么保留。层级主要靠标题拉开：标题不到正文两倍时报 `title_scale_weak`，先放大标题（正文 16–18 pt 时约 34–36 pt，长标题先改短），不要靠删内容去放大正文。
 
 ```text
 python scripts/audit_pptx.py task/deck.pptx --report task/qa/audit.json
 python scripts/render_pptx.py task/deck.pptx --out-dir task/qa/render-01
 ```
+
+`render_pptx.py` 会从实际导出里列出断错的行（`text_flags`：行首标点、拆开的英文词或数字、末行只剩一两个字），这些在缩略图上很难看出来，逐条改掉再渲染。结构审查报 `cjk_lang_unset` 时，说明中文没有标语言，PowerPoint 会按西文规则断行、把逗号排到行首；给中文文字设 `lang: "zh-CN"`。
 
 查看每页实际渲染图；同时在缩略图总览检查节奏、风格和重复布局。清楚区分：阻断阅读的缺陷、主要视觉落差和个人偏好。先修缺字、截断、重叠、数据/引用错误，再修构图、层级、图片质量和视觉一致性。无溢出只是底线，不代表美观。
 
