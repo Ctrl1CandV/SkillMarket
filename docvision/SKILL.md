@@ -2,7 +2,7 @@
 name: docvision
 description: 读取 PDF、扫描件、截图和论文中的正文、公式、表格、图表与架构图，生成带页码和区域定位的内容。默认本地 OCR；疑难或出错区域可在用户同意后用 PaddleOCR API 提供纠错候选，核对原图后保存人工或宿主校正。图表与架构图由当前对话视觉能力看图解释。不用于 PDF 编辑、图片生成或普通纯文本阅读。
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 # Docvision
@@ -31,7 +31,7 @@ Docvision 是阅读工作流；MinerU、Paddle 是它调用的识别引擎。批
 python "{SKILL_DIR}/scripts/docvision.py" doctor --json
 ```
 
-先读 `doctor` 的硬件建议、RAM、GPU、空闲磁盘、现有引擎与有效路径，再决定安装方案。检测结果是保守建议，安装成功与真实推理需分别验证：
+先读 `doctor` 的硬件建议、RAM、GPU、空闲磁盘、现有引擎与有效路径，再决定安装方案。检测结果是保守建议，安装成功与真实推理需分别验证。GPU 一行显示“driver tools present but GPU not accessible”时，说明驱动在、当前环境却访问不到显卡（多见于沙箱或容器），不等于没有显卡：请用户在普通终端重跑 `doctor` 再定档位。
 
 - 8/16 GB 显存且内存充足：先试 MinerU standard，单页、单并发验收后才批量。
 - 显存/内存不足、无加速器或平台支持未知：先用 basic/economy、文字层或精读包；不要自动安装 CUDA 包。CPU 路线可能很慢，Apple/AMD 等设备的加速必须实际验证。

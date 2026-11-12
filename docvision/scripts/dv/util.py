@@ -767,25 +767,42 @@ def total_ram_gb() -> float | None:
     return None
 
 
+# WSL ships nvidia-smi here without putting it on PATH.
+NVIDIA_SMI_FALLBACKS = ("/usr/lib/wsl/lib/nvidia-smi",)
+
+
+def find_nvidia_smi() -> str | None:
+    found = shutil.which("nvidia-smi")
+    if found:
+        return found
+    for candidate in NVIDIA_SMI_FALLBACKS:
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
+
 def gpu_summary() -> dict:
-    exe = shutil.which("nvidia-smi")
+    """state: ok | not_detected (no tool found) | present_but_inaccessible (tool found, query failed)."""
+    exe = find_nvidia_smi()
     if not exe:
-        return {"available": False, "detail": "nvidia-smi not found"}
+        return {"available": False, "state": "not_detected",
+                "detail": "nvidia-smi not found on PATH or in the WSL driver directory"}
+    inaccessible = {"available": False, "state": "present_but_inaccessible", "nvidia_smi_path": exe}
     try:
         proc = run([exe, "--query-gpu=name,memory.total,driver_version",
                     "--format=csv,noheader"], timeout=15)
         lines = [x.strip() for x in (proc.stdout or "").splitlines() if x.strip()]
         if proc.returncode != 0 or not lines:
-            return {"available": False, "detail": tail_text(proc, 400)}
+            return {**inaccessible, "detail": tail_text(proc, 400)}
         gpus = []
         for line in lines:
             parts = [x.strip() for x in line.split(",")]
             gpus.append({"name": parts[0] if parts else "GPU",
                          "vram": parts[1] if len(parts) > 1 else "unknown",
                          "driver": parts[2] if len(parts) > 2 else "unknown"})
-        return {"available": True, "gpus": gpus}
+        return {"available": True, "state": "ok", "gpus": gpus}
     except Exception as exc:
-        return {"available": False, "detail": str(exc)}
+        return {**inaccessible, "detail": str(exc)}
 
 
 def conda_envs() -> dict[str, Path]:
