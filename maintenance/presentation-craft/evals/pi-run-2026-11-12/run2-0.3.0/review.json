@@ -1,0 +1,65 @@
+{
+  "deck_sha256": "1fd2e3c6230aeb4ad7eb523864a50e2f9828595967020ecf633d136e401cd015",
+  "content_review": {
+    "status": "pass",
+    "summary": "逐项核对了 data/*.csv：主结果 12 组 mean±SD、Δ (R@5 +4.5/+5.2/+1.1；EM +2.6/+3.2/+0.6)、延迟 412/121=3.4×、改写占 59%、重排 96 ms、消融 5 行与 Δ、训练曲线终点 77.9/76.5 与 loss 0.86→0.12、错例 23/14/11/7/5=60 条与百分比（38/23/18/12/8）均与 CSV 一致。归属已在页上区分：本轮实验（P2–P9）与本组假设/判断（P3「这是假设」、P9「我的判断（待验证）」、P10「倾向」）。未使用样式样张中的演示数据。限制如实写在页脚与备注：消融仅在 2Wiki、训练曲线单次训练、无逐 seed 明细与配对检验、错例单次人工判读。"
+  },
+  "visual_review_scope": "No PPTX renderer in this environment (no LibreOffice, no PowerPoint/pywin32) and none installable (apt blocked by read-only rootfs / no privileges). Visual check was done on a geometry-accurate Pillow preview generated from the same layout primitives (qa/preview-01/*.png, overview in qa/overview.png) with Noto Sans SC, not on an exported render of the PPTX. Line-break positions can differ slightly in PowerPoint with Microsoft YaHei.",
+  "pages": [
+    {
+      "page": 1,
+      "status": "pass",
+      "summary": "封面：标题两行未压边，结论两行与内容导航行间距清楚，页脚信息完整；右侧留白为有意保留。"
+    },
+    {
+      "page": 2,
+      "status": "pass",
+      "summary": "五件事按依赖顺序排列，编号列与两列文字对齐；每行说明均单行不折行；底部「一句话」条未遮挡上方行。"
+    },
+    {
+      "page": 3,
+      "status": "pass",
+      "summary": "两行流程图节点与箭头对齐，新增模块用深色区分；下方两段解释各 3 行，未越过页脚线。"
+    },
+    {
+      "page": 4,
+      "status": "pass",
+      "summary": "主结果表：合并表头正确跨两列，12 个数值列对齐，QR+CE 行加粗并加浅底色；表下两条观察未与表格重叠；左侧设置栏在 14.5 pt 下仍单行不溢出。"
+    },
+    {
+      "page": 5,
+      "status": "pass",
+      "summary": "Δ R@5 点图：0 基线、网格、刻度与 Δ/±SD 标签不重叠；MuSiQue 的噪声线跨过 0 可辨；右侧三点说明未越过页脚说明行。"
+    },
+    {
+      "page": 6,
+      "status": "pass",
+      "summary": "分阶段堆叠条：四行条形、段内数值、总耗时标签与图例互不遮挡；3.4× 强调块与三条要点右侧栏完整；底部结论单行。"
+    },
+    {
+      "page": 7,
+      "status": "pass",
+      "summary": "消融表 5 行 + Δ 列可读，表注紧跟表下；三条观察各占一行，未越过页脚线；左侧参照说明与表头不对齐冲突。"
+    },
+    {
+      "page": 8,
+      "status": "pass",
+      "summary": "训练曲线：两条线、图例、6k 标记线与「6k 后持平」标注均可读，端点无需额外标签；右侧三点说明在分隔线内；底部「单次训练」说明未与右栏重叠。"
+    },
+    {
+      "page": 9,
+      "status": "pass",
+      "summary": "错例横向条：名称与阶段标签右对齐成列，计数与百分比紧跟条端未压到右栏；「我的判断（待验证）」条整宽且不遮最后一根条。"
+    },
+    {
+      "page": 10,
+      "status": "pass",
+      "summary": "三问与倾向成组，①为两行问题 + 两行倾向、②③ 为一行，间距一致无重叠；右侧计划三条与判据对齐；底部讨论提示条未压住左栏。"
+    }
+  ],
+  "known_risks": [
+    "字体：全稿使用 Microsoft YaHei（中文）+ Arial（西文/数字）。若放映机没有 YaHei，会回退到其它中文字体，行宽变化可能导致个别说明多折一行（版面已留余量，但不保证完全一致）。",
+    "未做 PPTX 导出渲染验证，也未在 PowerPoint/WPS 中实际放映；本稿为静态页，没有动画，无需点击顺序验证。",
+    "图表为原生形状（点线图、堆叠条、折线由自由曲线与圆点组成）与原生表格/文本，不含图片；Excel/PPT 里没有『编辑数据』面板，需要改数值时改 build/deck.py 后重新生成或直接改形状位置。"
+  ]
+}

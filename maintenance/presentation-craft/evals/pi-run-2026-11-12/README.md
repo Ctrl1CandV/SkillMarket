@@ -1,6 +1,8 @@
 # 实测记录：pi + deepseek-flash 做实验进展 PPT（2026-11-12）
 
-目的：看一个较弱的模型带着技能做真实任务时，在哪一步走偏。任务、材料和运行脚本在 [progress-task/](progress-task/)，材料与数据是为测试编的演示数据。成品和完整日志在仓库外，不提交。
+目的：看一个较弱的模型带着技能做真实任务时，在哪一步走偏。任务、材料和运行脚本在 [progress-task/](../progress-task/)，材料与数据是为测试编的演示数据。完整日志（每次约 100 MB）没有保留。
+
+两次的成品因为还要补做真实渲染，随记录保存在本目录：`run1-0.2.0/` 和 `run2-0.3.0/` 各有 `progress.pptx`、模型写的生成与近似预览脚本（`build/`）、近似预览总览图（`approx-preview.jpg`，不是真实渲染）、模型的交付说明（`model-reply.md`）和它自己写的看图记录（`review.json`）。工具调用清单含原环境的内部路径和代理信息，没有入库，上面的统计数字来自它。生成脚本里有原环境的绝对路径和当时临时安装的依赖，不保证能直接重跑。
 
 ## 条件
 
@@ -41,3 +43,17 @@
 - **两次都没有真实渲染。** 版面、换行、字体回退的结论都要等 LibreOffice 和中文字体到位后，用这两份成品补看。
 - 两次模型都自己写了一个 10–15 KB 的近似预览脚本。是否把它做成技能自带的零件，取决于它和真实渲染差多少，也要等渲染器。
 - 两份成品观感相近（同一主题、标题 26–28 pt、正文 16 pt 上下），标题与正文的尺度对比偏弱。这属于观感判断，未作修改。
+
+## 换到有渲染器的环境后怎么补验
+
+```text
+python presentation-craft/scripts/doctor.py
+python presentation-craft/scripts/render_pptx.py maintenance/presentation-craft/evals/pi-run-2026-11-12/run1-0.2.0/progress.pptx --out-dir <仓库外的新目录>/run1
+python presentation-craft/scripts/render_pptx.py maintenance/presentation-craft/evals/pi-run-2026-11-12/run2-0.3.0/progress.pptx --out-dir <仓库外的新目录>/run2
+```
+
+逐页看真实渲染，并和同目录的 `approx-preview.jpg` 对照，回答三件事：
+
+1. 近似预览漏掉了哪些换行、溢出和字体回退。差距小，才值得把近似预览收进技能当零件。
+2. 16 pt 的正文在真实画面里是否够大，决定字号阈值要不要提到 18 pt，以及样张里 17 pt 的正文要不要调大。
+3. 两份成品标题与正文的尺度对比是否偏弱。这是观感判断，需要用户看过再定。

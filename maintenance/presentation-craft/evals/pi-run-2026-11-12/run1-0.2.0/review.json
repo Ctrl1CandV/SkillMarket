@@ -1,0 +1,65 @@
+{
+  "deck_sha256": "bf728fd2d5aa8756ff75912582025fb5c9abc5f834ebce07dbddb5e7b58de95f",
+  "review_method": "Approximate raster preview generated from the PPTX's own geometry (python build/preview_pptx.py), because no LibreOffice / PowerPoint renderer is available in this environment. 11 pages inspected at 2559x1440 plus a contact sheet. Typography was not verified in real Office rendering.",
+  "content_review": {
+    "status": "pass",
+    "summary": "All numbers re-checked against data/main_results.csv, ablation.csv, latency.csv, train_curve.csv, error_types.csv. Author-specific claims vs. my interpretation are labelled (第 8 页 我的理解（待验证）). No demo/sample data used. Deck length 11 pages, speaker notes 10:10 total."
+  },
+  "pages": [
+    {
+      "page": 1,
+      "status": "pass",
+      "summary": "Cover: kicker, two-line title, one-sentence thesis, meta line. No overlap; large whitespace at bottom intentional."
+    },
+    {
+      "page": 2,
+      "status": "pass",
+      "summary": "Four work items left, setup table right. Item spacing fixed after earlier overlap; no truncation."
+    },
+    {
+      "page": 3,
+      "status": "pass",
+      "summary": "Two-row flow diagram: baseline and QR+CE share the aligned reranker column with dashed connector label. Long baseline arrow now carries an explanatory label."
+    },
+    {
+      "page": 4,
+      "status": "pass",
+      "summary": "12-row native table with merged dataset cells; QR+CE rows bold, BM25/Dense muted. Right column deltas readable, MuSiQue block flagged as within SD."
+    },
+    {
+      "page": 5,
+      "status": "pass",
+      "summary": "Dot plot with ±SD error bars for MuSiQue; value labels above points, Δ annotated between rows. Axis truncation disclosed in the source line."
+    },
+    {
+      "page": 6,
+      "status": "pass",
+      "summary": "Ablation table with delta columns and rerank time; header no longer wraps; table clears the right callout panel."
+    },
+    {
+      "page": 7,
+      "status": "pass",
+      "summary": "Training curves with legend and two annotations; annotation arrows cross the curves but stay legible."
+    },
+    {
+      "page": 8,
+      "status": "pass",
+      "summary": "Error-type bars with stage tags; right column chain diagram plus interpretation. Vertical rhythm adjusted to remove the earlier caption/label collision."
+    },
+    {
+      "page": 9,
+      "status": "pass",
+      "summary": "Stacked latency bars with direct segment labels; no legend needed; chart now fills the column height."
+    },
+    {
+      "page": 10,
+      "status": "pass",
+      "summary": "Two-column can/cannot-conclude page with light separators; closing line fits on one line."
+    },
+    {
+      "page": 11,
+      "status": "pass",
+      "summary": "Decision table (3 rows) plus two-week plan column; table width reduced so it no longer touches the side column."
+    }
+  ]
+}

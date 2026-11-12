@@ -2,7 +2,7 @@
 
 维护资料目录：每个技能/插件一个子目录，内含评估与优化报告（`reports/`）、测试记录（`evals/`）、历史版本存档（`archive/`）及各自待办（`TODO.md`）。本目录在 **dev 分支**维护；main 分支只保留技能、插件与 README。
 
-新增能力的优先级与推进条件见 [开发计划](ROADMAP.md)。
+新增能力的优先级与推进条件见 [开发计划](ROADMAP.md)。2026-11 起对已有技能的逐个优化（分工、顺序、方法、各技能现状和下一步）见 [技能优化计划与交接](optimization/HANDOFF.md)，接手这项工作先读它。
 
 ## 目录
 
@@ -10,19 +10,19 @@
 |---|---|
 | [write-with-judgment](write-with-judgment/) | [0.2.1 整合取舍与静态审阅记录](write-with-judgment/reports/revision-0.2.1.md)、0.1.0 完整存档；[改造建议](write-with-judgment/reports/rework-advice-2026-10-30.md)：实测不如无 Skill 的原因与退役并入方案 |
 | [de-ai-flavor](de-ai-flavor/) | 通用化调整报告、模型试跑与结构检查脚本、改版前完整存档（含 `agents/openai.yaml` 与历史来源记录）；[改造建议](de-ai-flavor/reports/rework-advice-2026-10-30.md)：重建问题表、真实范例与盲评验收 |
-| [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档 |
+| [readable-reply](readable-reply/) | 收录时的行为试跑记录、安装前旧版存档；2.0.0 重写后的[啰嗦程度对照](readable-reply/evals/results-2026-11-11.md)（deepseek-flash，6 题 × 4 组）与运行脚本 |
 | [product-design](product-design/) | [0.1.0 制作与衔接记录](product-design/reports/initial-design-2026-10-25.md)、[用户指导文档原件](product-design/reports/implementation-guide-2026-10-25.md)；已与 frontend-craft 0.4.2 提交至本地 main/dev，效果评价见页面反馈 |
 | [frontend-craft](frontend-craft/) | [0.4.2 产品依据衔接](product-design/reports/initial-design-2026-10-25.md)、[0.4.1 四种页面](frontend-craft/evals/current-skill-showcase-2026-10-25/index.html)、[0.4.1 样式组合](frontend-craft/reports/frontend-craft-0.4.1-style-2026-10-25.md)、[0.4.1 样式示意](frontend-craft/evals/style-pair-2026-10-25/index.html)、[0.4 规则重审](frontend-craft/reports/frontend-craft-0.4-diagnosis-2026-10-25.md)、[交互页面对照](frontend-craft/evals/direct-comparison-2026-10-25/index.html)、[反馈记录](frontend-craft/evals/direct-comparison-2026-10-25/README.md)、历次评测存档 |
 | [grad-companion-plugin](grad-companion-plugin/) | 上游核验、阅读/选文/综述与场景适配审查、35 项回归与真实清单复核、其余待办及历史存档 |
 | [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；0.1.1 补充基线复现与余量检查，真实研究验收与完整示例见 [TODO](experiment-design/TODO.md) |
 | [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
-| [docvision](docvision/) | [0.2.0 正式发布核验](docvision/reports/release-0.2.0-2026-10-28.md)：真实公式/复杂表格 API 对照、专用区域任务、缓存与并发修复、完整回归；8 GB 与规模准确率待补 |
+| [docvision](docvision/) | [0.2.0 正式发布核验](docvision/reports/release-0.2.0-2026-10-28.md)：真实公式/复杂表格 API 对照、专用区域任务、缓存与并发修复、完整回归；8 GB 与规模准确率待补；0.5.1 只修正显卡检测，完整一轮优化未开始 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
-| [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办 |
-| [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办 |
-| [git-governance](git-governance/) | Git 官方来源核验、隔离仓库中的 9 项操作语义检查与场景复核记录 |
-| [imagecraft](imagecraft/) | [第二轮交接](imagecraft/review-2026-11-02.md)：56 张 Z/FLUX 配对、五次显存预留探针、26 张提示词对照；官方订阅脚本无字素材及中文界面已分别授权实测，中文 130 处指定可见内容匹配，额外刻度和尺寸偏离另记，不称完整契约通过。88 项回归与静态复核；历史评测、逐图脱敏记录和运行入口见 [README](imagecraft/README.md) |
+| [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办；0.3.0 增加借鉴用途，尚未在真实检索里试过 |
+| [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办；0.3.0 的[模型实测记录](presentation-craft/evals/pi-run-2026-11-12/README.md)与两份待补做真实渲染的成品 |
+| [git-governance](git-governance/) | Git 官方来源核验、隔离仓库中的 9 项操作语义检查与场景复核记录；1.1.0 增加文件去向清单与提交标题规则，未做模型实测 |
+| [imagecraft](imagecraft/) | [第二轮交接](imagecraft/review-2026-11-02.md)：56 张 Z/FLUX 配对、五次显存预留探针、26 张提示词对照；官方订阅脚本无字素材及中文界面已分别授权实测，中文 130 处指定可见内容匹配，额外刻度和尺寸偏离另记，不称完整契约通过。88 项回归与静态复核；历史评测、逐图脱敏记录和运行入口见 [README](imagecraft/README.md)。0.3.1 在没有出图通道的环境里做了[模型行为实测](imagecraft/eval-pi-routing-2026-11-12.md)，修正显卡检测；真正的出图这轮没有验证 |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。
 
@@ -34,7 +34,8 @@
 - **docvision**：0.3.0 只保留本地两引擎与 PaddleOCR 官方 API：首次使用询问远程密钥、拒绝后持久本地、模型固定路径、中间文件回收项目内；Gemini/GLM/Mistral/MinerU 云端因无真实 key 已删除，见 [0.3.0 报告](docvision/reports/scope-consent-0.3.0-2026-10-28.md) 与 [TODO](docvision/TODO.md)。旧 `mineru` 副本由 docvision 取代，历史报告保留。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
 - **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。
-- **presentation-craft**：原生动画的实际放映验证、真实任务风格观察及按需 Slidev 导出验证，见 [TODO](presentation-craft/TODO.md)。
+- **presentation-craft**：0.3.0 两次实测的成品还没看过真实渲染，是迁到新环境后的第一件事；另有原生动画的实际放映验证、真实任务风格观察及按需 Slidev 导出验证，见 [TODO](presentation-craft/TODO.md)。
+- **imagecraft / docvision / video-craft**：本机出图、本地 OCR 和视频渲染在原环境都没能验证，顺序与做法见 [技能优化计划与交接](optimization/HANDOFF.md) 第五节。
 
 ## 约定
 

@@ -11,7 +11,8 @@ TASK="${1:?cover 或 architecture}"; OUT="${2:?需要一个新的输出目录}";
 mkdir -p "$OUT/task" "$OUT/log" || exit 1
 find "$HERE/$TASK" -maxdepth 1 -type f ! -name prompt.txt -exec cp {} "$OUT/task/" \;
 OUT="$(cd "$OUT" && pwd)"
-[ -d "$ROOT/.venv/bin" ] && export PATH="$ROOT/.venv/bin:$PATH"
+# 项目虚拟环境：Linux/macOS 在 .venv/bin，Windows（Git Bash）在 .venv/Scripts
+for V in "$ROOT/.venv/bin" "$ROOT/.venv/Scripts"; do [ -d "$V" ] && export PATH="$V:$PATH"; done
 cd "$OUT/task" || exit 1
 date -u +%FT%TZ > "$OUT/log/start.txt"
 timeout 1200 pi --mode json --no-session --tools read,bash,edit,write \
