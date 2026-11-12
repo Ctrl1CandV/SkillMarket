@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拐角书店十周年 · 十个夜晚，读十本书</title>
+<style>
+  :root {
+    --paper: #F3EEE4; --ink: #14251E; --green: #1D4B3A; --sage: #C5D2C0; --persimmon: #E2562B; --hot-text: #B03E16; --line: #D9D1C1; --ink-2: #55635C;
+    --display: "Songti SC", "STZhongsong", "Source Han Serif SC", "Noto Serif SC", "SimSun", serif;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    --num: "Bahnschrift", "DIN Alternate", var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.75 var(--sans); }
+  button, input { font: inherit; color: inherit; }
+  a { color: inherit; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; font-size: 15px; }
+  .nav .mark { font: 700 20px var(--display); letter-spacing: .08em; }
+  .nav nav { display: flex; gap: 28px; } .nav a { text-decoration: none; } .nav a:hover { text-decoration: underline; text-underline-offset: 6px; }
+
+  /* —— 首屏：一句话、一个日期、一排书脊 —— */
+  .hero { padding: 20px 0 0; position: relative; min-height: max(calc(100vh - 74px), 780px); }   /* 矮屏幕上宁可多滚一点，也要给左边的书留够高度 */
+  .hero .text { position: relative; z-index: 1; pointer-events: none; } .hero .text a, .hero .text button { pointer-events: auto; }
+  .kicker { font-size: 15px; letter-spacing: .3em; color: var(--hot-text); font-weight: 700; margin: 0 0 12px; }
+  h1 { font: 700 clamp(56px, min(9.4vw, 15vh), 140px)/1.08 var(--display); margin: 0; letter-spacing: .02em; }
+  h1 em { font-style: normal; color: var(--green); }
+  .facts { display: grid; grid-template-columns: auto auto; gap: 16px 36px; align-items: center; justify-content: start; margin-top: 22px; max-width: 60%; }
+  .facts p { margin: 0; font-size: 18px; line-height: 1.7; grid-column: 1 / -1; }
+  .when { font: 600 40px/1.1 var(--num); white-space: nowrap; }
+  .when small { display: block; font: 15px var(--sans); color: var(--ink-2); margin-top: 8px; letter-spacing: .04em; }
+  .cta { display: flex; gap: 14px; align-items: center; }
+  .btn { height: 58px; padding: 0 30px; border-radius: 999px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 18px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn:hover { background: var(--green); border-color: var(--green); color: var(--paper); }
+  .shelf { position: absolute; left: 0; right: 0; bottom: 0; }
+  .shelf svg { display: block; width: 100%; overflow: visible; }
+  .spine { cursor: pointer; transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+  .spine:hover, .spine:focus-visible, .spine.on { transform: translateY(-14px); }
+  .spine:focus-visible { outline: none; } .spine:focus-visible rect.body { stroke: var(--persimmon); stroke-width: 4; }
+  .spine text { font-family: var(--display); pointer-events: none; }
+  .spine .no { font-family: var(--num); font-weight: 600; }
+  .shelf-note { font-size: 14px; color: var(--ink-2); margin: 10px 0 0; }
+  .nav .btn { height: 42px; padding: 0 20px; font-size: 15px; }
+
+  section.block { padding: 96px 0 0; }
+  h2 { font: 700 44px/1.25 var(--display); margin: 0 0 8px; letter-spacing: .02em; }
+  .lede { color: var(--ink-2); margin: 0 0 28px; max-width: 34em; }
+
+  /* —— 十晚安排 —— */
+  .night { display: grid; grid-template-columns: 120px 150px minmax(0, 1fr) 190px; gap: 24px; align-items: center; padding: 26px 0; border-top: 1px solid var(--line); scroll-margin-top: 24px; position: relative; }
+  .night:last-child { border-bottom: 1px solid var(--line); }
+  .night::before { content: ""; position: absolute; left: -20px; top: 14px; bottom: 14px; width: 6px; border-radius: 3px; background: transparent; transition: background .2s; }
+  .night.on::before { background: var(--persimmon); }
+  .night .no { font: 600 76px/0.9 var(--num); color: var(--green); }
+  .night .date { font: 600 24px/1.2 var(--num); } .night .date small { display: block; font: 15px var(--sans); color: var(--ink-2); margin-top: 4px; }
+  .night h3 { font: 700 30px/1.3 var(--display); margin: 0; } .night h3.q { margin-left: -.42em; }   /* 书名号自带左侧空白，向左挪一点，和下一行对齐 */ .night h3 span { font: 15px var(--sans); color: var(--ink-2); margin-left: 12px; font-weight: 400; }
+  .night p { margin: 6px 0 0; font-size: 16px; line-height: 1.65; color: var(--ink-2); max-width: 36em; } .night p b { color: var(--ink); font-weight: 700; }
+  .night .act { text-align: right; }
+  .night .left { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; } .night .left.few { color: var(--hot-text); font-weight: 700; }
+  .pick { height: 48px; min-width: 132px; padding: 0 22px; border-radius: 999px; border: 2px solid var(--ink); background: transparent; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .pick:hover { background: var(--ink); color: var(--paper); }
+  .pick[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--paper); }
+  .pick.booked { background: var(--sage); border-color: var(--sage); color: var(--ink); }
+  .pick:disabled { border-color: var(--line); color: var(--ink-2); cursor: default; background: transparent; }
+
+  /* —— 十年 —— */
+  .years { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); margin-top: 28px; }
+  .years div { padding: 26px 28px 8px 0; } .years div + div { padding-left: 28px; border-left: 1px solid var(--line); }
+  .years b { display: block; font: 600 88px/1 var(--num); color: var(--green); } .years b small { font: 700 26px var(--display); margin-left: 6px; color: var(--ink); }
+  .years span { display: block; margin-top: 12px; color: var(--ink-2); font-size: 16px; }
+  .info { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; margin-top: 28px; }
+  .info h3 { font-size: 15px; letter-spacing: .2em; color: var(--hot-text); margin: 0 0 10px; }
+  .info p, .info li { font-size: 17px; } .info ul { margin: 0; padding-left: 1.2em; } .info li { margin: .35em 0; }
+  .info .addr { font: 700 28px/1.4 var(--display); margin: 0 0 8px; }
+  footer { margin-top: 96px; padding: 28px 0 120px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); }
+
+  /* —— 已选的夜晚：底部一条 —— */
+  .dock { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--paper); border-radius: 999px; padding: 10px 10px 10px 28px; display: flex; align-items: center; gap: 22px; box-shadow: 0 12px 36px rgba(20, 37, 30, .3); z-index: 5; max-width: calc(100vw - 32px); }
+  .dock span { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .dock b { font-family: var(--num); font-size: 20px; }
+  .dock button { height: 48px; padding: 0 24px; border-radius: 999px; border: 0; background: var(--paper); color: var(--ink); font-weight: 700; font-size: 16px; cursor: pointer; white-space: nowrap; }
+  [hidden] { display: none !important; }
+  dialog { border: 0; border-radius: 20px; padding: 0; width: min(480px, calc(100vw - 32px)); background: var(--paper); color: var(--ink); box-shadow: 0 24px 80px rgba(20, 37, 30, .4); }
+  dialog::backdrop { background: rgba(20, 37, 30, .55); }
+  .dlg { padding: 30px 30px 26px; }
+  .dlg h2 { font-size: 30px; margin: 0 0 6px; } .dlg .sum { color: var(--ink-2); font-size: 16px; margin: 0 0 18px; }
+  .field { margin-top: 14px; } .field label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .field input { width: 100%; height: 54px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; padding: 0 16px; font-size: 18px; }
+  .field .err { display: none; color: #B3261E; font-size: 14px; font-weight: 700; margin-top: 4px; } .field.bad .err { display: block; } .field.bad input { border-color: #B3261E; }
+  .seats { display: flex; gap: 10px; } .seats button { flex: 1; height: 54px; border-radius: 12px; border: 2px solid var(--line); background: #fff; font-weight: 700; cursor: pointer; }
+  .seats button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .dlg .row { display: flex; gap: 12px; margin-top: 24px; } .dlg .row .btn { flex: 1; justify-content: center; height: 54px; font-size: 17px; }
+  .done-list { margin: 14px 0 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); } .done-list li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; }
+  .done-list b { font-family: var(--num); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 20px; } .nav nav { display: none; }
+    .hero { min-height: 0; } .shelf { position: static; margin-top: 36px; }
+    .facts { grid-template-columns: 1fr; max-width: none; justify-content: stretch; } .when { font-size: 34px; }
+    section.block { padding-top: 64px; } h2 { font-size: 34px; }
+    .night { grid-template-columns: 64px minmax(0, 1fr); gap: 6px 16px; padding: 22px 0; align-items: start; }
+    .night .no { font-size: 48px; grid-row: 1 / span 2; padding-top: 4px; } .night .date { font-size: 18px; } .night .date small { display: inline; margin-left: 8px; }
+    .night h3 { font-size: 24px; } .night h3 span { display: block; margin: 2px 0 0; }
+    .night .body { grid-column: 2; } .night .act { grid-column: 2; text-align: left; display: flex; align-items: center; gap: 14px; margin-top: 8px; } .night .left { margin: 0; order: 2; }
+    .night::before { left: -12px; }
+    .years { grid-template-columns: 1fr; } .years div + div { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; } .years b { font-size: 68px; }
+    .info { grid-template-columns: 1fr; gap: 36px; }
+    .cta { width: 100%; } .cta .btn { flex: 1; justify-content: center; padding: 0 16px; }
+    .dock { left: 16px; right: 16px; transform: none; padding-left: 22px; justify-content: space-between; }
+  }
+  @media (prefers-reduced-motion: reduce) { .spine { transition: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav"><div class="mark">拐角书店</div><nav><a href="#nights">十晚安排</a><a href="#years">这十年</a><a href="#visit">怎么来</a></nav></div>
+
+  <header class="hero" id="hero">
+    <div class="text">
+      <p class="kicker">拐角书店十周年</p>
+      <h1>十个夜晚，<br>读<em>十本书</em>。</h1>
+      <div class="facts" id="facts">
+        <p>每晚一本书，一位领读人，四十个座位。不讲课，不签售，就是一屋子人把一本书从头聊到尾。免费，需要预约。</p>
+        <div class="when num">11.20 — 11.29<small>每晚 19:30 · 书店二楼</small></div>
+        <div class="cta"><a class="btn" href="#nights">预约座位</a></div>
+      </div>
+    </div>
+    <div class="shelf"><div id="shelf"></div></div>
+  </header>
+  <p class="shelf-note">十本书脊就是十个夜晚，点一本看那一晚。</p>
+
+  <section class="block" id="nights">
+    <h2>十晚安排</h2>
+    <p class="lede">可以只来一晚，也可以多选几晚一起预约。每人每晚最多两个座位。</p>
+    <div id="list"></div>
+  </section>
+
+  <section class="block" id="years">
+    <h2>这十年</h2>
+    <p class="lede">2016 年冬天，我们在梧桐路和槐荫街的拐角租下一间二十平米的铺面。书是一本一本挑的，人是一个一个认识的。</p>
+    <div class="years">
+      <div><b class="num">10<small>年</small></b><span>没有搬过家，没有关过一天门（除了春节）。</span></div>
+      <div><b class="num">412<small>场</small></b><span>读书会、放映和换书会，大多在二楼那张长桌旁。</span></div>
+      <div><b class="num">21<small>万本</small></b><span>从这里被带回家的书。卖得最多的一本是《小王子》。</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="visit">
+    <h2>怎么来</h2>
+    <div class="info">
+      <div><h3>地址</h3><p class="addr">梧桐路 86 号<br>槐荫街拐角</p><p>地铁 2 号线梧桐路站 C 口，出来往回走 200 米。门口不好停车，建议坐地铁或骑车。</p></div>
+      <div><h3>来之前</h3><ul><li>19:10 开始入座，19:30 准时开始，大约 21:00 结束。</li><li>没读过那本书也可以来，听别人怎么读。</li><li>临时来不了，请在当天中午前取消，把座位让给候补的人。</li><li>11 月 22 日《小王子》是下午场，15:00 开始。</li></ul></div>
+    </div>
+  </section>
+
+  <footer>练习页面：拐角书店、领读人和数字都是虚构的；书名和作者是真实的。预约只保存在这台设备的浏览器里。</footer>
+</div>
+
+<div class="dock" id="dock" hidden><span id="dock-text"></span><button type="button" id="dock-go">填写预约</button></div>
+<dialog id="dlg"><div class="dlg" id="dlg-body"></div></dialog>
+
+<script>
+(function () {
+  const PALETTES = {
+    green: { paper: '#F3EEE4', ink: '#14251E', main: '#1D4B3A', soft: '#C5D2C0', hot: '#E2562B', hotText: '#B03E16', line: '#D9D1C1', ink2: '#55635C' },
+    indigo: { paper: '#F2F0EA', ink: '#161A33', main: '#27348B', soft: '#C9CEE6', hot: '#E0A100', hotText: '#7A5800', line: '#D8D5CB', ink2: '#555A72' },
+  };
+  const P = PALETTES[(/[?&]palette=(\w+)/.exec(location.search) || [])[1]] || PALETTES.green;
+  const rs = document.documentElement.style; rs.setProperty('--paper', P.paper); rs.setProperty('--ink', P.ink); rs.setProperty('--green', P.main); rs.setProperty('--sage', P.soft); rs.setProperty('--persimmon', P.hot); rs.setProperty('--hot-text', P.hotText); rs.setProperty('--line', P.line); rs.setProperty('--ink-2', P.ink2);
+  const hotInk = P === PALETTES.indigo ? P.ink : '#FFF6EE';   // 芥末黄上用深色字才看得清
+  const C = { green: [P.main, P.paper], persimmon: [P.hot, hotInk], ink: [P.ink, P.paper], sage: [P.soft, P.ink], paper: [P.paper, P.ink] };
+  const NIGHTS = [
+    { d: 20, w: '五', book: '城南旧事', by: '林海音', host: '店主阿树', say: '开幕夜。从一个孩子的眼睛读起：骆驼队、惠安馆、爸爸的花儿落了。', left: 6, c: 'green', hw: [1.10, .86] },
+    { d: 21, w: '六', book: '边城', by: '沈从文', host: '周砚，中学语文老师', say: '一条河，一只渡船，一个等人的姑娘。为什么它读起来这么安静。', left: 14, c: 'persimmon', hw: [.90, .74] },
+    { d: 22, w: '日', book: '小王子', by: '圣埃克苏佩里', host: '小满，绘本馆老师', say: '下午场，15:00 开始，欢迎带孩子。大人和小孩各读各的小王子。', left: 0, c: 'paper', hw: [.66, .60], time: '15:00' },
+    { d: 23, w: '一', book: '呼兰河传', by: '萧红', host: '林迟，写小说的人', say: '一座小城的四季。她写冷，也写后花园里的亮。', left: 21, c: 'ink', hw: [1.20, .93] },
+    { d: 24, w: '二', book: '瓦尔登湖', by: '梭罗', host: '老顾，在郊外种菜', say: '很多人买了没读完。这一晚只读“经济篇”和“声音”两章。', left: 18, c: 'sage', hw: [.84, .70], lean: 7 },
+    { d: 25, w: '三', book: '看不见的城市', by: '卡尔维诺', host: '何苇，建筑师', say: '五十五座城市，其实是一座。带上你最想讲的那一座来。', left: 9, c: 'persimmon', hw: [1.00, 1.00] },
+    { d: 26, w: '四', book: '围城', by: '钱锺书', host: '沈老师，退休教师', say: '好笑的地方很多，笑完了有点难受。挑你最喜欢的一句比喻来。', left: 11, c: 'green', hw: [.95, .80] },
+    { d: 27, w: '五', book: '百年孤独', by: '加西亚·马尔克斯', host: '阿黎，译者', say: '七代人，一堆重名的人。这一晚画一张家谱，把它读顺。', left: 3, c: 'sage', hw: [1.30, .90] },
+    { d: 28, w: '六', book: '平凡的世界', by: '路遥', host: '老秦，跑了十年长途', say: '他在驾驶室里把三册听了四遍。听他讲孙少平。', left: 16, c: 'ink', hw: [1.15, .68] },
+    { d: 29, w: '日', book: '带一本你的书来', by: '闭幕夜', host: '所有店员', say: '换书会。带一本你读过、愿意送人的书，换一本别人的回去。', left: 25, c: 'persimmon', hw: [.90, .84] },
+  ];
+  const LOW = [.90, .78, .70, 1.0, .80, .98, .86], HIGH = [.90, .72, 1.0];   // 左边七本、右边三本各自的相对高度
+  const KEY = 'corner-books-10', $ = (id) => document.getElementById(id), pad = (n) => String(n).padStart(2, '0');
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  let booked = saved.nights || [], picked = [], seats = 1;
+  const store = () => { try { localStorage.setItem(KEY, JSON.stringify({ name: saved.name, phone: saved.phone, seats: saved.seats, nights: booked })); } catch (e) {} };
+
+  // —— 书脊：按容器的实际宽度画，窄屏也是十本，只是瘦一些 ——
+  function drawShelf() {
+    const box = $('shelf'), hero = $('hero'), W = box.clientWidth, narrow = W < 860, gap = narrow ? 3 : 8;
+    // 宽屏：左边七本压在正文下面，不能高过正文的底边；右边三本升到标题旁边的空白里
+    const hr = hero.getBoundingClientRect(), fr = $('facts').getBoundingClientRect();
+    const lowMax = narrow ? 236 : Math.max(170, hr.bottom - fr.bottom - 34), highMax = narrow ? 236 : Math.min(640, hr.height - 30);
+    const H = (narrow ? 250 : highMax + 20), base = H - 14;
+    const total = NIGHTS.reduce((a, n) => a + n.hw[0], 0), unit = (W - gap * 9) / total;
+    let xp = 0, s = '';
+    NIGHTS.forEach((n, i) => {
+      const w = n.hw[0] * unit, h = narrow ? n.hw[1] * lowMax : (i < 7 ? LOW[i] * lowMax : HIGH[i - 7] * highMax), [fill, ink] = C[n.c], x = xp, y = base - h; xp += w + gap;
+      const top = narrow ? 44 : 78, bottom = narrow ? 22 : 34, chars = [...n.book];
+      const fs = Math.max(12, Math.min(narrow ? 15 : 26, w * 0.34));
+      const rot = n.lean && !narrow ? ` transform="rotate(${n.lean} ${x + w} ${base})"` : '';
+      s += `<g class="spine${picked.includes(i) || booked.includes(i) ? ' on' : ''}" data-i="${i}" tabindex="0" role="link" aria-label="第 ${i + 1} 夜，${n.book}"><g${rot}>
+        <rect class="body" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${fill}" ${n.c === 'paper' ? `stroke="${P.ink}" stroke-width="2"` : ''}/>
+        <rect x="${x}" y="${y + (narrow ? 32 : 54)}" width="${w}" height="${narrow ? 2 : 3}" fill="${ink}" opacity=".55"/>
+        <rect x="${x}" y="${y + h - (narrow ? 14 : 24)}" width="${w}" height="${narrow ? 2 : 3}" fill="${ink}" opacity=".55"/>
+        <text class="no" x="${x + w / 2}" y="${y + (narrow ? 22 : 38)}" text-anchor="middle" font-size="${narrow ? 15 : 26}" fill="${ink}">${pad(i + 1)}</text>
+        <text class="ttl" data-room="${h - top - bottom}" x="${x + w / 2}" y="${y + top}" font-size="${fs}" font-weight="700" fill="${ink}" writing-mode="vertical-rl">${esc(n.book)}</text>
+      </g></g>`;
+    });
+    s += `<rect x="0" y="${base}" width="${W}" height="6" rx="3" fill="${P.ink}"/>`;
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="group" aria-label="十本书脊，对应十个夜晚">${s}</svg>`;
+    // 竖排字的实际高度因字体而异，量出来再缩，书名不截断也不压到底边
+    box.querySelectorAll('text.ttl').forEach(el => { const room = +el.dataset.room, tall = el.getBBox().height; if (tall > room) el.setAttribute('font-size', Math.max(11, parseFloat(el.getAttribute('font-size')) * room / tall)); });
+  }
+  function go(i) { const el = document.getElementById('night-' + i); el.scrollIntoView({ block: 'center' }); document.querySelectorAll('.night.on').forEach(n => n.classList.remove('on')); el.classList.add('on'); }
+  $('shelf').addEventListener('click', (e) => { const g = e.target.closest('.spine'); if (g) go(+g.dataset.i); });
+  $('shelf').addEventListener('keydown', (e) => { const g = e.target.closest('.spine'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); go(+g.dataset.i); } });
+
+  // —— 十晚 ——
+  function drawList() {
+    $('list').innerHTML = NIGHTS.map((n, i) => {
+      const isBooked = booked.includes(i), isPicked = picked.includes(i), full = n.left <= 0;
+      const left = isBooked ? '已为你留座' : full ? '已约满' : n.left <= 6 ? `只剩 ${n.left} 个座位` : `还有 ${n.left} 个座位`;
+      const btn = isBooked ? `<button type="button" class="pick booked" data-cancel="${i}">取消预约</button>`
+        : full ? `<button type="button" class="pick" disabled>约满了</button>`
+        : `<button type="button" class="pick" data-pick="${i}" aria-pressed="${isPicked}">${isPicked ? '已选，再点取消' : '选这一晚'}</button>`;
+      return `<article class="night" id="night-${i}">
+        <div class="no num">${pad(i + 1)}</div>
+        <div class="date num">11.${n.d}<small>周${n.w} · ${n.time || '19:30'}</small></div>
+        <div class="body"><h3${i === 9 ? '' : ' class="q"'}>${i === 9 ? esc(n.book) : '《' + esc(n.book) + '》'}<span>${esc(n.by)}</span></h3><p><b>领读：${esc(n.host)}。</b>${esc(n.say)}</p></div>
+        <div class="act"><div class="left${!isBooked && !full && n.left <= 6 ? ' few' : ''}">${left}</div>${btn}</div></article>`;
+    }).join('');
+  }
+  function drawDock() {
+    $('dock').hidden = !picked.length;
+    if (picked.length) $('dock-text').innerHTML = `已选 <b>${picked.length}</b> 晚：${picked.slice().sort((a, b) => a - b).map(i => '第 ' + (i + 1) + ' 夜').join('、')}`;
+  }
+  function all() { drawShelf(); drawList(); drawDock(); }
+  $('list').addEventListener('click', (e) => {
+    const p = e.target.closest('[data-pick]'), c = e.target.closest('[data-cancel]');
+    if (p) { const i = +p.dataset.pick; picked = picked.includes(i) ? picked.filter(x => x !== i) : picked.concat(i); all(); }
+    if (c) { const i = +c.dataset.cancel; if (c.dataset.sure) { booked = booked.filter(x => x !== i); store(); all(); } else { c.dataset.sure = '1'; c.textContent = '确定取消？再点一次'; } }
+  });
+
+  // —— 填写预约 ——
+  const dlg = $('dlg');
+  function form() {
+    const list = picked.slice().sort((a, b) => a - b);
+    $('dlg-body').innerHTML = `<h2>预约座位</h2><p class="sum">${list.map(i => `第 ${i + 1} 夜《${esc(NIGHTS[i].book)}》`).join('、').replace('《带一本你的书来》', '闭幕换书会')}</p>
+      <div class="field" id="f-name"><label for="name">称呼</label><input id="name" autocomplete="name" value="${esc(saved.name || '')}" placeholder="到店时报这个名字"><div class="err">请填一个称呼。</div></div>
+      <div class="field" id="f-phone"><label for="phone">手机号</label><input id="phone" inputmode="numeric" maxlength="11" autocomplete="tel" value="${esc(saved.phone || '')}" placeholder="临时有变动时联系你"><div class="err">手机号是 11 位数字。</div></div>
+      <div class="field"><label>每晚几个座位</label><div class="seats" id="seats"><button type="button" data-n="1" aria-pressed="${seats === 1}">1 个</button><button type="button" data-n="2" aria-pressed="${seats === 2}">2 个</button></div></div>
+      <div class="row"><button type="button" class="btn ghost" id="x">再想想</button><button type="button" class="btn" id="ok">确认预约</button></div>`;
+    $('seats').onclick = (e) => { const b = e.target.closest('button'); if (!b) return; seats = +b.dataset.n; $('seats').querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); };
+    $('x').onclick = () => dlg.close();
+    $('ok').onclick = () => { const name = $('name').value.trim(), phone = $('phone').value.trim(), bn = !name, bp = !/^1\d{10}$/.test(phone);
+      $('f-name').classList.toggle('bad', bn); $('f-phone').classList.toggle('bad', bp); if (bn || bp) { (bn ? $('name') : $('phone')).focus(); return; }
+      const short = list.filter(i => NIGHTS[i].left < seats);
+      if (short.length) { $('dlg-body').querySelector('.sum').innerHTML = `<b style="color:#B3261E">第 ${short.map(i => i + 1).join('、')} 夜只剩 1 个座位，请改成每晚 1 个，或者去掉这一晚。</b>`; return; }
+      saved = { name, phone, seats }; booked = [...new Set(booked.concat(list))].sort((a, b) => a - b); picked = []; store(); all(); done(list); };
+  }
+  function done(list) {
+    $('dlg-body').innerHTML = `<h2>留好座位了，${esc(saved.name)}</h2><p class="sum">到店报称呼或手机后四位 <b class="num" style="color:#14251E;font-size:20px">${saved.phone.slice(-4)}</b>。每晚 ${saved.seats} 个座位。</p>
+      <ul class="done-list">${list.map(i => `<li><span><b>11.${NIGHTS[i].d}</b> 周${NIGHTS[i].w} ${NIGHTS[i].time || '19:30'}</span><span>${i === 9 ? '闭幕换书会' : '《' + esc(NIGHTS[i].book) + '》'}</span></li>`).join('')}</ul>
+      <p class="sum" style="margin-top:14px">来不了的话，在这一页对应的那一晚点“取消预约”。</p><div class="row"><button type="button" class="btn" id="x">好的</button></div>`;
+    $('x').onclick = () => dlg.close();
+  }
+  $('dock-go').onclick = () => { form(); dlg.showModal(); };
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  let w = 0, hgt = 0; new ResizeObserver(() => { const n = $('shelf').clientWidth, h2 = $('hero').clientHeight; if (n !== w || h2 !== hgt) { w = n; hgt = h2; drawShelf(); } }).observe($('hero'));
+  all();
+})();
+</script>
+</body>
+</html>
