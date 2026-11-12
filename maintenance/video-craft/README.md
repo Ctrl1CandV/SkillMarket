@@ -52,6 +52,26 @@
 - 原计划用 DeepSeek，但 `api.deepseek.com` 连不上（useProblem ISS-002）。gpt-6-luna 跑的一轮两组都只用了 3 分钟，没看过画面，用户判断模型不适合，那一轮删掉重跑。
 - 发布前据此补了 review.md 和 motion.md：换场默认先退后进；切点帧条要找重影；文字和图从同一个时刻表换场。
 
+### 回归（2026-11-12，Windows 本机）
+
+- 环境：Node 24.19、playwright-core 1.65（装在 `%LOCALAPPDATA%\video-craft-kit`，`VC_NODE_MODULES` 指过去）、系统 Chrome 157（`VC_CHROME`）、ffmpeg 8.1.1。`doctor.mjs`：WebGL2 走 RTX 4070 Ti SUPER（ANGLE/D3D11），WebCodecs 与 ffmpeg 都有 VP9/H.264/AAC/Opus，浏览器里没有语音合成。
+- 三个示例从仓库目录直接跑，各 1 次：
+  - 联系表（每 2 秒一帧）都能出，sky 30 帧约 3 秒；看过 sky 和 promo 的联系表，画面与 0.2.0 发布时一致；
+  - 音轨：starter −16.0、sky −16.1、promo −17.0 LUFS，峰值都是 −1.5 dB，与 11-10 的记录相同；starter 没有配音文件，按预期提示缺少 4 段并跳过；
+  - sky、promo 的 `textcheck` 通过；
+  - promo 直接出 MP4：H.264 1920×1080 30 fps，28.000 s，合入音轨的 `promo-av.mp4` 也生成了；840 帧渲染约 35 秒（11-10 在软件 GL 上约 1.5 分钟）。
+- 示例的开源字体（Noto Sans/Serif SC、Ubuntu）仓库不附带，这次全部退回系统字体（微软雅黑等），页面只警告不报错。
+- 真实小任务见下一节。
+
+## 0.3.0（2026-11-12 dev）：联系表标出冻住的画面，修 Windows 路径
+
+依据 [竖屏咖啡因短片实测](evals/2026-11-12-caffeine/README.md)（pi + gpt-6.1-sol，用户指定）：流程走得完整、数字全对，但每段动画做完就停住，32 秒里约 13 秒画面没有任何变化；模型看过联系表却没处理。
+
+- `render.mjs sheet` 标出和上一格几乎没变的格子，连续静止 2 秒以上时在输出里列出时段（`--still`）。
+- starter 示例加整片缓慢推近，不再示范“读字时画面冻住”。
+- `review.md`、SKILL.md 交付核对、`kit.md` 各补一处。
+- `audiocheck.mjs` 在 Windows 上找不到 score.html（`/` 截路径），改用 `dirname`；`montage.mjs` 图注用 `basename`。
+
 ### 下一步
 
 - 真人配音（下一个版本）：edge-tts 用 `zh-CN-YunxiNeural`，但 `speech.platform.bing.com` 目前连不上（ISS-002）；离线备选 Kokoro v1.1-zh。拿到真实配音后验证 `vo.mjs` → `--vo` → `duck` 全链路。

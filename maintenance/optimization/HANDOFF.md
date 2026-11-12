@@ -69,14 +69,14 @@
 | presentation-craft | 0.4.0 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
 | imagecraft | 0.3.1 | 显卡检测能分清“没发现”和“驱动在但访问不到”；出图通道都用不了时的做法 | **没有一张图来自生图模型**；本机出图、订阅出图、交互式会话里的“先问”都没测 |
 | docvision | 0.5.1 | 只修了同样的显卡误判 | 完整一轮没开始 |
-| video-craft | 0.2.0 | 没动 | 整轮没开始 |
+| video-craft | 0.3.0 | Windows 回归通过；联系表标出冻住的画面；starter 加缓慢推近；修 audiocheck 的 Windows 路径 | 每个版本只跑 1 次；用户对改前改后两条成片的盲选待补；真人配音没测 |
 
 ## 五、迁到 Windows 后先做什么
 
 原环境缺的东西在本机大多现成，所以先把欠下的验证补上，再继续往后做。建议顺序：
 
 1. ~~presentation-craft 补看真实画面~~（2026-11-12 完成，0.4.0，见 `maintenance/presentation-craft/evals/pi-run-2026-11-12/README.md`）。
-2. **video-craft。** 先跑 `node video-craft/kit/doctor.mjs` 确认浏览器、ffmpeg 可用，再渲染自带示例做回归，然后按第三节的流程做一个真实小任务。它刚发布并做过评测，预期以回归检查为主。
+2. ~~video-craft~~（2026-11-12 完成一轮，0.3.0，见 `maintenance/video-craft/evals/2026-11-12-caffeine/README.md`）。
 3. **docvision。** 在普通终端跑 `python docvision/scripts/docvision.py doctor` 确认显卡，用用户实际在读的论文测数字 PDF 的筛读路线，再用一页扫描件验收本地 OCR。
 4. **imagecraft。** 跑 `python imagecraft/scripts/imagecraft.py discover` 看显卡和现有 ComfyUI，再用 `pi-tasks/cover` 这个任务验证真正的出图。走本机还是 GPT 订阅由用户定；订阅出图每张都要用户授权。
 5. 四个技能都补完后，进入第三阶段。
