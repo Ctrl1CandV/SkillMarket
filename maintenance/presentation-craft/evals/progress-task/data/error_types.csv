@@ -1,0 +1,6 @@
+error_type,count,stage,note
+bridge entity not retrieved,23,retrieval,sub-queries lack the intermediate entity
+comparison question,14,generation,evidence retrieved but comparison wrong
+rewrite drift,11,rewrite,constraint dropped in sub-query
+annotation noise,7,data,gold answer questionable
+other,5,mixed,

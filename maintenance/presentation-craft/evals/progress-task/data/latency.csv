@@ -1,0 +1,5 @@
+method,retrieve_ms,rewrite_ms,rerank_ms,total_ms
+BM25,18,0,0,18
+Dense,25,0,0,25
+Dense+CE,25,0,96,121
+QR+CE,71,245,96,412

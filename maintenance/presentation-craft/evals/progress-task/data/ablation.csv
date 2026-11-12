@@ -1,0 +1,6 @@
+setting,recall_at_5_mean,recall_at_5_std,em_mean,em_std,rerank_ms
+QR+CE (full; depth=50),78.4,0.4,44.6,0.5,96
+w/o query rewrite,73.9,0.5,41.8,0.4,95
+w/o hard negatives,76.6,0.6,43.5,0.5,96
+rerank depth=20,75.8,0.5,42.9,0.6,41
+rerank depth=100,78.6,0.4,44.7,0.5,189

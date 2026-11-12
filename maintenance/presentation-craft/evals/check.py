@@ -130,6 +130,24 @@ class BehaviorChecks(unittest.TestCase):
             animate(self.deck, self.work / 'moving.pptx', self.plan)
         self.assertFalse((self.work / 'moving.pptx').exists())
 
+    def test_caption_sized_body_text_is_warned_and_scaled_to_canvas(self):
+        def deck_with(size, canvas='12192000'):
+            parts = copy.deepcopy(self.parts)
+            run = f'<a:r><a:rPr sz="{size}"/><a:t>{"x" * 120}</a:t></a:r><a:r><a:rPr sz="1100"/><a:t>source line</a:t></a:r>'
+            for name in ('ppt/slides/slide1.xml', 'ppt/slides/slide2.xml'):
+                parts[name] = parts[name].replace(b'<a:r><a:t>First evidence</a:t></a:r>', run.encode())
+            parts['ppt/presentation.xml'] = parts['ppt/presentation.xml'].replace(b'cx="12192000"', f'cx="{canvas}"'.encode())
+            target = self.work / f'type-{size}-{canvas}.pptx'
+            self.write_package(target, parts)
+            return audit(target)
+        small, normal = deck_with(1300), deck_with(2000)
+        self.assertEqual({f['code'] for f in small['findings']}, {'body_type_small'})
+        self.assertTrue(small['structural_pass'])
+        self.assertEqual(small['type_summary']['pages_below_body_threshold'], [1, 2])
+        self.assertEqual(normal['findings'], [])
+        # 13 pt on a 10 in wide canvas equals 17.3 pt on the 13.33 in reference canvas.
+        self.assertEqual(deck_with(1300, canvas='9144000')['findings'], [])
+
     def test_duplicate_zip_parts_are_rejected(self):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', UserWarning)

@@ -72,6 +72,14 @@ def main():
     powerpoint = powerpoint_com_status()
     authoring_engines = (['pptxgenjs'] if modules.get('pptxgenjs') else []) + (['python-pptx'] if python_modules['pptx'] else [])
     renderers = (['libreoffice'] if soffice else []) + (['powerpoint'] if powerpoint['available'] else [])
+    render_ready = bool(renderers and (poppler or python_modules['pymupdf'] or python_modules['fitz']))
+    advice = None
+    if not render_ready:
+        advice = ('No PPTX renderer here. Make at most one ordinary install attempt that the host permits '
+                  '(system package manager or the official installer). If that is not possible, stop there: '
+                  'do not unpack system packages, build a private runtime (proot, fakechroot, AppImage hunting) '
+                  'or probe system directories. Build the deck, run audit_pptx.py, tell the user that exported '
+                  'rendering was not verified and which program they need to install.')
     print(json.dumps({
         'python': sys.executable, 'node': node, 'node_modules': modules,
         'python_modules': python_modules, 'soffice': soffice, 'pdftoppm': poppler,
@@ -79,7 +87,8 @@ def main():
         'native_authoring_engines': authoring_engines,
         'powerpoint_com': powerpoint,
         'pptx_visual_renderers': renderers,
-        'pptx_visual_render_available': bool(renderers and (poppler or python_modules['pymupdf'] or python_modules['fitz'])),
+        'pptx_visual_render_available': render_ready,
+        'no_renderer_advice': advice,
         'probe_error': probe_error,
         'note': 'Available dependencies/COM registration do not prove successful export, content, editability or visual quality.'
     }, ensure_ascii=False, indent=2))

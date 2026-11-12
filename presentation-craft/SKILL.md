@@ -2,7 +2,7 @@
 name: presentation-craft
 description: 用于制作或改进研究生论文组会、实验进展、开题答辩、课程 presentation 等现场汇报的幻灯片，尤其适合需要学术风格选择、基于数据的图表选型与展示、科研排版和可编辑 PPTX 的任务。不用于仅查找工具或仅写普通文章。
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Presentation craft
@@ -35,6 +35,8 @@ python scripts/doctor.py
 
 依赖尽量复用宿主运行时，代码、素材和 QA 放在任务目录，不放在技能目录。缺工具时安装最小的免费依赖到任务或专用环境；遵守宿主权限，不能改全局配置来绕开限制。无需新增 plugin、永久 MCP 服务、浏览器账户或云订阅。
 
+**补环境只试一次。** 缺的是 Python/Node 包时，装进任务目录即可。缺的是 LibreOffice 这类需要系统安装的渲染器时，在权限内用常规方式（系统包管理器或官方安装包）试一次；装不了就停，把时间留给内容和版面。不解包系统包自行拼运行环境，不借 proot、fakechroot 之类绕过，不试探系统目录能否写入。接着做完成品、跑结构审查，交付时写明未做导出渲染验证，以及用户装上什么就能补验。
+
 ## 从材料到设计
 
 1. **建立论证。** 读 [内容与证据](references/story-and-evidence.md)，区分作者主张、报告者解读与自己的实验结果。给每页写清作用、一句主旨、支撑证据、必要条件和讲述过渡；丰富的解释放入备注或附录。用户有详细要求时保留覆盖表，避免为了好看漏掉必需内容。
@@ -57,6 +59,8 @@ python scripts/build_style_gallery.py --output task/style-options.pptx --theme s
 ## 审查实际输出
 
 用 [质量检查](references/quality.md) 对内容、画面与导出分别检查。动画在最终文件上添加，再做审查。下列脚本只是确定性的辅助，不判断学术真实性或审美，也不替代看图和放映。
+
+结构审查在做出前两三页时就先跑一次，不留到最后：它会报告每页的中位字号，半数文字不到 16 pt（按 13.33 英寸宽画布折算）的页面给出 `body_type_small` 警告。出现这个警告说明这页装得太满，按“删、拆、移入备注”的顺序处理，不靠缩字解决。16 pt 只是底线，不是目标，正文仍按 [视觉设计](references/design.md) 的 22–24 pt 起排，不要把字号正好调到警告消失为止；确属表格密集、需要保留的页面，在交付说明里写明哪几页字小、为什么保留。
 
 ```text
 python scripts/audit_pptx.py task/deck.pptx --report task/qa/audit.json
