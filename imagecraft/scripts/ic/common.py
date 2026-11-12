@@ -87,6 +87,16 @@ def external_path(value: str | Path) -> Path:
     return path
 
 
+def job_path(value: str | Path) -> Path:
+    """A job directory may be given relative to the current directory, normally the user's project.
+
+    2026-11-12: two of two models first passed `.imagecraft/jobs/<slug>` and were refused. The path is
+    resolved once here and stored absolute in job.json; configuration paths keep the strict rule.
+    """
+    raw = Path(value).expanduser()
+    return external_path(raw if raw.is_absolute() else Path.cwd() / raw)
+
+
 def safe_child(root: Path, relative: str) -> Path:
     path = root / relative
     if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):

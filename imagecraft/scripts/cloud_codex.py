@@ -17,7 +17,7 @@ import time
 import uuid
 from urllib.parse import urlsplit
 
-from ic.common import Error, atomic_json, external_path, file_lock, now, read_json, safe_child, sha256
+from ic.common import Error, atomic_json, file_lock, job_path, now, read_json, safe_child, sha256
 from ic.codex_rpc import AppServer
 from ic.png import decode, LIMIT
 
@@ -64,9 +64,12 @@ def launch(command, root):
 
 
 def initialize(server):
-    server.rpc("initialize", {"clientInfo": {"name": "imagecraft", "version": "0.3.2"},
+    server.rpc("initialize", {"clientInfo": {"name": "imagecraft", "version": "0.3.3"},
                               "capabilities": {"experimentalApi": True}})
     server.send({"method": "initialized", "params": {}})
+
+
+PAID_PLANS = {"plus", "pro", "business", "team", "edu", "enterprise"}
 
 
 def preflight(server, command, root):
@@ -74,8 +77,16 @@ def preflight(server, command, root):
     if "chatgpt" not in status.lower() or re.search(r"api[ -]?key", status, re.I):
         raise Error("ChatGPT subscription login required; API-key mode is refused")
     account = server.rpc("account/read", {"refreshToken": False}).get("account") or {}
-    if account.get("type") != "chatgpt" or (account.get("planType") or "").lower() not in {"plus", "pro", "business", "team", "edu", "enterprise"}:
+    if account.get("type") != "chatgpt":
         raise Error("A supported ChatGPT subscription account is required; no API-key fallback")
+    plan = (account.get("planType") or "").lower()
+    if plan not in PAID_PLANS:
+        # 2026-11-12: a Windows machine had Codex signed in to a free account while the user's paid
+        # subscription lived in another client; the old message did not say which plan it saw.
+        raise Error(f"Codex is signed in to a ChatGPT account on plan '{plan or 'unknown'}'; this script needs a paid plan "
+                    f"({', '.join(sorted(PAID_PLANS))}). Nothing was submitted. Tell the user which plan the official "
+                    "client reports and ask them to run `codex login` with their paid account in their own terminal; "
+                    "do not sign in, switch accounts or edit Codex files yourself")
     cfg = server.rpc("config/read", {"includeLayers": False, "cwd": str(root)}).get("config", {})
     if (cfg.get("model_provider") or "openai") != "openai":
         raise Error("Only the official OpenAI provider is permitted")
@@ -165,7 +176,13 @@ def publish(root, job, raw, source):
     job["artifact"] = {"file": "image.png", "width": width, "height": height, "bytes": len(stripped),
                        "sha256": digest, "source_sha256": hashlib.sha256(raw).hexdigest(), "source": source,
                        "format": "PNG", "decoder": "stdlib PNG8; decompressed and scanline-unfiltered"}
-    job["retrieval"] = {"state": "decoded", "visual_review": "required"}
+    # 2026-11-12: the official client also keeps the image and the thread under its own home, so deleting
+    # the project's .imagecraft/ does not remove every copy. Say so where the host reads the receipt.
+    job["retrieval"] = {"state": "decoded", "visual_review": "required",
+                        "client_copy": str(final_directory(job)),
+                        "client_copy_note": "The official Codex client keeps its own copy of this image and the thread "
+                                            "history; deleting .imagecraft/ does not remove them. Tell the user when the "
+                                            "image or prompt is private; cleanup there is the user's call in the official client."}
 
 
 def capture(root, job, item):
@@ -317,7 +334,7 @@ def verified(root, job):
 
 
 def run(args, command=None):
-    root = external_path(args.output if args.action == "generate" else args.job)
+    root = job_path(args.output if args.action == "generate" else args.job)
     if args.action == "generate":
         if not args.approve_cloud:
             raise Error("Explicit --approve-cloud is required for this authorized prompt/reference upload")

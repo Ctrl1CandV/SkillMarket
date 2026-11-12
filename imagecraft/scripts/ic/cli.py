@@ -15,7 +15,7 @@ import download_models
 from . import __version__
 from .client import Client
 from .common import (Error, atomic_json, comfy_version, config, discover, emit, endpoint,
-                     external_path, file_lock, gpu_info, gpu_load, home, safe_child)
+                     external_path, file_lock, gpu_info, gpu_load, home, job_path, safe_child)
 from . import jobs
 from .workflow import build, dimensions, validate
 
@@ -186,7 +186,7 @@ def main(argv=None) -> int:
                       "note": "No files written, images uploaded, GPU jobs queued or models downloaded. intent is a review/prompting hint, not another model."})
                 return 0
         if args.command in {"verify", "review"}:
-            root = external_path(args.job)
+            root = job_path(args.job)
             job = jobs.load_job(root)
             jobs.verify_artifacts(root, job)
             if args.command == "review":
@@ -215,7 +215,7 @@ def main(argv=None) -> int:
             if args.yes:
                 argv.append("--yes")
             return download_models.main(argv)
-        root = external_path(args.output if args.command == "generate" else args.job)
+        root = job_path(args.output if args.command == "generate" else args.job)
         if args.command == "status":
             job = jobs.load_job(root)
             if cfg["url"] != job["endpoint"]:

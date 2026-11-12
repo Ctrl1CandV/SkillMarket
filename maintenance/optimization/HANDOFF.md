@@ -49,7 +49,7 @@
 |---|---|---|
 | readable-reply | `maintenance/readable-reply/evals/`（6 个问题 × 4 组） | `results-2026-11-11.md` |
 | presentation-craft | `maintenance/presentation-craft/evals/progress-task/` | `evals/pi-run-2026-11-12/README.md` |
-| imagecraft | `maintenance/imagecraft/pi-tasks/` | `eval-pi-routing-2026-11-12.md`、`eval-local-2026-11-12.md` |
+| imagecraft | `maintenance/imagecraft/pi-tasks/` | `eval-pi-routing-2026-11-12.md`、`eval-local-2026-11-12.md`、`eval-cloud-2026-11-12.md` |
 | video-craft | `maintenance/video-craft/evals/2026-11-12-caffeine/` | 同目录 `README.md` |
 | docvision | `maintenance/docvision/evals/2026-11-12-real-run/` | 同目录 `README.md` |
 
@@ -69,7 +69,7 @@
 | git-governance | 1.1.0 | 提交前的文件去向清单、提交标题怎么定 | 没做模型实测；用户是否有固定的“私人文件夹”约定未知 |
 | skill-search | 0.3.0 | 区分“直接使用”和“借鉴参考” | 借鉴用途没在真实检索里试过 |
 | presentation-craft | 0.4.0 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
-| imagecraft | 0.3.2 | 第一次在本机用 FLUX 真正出图（封面任务 2 次）；`generate` 在显卡被别的任务占用时拒绝提交 | 每个版本只跑 1 次；拦不住用户推理服务两次请求之间的空档；GPT 订阅出图、Z-Image、交互式会话里的“先问”都没测 |
+| imagecraft | 0.3.3 | 本机 FLUX 和 GPT 订阅都真正出过图；`generate` 在显卡被占用时拒绝提交；订阅脚本报出账户套餐、说明客户端留存，任务目录可写相对路径 | 每个任务只跑 1 次；拦不住用户推理服务两次请求之间的空档；“连线两端分别看”在自出自验时是否有效没验证；Z-Image、交互式会话里的“先问”没测 |
 | docvision | 0.5.2 | 真实论文筛读和真实扫描页 OCR 实测通过；fast 档报告页面上看不见的文字；中文 Windows 输出不再崩溃；doctor 显示引擎崩溃原因 | 每个条件只跑 1 次；中文扫描件、PaddleOCR 本地路线没测；MinerU 环境缺依赖靠用户目录补，待用户决定是否装进环境；用户说明用途是给 AI 做高精度、大批量识别，批量任务还没测 |
 | video-craft | 0.3.0 | Windows 回归通过；联系表标出冻住的画面；starter 加缓慢推近；修 audiocheck 的 Windows 路径 | 每个版本只跑 1 次；GPT 两条成片用户盲看认为差别不明显，揭晓后觉得新版前半段发灰、略差；DeepSeek 一对用户盲选新版（曲线图更好），旧版两次都被接口断连打断过；真人配音没测 |
 
@@ -80,14 +80,14 @@
 1. ~~presentation-craft 补看真实画面~~（2026-11-12 完成，0.4.0，见 `maintenance/presentation-craft/evals/pi-run-2026-11-12/README.md`）。
 2. ~~video-craft~~（2026-11-12 完成一轮，0.3.0，见 `maintenance/video-craft/evals/2026-11-12-caffeine/README.md`）。
 3. ~~docvision~~（2026-11-12 完成一轮，0.5.2，见 `maintenance/docvision/evals/2026-11-12-real-run/README.md`）。
-4. ~~imagecraft 本机出图~~（2026-11-12 完成一轮，0.3.2，见 `maintenance/imagecraft/eval-local-2026-11-12.md`）。GPT 订阅出图还没测，每张都要用户授权。
+4. ~~imagecraft 本机出图~~（2026-11-12 完成一轮，0.3.2，见 `maintenance/imagecraft/eval-local-2026-11-12.md`）。GPT 订阅出图 2026-11-12 补测（0.3.3，见 `maintenance/imagecraft/eval-cloud-2026-11-12.md`）。
 5. 四个技能都补完后，进入第三阶段。
 
 各技能的自测（都不调用模型）：
 
 ```text
 python maintenance/presentation-craft/evals/check.py                      # 17 项
-python -B -m unittest discover -s maintenance/imagecraft/tests            # 97 项
+python -B -m unittest discover -s maintenance/imagecraft/tests            # 99 项
 python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 276 项，Windows 上跳过 1 项
 python maintenance/docvision/evals/check.py                                # 5 项
 ```

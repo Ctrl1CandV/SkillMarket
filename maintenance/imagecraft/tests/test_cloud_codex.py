@@ -64,6 +64,8 @@ class CloudTests(unittest.TestCase):
         self.assertNotIn(b"private", (root/"image.png").read_bytes())
         self.assertNotIn("email", job["account"])
         self.assertEqual(job["retrieval"]["visual_review"], "required")
+        self.assertTrue(job["retrieval"]["client_copy"].endswith(job["thread_id"]))
+        self.assertIn("does not remove", job["retrieval"]["client_copy_note"])
         self.assertEqual(self.methods().count("exec"), 1)
         self.assertEqual(job["cleanup"], "exited_after_stdin_close")
         self.assertEqual(job["exec_cleanup"], "exited_after_stdin_close")
@@ -76,12 +78,33 @@ class CloudTests(unittest.TestCase):
                 self.assertEqual(job["artifact"]["source"], source)
 
     def test_api_key_and_capability_and_quota_refuse_without_submit(self):
-        for mode in ("api", "api-account", "no-capability", "no-included", "non-object"):
+        for mode in ("api", "api-account", "free-account", "no-capability", "no-included", "non-object"):
             with self.subTest(mode=mode):
                 code, _, job = self.generate(mode)
                 self.assertNotEqual(code, 0)
                 self.assertEqual(job["submission"]["attempts"], 0)
         self.assertNotIn("exec", self.methods())
+
+    def test_relative_job_directory_resolves_against_the_project(self):
+        project = self.root/"project"
+        project.mkdir()
+        previous = os.getcwd()
+        os.chdir(project)
+        try:
+            with patch.dict(os.environ, {"IMAGECRAFT_FAKE_SCENARIO": "inline"}), redirect_stdout(io.StringIO()):
+                code = cloud.main(["generate", "--prompt-file", str(self.prompt), "--output", ".imagecraft/jobs/cover-cloud",
+                                   "--approve-cloud", "--wait", "10"], command=self.command)
+        finally:
+            os.chdir(previous)
+        job = json.loads((project/".imagecraft/jobs/cover-cloud/job.json").read_text())
+        self.assertEqual(code, 0)
+        self.assertEqual(Path(job["output"]), (project/".imagecraft/jobs/cover-cloud").resolve())
+
+    def test_free_plan_refusal_names_the_plan_and_the_users_step(self):
+        _, _, job = self.generate("free-account")
+        self.assertIn("plan 'free'", job["error"])
+        self.assertIn("codex login", job["error"])
+        self.assertNotIn("private@example.invalid", job["error"])
 
     def test_preview_and_unsafe_paths_are_not_images(self):
         for mode in ("preview", "unsafe-path"):

@@ -90,7 +90,7 @@ for line in sys.stdin:
             continue
         result = {"userAgent": "fake"}
     elif method == "account/read":
-        result = {"account": {"type": "apiKey" if scenario == "api-account" else "chatgpt", "planType": "plus", "email": "private@example.invalid"}}
+        result = {"account": {"type": "apiKey" if scenario == "api-account" else "chatgpt", "planType": "free" if scenario == "free-account" else "plus", "email": "private@example.invalid"}}
     elif method == "config/read":
         result = {"config": {"model_provider": "openai"}}
     elif method == "modelProvider/capabilities/read":
