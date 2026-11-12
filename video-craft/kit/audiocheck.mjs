@@ -1,6 +1,6 @@
 // audiocheck.mjs — decode an audio/video file in the browser and draw its envelope + spectrogram with scene events on top.
 // usage: node audiocheck.mjs <media.webm> <scene.html> <out.png> [--from 0] [--to 42]
-import { resolve } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { launch, FFMPEG } from './env.mjs';
 const [media, scene, out, ...rest] = process.argv.slice(2);
@@ -12,7 +12,8 @@ await p1.waitForFunction(() => window.__video);
 const { duration, meta } = await p1.evaluate(() => window.__video);
 const p = await b.newPage({ viewport: { width: 1800, height: 640 } });
 p.on('console', (m) => console.log('[page]', m.text()));
-await p.goto('file://' + resolve(scene).replace(/[^/]+$/, '') + 'score.html');
+// score.html sits next to the scene page; build the path with dirname so Windows backslashes work
+await p.goto('file://' + join(dirname(resolve(scene)), 'score.html'));
 const stats = await p.evaluate(async ([b64, events, dur, from, to]) => {
   const bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
   const buf = u8.buffer;

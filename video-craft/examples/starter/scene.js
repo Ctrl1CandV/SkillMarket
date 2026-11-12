@@ -52,7 +52,8 @@ function drawCaps(t) {
   });
 }
 
-function seek(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); drawPicture(t); finish(t); drawCaps(t); }
+// a slow push-in toward the glass: while a caption is being read the picture still breathes, never a frozen frame
+function seek(t) { const z = 1 + 0.004 * t; ctx.setTransform(z, 0, 0, z, (1 - z) * 1320, (1 - z) * 560); drawPicture(t); ctx.setTransform(1, 0, 0, 1, 0, 0); finish(t); drawCaps(t); }
 
 // ---- 5. sound events come from the same timeline ----
 const events = [...TL.map((l) => ({ t: l.t0, type: 'line', id: l.id, end: l.t1 })), { t: at('04').t0, type: 'count' }];

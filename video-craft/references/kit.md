@@ -83,7 +83,7 @@ seek(0);
 
 | 工具 | 用法 | 说明 |
 |---|---|---|
-| `render.mjs` | `page stills <dir> t…` / `sheet <jpg> [--every s] [--times a,b] [--cols n] [--w px]` / `strip <jpg> --at t… [--offsets f…]` / `video <out.webm\|.mp4> [--crf n] [--audio a.webm] [--mux out]` | 视频用 JPEG 帧通过管道交给 ffmpeg |
+| `render.mjs` | `page stills <dir> t…` / `sheet <jpg> [--every s] [--times a,b] [--cols n] [--w px] [--still s]` / `strip <jpg> --at t… [--offsets f…]` / `video <out.webm\|.mp4> [--crf n] [--audio a.webm] [--mux out]` | 联系表里和上一格几乎没有变化的格子标“= same”，连续静止达到 `--still` 秒（默认 2）时在输出里列出时段；视频用 JPEG 帧通过管道交给 ffmpeg |
 | `audio.mjs` | `page score out.webm [--vo dir] [--stems] [--target -16] [--wav out.wav]` | 合成、归一、限幅、编码 |
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
 | `audiocheck.mjs` | `media page out.png [--from a --to b]` | 从成片解码，画频谱、包络和事件线 |
