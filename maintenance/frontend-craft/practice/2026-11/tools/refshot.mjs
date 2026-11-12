@@ -13,6 +13,7 @@ const page = await ctx.newPage();
 try { await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); } catch (e) { console.log('goto:', String(e.message).split('\n')[0]); }
 await page.waitForTimeout(3500);
 await page.screenshot({ path: stem + '.png' });
+if (process.env.REF_SCROLL) { await page.mouse.wheel(0, +process.env.REF_SCROLL); await page.waitForTimeout(1200); await page.screenshot({ path: stem + '-body.png' }); }
 const m = await page.evaluate(() => {
   const vis = el => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el);
     return r.width > 0 && r.height > 0 && r.top < innerHeight * 2 && s.visibility !== 'hidden' && s.display !== 'none'; };
@@ -24,8 +25,17 @@ const m = await page.evaluate(() => {
     colors[s.color] = (colors[s.color] || 0) + t.length; weights[s.fontWeight] = (weights[s.fontWeight] || 0) + t.length;
     const l = parseFloat(s.lineHeight) / parseFloat(s.fontSize); if (l) { const lk = k + 'px@' + l.toFixed(2); lh[lk] = (lh[lk] || 0) + t.length; } }
   const top = (o, n) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, n).map(([k, v]) => `${k}(${v})`).join('  ');
+  // the main reading paragraph: longest visible <p>
+  let para = null, best = 0;
+  for (const el of document.querySelectorAll('p')) { const n = el.innerText.replace(/\s+/g, '').length; if (n > best && vis(el)) { best = n; para = el; } }
+  let reading = null;
+  if (para) { const s = getComputedStyle(para), r = para.getBoundingClientRect(), fs = parseFloat(s.fontSize);
+    const h = [...document.querySelectorAll('h1')].filter(vis)[0]; const hs = h ? getComputedStyle(h) : null;
+    reading = { fontSize: fs, lineHeight: +(parseFloat(s.lineHeight) / fs).toFixed(2), width: Math.round(r.width), charsPerLine: Math.round(r.width / fs),
+      marginBottom: s.marginBottom, textAlign: s.textAlign, indent: s.textIndent, letterSpacing: s.letterSpacing, color: s.color, family: s.fontFamily.slice(0, 90),
+      left: Math.round(r.left), h1: hs ? { size: parseFloat(hs.fontSize), weight: hs.fontWeight, lh: +(parseFloat(hs.lineHeight) / parseFloat(hs.fontSize)).toFixed(2), family: hs.fontFamily.slice(0, 60) } : null }; }
   const bg = getComputedStyle(document.body).backgroundColor;
-  return { sizes: top(sizes, 8), fonts: top(fonts, 4), colors: top(colors, 6), weights: top(weights, 5), lineHeights: top(lh, 5), bodyBg: bg, title: document.title.slice(0, 60) };
+  return { sizes: top(sizes, 8), fonts: top(fonts, 4), colors: top(colors, 6), weights: top(weights, 5), lineHeights: top(lh, 5), reading, bodyBg: bg, title: document.title.slice(0, 60) };
 });
 console.log(JSON.stringify(m, null, 1));
 await browser.close();

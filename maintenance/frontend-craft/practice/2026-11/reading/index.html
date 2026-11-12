@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下午三点那杯咖啡，夜里十一点还剩多少</title>
+<style>
+  :root {
+    --bg: #F8F7F2; --ink: #16181D; --ink-2: #5C616B; --rule: #D8D6CC; --wash: #EFEDE5;
+    --night: #2F3E9E; --night-wash: #E4E6F4; --amber: #A85F00; --amber-wash: #F6E7CF;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;   /* 两种雅黑都试过：普通雅黑的引号是全宽的，和逗号挨着时空一大块；UI 版把标点收窄，连读更顺 */
+    --serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --num: "Bahnschrift", "DIN Alternate", var(--sans);
+    --col: 34em; --side: 15em; --gap: 3em;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #14161B; --ink: #E7E5DF; --ink-2: #9A9FA9; --rule: #33363E; --wash: #1D2027;
+    --night: #9AA7F5; --night-wash: #23284A; --amber: #E5A54A; --amber-wash: #3A2C14; } }
+  :root[data-theme="dark"] { --bg: #14161B; --ink: #E7E5DF; --ink-2: #9A9FA9; --rule: #33363E; --wash: #1D2027;
+    --night: #9AA7F5; --night-wash: #23284A; --amber: #E5A54A; --amber-wash: #3A2C14; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.8 var(--sans); line-break: strict; text-autospace: normal; }
+  .progress { position: fixed; inset: 0 0 auto 0; height: 3px; background: transparent; z-index: 9; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--night); }
+  .mast { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; font-size: 14px; color: var(--ink-2); letter-spacing: .08em; }
+  .mast button { font: inherit; letter-spacing: 0; color: var(--ink-2); background: none; border: 1px solid var(--rule); border-radius: 999px; height: 36px; padding: 0 14px; cursor: pointer; }
+
+  /* 正文一栏，右边留一栏给注释；整体略偏左，不死居中 */
+  article { width: calc(var(--col) + var(--gap) + var(--side)); max-width: calc(100% - 64px); margin: 0 auto; padding: 56px 0 96px; }
+  article > * { max-width: var(--col); }
+  header.title { max-width: none; margin-bottom: 56px; }
+  .kicker { font-size: 14px; letter-spacing: .12em; color: var(--amber); font-weight: 700; margin: 0 0 20px; }
+  h1 { font: 700 56px/1.25 var(--serif); margin: 0; letter-spacing: .01em; text-wrap: balance; max-width: 13em; }
+  .dek { font-size: 21px; line-height: 1.7; color: var(--ink-2); margin: 24px 0 0; max-width: 30em; text-wrap: pretty; }
+  .by { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-2); display: flex; gap: 20px; flex-wrap: wrap; max-width: var(--col); }
+  p { margin: 0 0 1.15em; text-wrap: pretty; }
+  h2 { font: 700 26px/1.4 var(--serif); margin: 2.4em 0 .8em; text-wrap: balance; }
+  h2 .no { font: 600 16px/1 var(--num); color: var(--ink-2); display: block; margin-bottom: 10px; letter-spacing: .1em; }
+  strong { font-weight: 700; }
+  a { color: inherit; text-decoration-color: var(--night); text-underline-offset: 4px; }
+
+  /* 旁注：宽屏放在右边空栏，窄屏点数字展开 */
+  .sn { position: relative; }
+  .sn > button { font: 600 13px/1 var(--num); vertical-align: super; color: var(--night); background: none; border: 0; padding: 2px 3px; cursor: default; }
+  .sn > small { float: right; clear: right; width: var(--side); margin-right: calc(-1 * (var(--side) + var(--gap))); margin-bottom: 1em; font-size: 14px; line-height: 1.65; color: var(--ink-2); text-indent: 0; text-align: left; position: relative; top: .3em; }
+  .sn > small b { font: 600 13px/1 var(--num); color: var(--night); margin-right: 6px; }
+
+  blockquote { margin: 2.2em 0; padding: 0; max-width: 22em; font: 400 28px/1.55 var(--serif); color: var(--ink); border: 0; text-wrap: balance; }
+  blockquote::before { content: ""; display: block; width: 48px; height: 3px; background: var(--amber); margin-bottom: 20px; }
+
+  figure { margin: 2.6em 0; max-width: none; }
+  figure .frame { border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 20px 0 8px; }
+  .fig-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: center; margin: 12px 0 6px; font-size: 14px; color: var(--ink-2); }
+  .controls .grp { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .controls button { font: 500 14px/1 var(--sans); height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); background: transparent; color: var(--ink); cursor: pointer; }
+  .controls button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .readout { font-size: 18px; margin: 14px 0 0; }
+  .readout b { font: 600 34px/1 var(--num); color: var(--amber); margin: 0 4px; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { font: 13px var(--sans); fill: var(--ink-2); }
+  svg .big { font: 600 15px var(--num); fill: var(--ink); }
+  figcaption { font-size: 14px; line-height: 1.65; color: var(--ink-2); margin-top: 10px; max-width: var(--col); }
+
+  .tbl { max-width: none; margin: 2.2em 0; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; line-height: 1.55; }
+  caption { text-align: left; font-weight: 700; padding-bottom: 10px; }
+  th, td { text-align: left; padding: 12px 20px 12px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { border-bottom: 2px solid var(--ink); font-size: 14px; color: var(--ink-2); font-weight: 500; white-space: nowrap; }
+  td.n { font-weight: 700; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 1px solid var(--ink); }
+
+  .box { margin: 2.2em 0; padding: 22px 26px; background: var(--wash); border-radius: 6px; font-size: 16px; line-height: 1.75; }
+  .box h3 { font-size: 16px; margin: 0 0 8px; }
+  .box ul { margin: 0; padding-left: 1.2em; } .box li { margin: .3em 0; }
+  footer.end { margin-top: 64px; padding-top: 20px; border-top: 2px solid var(--ink); font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+  footer.end ol { padding-left: 1.4em; margin: 8px 0 0; } footer.end li { margin: .5em 0; }
+
+  .t-sans h1, .t-sans h2, .t-sans blockquote { font-family: var(--sans); }
+  .t-sans h1 { font-weight: 700; letter-spacing: 0; } .t-sans blockquote { font-weight: 700; font-size: 26px; }
+  @media (max-width: 1080px) {
+    article { width: var(--col); padding-top: 32px; }
+    h1 { font-size: 44px; }
+    .sn > button { cursor: pointer; padding: 6px 6px; margin: -6px -2px; }
+    .sn > small { display: none; float: none; width: auto; margin: .6em 0 .9em; padding: 12px 16px; background: var(--wash); border-radius: 6px; top: 0; }
+    .sn.open > small { display: block; }
+  }
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    .mast { padding: 14px 20px; }
+    article { max-width: calc(100% - 40px); padding: 20px 0 72px; }
+    header.title { margin-bottom: 40px; }
+    h1 { font-size: 34px; line-height: 1.3; } .dek { font-size: 18px; } h2 { font-size: 22px; } blockquote { font-size: 23px; }
+    table, caption, tbody, tr, td { display: block; } thead { display: none; }
+    tbody tr { padding: 14px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
+    tbody tr:first-child { border-top: 2px solid var(--ink); } tbody tr:last-child { border-bottom: 1px solid var(--ink); }
+    td, tbody tr:last-child td { border: 0; padding: 0; } td:first-child { font-weight: 700; } td.n { color: var(--amber); text-align: right; }
+    td:last-child { grid-column: 1 / -1; color: var(--ink-2); font-size: 15px; }
+    .controls button { height: 40px; } svg text { font-size: 12px; } svg .big { font-size: 14px; }
+    
+    .readout b { font-size: 30px; }
+  }
+  @media print { .progress, .mast button, .controls { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<div class="mast"><span>练习 · 长文阅读页</span><button type="button" id="theme">深色 / 浅色</button></div>
+
+<article>
+  <header class="title">
+    <p class="kicker">身体里的时钟</p>
+    <h1>下午三点那杯咖啡，夜里十一点还剩多少</h1>
+    <p class="dek">咖啡因离开身体的速度比多数人以为的慢。算一遍就知道，为什么有人下午喝一杯，半夜还醒着。</p>
+    <div class="by"><span>约 1500 字 · 读完 5 分钟</span><span>2026 年 11 月</span><span>文中数字出处见文末</span></div>
+  </header>
+
+  <p class="lead">下午三点，会开到一半，人开始发沉。下楼买一杯中杯美式，半小时后整个人又亮了起来。到了夜里十一点，躺下，关灯，脑子却还在转。很多人会把这归到“今天事情多”，很少有人去算那杯咖啡。</p>
+  <p>其实可以算。一杯中杯美式大约含 150 毫克咖啡因，<span class="sn"><button type="button" aria-label="注释 1">1</button><small><b>1</b>不同的店、不同的豆子差别很大。一份浓缩大约 60 多毫克，中杯美式通常是两份浓缩加水。</small></span>而咖啡因从身体里消失的方式很有规律：不是匀速减少，而是每过一段固定的时间，剩下的量减半。</p>
+
+  <h2><span class="no">01</span>它不是给你能量，是替你挡住困意</h2>
+  <p>人醒着的时候，大脑里会慢慢积累一种叫腺苷的物质。腺苷越多，和它的受体结合得越多，人就越困。这是身体记录“已经醒了多久”的办法之一。</p>
+  <p>咖啡因的分子形状和腺苷相近，能占住同一批受体，却不触发困意。于是腺苷照样在积累，只是暂时没地方落脚。<strong>咖啡因并没有消除疲劳，只是把账单往后推。</strong>等它被代谢掉，攒下的腺苷一起涌上来，这就是有些人说的“咖啡劲儿过了反而更困”。</p>
+  <p>喝下去以后，咖啡因吸收得很快，血液里的浓度一般在 15 分钟到 2 小时之间达到最高。<span class="sn"><button type="button" aria-label="注释 2">2</button><small><b>2</b>空腹更快，饭后更慢。下面的图为了简单，按“喝下去立刻全部吸收”来画。</small></span>接下来的事情，就交给肝脏了。</p>
+
+  <h2><span class="no">02</span>每五个小时，少一半</h2>
+  <p>肝脏里有一种酶负责分解咖啡因，绝大部分咖啡因都从这条路走。它干活的速度大致和剩余的量成正比：剩得多就分解得多，剩得少就分解得少。结果是一条越来越平的曲线，用“半衰期”来描述最方便。健康成年人的平均半衰期大约是 5 小时。<span class="sn"><button type="button" aria-label="注释 3">3</button><small><b>3</b>这是平均值。个体之间从 1.5 小时到 9.5 小时都有记录。</small></span></p>
+  <p>拿下午三点那一杯来算：晚上八点还剩 75 毫克，夜里十一点还剩大约 49 毫克，凌晨一点还有 38 毫克。也就是说，你准备睡觉的时候，身体里还留着三分之一杯咖啡。</p>
+
+  <figure>
+    <div class="frame">
+      <p class="fig-title">一杯 150 毫克的咖啡，在身体里还剩多少</p>
+      <div class="controls" id="controls">
+        <div class="grp" role="group" aria-label="几点喝的"><span>几点喝</span>
+          <button type="button" data-t="13">13:00</button><button type="button" data-t="15" aria-pressed="true">15:00</button><button type="button" data-t="17">17:00</button></div>
+        <div class="grp" role="group" aria-label="半衰期"><span>代谢</span>
+          <button type="button" data-h="3">快 · 3 小时</button><button type="button" data-h="5" aria-pressed="true">平均 · 5 小时</button><button type="button" data-h="8">慢 · 8 小时</button></div>
+      </div>
+      <svg id="chart" viewBox="0 0 960 380" role="img" aria-labelledby="chart-desc"><desc id="chart-desc"></desc></svg>
+      <p class="readout" id="readout" aria-live="polite"></p>
+    </div>
+    <figcaption>按“每过一个半衰期减半”计算，没有考虑吸收需要的时间。深色区域是 23:00 到次日 7:00。点上面的按钮可以换喝的时间和代谢快慢。</figcaption>
+  </figure>
+
+  <blockquote>你准备睡觉的时候，身体里还留着三分之一杯咖啡。</blockquote>
+
+  <h2><span class="no">03</span>同一杯咖啡，不同的人</h2>
+  <p>5 小时只是平均数。负责分解咖啡因的那种酶，活性因人而异，还会被生活习惯和身体状态改变。所以同样一杯，有人晚饭后喝了照睡，有人中午喝了都嫌晚。</p>
+  <div class="tbl">
+    <table>
+      <caption>哪些情况会改变咖啡因的半衰期</caption>
+      <thead><tr><th>情况</th><th>半衰期大约</th><th>意味着什么</th></tr></thead>
+      <tbody>
+        <tr><td>健康成年人（平均）</td><td class="n">5 小时</td><td>下午三点的一杯，到十一点还剩约三分之一</td></tr>
+        <tr><td>吸烟者</td><td class="n">缩短 30%–50%</td><td>清除得更快；戒烟后同样的量会觉得劲儿更大</td></tr>
+        <tr><td>服用口服避孕药</td><td class="n">约 2 倍</td><td>下午的一杯可能影响到后半夜</td></tr>
+        <tr><td>孕晚期</td><td class="n">最长约 15 小时</td><td>一杯咖啡的影响可以持续一整天</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>如果你的半衰期接近 8 小时，把上面图里的“代谢”换成“慢”看一看：下午三点那一杯，到夜里十一点还剩整整一半。</p>
+
+  <h2><span class="no">04</span>睡前六小时那一杯</h2>
+  <p>2013 年有一项常被引用的实验。研究者让睡眠正常的志愿者分别在上床时、睡前 3 小时和睡前 6 小时服用 400 毫克咖啡因，再用仪器记录他们的睡眠。<span class="sn"><button type="button" aria-label="注释 4">4</button><small><b>4</b>400 毫克不少，相当于本文那种中杯美式两杯半以上。</small></span></p>
+  <p>结果是，三种情况下睡眠都明显变差。即使是睡前 6 小时那一次，仪器记录到的总睡眠时间也少了一个多小时。这个结果提醒我们，“我喝了咖啡照样睡得着”和“咖啡没有影响我的睡眠”不是一回事：入睡了，不等于睡够了、睡深了。</p>
+
+  <h2><span class="no">05</span>最后一杯该几点喝</h2>
+  <p>没有一个适合所有人的钟点，但可以给自己算一个。先想好几点睡，再往前推：如果你对咖啡因不算敏感，留出 8 小时左右；如果你本来就睡得浅，或者属于代谢慢的那几类人，就再往前挪。</p>
+  <div class="box">
+    <h3>一个粗略的算法</h3>
+    <ul>
+      <li>十一点睡：最后一杯尽量不晚于下午三点，睡前还剩约三分之一。</li>
+      <li>把那一杯提前到中午十二点，睡前只剩约五分之一。</li>
+      <li>想喝又怕睡不好：换小杯。量减半，等于白白多赚了一个半衰期。</li>
+    </ul>
+  </div>
+  <p>睡不好的原因很多，咖啡只是其中最容易验证的一个。把最后一杯往前挪两三个小时，坚持一周，看看有没有变化。这个实验几乎没有成本。</p>
+
+  <footer class="end">
+    <strong>出处</strong>
+    <ol>
+      <li>咖啡因的吸收、平均半衰期与个体范围，以及吸烟、口服避孕药和孕期的影响：Institute of Medicine, <i>Caffeine for the Sustainment of Mental Task Performance</i>, National Academies Press, 2001.</li>
+      <li>睡前 0、3、6 小时服用咖啡因的实验：Drake C, Roehrs T, Shambroom J, Roth T. Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed. <i>Journal of Clinical Sleep Medicine</i>, 2013; 9(11): 1195–1200.</li>
+    </ol>
+    <p style="margin-top:16px">这是一篇排版练习用的文章，正文由 Claude 撰写，不是医学建议。图中的数字按公式计算：剩余量 = 150 × 0.5<sup>（经过的小时数 ÷ 半衰期）</sup>。</p>
+  </footer>
+</article>
+
+<script>
+(function () {
+  if (/[?&]title=sans/.test(location.search)) document.documentElement.classList.add('t-sans');
+  const forced = /[?&]theme=(dark|light)/.exec(location.search); if (forced) document.documentElement.dataset.theme = forced[1];
+  // 阅读进度
+  const bar = document.getElementById('bar');
+  const onScroll = () => { const h = document.documentElement; bar.style.width = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight) * 100) + '%'; };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  // 深浅色
+  document.getElementById('theme').onclick = () => { const r = document.documentElement;
+    const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; draw(); };
+  // 窄屏：点注释数字展开
+  document.querySelectorAll('.sn > button').forEach(b => b.addEventListener('click', () => b.parentElement.classList.toggle('open')));
+
+  // 图：剩余量 = 150 × 0.5^(t / 半衰期)
+  const svg = document.getElementById('chart'); let drink = 15, half = 5;
+  // 窄屏不是把桌面那张图缩小（字会缩到看不清），而是按窄屏的尺寸重画：少几个刻度，只标睡前那一个点
+  const mq = matchMedia('(max-width: 640px)'); let W, H, L, R, T, Bm, STEP; const X0 = 12, X1 = 28;   // 12:00 到次日 04:00
+  function geometry() { if (mq.matches) { W = 400; H = 300; L = 36; R = 10; T = 26; Bm = 36; STEP = 4; } else { W = 960; H = 380; L = 56; R = 24; T = 24; Bm = 44; STEP = 2; } svg.setAttribute('viewBox', `0 0 ${W} ${H}`); }
+  const x = (h) => L + (h - X0) / (X1 - X0) * (W - L - R), y = (mg) => T + (1 - mg / 160) * (H - T - Bm);
+  const left = (h) => h < drink ? 0 : 150 * Math.pow(0.5, (h - drink) / half);
+  const hh = (h) => String(h % 24).padStart(2, '0') + ':00';
+  function draw() {
+    geometry();
+    let s = `<rect x="${x(23)}" y="${T}" width="${x(X1) - x(23)}" height="${H - T - Bm}" fill="var(--night-wash)"/>`;
+    for (const mg of [0, 50, 100, 150]) s += `<line x1="${L}" x2="${W - R}" y1="${y(mg)}" y2="${y(mg)}" stroke="var(--rule)"/><text x="${L - 10}" y="${y(mg) + 4}" text-anchor="end">${mg}</text>`;
+    for (let h = X0; h <= X1; h += STEP) s += `<text x="${x(h)}" y="${H - Bm + 22}" text-anchor="middle">${hh(h)}</text>`;
+    s += `<text x="${L - 10}" y="${T - 8}" text-anchor="end">毫克</text><text x="${x(23) + 10}" y="${T + 20}" style="fill:var(--night)">夜里</text>`;
+    let d = '', area = '';
+    for (let h = drink; h <= X1 + 0.001; h += 0.1) d += (d ? 'L' : 'M') + x(h).toFixed(1) + ' ' + y(left(h)).toFixed(1);
+    area = d + `L${x(X1)} ${y(0)}L${x(drink)} ${y(0)}Z`;
+    s += `<path d="${area}" fill="var(--amber-wash)" opacity=".7"/><path d="${d}" fill="none" stroke="var(--amber)" stroke-width="3" stroke-linejoin="round"/>`;
+    s += `<line x1="${x(drink)}" x2="${x(drink)}" y1="${y(150)}" y2="${y(0)}" stroke="var(--amber)" stroke-width="3"/>`;
+    const marks = (mq.matches ? [drink, 23] : [drink, 20, 23, 25]).filter((h, i, a) => h >= drink && a.indexOf(h) === i);
+    for (const h of marks) { const mg = left(h);
+      s += `<circle cx="${x(h)}" cy="${y(mg)}" r="5.5" fill="var(--bg)" stroke="var(--amber)" stroke-width="3"/><text class="big" x="${x(h) + 10}" y="${y(mg) - 12}">${Math.round(mg)} 毫克</text>`; }
+    s += `<line x1="${x(23)}" x2="${x(23)}" y1="${T}" y2="${H - Bm}" stroke="var(--night)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+    svg.innerHTML = `<desc id="chart-desc">${hh(drink)} 喝下 150 毫克咖啡因，半衰期 ${half} 小时：20:00 还剩 ${Math.round(left(20))} 毫克，23:00 还剩 ${Math.round(left(23))} 毫克，次日 1:00 还剩 ${Math.round(left(25))} 毫克。</desc>` + s;
+    const at = left(23), frac = at / 150;
+    const n = Math.round(1 / Math.max(frac, 0.001));   // 说成最接近的“几分之一”
+    const words = n <= 1 ? '几乎一整' : n === 2 ? (frac < 0.47 ? '将近半' : '正好半') : n <= 10 ? `大约${'零一二三四五六七八九十'[n]}分之一` : '不到十分之一';
+    document.getElementById('readout').innerHTML = `${hh(drink)} 喝，夜里 23:00 还剩 <b>${Math.round(at)}</b> 毫克，${words}杯。`;
+  }
+  document.getElementById('controls').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.t) drink = +b.dataset.t; if (b.dataset.h) half = +b.dataset.h;
+    b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); draw(); });
+  mq.addEventListener('change', draw);
+  draw();
+})();
+</script>
+</body>
+</html>
