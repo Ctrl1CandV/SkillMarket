@@ -3,7 +3,8 @@
 //
 //   node pagecheck.mjs <page.html | url> [--out <dir>] [--sizes 1440x900,1024x768,390x844] [--query "?tab=2"]
 //
-// It finds: sideways scrolling and what causes it, script errors, text that is too small (also inside scaled SVG),
+// It finds: sideways scrolling and what causes it, script errors, values a script failed to compute (NaN, undefined)
+// in text, tooltips or sizes, text that is too small (also inside scaled SVG),
 // low contrast, clipped text, text drawn on top of other text, punctuation pushed to the start of a line,
 // text squeezed into one character per line, small touch targets, and how many font sizes the page really uses.
 // It cannot tell whether the page is good. A clean report means "nothing measurable is wrong": still open the screenshots.
@@ -97,12 +98,23 @@ function measure(mobile) {
     const own = el.getBoundingClientRect(), label = el.closest('label') || (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`)), lr = label && !hidden(label) ? label.getBoundingClientRect() : own;
     const r = lr.width * lr.height > own.width * own.height ? lr : own;   // a small box inside a big label is fine; a hidden label does not count
     if (r.width > 0 && (r.height < 40 || r.width < 40)) taps.push({ el: name(el), text: short(el.innerText || el.value || el.getAttribute('aria-label') || '', 14), w: Math.round(r.width), h: Math.round(r.height) }); }
+  // values a script failed to compute: NaN / undefined / Infinity / [object Object] in what is shown, in tooltips, or in sizes and shapes
+  // In visible text a page may also talk about NaN ("the loss became NaN"), and "Infinity" is an ordinary word.
+  // So text counts only when it looks like a number slot: a short run of text, or the token next to a digit or a percent sign.
+  const BROKEN = /\b(?:NaN|undefined|Infinity)\b|\[object Object\]/, broken = [];
+  const brokenText = (s) => /\[object Object\]/.test(s) || (/\b(?:NaN|undefined)\b/.test(s) && (s.trim().length <= 12 || /(?:NaN|undefined)\s?[%‰]|[\d¥$]\s?(?:NaN|undefined)/.test(s)));
+  for (const el of document.body.querySelectorAll('*')) {
+    if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(el.tagName)) continue;
+    for (const n of el.childNodes) if (n.nodeType === 3 && brokenText(n.textContent) && !hidden(el)) broken.push({ el: name(el), where: 'text', value: short(n.textContent, 40) });
+    for (const a of ['style', 'title', 'aria-label', 'd', 'points', 'width', 'height', 'x', 'y', 'cx', 'cy', 'r', 'transform', 'value'])
+      if (el.hasAttribute(a) && BROKEN.test(el.getAttribute(a))) broken.push({ el: name(el), where: a, value: short(el.getAttribute(a), 40) });
+  }
   const ranked = Object.entries(sizeChars).map(([k, v]) => [+k, v]).sort((a, b) => b[1] - a[1]), body = ranked.length ? ranked[0][0] : null, largest = ranked.length ? Math.max(...ranked.map((r) => r[0])) : null;
   const used = ranked.filter(([, n]) => n >= 3).map(([k]) => k).sort((a, b) => a - b);
   return { scroll_x: scrollX, sticking_out: culprits.slice(0, 8), page_height: document.documentElement.scrollHeight, chars: total, body_size: body, largest_size: largest,
     largest_to_body: body ? +(largest / body).toFixed(2) : null, sizes_in_use: used, small_text: small.slice(0, 10), small_text_count: small.length,
     low_contrast: lowContrast.slice(0, 10), low_contrast_count: lowContrast.length, clipped: clipped.slice(0, 8), overlapping: overlap, line_start_punctuation: lineStart.slice(0, 8),
-    one_char_per_line: squeezed.slice(0, 8), small_taps: taps.slice(0, 10), small_taps_count: taps.length };
+    one_char_per_line: squeezed.slice(0, 8), small_taps: taps.slice(0, 10), small_taps_count: taps.length, broken_values: broken.slice(0, 10), broken_values_count: broken.length };
 }
 
 const browser = await launch();
@@ -124,6 +136,7 @@ const eg = (list, fmt) => list.slice(0, 3).map(fmt).join('; ');
 for (const v of report.views) {
   const lines = [];
   if (v.script_errors.length) lines.push(`script errors: ${v.script_errors.length} — ${v.script_errors[0]}`);
+  if (v.broken_values_count) lines.push(`values the script failed to compute: ${v.broken_values_count} — ${eg(v.broken_values, (o) => `${o.el} ${o.where} "${o.value}"`)}`);
   if (v.scroll_x) lines.push(`scrolls sideways — sticking out: ${eg(v.sticking_out, (c) => `${c.el} (right edge ${c.right}, width ${c.width})`) || 'not found'}`);
   if (v.overlapping.length) lines.push(`text on top of text: ${v.overlapping.length} — ${eg(v.overlapping, (o) => `"${o.a}" × "${o.b}"`)}`);
   if (v.one_char_per_line.length) lines.push(`squeezed to one character per line: ${eg(v.one_char_per_line, (o) => `"${o.text}" (${o.width}px wide)`)}`);
