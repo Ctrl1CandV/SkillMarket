@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>容易被误报的写法</title>
+<style>body{margin:20px 20px 90px;font:16px/1.7 "Microsoft YaHei UI",sans-serif;background:#fff;color:#222}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+label.opt{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border:1px solid #999;border-radius:8px;width:260px}
+label.opt input{width:22px;height:22px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#222;color:#fff;padding:16px 20px}
+.tip{position:absolute;left:20px;top:60px;opacity:0;background:#000;color:#fff}
+.v{writing-mode:vertical-rl;font-size:40px;height:200px}
+button.big{height:48px;padding:0 20px}</style></head><body>
+<h1>这些都不该被报出来</h1>
+<p>正常的一段话，里面有逗号，也有句号。占位用的点是装饰：<span style="color:#ddd">·</span> <span style="color:#ddd">—</span></p>
+<span class="tip">看不见的提示，和标题重叠</span>
+<label class="sr" for="q">只给读屏用的标签，文字比盒子宽得多</label><input id="q" style="height:44px;width:240px">
+<label class="opt"><input type="radio" name="x"><span>小圆圈在大标签里</span></label>
+<button class="big" disabled style="color:#bbb;background:#eee;border:0">不可用的按钮</button>
+<div class="v">竖排标题</div>
+<div style="width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">有意用省略号截断的一行长文字</div>
+<p>再来一段普通的文字，用来把页面撑长一点，让底部的固定条压在内容上面。</p>
+<p>再来一段普通的文字，用来把页面撑长一点，让底部的固定条压在内容上面。</p>
+<div class="bar">固定在底部的一条，盖在内容上是有意的</div>
+</body></html>

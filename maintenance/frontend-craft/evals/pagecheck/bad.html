@@ -1,0 +1,13 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>已知有问题的页面</title>
+<style>body{margin:20px;font:16px/1.6 "Microsoft YaHei UI",sans-serif;background:#fff;color:#222}.stack{position:relative;height:40px}.stack span{position:absolute;left:0;top:0}</style></head><body>
+<h1>每一处都是故意做错的</h1>
+<div class="stack"><span id="a">早上 7:00–9:00</span><span id="b">中午 11:00–13:00</span></div>
+<svg viewBox="0 0 1000 300" style="width:300px;display:block"><rect width="1000" height="300" fill="#eee"/><text x="20" y="150" font-size="13">图里的小字被整体缩小</text></svg>
+<p style="width:320px">这一句的句号被挤到了下一行<br>。后面还有字</p>
+<div style="width:14px;line-height:1.2">被挤成一字一行</div>
+<div style="width:1900px;background:#fafafa">这一块比窗口宽</div>
+<p style="color:#bcbcbc">这行灰字的对比度不够</p>
+<div style="width:60px;white-space:nowrap;overflow:hidden">这行字被裁掉了后半截</div>
+<button style="width:24px;height:24px;padding:0">×</button>
+<script>throw new Error('故意的脚本错误');</script>
+</body></html>

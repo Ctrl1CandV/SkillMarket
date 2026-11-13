@@ -42,7 +42,7 @@ const reading=load('reading.html'),r=reading.elements;
 await r.reveal.fire('click');ok(!r.answer.hidden&&r.reveal.getAttribute('aria-expanded')==='true');await r.reveal.fire('click');ok(r.answer.hidden&&r.reveal.getAttribute('aria-expanded')==='false');
 const root=path.resolve(dir,'../../../frontend-craft');
 for(const file of [path.join(root,'SKILL.md'),...fs.readdirSync(path.join(root,'references')).map(n=>path.join(root,'references',n))]){
- const md=fs.readFileSync(file,'utf8');for(const m of md.matchAll(/\]\(([^)]+)\)/g)){if(!/^https?:/.test(m[1]))ok(fs.existsSync(path.resolve(path.dirname(file),m[1])))}
+ const md=fs.readFileSync(file,'utf8');for(const m of md.matchAll(/\]\(([^)]+)\)/g)){const target=m[1].split('#')[0];if(target&&!/^https?:/.test(target))ok(fs.existsSync(path.resolve(path.dirname(file),target)))}
 }
 JSON.parse(fs.readFileSync(path.join(dir,'cases.json'),'utf8'));checks++;
 console.log(JSON.stringify({kind:'static-and-mock-DOM-only',checks,status:'passed',hashes:{'workbench.html':work.hash,'reading.html':reading.hash},notTested:['browser rendering','real interactions','screenshots','responsive geometry','keyboard accessibility','screen reader','performance']},null,2));

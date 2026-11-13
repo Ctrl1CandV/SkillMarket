@@ -1,6 +1,8 @@
 # frontend-craft 待办
 
-当前版本为 frontend-craft 0.5.0-rc.3 与 product-design 0.2.0-rc.2。配色与样式选择作为独立目标实施，新增九组搭配库、三类可复用模板及导出；静态检查、代表性浏览器画面与操作已完成，用户已查看并认可，见[配色实施记录](reports/color-directions-implementation-2026-10-29.md)。按用户授权，将两个目标分别提交推送 main/dev；运行技能进入两分支，维护资料仅留 dev。
+当前版本为 frontend-craft 0.6.0 与 product-design 0.3.0（2026-11-13）。把 11 月九类练习页的经验提炼进技能，分两批；第一批（四个起步样例、类别对照表、检查脚本、四个取舍问题）已完成并用 deepseek-flash 各跑一次对照，见[第一批记录](reports/frontend-craft-0.6.0-batch1-2026-11-13.md)。等用户盲看、gpt-6.1-sol 对照和第二批。
+
+上一版为 frontend-craft 0.5.0-rc.3 与 product-design 0.2.0-rc.2。配色与样式选择作为独立目标实施，新增九组搭配库、三类可复用模板及导出；静态检查、代表性浏览器画面与操作已完成，用户已查看并认可，见[配色实施记录](reports/color-directions-implementation-2026-10-29.md)。按用户授权，将两个目标分别提交推送 main/dev；运行技能进入两分支，维护资料仅留 dev。
 
 前一轮多信息、多功能局部界面优化已收口：用户选择 1B、2A、3B，认可目标达成；真实项目实践延后，见[局部界面验收](reports/local-interface-implementation-2026-10-29.md)。按用户要求先独立提交到本地 dev `2e691eb`，再开始本轮配色工作。
 

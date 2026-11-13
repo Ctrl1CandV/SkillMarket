@@ -1,0 +1,303 @@
+<!doctype html>
+<!--
+  起步样例：数据看板（给会自己分析的人反复看）
+  这是一页能直接打开、能操作的完整页面。做同类页面时复制它再改，不要从空白开始。
+
+  这一类页面里起作用的决定：
+  - 看板只摆数据，分析留给看的人。替读者下结论的话属于报告，是另一类页面。
+  - “还有 1 个种子在跑”“种子之间的范围”是数据，不是结论，放进指标卡。
+  - 专门回答“差距是不是随机波动”：每个样本一个点，对照基线的范围。只画平均值回答不了。
+  - 线尾直接标名字和数值，不用图例；基线用灰色，最重要的一组用最醒目的颜色。
+  - 轴要盖住全部数据，或者裁掉横轴并写明原因；线不能贴着图框走。
+  - 图按容器的实际宽度重画，不整体缩放，手机上图里的字才不会变小。
+  - 数据多了要能看局部：在图上横向拖动放大一段，纵轴跟着这一段重新定范围。
+
+  换成自己的内容时：
+  - 数据在脚本开头的 METHODS 和 PLAN，现在是按固定种子合成的；换成真实数据时保留“每次运行一行”的结构。
+  - 颜色在 :root 里。系列超过 5 个时不要再靠颜色区分，改用点选高亮或者分面。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>实验对比 · CIFAR-10 正则化消融</title>
+<style>
+  :root {
+    --bg: #F3F4F6; --surface: #FFFFFF; --ink: #1A2230; --ink-2: #5A6473; --line: #E1E4E9; --wash: #F6F7F9;
+    --base: #7B8695; --aug: #3272BF; --ls: #1E8A72; --both: #D4480F;
+    --fail: #B42318; --fail-wash: #FDECEA; --run: #3272BF;
+    --sans: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+    --num: "Bahnschrift", "DIN Alternate", var(--sans); --mono: "Cascadia Mono", Consolas, "SF Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 var(--sans); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 20px 28px 56px; }
+  .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; color: var(--ink-2); font-size: 13px; }
+  .top b { color: var(--ink); font-size: 14px; }
+  .top .sp { flex: 1; }
+  .live { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--run); display: inline-block; }
+
+  /* 结论先说：这一屏最大的字是答案，不是标题 */
+
+  .kpis { margin: 18px 0 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
+  .kpi .k { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; } .kpi .k i { width: 10px; height: 10px; border-radius: 3px; }
+  .kpi .v { font: 600 34px/1.2 var(--num); margin-top: 6px; } .kpi .v small { font: 14px var(--sans); color: var(--ink-2); margin-left: 3px; }
+  .kpi .d { font-size: 13px; color: var(--ink-2); } .kpi .delta { font: 500 16px var(--num); color: var(--ink-2); margin-left: 12px; } .kpi .running { color: var(--run); font-weight: 700; }
+  @media (max-width: 640px) { .kpis { grid-template-columns: 1fr 1fr; gap: 10px; } .kpi { padding: 12px 14px; } .kpi .v { font-size: 28px; } }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1fr); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px 16px; min-width: 0; }
+  .card h2 { font-size: 16px; margin: 0; font-weight: 700; }
+  .card .sub { color: var(--ink-2); font-size: 13px; margin: 2px 0 0; }
+  .head { display: flex; justify-content: space-between; align-items: start; gap: 16px; flex-wrap: wrap; }
+  .seg { display: inline-flex; background: var(--wash); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+  .seg button { font: 500 13px var(--sans); border: 0; background: transparent; color: var(--ink-2); height: 30px; padding: 0 12px; border-radius: 6px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(26, 34, 48, .14); }
+  .tools { display: flex; gap: 8px; align-items: center; }
+  .ghost { font: 500 13px var(--sans); height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; }
+  #chart { margin-top: 10px; position: relative; user-select: none; }
+  #chart svg { display: block; width: 100%; overflow: visible; }
+  svg text { font: 12px var(--sans); fill: var(--ink-2); }
+  svg .end { font: 600 13px var(--sans); }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 12px; line-height: 1.7; white-space: nowrap; z-index: 2; transform: translate(12px, -50%); }
+  .tip b { font-family: var(--num); font-size: 13px; } .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+  .note { color: var(--ink-2); font-size: 12px; margin: 8px 0 0; }
+
+  /* 排名：每个种子一个点，灰带是基线三个种子的范围 */
+  .rank { margin-top: 12px; }
+  .rrow { display: grid; grid-template-columns: 124px minmax(0, 1fr) 62px; gap: 12px; align-items: center; padding: 12px 8px; border-top: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+  .rrow:first-child { border-top: 0; }
+  .rrow:hover, .rrow.on { background: var(--wash); }
+  .rrow .nm { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .rrow .nm i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .rrow .mean { font: 600 20px/1 var(--num); text-align: right; }
+  .rrow .verdict { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); margin-top: -4px; padding-left: 18px; }
+  .rrow .verdict b { color: var(--ink); font-weight: 700; }
+  .rrow svg { height: 26px; }
+  .axis { display: grid; grid-template-columns: 124px minmax(0, 1fr) 62px; gap: 12px; padding: 0 8px; color: var(--ink-2); font-size: 12px; }
+  .axis div:nth-child(2) { display: flex; justify-content: space-between; }
+
+  .runs { margin-top: 16px; padding: 18px 0 6px; }
+  .runs .head { padding: 0 20px 10px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--wash); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { padding-left: 20px; } th:last-child, td:last-child { padding-right: 20px; }
+  td.r, th.r { text-align: right; } td.num { font: 500 14px var(--num); text-align: right; }
+  td.id { font: 12px var(--mono); color: var(--ink-2); }
+  td .m { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; } td .m i { width: 8px; height: 8px; border-radius: 2px; }
+  .st { display: inline-flex; align-items: center; gap: 6px; }
+  .st.fail { color: var(--fail); font-weight: 700; } .st.run { color: var(--run); font-weight: 700; } .st.done { color: var(--ink-2); }
+  tr.fail td { background: var(--fail-wash); } tr.dim td { opacity: .35; }
+  tr:last-child td { border-bottom: 0; }
+  .why { color: var(--ink); margin-left: 10px; }
+  .sd { display: none; color: var(--ink-2); font-size: 12px; }
+  th.state { width: 38%; }
+  .bar { display: inline-block; width: 72px; height: 6px; border-radius: 3px; background: var(--line); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+  .bar u { display: block; height: 100%; background: var(--run); }
+  .foot { color: var(--ink-2); font-size: 12px; margin-top: 14px; }
+
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .wrap { padding: 14px 14px 40px; }
+    .seg button, .ghost { height: 40px; }
+    .card { padding: 14px 14px 12px; } .runs { padding: 14px 0 4px; } .runs .head { padding: 0 14px 8px; }
+    .rrow, .axis { grid-template-columns: 118px minmax(0, 1fr) 52px; gap: 8px; } .rrow .nm { font-size: 13px; }
+    /* 手机上表格改成一条一条的记录，不横向拖动 */
+    table, tbody, tr, td { display: block; } thead { display: none; }
+    tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    tr.fail { background: var(--fail-wash); } tr.fail td { background: none; }
+    td, th:first-child, td:first-child, td:last-child { padding: 0; border: 0; white-space: normal; }
+    td.id { display: none; } td.method { order: 1; grid-column: 1 / -1; }
+    td.num.final { order: 4; text-align: left; font-size: 20px; } td.num.final:not(.nolabel)::before { content: "最终 "; font: 12px var(--sans); color: var(--ink-2); } td.num.final.nolabel { font-size: 14px; } .sd { display: inline; }
+    td.num.best { order: 5; } td.num.best::before { content: "最好 "; font: 12px var(--sans); color: var(--ink-2); }
+    td.seed, td.time { display: none; } td.state { grid-column: 1 / -1; order: 2; text-align: left; } .why { display: block; margin: 2px 0 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><b>CIFAR-10 · ResNet-18 正则化消融</b><span>13 次运行 · 每组 3 个种子 · 200 轮</span><span class="sp"></span>
+    <span class="live"><span class="dot"></span>1 次还在跑</span><span>示例数据，按固定随机种子生成</span></div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="head">
+        <div><h2 id="chart-title"></h2><p class="sub" id="chart-sub"></p></div>
+        <div class="tools"><button type="button" id="zoom" class="ghost" hidden>看全部</button>
+        <div class="seg" id="metric" role="group" aria-label="指标"><button type="button" data-m="acc" aria-pressed="true">验证准确率</button><button type="button" data-m="loss" aria-pressed="false">训练损失</button></div></div>
+      </div>
+      <div id="chart"></div>
+      <p class="note">粗线是已完成种子的平均，浅色带是种子之间的最低到最高。第 100、150 轮学习率各降到十分之一。</p>
+    </section>
+    <section class="card">
+      <h2>差距有没有超出随机波动</h2>
+      <p class="sub">最后一轮的验证准确率。每个点是一个种子，灰带是基线三个种子的范围。</p>
+      <div class="rank" id="rank"></div>
+      <div class="axis" id="rank-axis"></div>
+    </section>
+  </div>
+
+  <section class="card runs">
+    <div class="head"><div><h2>每一次运行</h2><p class="sub" id="runs-sub"></p></div></div>
+    <div class="scroll"><table>
+      <thead><tr><th>方法</th><th>种子</th><th class="state">状态</th><th class="r">最终准确率</th><th class="r">最好（第几轮）</th><th class="r">用时</th><th>运行编号</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </section>
+  <p class="foot">示例数据是合成的。把鼠标移到曲线上看每一轮的数值；在图上横向拖动放大一段，双击还原；点右侧某一行，只突出这一组。</p>
+</div>
+
+<script>
+(function () {
+  // —— 合成数据：固定种子，结果每次一样 ——
+  function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const gauss = (r) => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+  const METHODS = [
+    { id: 'base', name: '基线', color: 'var(--base)', final: 91.2 },
+    { id: 'aug', name: '+ 数据增强', color: 'var(--aug)', final: 92.6 },
+    { id: 'ls', name: '+ 标签平滑', color: 'var(--ls)', final: 91.5 },
+    { id: 'both', name: '+ 增强 + 平滑', color: 'var(--both)', final: 93.4 },
+  ];
+  const PLAN = [   // 方法、种子、相对偏移、状态
+    ['base', 0, -0.25], ['base', 1, 0.05], ['base', 2, 0.20],
+    ['aug', 0, -0.20], ['aug', 1, 0.00], ['aug', 2, 0.1, 'failed', 37], ['aug', 3, 0.25],
+    ['ls', 0, -0.35], ['ls', 1, 0.10], ['ls', 2, 0.30],
+    ['both', 0, 0.10], ['both', 1, -0.15], ['both', 2, 0.05, 'running', 142],
+  ];
+  const E = 200, step = (e, at) => 1 / (1 + Math.exp(-(e - at) / 1.6));
+  const RUNS = PLAN.map(([mid, seed, off, status = 'done', stop = E], i) => {
+    const m = METHODS.find(x => x.id === mid), r = rng(1000 + i * 77), acc = [], loss = [];
+    for (let e = 1; e <= stop; e++) {
+      const plateau = m.final - 2.6 + off * 0.6, a = plateau - (plateau - 52) * Math.exp(-e / 16) + 2.0 * step(e, 100) + 0.6 * step(e, 150) + off * 0.4 * step(e, 100);
+      const noise = gauss(r) * (e < 100 ? 0.42 : e < 150 ? 0.16 : 0.08);
+      acc.push(+(a + noise).toFixed(2));
+      const l = 0.02 + (mid === 'ls' || mid === 'both' ? 0.5 : 0) + 1.9 * Math.exp(-e / 22) * (1 - 0.55 * step(e, 100)) + 0.32 * (1 - step(e, 100)) + 0.08 * (1 - step(e, 150)) + Math.abs(gauss(r)) * 0.02;
+      loss.push(+l.toFixed(3));
+    }
+    if (status === 'failed') { loss[stop - 1] = NaN; }
+    const best = acc.reduce((b, v, k) => v > b[0] ? [v, k + 1] : b, [0, 0]);
+    const mins = status === 'failed' ? 19 : Math.round(stop / E * (98 + r() * 9));
+    return { id: `r-${(0x3a1f + i * 0x91d).toString(16)}`, mid, m, seed, status, stop, acc, loss, final: acc[acc.length - 1], best, mins,
+      why: status === 'failed' ? '第 37 轮损失变成 NaN，已换种子 3 重跑' : status === 'running' ? '' : '' };
+  });
+  const done = (mid) => RUNS.filter(r => r.mid === mid && r.status === 'done');
+  const stats = Object.fromEntries(METHODS.map(m => { const f = done(m.id).map(r => r.final); return [m.id, { n: f.length, mean: f.reduce((a, b) => a + b, 0) / f.length, min: Math.min(...f), max: Math.max(...f) }]; }));
+  const $ = (id) => document.getElementById(id), f1 = (v) => v.toFixed(1);
+  let metric = 'acc', focus = null;
+
+  // —— 指标卡：数据和数据的可信程度（范围、完成了几个种子、还有几个在跑），不写结论 ——
+  $('kpis').innerHTML = METHODS.map(m => { const st = stats[m.id], d = st.mean - stats.base.mean, total = RUNS.filter(r => r.mid === m.id && r.status !== 'failed').length, run = total - st.n;
+    return `<div class="kpi"><div class="k"><i style="background:${m.color}"></i>${m.name}</div>
+      <div class="v">${f1(st.mean)}<small>%</small>${m.id === 'base' ? '' : `<span class="delta">${d >= 0 ? '+' : ''}${f1(d)}</span>`}</div>
+      <div class="d">范围 ${f1(st.min)}–${f1(st.max)} · ${st.n}/${total} 个种子${run ? `<span class="running"> · ${run} 个在跑</span>` : ''}</div></div>`; }).join('');
+
+  // —— 曲线：按容器的实际宽度画，字号永远是真实的 12、13 像素 ——
+  let view = null;   // 放大后看的轮数范围 [从, 到]
+  function niceTicks(lo, hi, n) { const raw = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = [1, 2, 2.5, 5, 10].map(k => k * mag).find(s => s >= raw);
+    const out = []; for (let v = Math.ceil(lo / st - 1e-9) * st; v <= hi + 1e-9; v += st) out.push(+v.toFixed(6)); return out; }
+  function drawChart() {
+    const box = $('chart'), W = box.clientWidth, narrow = W < 520, H = narrow ? 260 : 360, L = 46, R = narrow ? 58 : 132, T = 14, B = 30;
+    const key = metric, x0 = view ? view[0] : key === 'acc' ? 40 : 1, x1 = view ? view[1] : E;   // 准确率默认从第 40 轮画起：之前低于 84%
+    let range = key === 'acc' ? [84, 95] : [0, 3];
+    if (view) { let lo = Infinity, hi = -Infinity;   // 放大时纵轴跟着这一段的数据重新定，局部的差别才看得出来
+      RUNS.filter(r => r.status !== 'failed').forEach(r => { for (let e = x0; e <= Math.min(x1, r.stop); e++) { const v = r[key][e - 1]; if (v < lo) lo = v; if (v > hi) hi = v; } });
+      const pad = (hi - lo) * 0.08 || 0.1; range = [lo - pad, hi + pad]; }
+    const x = (e) => L + (e - x0) / (x1 - x0) * (W - L - R), y = (v) => T + (1 - (v - range[0]) / (range[1] - range[0])) * (H - T - B);
+    const fmt = (v) => key === 'acc' ? f1(v) : v.toFixed(2);
+    let s = `<defs><clipPath id="plot"><rect x="${L}" y="${T - 2}" width="${W - L - R}" height="${H - T - B + 4}"/></clipPath></defs>`;
+    const yt = view ? niceTicks(range[0], range[1], 5) : key === 'acc' ? [84, 86, 88, 90, 92, 94] : [0, 1, 2, 3];
+    const gap = yt.length > 1 ? yt[1] - yt[0] : 1, dec = gap >= 1 ? 0 : gap >= 0.1 ? 1 : 2;
+    yt.forEach((v, i) => { s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v.toFixed(dec)}${key === 'acc' && i === yt.length - 1 ? '%' : ''}</text>`; });
+    const xt = (view ? niceTicks(x0, x1, narrow ? 4 : 7) : narrow ? [50, 100, 150, 200] : [50, 75, 100, 125, 150, 175, 200]).filter(e => Number.isInteger(e) && e >= x0);
+    xt.forEach((e, i) => { s += `<text x="${x(e)}" y="${H - 8}" text-anchor="middle">${i === 0 ? `第 ${e} 轮` : e}</text>`; });
+    [100, 150].filter(e => e > x0 && e < x1).forEach(e => { s += `<line x1="${x(e)}" x2="${x(e)}" y1="${T}" y2="${H - B}" stroke="var(--line)" stroke-dasharray="3 4"/>`; });
+    const ends = []; s += '<g clip-path="url(#plot)">';
+    METHODS.forEach(m => {
+      const rs = RUNS.filter(r => r.mid === m.id && r.status !== 'failed'), full = rs.filter(r => r.status === 'done'), faded = focus && focus !== m.id;
+      let top = '', bot = '', mean = '';
+      for (let e = x0; e <= x1; e++) { const vs = full.map(r => r[key][e - 1]); const mn = Math.min(...vs), mx = Math.max(...vs), av = vs.reduce((a, b) => a + b, 0) / vs.length;
+        top += `${e === x0 ? 'M' : 'L'}${x(e).toFixed(1)} ${y(mx).toFixed(1)}`; bot = `L${x(e).toFixed(1)} ${y(mn).toFixed(1)}` + bot; mean += `${e === x0 ? 'M' : 'L'}${x(e).toFixed(1)} ${y(av).toFixed(1)}`;
+        if (e === x1) ends.push({ m, v: av, y: y(av) }); }
+      s += `<g opacity="${faded ? 0.12 : 1}"><path d="${top}${bot}Z" fill="${m.color}" opacity=".16"/><path d="${mean}" fill="none" stroke="${m.color}" stroke-width="${m.id === 'both' ? 2.6 : 2}" stroke-linejoin="round"/>`;
+      rs.filter(r => r.status === 'running' && r.stop > x0).forEach(r => { let d = ''; const to = Math.min(r.stop, x1); for (let e = x0; e <= to; e++) d += `${e === x0 ? 'M' : 'L'}${x(e).toFixed(1)} ${y(r[key][e - 1]).toFixed(1)}`;
+        s += `<path d="${d}" fill="none" stroke="${m.color}" stroke-width="1.4" stroke-dasharray="2 3"/>${r.stop <= x1 ? `<circle cx="${x(r.stop)}" cy="${y(r[key][r.stop - 1])}" r="4" fill="var(--surface)" stroke="${m.color}" stroke-width="2"/>` : ''}`; });
+      s += '</g>';
+    });
+    s += '</g>';
+    // 线尾直接写名字和数值，不用图例；挨得太近就上下错开
+    ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 17) ends[i].y = ends[i - 1].y + 17;
+    ends.forEach(({ m, v, y: yy }) => { const faded = focus && focus !== m.id;
+      s += `<text class="end" x="${W - R + 8}" y="${yy + 4}" style="fill:${m.color}" opacity="${faded ? 0.25 : 1}">${narrow ? '' : m.name + '  '}${fmt(v)}</text>`; });
+    const fail = RUNS.find(r => r.status === 'failed');
+    if (key === 'loss' && fail.stop > x0 && fail.stop < x1 && (!focus || focus === fail.mid)) { const fx = x(fail.stop), fy = y(fail.loss[fail.stop - 2]);
+      s += `<path d="M${fx - 5} ${fy - 5}l10 10m0-10l-10 10" stroke="var(--fail)" stroke-width="2.4"/><text x="${fx - 6}" y="${fy + 30}" style="fill:var(--fail);font-weight:700">“+ 数据增强”种子 2 在这里变成 NaN</text>`; }
+    s += `<rect id="sel" y="${T}" height="${H - T - B}" width="0" fill="var(--ink)" opacity=".08"/><line id="cross" y1="${T}" y2="${H - B}" stroke="var(--ink)" stroke-width="1" opacity="0"/><rect id="hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent" style="cursor:crosshair"/>`;
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="${key === 'acc' ? '验证准确率' : '训练损失'}随训练轮数的变化，四组方法，第 ${x0} 到 ${x1} 轮">${s}</svg><div class="tip" hidden></div>`;
+    const tip = box.querySelector('.tip'), cross = box.querySelector('#cross'), sel = box.querySelector('#sel'), hit = box.querySelector('#hit');
+    const epochAt = (ev) => { const px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - box.getBoundingClientRect().left; return Math.round(Math.min(x1, Math.max(x0, x0 + (px - L) / (W - L - R) * (x1 - x0)))); };
+    let dragFrom = null;
+    const move = (ev) => { const e = epochAt(ev);
+      if (dragFrom !== null) { const a = Math.min(dragFrom, e), b = Math.max(dragFrom, e); sel.setAttribute('x', x(a)); sel.setAttribute('width', x(b) - x(a)); tip.hidden = true; return; }
+      cross.setAttribute('x1', x(e)); cross.setAttribute('x2', x(e)); cross.setAttribute('opacity', .5);
+      tip.hidden = false; tip.style.top = (T + 60) + 'px'; tip.style.left = Math.min(x(e), W - 190) + 'px';
+      tip.innerHTML = `第 ${e} 轮<br>` + METHODS.map(m => { const vs = done(m.id).map(r => r[key][e - 1]), av = vs.reduce((a, b) => a + b, 0) / vs.length;
+        return `<i style="background:${m.color}"></i>${m.name}　<b>${fmt(av)}${key === 'acc' ? '%' : ''}</b>`; }).join('<br>'); };
+    hit.addEventListener('mousemove', move); hit.addEventListener('touchmove', move, { passive: true });
+    hit.addEventListener('mousedown', (ev) => { dragFrom = epochAt(ev); ev.preventDefault(); });
+    hit.addEventListener('mouseup', (ev) => { if (dragFrom === null) return; const e = epochAt(ev), a = Math.min(dragFrom, e), b = Math.max(dragFrom, e); dragFrom = null;
+      if (b - a >= 5) { view = [a, b]; drawChart(); } else sel.setAttribute('width', 0); });
+    hit.addEventListener('dblclick', () => { view = null; drawChart(); });
+    hit.addEventListener('mouseleave', () => { tip.hidden = true; cross.setAttribute('opacity', 0); if (dragFrom !== null) { dragFrom = null; sel.setAttribute('width', 0); } });
+    $('zoom').hidden = !view;
+    $('chart-title').textContent = key === 'acc' ? '验证准确率' : '训练损失';
+    $('chart-sub').textContent = view ? `放大：第 ${x0}–${x1} 轮，纵轴按这一段的数据重新定了范围` : (key === 'acc' ? '从第 40 轮画起（更早的部分低于 84%）。' : '带标签平滑的两组损失天生更高，不能和另外两组直接比。') + (narrow ? '' : '在图上横向拖动可以放大一段。');
+  }
+
+  // —— 排名 ——
+  function drawRank() {
+    const lo = 90.4, hi = 94.0, b = stats.base, ranked = METHODS.slice().sort((a, b2) => stats[b2.id].mean - stats[a.id].mean);
+    $('rank').innerHTML = ranked.map(m => { const s = stats[m.id], rs = RUNS.filter(r => r.mid === m.id);
+      const px = (v) => ((v - lo) / (hi - lo) * 100).toFixed(2);
+      const dots = rs.filter(r => r.status === 'done').map(r => `<circle cx="${px(r.final)}%" cy="13" r="4.5" fill="${m.color}" opacity=".85"/>`).join('');
+      const running = rs.filter(r => r.status === 'running').length;
+      const diff = s.mean - b.mean, clear = s.min > b.max;
+      const verdict = m.id === 'base' ? `${s.n} 个种子，范围 ${f1(s.min)}–${f1(s.max)}` : `<b>${diff >= 0 ? '+' : ''}${f1(diff)}</b>，${clear ? '最差的种子也高于基线最好的种子' : '和基线的范围重叠'}${running ? `；还有 ${running} 个种子在跑` : ''}`;
+      return `<div class="rrow${focus === m.id ? ' on' : ''}" data-m="${m.id}" role="button" tabindex="0" aria-pressed="${focus === m.id}">
+        <div class="nm"><i style="background:${m.color}"></i>${m.name}</div>
+        <svg width="100%" height="26"><rect x="${px(b.min)}%" width="${(px(b.max) - px(b.min)).toFixed(2)}%" y="0" height="26" fill="var(--base)" opacity=".16"/>
+          <line x1="${px(s.min)}%" x2="${px(s.max)}%" y1="13" y2="13" stroke="${m.color}" stroke-width="2" opacity=".5"/>${dots}
+          <line x1="${px(s.mean)}%" x2="${px(s.mean)}%" y1="3" y2="23" stroke="${m.color}" stroke-width="2.5"/></svg>
+        <div class="mean num">${f1(s.mean)}</div><div class="verdict">${verdict}</div></div>`; }).join('');
+    $('rank-axis').innerHTML = `<div></div><div><span>${lo.toFixed(1)}%</span><span>92.2%</span><span>${hi.toFixed(1)}%</span></div><div></div>`;
+  }
+
+  // —— 运行表 ——
+  function drawRows() {
+    const ST = { done: ['done', '完成'], running: ['run', '运行中'], failed: ['fail', '失败'] };
+    $('rows').innerHTML = RUNS.map(r => { const [cls, label] = ST[r.status];
+      return `<tr class="${r.status === 'failed' ? 'fail' : ''}${focus && focus !== r.mid ? ' dim' : ''}">
+        <td class="method"><span class="m"><i style="background:${r.m.color}"></i>${r.m.name}</span><small class="sd"> · 种子 ${r.seed}</small></td><td class="seed">${r.seed}</td>
+        <td class="state"><span class="st ${cls}">${r.status === 'running' ? `<span class="bar"><u style="width:${r.stop / E * 100}%"></u></span>第 ${r.stop} / ${E} 轮` : label}</span>${r.why ? `<span class="why">${r.why}</span>` : ''}</td>
+        <td class="num final${r.status === 'done' ? '' : ' nolabel'}">${r.status === 'done' ? f1(r.final) + '%' : r.status === 'running' ? `<span style="color:var(--ink-2)">当前 ${f1(r.final)}%</span>` : '—'}</td>
+        <td class="num best">${r.status === 'failed' ? '—' : `${f1(r.best[0])}%（${r.best[1]}）`}</td>
+        <td class="num time">${Math.floor(r.mins / 60) ? Math.floor(r.mins / 60) + ' 小时 ' : ''}${r.mins % 60} 分</td><td class="id">${r.id}</td></tr>`; }).join('');
+    const c = (s) => RUNS.filter(r => r.status === s).length;
+    $('runs-sub').textContent = `完成 ${c('done')} · 运行中 ${c('running')} · 失败 ${c('failed')}${focus ? ' · 只突出“' + METHODS.find(m => m.id === focus).name + '”，再点一次取消' : ''}`;
+  }
+  function all() { drawChart(); drawRank(); drawRows(); }
+  $('zoom').onclick = () => { view = null; drawChart(); };
+  $('metric').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; metric = b.dataset.m;
+    $('metric').querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); drawChart(); });
+  const pick = (e) => { const row = e.target.closest('.rrow'); if (!row) return; if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); focus = focus === row.dataset.m ? null : row.dataset.m; all(); };
+  $('rank').addEventListener('click', pick); $('rank').addEventListener('keydown', pick);
+  let wid = 0; new ResizeObserver(() => { const w = $('chart').clientWidth; if (w !== wid) { wid = w; drawChart(); } }).observe($('chart'));
+  all();
+})();
+</script>
+</body>
+</html>
