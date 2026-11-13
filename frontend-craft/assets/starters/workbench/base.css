@@ -1,0 +1,27 @@
+/* 巷口面包房：两个页面共用的基础样式。暖纸色底、深褐墨色、一种面包皮色做强调。 */
+:root {
+  --paper: #F4EEE3;      /* 页面底：未漂白的纸 */
+  --surface: #FFFCF6;    /* 承载内容的面 */
+  --sunk: #EBE3D4;       /* 下沉的面、进度底 */
+  --ink: #2A1F17;        /* 正文 */
+  --ink-2: #6A5C50;      /* 次要文字 */
+  --line: #DDD2BF;
+  --crust: #9C4A14;      /* 强调：烤过的面包皮 */
+  --crust-soft: #F3DFCB;
+  --ok: #2E6648;
+  --ok-soft: #DCEBDD;
+  --late: #A3271B;
+  --late-soft: #F6DDD6;
+  --sans: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+  --brand: "STKaiti", "KaiTi", "Kaiti SC", var(--sans);
+  --num: "Bahnschrift", "DIN Alternate", "Roboto Condensed", var(--sans);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.5; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.num { font-family: var(--num); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.brand { font-family: var(--brand); font-weight: 400; letter-spacing: .04em; }
+:focus-visible { outline: 3px solid var(--crust); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
