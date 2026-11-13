@@ -116,6 +116,7 @@
   function paint() {
     const ring = state.view === 'ring', dpr = Math.min(2, window.devicePixelRatio || 1);
     work.classList.toggle('ring', ring);
+    if (!cv.clientWidth) return;   // 页面在看不见的容器里时宽度是 0，等它显示出来再画
     const cssW = cv.clientWidth, cssH = ring ? cssW : Math.round(Math.max(260, Math.min(560, cssW * (cssW < 600 ? 0.9 : 0.5))));
     cv.style.height = cssH + 'px'; const W = Math.round(cssW * dpr), H = Math.round(cssH * dpr); cv.width = W; cv.height = H;
     const img = ctx.createImageData(W, H), px = img.data, sl = Math.sin(state.lat * RAD), cl = Math.cos(state.lat * RAD);
