@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>明月松间照</title>
+<style>
+  :root { --paper: #F1EBDF; --ink: #1D1A17; --grey: #8A8178; --seal: #B23A2B;
+    --brush: "STXingkai", "华文行楷", "STKaiti", "华文楷体", "KaiTi", "Kaiti SC", serif; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  /* 纸：一层很淡的纤维纹，四角略暗 */
+  body { background: var(--paper); color: var(--ink); cursor: pointer; user-select: none;
+    background-image: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(90, 70, 40, .10)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .045' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
+  .stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; gap: clamp(28px, 6vw, 96px); flex-direction: row-reverse; }
+  /* 诗句竖排，从右往左；墨的毛边来自下面那个 SVG 滤镜 */
+  .poem { display: flex; flex-direction: row-reverse; gap: clamp(14px, 3vw, 46px); filter: url(#ink); }
+  .col { writing-mode: vertical-rl; font: 400 min(13vh, 19vw)/1.08 var(--brush); letter-spacing: .02em; }
+  .ch { display: inline-block; opacity: 0; color: rgb(29 26 23 / var(--d, 1)); }   /* 每个字的墨色略有浓淡 */
+  .in .ch { animation: soak 1.9s cubic-bezier(.2, .7, .2, 1) forwards; animation-delay: calc(var(--i) * .34s + .25s); }
+  .out .ch { opacity: 1; animation: fade .9s ease forwards; }
+  @keyframes soak { 0% { opacity: 0; filter: blur(14px); transform: scale(1.12); } 35% { opacity: .55; } 100% { opacity: 1; filter: blur(0); transform: none; } }
+  @keyframes fade { to { opacity: 0; filter: blur(8px); } }
+  /* 题跋：一行小字，一枚印 */
+  .colophon { align-self: center; display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 18vh; opacity: 0; transition: opacity 1.4s ease; }
+  .colophon.show { opacity: 1; }
+  .by { writing-mode: vertical-rl; font: 400 min(2.6vh, 4vw)/1.6 var(--brush); color: var(--grey); letter-spacing: .3em; }
+  .seal { width: min(4.2vh, 7vw); aspect-ratio: 1; border-radius: 4px; background: var(--seal); color: #F7EEE2; display: grid; place-items: center; font: 400 min(2.4vh, 4vw)/1 "STKaiti", "华文楷体", "KaiTi", serif; opacity: .9; }
+  .hint { position: fixed; left: 50%; bottom: 5vh; transform: translateX(-50%); font: 12px/1 "PingFang SC", "Microsoft YaHei UI", sans-serif; letter-spacing: .4em; color: var(--grey); opacity: .7; transition: opacity 1.5s; }
+  .hint.gone { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .in .ch { animation: none; opacity: 1; } .out .ch { animation: none; opacity: 0; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+    <!-- 字的边缘被纸纤维吃进去一点，再在外面洇开一圈很淡的墨 -->
+    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="grain"/>
+    <feDisplacementMap in="SourceGraphic" in2="grain" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feGaussianBlur in="rough" stdDeviation="2.4" result="bleed"/>
+    <feComponentTransfer in="bleed" result="halo"><feFuncA type="linear" slope=".28"/></feComponentTransfer>
+    <feMerge><feMergeNode in="halo"/><feMergeNode in="rough"/></feMerge>
+  </filter>
+</svg>
+<main class="stage" aria-live="polite">
+  <div class="poem" id="poem"></div>
+  <div class="colophon" id="colophon"><div class="by" id="by"></div><div class="seal">静</div></div>
+</main>
+<div class="hint" id="hint">点一下 换一句</div>
+
+<script>
+(function () {
+  const LINES = [   // 唐诗里写山水的几联
+    ['明月松间照', '清泉石上流', '王维《山居秋暝》'],
+    ['行到水穷处', '坐看云起时', '王维《终南别业》'],
+    ['野旷天低树', '江清月近人', '孟浩然《宿建德江》'],
+    ['星垂平野阔', '月涌大江流', '杜甫《旅夜书怀》'],
+    ['孤舟蓑笠翁', '独钓寒江雪', '柳宗元《江雪》'],
+  ];
+  const poem = document.getElementById('poem'), col = document.getElementById('colophon'), $ = (id) => document.getElementById(id);
+  let i = Math.max(0, Math.min(LINES.length - 1, (+location.hash.slice(1) || 1) - 1)), busy = false;
+  function show() {
+    const [a, b, by] = LINES[i]; let n = 0;
+    poem.className = 'poem in';
+    poem.innerHTML = [a, b].map(line => `<div class="col">${[...line].map(c => `<span class="ch" style="--i:${n++};--d:${(0.8 + 0.2 * Math.abs(Math.sin(c.charCodeAt(0) * 7.31))).toFixed(2)}">${c}</span>`).join('')}</div>`).join('');
+    $('by').textContent = by; document.title = a; history.replaceState(null, '', '#' + (i + 1));
+    col.classList.remove('show'); setTimeout(() => col.classList.add('show'), 250 + n * 340 + 600);
+  }
+  function next() {
+    if (busy) return; busy = true; $('hint').classList.add('gone');
+    poem.className = 'poem out'; col.classList.remove('show');
+    setTimeout(() => { i = (i + 1) % LINES.length; show(); busy = false; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900);
+  }
+  addEventListener('click', next);
+  addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); next(); } });
+  show();
+})();
+</script>
+</body>
+</html>

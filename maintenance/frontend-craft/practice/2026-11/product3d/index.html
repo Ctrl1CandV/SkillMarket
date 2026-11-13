@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>歪把杯 · 拐角陶坊</title>
+<style>
+  :root { --bg: #ECE6DB; --ink: #211D19; --ink-2: #6B635A; --line: #D6CEC1; --accent: #2B2622;
+    --serif: "STZhongsong", "华文中宋", "Songti SC", "Source Han Serif SC", "SimSun", serif;
+    --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif; --num: "Bahnschrift", "DIN Alternate", var(--sans); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.7 var(--sans); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .top { max-width: 1320px; margin: 0 auto; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .top .brand { font: 700 20px var(--serif); letter-spacing: .12em; }
+  .top nav { display: flex; gap: 28px; color: var(--ink-2); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: 0 56px; align-items: start; }
+
+  /* —— 3D 展台：画布底色和页面一样，看不出边界 —— */
+  .stage { position: sticky; top: 0; height: min(84vh, 780px); min-height: 460px; }
+  .stage canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; outline: none; }
+  .stage canvas:active { cursor: grabbing; }
+  .stage canvas:focus-visible { box-shadow: inset 0 0 0 3px var(--ink); border-radius: 12px; }
+  .stage .tip { position: absolute; left: 0; bottom: 18px; font-size: 13px; color: var(--ink-2); letter-spacing: .08em; transition: opacity 1s; pointer-events: none; }
+  .stage .tip.gone { opacity: 0; }
+  .nogl { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--ink-2); padding: 24px; }
+
+  /* —— 商品信息 —— */
+  .info { padding-top: 7vh; }
+  .kicker { font-size: 13px; letter-spacing: .24em; color: var(--ink-2); margin: 0; }
+  h1 { font: 700 54px/1.15 var(--serif); margin: 10px 0 0; letter-spacing: .04em; }
+  .price { font: 600 30px/1 var(--num); margin: 18px 0 0; } .price small { font: 15px var(--sans); color: var(--ink-2); margin-left: 6px; }
+  .lede { margin: 18px 0 0; font-size: 17px; max-width: 26em; }
+  .glaze { margin-top: 34px; }
+  .glaze h2 { font-size: 14px; font-weight: 600; margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
+  .glaze h2 b { font: 700 18px var(--serif); }
+  .sw { display: flex; gap: 12px; }
+  .sw button { width: 52px; height: 52px; border-radius: 50%; border: 0; padding: 0; position: relative; background: var(--c); box-shadow: inset 0 -6px 10px rgba(0, 0, 0, .18), inset 0 6px 10px rgba(255, 255, 255, .25); }
+  .sw button::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid transparent; }
+  .sw button[aria-pressed="true"]::after { border-color: var(--ink); }
+  .sw button:focus-visible { outline: 3px solid var(--ink); outline-offset: 6px; }
+  .glaze p { margin: 12px 0 0; color: var(--ink-2); font-size: 15px; min-height: 3.4em; }
+  .buy { margin-top: 26px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .buy .add { height: 56px; padding: 0 36px; border-radius: 999px; border: 0; background: var(--accent); color: #F6F0E6; font-size: 17px; font-weight: 700; }
+  .buy .add:hover { background: #000; }
+  .buy span { font-size: 14px; color: var(--ink-2); }
+  dl { margin: 36px 0 0; border-top: 1px solid var(--line); }
+  dl div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  dt { color: var(--ink-2); white-space: nowrap; } dd { margin: 0; text-align: right; }
+  .note { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
+
+  @media (max-width: 900px) {
+    .top { padding: 14px 18px; } .top nav { display: none; }
+    .wrap { grid-template-columns: minmax(0, 1fr); padding: 0 18px 56px; }
+    .stage { position: relative; height: min(96vw, 520px); min-height: 0; }
+    .info { padding-top: 8px; } h1 { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">拐角陶坊</div><nav><span>杯子</span><span>碗盘</span><span>花器</span><span>关于</span></nav></header>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="c" tabindex="0" role="img" aria-label="可以旋转的三维陶杯示意：手拉坯，杯口一圈素胎，把手略歪。拖动或按左右键旋转。"></canvas>
+    <div class="tip" id="tip">拖动旋转 · 双击回正</div>
+  </div>
+  <section class="info">
+    <p class="kicker">手作 · 每只都不一样</p>
+    <h1>歪把杯</h1>
+    <p class="price">¥168<small>/ 只</small></p>
+    <p class="lede">手拉坯，杯口留一圈素胎，把手歪一点点。握在手里刚好，早上的一杯咖啡用它最合适。</p>
+    <div class="glaze"><h2>釉色 <b id="gname"></b></h2><div class="sw" id="sw" role="group" aria-label="釉色"></div><p id="gnote"></p></div>
+    <div class="buy"><button type="button" class="add" id="add">加入购物袋</button><span id="added" role="status"></span></div>
+    <dl>
+      <div><dt>容量</dt><dd>约 280 毫升</dd></div>
+      <div><dt>尺寸</dt><dd>高 8.5 厘米 · 口径 8 厘米</dd></div>
+      <div><dt>重量</dt><dd>约 260 克</dd></div>
+      <div><dt>使用</dt><dd>可以进洗碗机；杯口素胎会吸水，不建议微波炉</dd></div>
+    </dl>
+    <p class="note">练习页面：拐角陶坊和这只杯子都是虚构的。左边的杯子是程序实时画的三维示意，不是照片；实物的颜色会因窑温有出入。</p>
+  </section>
+</div>
+
+<script id="fs" type="x-shader/x-fragment">
+precision highp float;
+uniform vec2 uRes; uniform float uYaw, uPitch, uGloss, uGloss0, uDip; uniform vec3 uGlaze, uGlaze0, uBg;
+#define H 1.0
+#define T 0.055
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec3 hash3(vec3 p) { p = vec3(dot(p, vec3(127.1, 311.7, 74.7)), dot(p, vec3(269.5, 183.3, 246.1)), dot(p, vec3(113.5, 271.9, 124.6))); return fract(sin(p) * 43758.5453); }
+float specks(vec3 p) { vec3 c = floor(p), f = fract(p), o = hash3(c); return o.z > .55 ? 1. - smoothstep(.05 + .07 * o.y, .1 + .07 * o.y, length(f - (.2 + .6 * o))) : 0.; }
+float noise(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+float sdBox2(vec2 p, vec2 b) { vec2 d = abs(p) - b; return length(max(d, 0.)) + min(max(d.x, d.y), 0.); }
+float smin(float a, float b, float k) { float h = clamp(.5 + .5 * (b - a) / k, 0., 1.); return mix(b, a, h) - k * h * (1. - h); }
+// 杯身外半径：上口略大，再加几道手拉坯留下的不规则起伏
+float R(float y, float a) { return .60 + .05 * y + .016 * sin(3. * a + 1.1) + .009 * sin(5. * a + 6. * y) + .005 * sin(9. * a + 2.); }
+vec3 obj(vec3 p) { float c = cos(uYaw), s = sin(uYaw); return vec3(c * p.x - s * p.z, p.y, s * p.x + c * p.z); }
+float body(vec3 p) { float a = atan(p.z, p.x), r = length(p.xz), Ro = R(clamp(p.y, 0., H), a), ro = .016;
+  float o = sdBox2(vec2(r, p.y - H * .5), vec2(Ro - ro, H * .5 - ro));
+  float i = sdBox2(vec2(r, p.y - (.09 + H + 1.) * .5), vec2(Ro - T + ro, (H + 1. - .09) * .5 + ro));
+  return max(o, -i) - ro; }
+// 把手：一个压扁的圆环，转歪一点，只留杯身外面那一半
+float handle(vec3 p) { vec3 q = p - vec3(.68, .52, 0.); float ca = cos(.16), sa = sin(.16); q.xy = mat2(ca, -sa, sa, ca) * q.xy;
+  vec2 t = vec2(length(vec2(q.x, q.y * 1.12)) - .21, q.z * 1.25); return max(length(t) - .052, -(p.x - .58)); }
+float cav(vec3 p) { float a = atan(p.z, p.x), r = length(p.xz); return sdBox2(vec2(r, p.y - (.09 + H + 1.) * .5), vec2(R(clamp(p.y, 0., H), a) - T, (H + 1. - .09) * .5)); }
+float cup(vec3 p) { return max(smin(body(p), handle(p), .04), -cav(p)); }
+vec3 normal(vec3 p) { vec2 e = vec2(.0009, -.0009);
+  return normalize(e.xyy * cup(obj(p + e.xyy)) + e.yyx * cup(obj(p + e.yyx)) + e.yxy * cup(obj(p + e.yxy)) + e.xxx * cup(obj(p + e.xxx))); }
+float march(vec3 ro, vec3 rd) { float t = 0.; for (int i = 0; i < 120; i++) { float d = cup(obj(ro + rd * t)); if (d < .0006 * t + .0004) return t; t += d * .8; if (t > 7.) break; } return -1.; }
+float shadow(vec3 ro, vec3 rd) { float res = 1., t = .02; for (int i = 0; i < 48; i++) { float h = cup(obj(ro + rd * t)); res = min(res, 9. * h / t); t += clamp(h, .01, .18); if (res < .002 || t > 3.) break; } return clamp(res, 0., 1.); }
+float ao(vec3 p, vec3 n) { float o = 0., w = 1.; for (int i = 1; i <= 5; i++) { float h = .035 * float(i); vec3 q = p + n * h; o += w * (h - min(cup(obj(q)), q.y)); w *= .6; } return clamp(1. - 2.4 * o, 0., 1.); }
+// 摄影棚：上亮下暗，左上方一盏柔光箱，釉面上能看到它的倒影
+vec3 env(vec3 r) { vec3 s = mix(uBg * .85, vec3(1.), smoothstep(-.2, .9, r.y)); float box = smoothstep(.72, .86, dot(r, normalize(vec3(-.55, .62, .55)))); return s + box * 2.4; }
+void main() {
+  vec2 uv = (gl_FragCoord.xy - .5 * uRes) / uRes.y;
+  vec3 ta = vec3(.1, .42, 0.), ro = ta + 4.9 * vec3(0., sin(uPitch), cos(uPitch));
+  vec3 ww = normalize(ta - ro), uu = normalize(cross(ww, vec3(0, 1, 0))), vv = cross(uu, ww), rd = normalize(uv.x * uu + uv.y * vv + 2.3 * ww);
+  vec3 L = normalize(vec3(-.55, .8, .55)), col;
+  float tc = -1.; vec3 oc = ro - vec3(.1, .48, 0.); float b = dot(oc, rd), h = b * b - dot(oc, oc) + 1.05;
+  if (h > 0.) tc = march(ro, rd);
+  float tf = rd.y < 0. ? -ro.y / rd.y : 1e9;
+  vec2 e = uv / vec2(.5 * uRes.x / uRes.y, .5); float glow = 1. + .07 * (1. - smoothstep(.15, .95, max(abs(e.x), abs(e.y + .1))));   // 杯子背后很淡的一团亮，边上正好回到页面底色
+  if (tc > 0. && tc < tf) {
+    vec3 p = ro + rd * tc, n = normal(p), po = obj(p); float a = atan(po.z, po.x), y = po.y, r = length(po.xz), Ro = R(clamp(y, 0., H), a);
+    bool inner = r < Ro - T * .5 && y > .05; bool onHandle = handle(po) < body(po) + .004;
+    n = normalize(n + vec3(0., (onHandle ? 0. : .028) * sin(y * 64. + sin(a * 2.) * .8), 0.));   // 拉坯留下的一圈圈细纹
+    float top = H - .085 - .03 * noise(po.xz * 3.2 + 7.);
+    float drip = pow(max(0., sin(a * 6. + 1.3)), 14.) * .07 + pow(max(0., sin(a * 13. + .4)), 24.) * .05, foot = .14 - drip;   // 底部釉往下流的几滴
+    float mask = onHandle ? 1. : inner ? 1. - smoothstep(H - .06, H - .045, y) : smoothstep(foot - .006, foot + .006, y) * (1. - smoothstep(top - .006, top + .006, y));
+    vec3 clay = vec3(.80, .69, .56) * (.9 + .12 * noise(po.xz * 22. + y * 31.));
+    clay *= 1. - .5 * specks(po * 46.);   // 素胎里的铁点
+    float dip = smoothstep(y - .05, y + .05, uDip * 1.3 - .12 + .03 * sin(a * 3. + uDip * 6.));   // 换釉色像蘸釉：新颜色从杯底往上漫
+    vec3 gl = mix(uGlaze0, uGlaze, dip) * (.86 + .2 * noise(vec2(po.x * 3.1 + y * 4.3, po.z * 3.1 - y * 2.7))); float gloss = mix(uGloss0, uGloss, dip);
+    if (!inner && !onHandle) gl = mix(mix(gl, clay * .9, .45), gl, smoothstep(0., .06, top - y) * smoothstep(0., .05, y - foot));   // 釉薄的地方透出胎色
+    vec3 V = -rd, Hh = normalize(L + V); float sh = shadow(p + n * .004, L), dif = max(dot(n, L), 0.) * sh, occ = ao(p, n);
+    vec3 base = mix(clay, gl, mask);
+    col = base * (dif * vec3(1., .96, .9) * 1.2 + (.5 + .5 * n.y) * occ * vec3(.5, .54, .6));
+    float fres = .04 + .96 * pow(1. - max(dot(n, V), 0.), 5.);
+    col += mask * (pow(max(dot(n, Hh), 0.), gloss) * sh * 1.4 + env(reflect(rd, n)) * fres * .7 * occ);
+    col = col / (1. + col * .18);
+  } else if (tf < 1e8) {
+    vec3 p = ro + rd * tf; float d = cup(obj(p)), sh = shadow(p + vec3(0., .002, 0.), L);
+    col = uBg * glow * mix(.66, 1., sh) * (1. - .42 * exp(-d * 11.));
+  } else col = uBg * glow;
+  gl_FragColor = vec4(pow(max(col, 0.), vec3(1. / 2.2)), 1.);
+}
+</script>
+<script>
+(function () {
+  const GLAZES = [
+    { name: '青灰', rgb: [104, 138, 146], gloss: 70, note: '最常见的一种。光下发蓝，阴处发灰，和杯口的素胎最搭。' },
+    { name: '月白', rgb: [222, 226, 220], gloss: 90, note: '白里带一点青。杯口那圈素胎的暖色在白釉旁边更显眼。' },
+    { name: '柿红', rgb: [170, 72, 40], gloss: 55, note: '铁红釉。釉厚的地方近乎褐色，薄的地方透出橙红。' },
+    { name: '墨黑', rgb: [30, 30, 33], gloss: 120, note: '很亮的黑釉，能照出窗户的影子；指纹也看得清楚。' },
+  ];
+  const $ = (id) => document.getElementById(id), cv = $('c'), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lin = (c) => c.map(v => Math.pow(v / 255, 2.2)), bg = lin([236, 230, 219]);
+  let gi = 0;
+  $('sw').innerHTML = GLAZES.map((g, i) => `<button type="button" style="--c:rgb(${g.rgb})" aria-label="${g.name}" aria-pressed="${i === 0}" data-i="${i}"></button>`).join('');
+  const label = () => { $('gname').textContent = GLAZES[gi].name; $('gnote').textContent = GLAZES[gi].note; };
+  label();
+  $('add').onclick = () => { $('added').textContent = `已加入一只${GLAZES[gi].name}。练习页面，不会真的下单。`; };
+
+  const gl = cv.getContext('webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  if (!gl) { $('stage').insertAdjacentHTML('beforeend', '<div class="nogl">这台设备不支持三维预览。<br>颜色可以在右边选，实物照片请联系店里。</div>'); cv.remove(); $('tip').remove();
+    $('sw').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; gi = +b.dataset.i; [...$('sw').children].forEach(x => x.setAttribute('aria-pressed', String(x === b))); label(); }); return; }
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+  const pg = gl.createProgram(); gl.attachShader(pg, sh(gl.VERTEX_SHADER, 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }')); gl.attachShader(pg, sh(gl.FRAGMENT_SHADER, $('fs').textContent)); gl.linkProgram(pg); gl.useProgram(pg);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pg, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ['uRes', 'uYaw', 'uPitch', 'uGloss', 'uGloss0', 'uDip', 'uGlaze', 'uGlaze0', 'uBg'].forEach(n => U[n] = gl.getUniformLocation(pg, n)); gl.uniform3fv(U.uBg, bg);
+
+  // 状态：朝向、倾角、惯性、釉色过渡、清晰度
+  let yaw = -0.5, pitch = 0.36, vel = 0, drag = null, lastTouch = -1e9, scale = Math.min(2, devicePixelRatio || 1), from = lin(GLAZES[0].rgb), to = from, fromG = 70, toG = 70, mixAt = -1e9;
+  let visible = true, running = false, slow = 0, frames = 0, lastT = 0;
+  const fit = () => { const w = Math.round(cv.clientWidth * scale), h = Math.round(cv.clientHeight * scale); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); } };
+  function draw(now) {
+    fit(); const k = Math.min(1, (now - mixAt) / 900), e = 1 - Math.pow(1 - k, 2);
+    gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uYaw, yaw); gl.uniform1f(U.uPitch, pitch);
+    gl.uniform3fv(U.uGlaze0, from); gl.uniform3fv(U.uGlaze, to); gl.uniform1f(U.uGloss0, fromG); gl.uniform1f(U.uGloss, toG); gl.uniform1f(U.uDip, e);
+    gl.drawArrays(gl.TRIANGLES, 0, 3); return k < 1;
+  }
+  function loop(now) {
+    const dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 0.016; lastT = now;
+    // 太慢就降清晰度：连续 20 帧超过 40 毫秒，像素降到原来的八成
+    if (dt > 0.04) { if (++slow > 20 && scale > 0.6) { scale *= 0.8; slow = 0; } } else slow = 0;
+    const idle = !drag && now - lastTouch > 3500;
+    if (!drag) { yaw += vel; vel *= 0.92; if (idle && !still) yaw += dt * 0.32; }
+    const changing = draw(now);
+    running = visible && (drag || Math.abs(vel) > 1e-4 || changing || (idle && !still) || now - lastTouch < 3600);
+    if (running) requestAnimationFrame(loop); else lastT = 0;
+  }
+  const kick = () => { if (!running && visible) { running = true; requestAnimationFrame(loop); } };
+  // 不在屏幕上就不画，省电
+  new IntersectionObserver((es) => { visible = es[0].isIntersecting; kick(); }).observe(cv);
+  new ResizeObserver(kick).observe(cv);
+  cv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; vel = 0; lastTouch = performance.now(); try { cv.setPointerCapture(e.pointerId); } catch (err) {} $('tip').classList.add('gone'); kick(); });
+  cv.addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = { x: e.clientX, y: e.clientY };
+    vel = -dx * 0.009; yaw += vel; pitch = Math.max(0.1, Math.min(0.7, pitch + dy * 0.004)); lastTouch = performance.now(); });
+  const up = () => { drag = null; lastTouch = performance.now(); kick(); }; cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('dblclick', () => { const y0 = yaw, p0 = pitch, t0 = performance.now(), target = -0.5 + Math.round((yaw + 0.5) / (2 * Math.PI)) * 2 * Math.PI;
+    lastTouch = t0; const go = (now) => { const k = Math.min(1, (now - t0) / 600), e = 1 - Math.pow(1 - k, 3); yaw = y0 + (target - y0) * e; pitch = p0 + (0.36 - p0) * e; lastTouch = now; draw(now); if (k < 1) requestAnimationFrame(go); else kick(); }; requestAnimationFrame(go); });
+  cv.addEventListener('keydown', (e) => { const d = { ArrowLeft: 0.2, ArrowRight: -0.2 }[e.key]; if (d === undefined) return; e.preventDefault(); yaw += d; lastTouch = performance.now(); $('tip').classList.add('gone'); draw(performance.now()); kick(); });
+  $('sw').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; const now = performance.now(), k = Math.min(1, (now - mixAt) / 900);
+    // 上一次还没漫过一半时，从旧颜色重新开始
+    if (+b.dataset.i === gi && k >= 1) return; if (k >= 0.5) { from = to; fromG = toG; } gi = +b.dataset.i; to = lin(GLAZES[gi].rgb); toG = GLAZES[gi].gloss; mixAt = now;
+    [...$('sw').children].forEach(x => x.setAttribute('aria-pressed', String(x === b))); label(); kick(); });
+  const q = new URLSearchParams(location.search); if (q.has('glaze')) { gi = +q.get('glaze') || 0; from = to = lin(GLAZES[gi].rgb); fromG = toG = GLAZES[gi].gloss; [...$('sw').children].forEach((x, i) => x.setAttribute('aria-pressed', String(i === gi))); label(); }
+  if (q.has('yaw')) yaw = +q.get('yaw');
+  window.__cup = { draw: () => draw(performance.now()), get scale() { return scale; } };   // 给检查脚本用
+  kick();
+})();
+</script>
+</body>
+</html>
