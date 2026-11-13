@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>远山</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #F2EEE5; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; touch-action: manipulation; }
+  /* 页面上只有题名、一枚印章和一行很淡的提示 */
+  .sig { position: fixed; top: 7vh; left: 6vw; display: flex; flex-direction: column; align-items: center; gap: 18px; pointer-events: none; color: #1E2428; transition: color .8s; }
+  .sig h1 { writing-mode: vertical-rl; margin: 0; font: 400 clamp(40px, 6.2vh, 72px)/1 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif; letter-spacing: .32em; }
+  .seal { width: clamp(30px, 4.2vh, 44px); aspect-ratio: 1; border-radius: 5px; background: #B8372A; color: #F6EFE4; display: grid; place-items: center; font: 400 clamp(18px, 2.6vh, 28px)/1 "STKaiti", "KaiTi", "Kaiti SC", serif; opacity: .92; }
+  .hint { position: fixed; right: 6vw; bottom: 4vh; font: 13px/1 "PingFang SC", "Microsoft YaHei UI", sans-serif; letter-spacing: .2em; color: #F2EEE5; opacity: .78; pointer-events: none; transition: opacity 1.2s; }
+  .hint.quiet { opacity: .3; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0" role="img" aria-label="一幅由程序生成的水墨山景：远山淡，近山浓，山间有雾。点一下或者按空格换一幅。"></canvas>
+<div class="sig" id="sig"><h1>远山</h1><div class="seal" id="seal">晨</div></div>
+<div class="hint" id="hint">点一下，换一座山</div>
+<p class="sr" aria-live="polite" id="live"></p>
+
+<script>
+(function () {
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d'), N = 7;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]still=1/.test(location.search);
+  // 三种气氛轮着来：纸色、最远和最近的墨色、日或月的颜色
+  const MOODS = [
+    { name: '晨', paper: [242, 238, 229], far: [176, 190, 194], near: [27, 38, 42], disc: [200, 66, 44], ink: '#1E2428' },
+    { name: '暮', paper: [240, 229, 215], far: [203, 180, 172], near: [44, 32, 46], disc: [214, 112, 44], ink: '#2A2028' },
+    { name: '青', paper: [233, 239, 237], far: [162, 190, 195], near: [18, 52, 58], disc: [253, 248, 226], ink: '#143038', ring: true },
+  ];
+  const rng = (a) => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const noise = (rand) => { const p = new Float32Array(1024); for (let i = 0; i < 1024; i++) p[i] = rand(); return (x) => { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return p[i & 1023] * (1 - u) + p[(i + 1) & 1023] * u; }; };
+  const fbm = (n, x, oct) => { let s = 0, a = 0.5, f = 1, m = 0; for (let o = 0; o < oct; o++) { s += a * n(x * f + o * 31.7); m += a; a *= 0.5; f *= 2.03; } return s / m; };
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t)), rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+  let seed = +(location.hash.slice(1)) || 20261113, W = 0, H = 0, dpr = 1, scene = null, prev = null, fadeAt = 0, count = 1;
+  let mx = 0, tx = 0;
+
+  function build() {
+    dpr = Math.min(2, window.devicePixelRatio || 1); W = Math.round(cv.clientWidth * dpr); H = Math.round(cv.clientHeight * dpr); if (!W || !H) return;
+    cv.width = W; cv.height = H;
+    const rand = rng(seed), mood = MOODS[seed % MOODS.length], n = noise(rand), n2 = noise(rand), margin = Math.round(W * 0.08);
+    const layers = [];
+    for (let k = 0; k < N; k++) {
+      const t = k / (N - 1), lw = W + margin * 2, c = document.createElement('canvas'); c.width = lw; c.height = H; const g = c.getContext('2d');
+      const base = H * (0.44 + 0.086 * k + (rand() - 0.5) * 0.02), amp = H * (0.23 - 0.02 * k), freq = 1.3 + 2.2 * t, off = rand() * 500, col = mix(mood.far, mood.near, Math.pow(t, 1.25));
+      const alpha = 0.5 + 0.5 * t, fade = H * (0.15 + 0.07 * t), last = k === N - 1;
+      // 远处的山用带尖的噪声，近处的山圆缓一些
+      const ridge = (x) => { const u = x / (H * 1.7) * freq + off, sharp = Math.pow(1 - Math.abs(2 * fbm(n, u, 5) - 1), 1.7), soft = fbm(n, u * 0.8 + 77, 4); return base - amp * (sharp * (1 - t * 0.75) + soft * (t * 0.75)) ; };
+      const ys = new Float32Array(lw); for (let x = 0; x < lw; x++) ys[x] = ridge(x - margin);
+      for (let x = 0; x < lw; x++) { const y = ys[x], v = 0.94 + 0.06 * n2(x / dpr * 0.006 + k * 13), gr = g.createLinearGradient(0, y, 0, last ? H : y + fade);
+        gr.addColorStop(0, rgba(col, alpha * v)); gr.addColorStop(0.45, rgba(col, alpha * v * (last ? 0.98 : 0.6))); gr.addColorStop(1, rgba(col, last ? 0.96 : 0));
+        g.fillStyle = gr; g.fillRect(x, y, 1, (last ? H : y + fade) - y + 1); }
+      // 山脊上压一道稍重的墨线
+      g.beginPath(); g.moveTo(0, ys[0]); for (let x = 1; x < lw; x += 2) g.lineTo(x, ys[x]); g.strokeStyle = rgba(col, 0.35 + 0.4 * t); g.lineWidth = (0.8 + t) * dpr; g.stroke();
+      // 最近的两层山上点几棵松
+      if (k >= N - 2) { const groups = 3 + Math.floor(rand() * 3); g.strokeStyle = rgba(mood.near, 0.88); g.lineCap = 'round';
+        for (let gi = 0; gi < groups; gi++) { const gx = rand() * lw, nTrees = 1 + Math.floor(rand() * 4);
+          for (let i = 0; i < nTrees; i++) { const x = Math.max(0, Math.min(lw - 1, Math.floor(gx + (rand() - 0.5) * 46 * dpr * nTrees * 0.6))), y = ys[x], h = (9 + rand() * 20) * dpr * (k === N - 1 ? 1.3 : 0.85), lean = (rand() - 0.5) * 0.12 * h;
+            g.lineWidth = 1.1 * dpr; g.beginPath(); g.moveTo(x, y + 2); g.lineTo(x + lean, y - h); g.stroke();
+            for (let j = 0; j < 4; j++) { const f = 0.34 + 0.19 * j, yy = y - h * f, xx = x + lean * f, w2 = h * (0.36 - 0.07 * j) * (0.85 + rand() * 0.3); g.lineWidth = (1.7 - j * 0.25) * dpr;
+              g.beginPath(); g.moveTo(xx - w2, yy + w2 * 0.4); g.lineTo(xx, yy - w2 * 0.15); g.lineTo(xx + w2 * (0.8 + rand() * 0.3), yy + w2 * 0.4); g.stroke(); } } } }
+      layers.push({ c, depth: (k + 1) / N, mistY: base + H * 0.02, margin });
+    }
+    const grain = document.createElement('canvas'); grain.width = grain.height = 200; const gg = grain.getContext('2d'), id = gg.createImageData(200, 200); for (let i = 0; i < id.data.length; i += 4) { const v = 120 + rand() * 135; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 16; } gg.putImageData(id, 0, 0);
+    const birds = []; const flock = 3 + Math.floor(rand() * 4), bx = rand() * 0.5 + 0.2, by = 0.16 + rand() * 0.12; for (let i = 0; i < flock; i++) birds.push([bx + (rand() - 0.5) * 0.1, by + (rand() - 0.5) * 0.06, 0.7 + rand() * 0.6]);
+    scene = { mood, layers, grain: ctx.createPattern(grain, 'repeat'), disc: [0.62 + rand() * 0.24, 0.17 + rand() * 0.12], birds };
+    document.body.style.background = `rgb(${mood.paper})`; document.getElementById('seal').textContent = mood.name; document.getElementById('sig').style.color = mood.ink; document.getElementById('hint').style.color = `rgb(${mood.paper})`;
+    document.getElementById('live').textContent = `第 ${count} 幅，${mood.name}。`;
+  }
+
+  function frame(now) {
+    if (!scene) return; const { mood, layers, disc, birds } = scene, time = still ? 0 : now / 1000; mx += (tx - mx) * 0.05;
+    ctx.globalAlpha = 1; ctx.fillStyle = `rgb(${mood.paper})`; ctx.fillRect(0, 0, W, H);
+    // 天上很淡的一层晕
+    const sky = ctx.createLinearGradient(0, 0, 0, H * 0.6); sky.addColorStop(0, rgba(mood.far, 0.16)); sky.addColorStop(1, rgba(mood.far, 0)); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H * 0.6);
+    const dx = disc[0] * W - mx * W * 0.006, dy = disc[1] * H, r = Math.min(W, H) * 0.052;
+    if (mood.ring) { const halo = ctx.createRadialGradient(dx, dy, r, dx, dy, r * 3.2); halo.addColorStop(0, rgba(mood.disc, 0.85)); halo.addColorStop(1, rgba(mood.disc, 0)); ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(dx, dy, r * 3.2, 0, 7); ctx.fill(); }
+    ctx.fillStyle = rgba(mood.disc, mood.ring ? 1 : 0.9); ctx.beginPath(); ctx.arc(dx, dy, r, 0, 7); ctx.fill();
+    if (mood.ring) { ctx.strokeStyle = rgba(mood.near, 0.14); ctx.lineWidth = dpr; ctx.stroke(); }
+    ctx.strokeStyle = rgba(mood.near, 0.7); ctx.lineWidth = 1.3 * dpr; ctx.lineCap = 'round';
+    birds.forEach(([bx, by, s], i) => { const x = ((bx + time * 0.004 * s) % 1.1) * W - mx * W * 0.01, y = by * H + Math.sin(time * 0.6 + i) * 3 * dpr, w = 7 * dpr * s, flap = Math.sin(time * 3 * s + i) * 0.25;
+      ctx.beginPath(); ctx.moveTo(x - w, y - w * (0.25 + flap)); ctx.quadraticCurveTo(x - w * 0.4, y - w * 0.55, x, y); ctx.quadraticCurveTo(x + w * 0.4, y - w * 0.55, x + w, y - w * (0.25 + flap)); ctx.stroke(); });
+    layers.forEach((L, k) => {
+      const shift = -L.margin + mx * L.margin * L.depth + Math.sin(time * 0.05 + k) * L.margin * 0.18 * L.depth;
+      ctx.drawImage(L.c, Math.round(shift), 0);
+      if (k < N - 1) { const my = L.mistY + Math.sin(time * 0.07 + k * 1.7) * H * 0.008, mh = H * 0.11, m = ctx.createLinearGradient(0, my - mh, 0, my + mh);   // 两层山之间的雾
+        m.addColorStop(0, rgba(mood.paper, 0)); m.addColorStop(0.5, rgba(mood.paper, 0.5 - 0.035 * k)); m.addColorStop(1, rgba(mood.paper, 0)); ctx.fillStyle = m; ctx.fillRect(0, my - mh, W, mh * 2); }
+    });
+    ctx.fillStyle = scene.grain; ctx.fillRect(0, 0, W, H);   // 纸的颗粒
+    if (prev) { const t = Math.min(1, (now - fadeAt) / 900); ctx.globalAlpha = 1 - t * t * (3 - 2 * t); ctx.drawImage(prev, 0, 0, W, H); ctx.globalAlpha = 1; if (t >= 1) prev = null; }
+    if (!still || prev) requestAnimationFrame(frame);
+  }
+  function next() {
+    if (W && H) { prev = document.createElement('canvas'); prev.width = W; prev.height = H; prev.getContext('2d').drawImage(cv, 0, 0); fadeAt = performance.now(); }
+    seed = (seed * 9301 + 49297) % 233280 + 1000; count++; history.replaceState(null, '', '#' + seed); build(); document.getElementById('hint').classList.add('quiet'); requestAnimationFrame(frame);
+  }
+  cv.addEventListener('click', next);
+  addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); next(); } });
+  addEventListener('mousemove', (e) => { tx = (e.clientX / innerWidth - 0.5) * 2; });
+  addEventListener('deviceorientation', (e) => { if (e.gamma != null) tx = Math.max(-1, Math.min(1, e.gamma / 30)); });
+  let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { build(); requestAnimationFrame(frame); }, 120); }).observe(cv);
+  build(); requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
