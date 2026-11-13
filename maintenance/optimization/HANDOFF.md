@@ -1,6 +1,6 @@
 # 技能优化计划与交接
 
-更新：2026-11-12。写这份文档的原因：优化工作原先在一台 WSL 开发机的受限沙箱里进行，那里看不到显卡、装不了系统包；用户决定迁到本机 Windows 继续。之前会话里记住的分工、规矩和证据不随仓库走，这里一次写全。接手时先读本文，再读对应技能的 `TODO.md`。
+更新：2026-11-13（第三阶段收尾）。写这份文档的原因：优化工作原先在一台 WSL 开发机的受限沙箱里进行，那里看不到显卡、装不了系统包；用户决定迁到本机 Windows 继续。之前会话里记住的分工、规矩和证据不随仓库走，这里一次写全。接手时先读本文，再读对应技能的 `TODO.md`。
 
 ## 一、任务是什么
 
@@ -13,7 +13,7 @@
 | 不用管 | write-with-judgment、agent-parliament | 前者开发未通过验证，后者基本弃用 |
 | 低频、临时写成、未验证 | readable-reply、git-governance、skill-search、de-ai-flavor | readable-reply 要让任何 Agent 的回复简洁可读（GPT 最啰嗦）；git-governance 要让 AI 在提交前整理文件、分清入库与保留、写好提交说明；skill-search 要能找到可直接用或可借鉴的技能 |
 | 中频、已验证、补模型缺的能力 | docvision、presentation-craft、imagecraft、video-craft | OCR、PPT、生图、视频 |
-| 高频、多轮打磨 | product-design + frontend-craft、grad-companion | 前端页面效果用户仍不满意；grad-companion 用户满意 |
+| 高频、多轮打磨 | product-design + frontend-craft、grad-companion | 前端页面效果用户仍不满意；grad-companion 用户满意。2026-11-13 用户决定 grad-companion 这轮不做：论文改由 Claude 直接写，这个技能暂时用不到 |
 
 用户最在意的是“展示”这一层：前端、PPT、视频、文字。算法和后端的产出差别不大，差距在展示。
 
@@ -71,6 +71,8 @@
 | presentation-craft | 0.4.0 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
 | imagecraft | 0.3.3 | 本机 FLUX 和 GPT 订阅都真正出过图；`generate` 在显卡被占用时拒绝提交；订阅脚本报出账户套餐、说明客户端留存，任务目录可写相对路径 | 每个任务只跑 1 次；拦不住用户推理服务两次请求之间的空档；“连线两端分别看”在自出自验时是否有效没验证；Z-Image、交互式会话里的“先问”没测 |
 | docvision | 0.5.2 | 真实论文筛读和真实扫描页 OCR 实测通过；fast 档报告页面上看不见的文字；中文 Windows 输出不再崩溃；doctor 显示引擎崩溃原因 | 每个条件只跑 1 次；中文扫描件、PaddleOCR 本地路线没测；MinerU 环境缺依赖靠用户目录补，待用户决定是否装进环境；用户说明用途是给 AI 做高精度、大批量识别，批量任务还没测 |
+| frontend-craft | 0.6.1 | 先由优化者亲手做九类页面积累判断，再提炼：类别对照表放进主流程第 1 步；工作台、数据看板、设置、图鉴检索四个可直接改的起步样例；`scripts/pagecheck.mjs` 三种宽度截图并量出问题（含没算出来的 NaN） | 每种配置只跑 1 次；用户盲看分不出新旧好坏，能拿得出的证据都是量得出、查得到的；阅读、活动、艺术展示、3D、手机表单没有样例；样例可能让页面越来越像样例本身；把检查写成必须处理后出现过“为过检查而补”的写法 |
+| product-design | 0.3.0 | 第 3 步加四个检验取舍的问题（信息在哪个时刻有用、数据多了少了排法还成不成立、先压缩再删、看板还是报告） | 没有单独实测，只随 frontend-craft 的任务一起跑过 |
 | video-craft | 0.3.0 | Windows 回归通过；联系表标出冻住的画面；starter 加缓慢推近；修 audiocheck 的 Windows 路径 | 每个版本只跑 1 次；GPT 两条成片用户盲看认为差别不明显，揭晓后觉得新版前半段发灰、略差；DeepSeek 一对用户盲选新版（曲线图更好），旧版两次都被接口断连打断过；真人配音没测 |
 
 ## 五、迁到 Windows 后先做什么
@@ -81,7 +83,7 @@
 2. ~~video-craft~~（2026-11-12 完成一轮，0.3.0，见 `maintenance/video-craft/evals/2026-11-12-caffeine/README.md`）。
 3. ~~docvision~~（2026-11-12 完成一轮，0.5.2，见 `maintenance/docvision/evals/2026-11-12-real-run/README.md`）。
 4. ~~imagecraft 本机出图~~（2026-11-12 完成一轮，0.3.2，见 `maintenance/imagecraft/eval-local-2026-11-12.md`）。GPT 订阅出图 2026-11-12 补测（0.3.3，见 `maintenance/imagecraft/eval-cloud-2026-11-12.md`）。
-5. 四个技能都补完后，进入第三阶段。
+5. ~~四个技能都补完后，进入第三阶段。~~ 2026-11-13 第三阶段收尾：frontend-craft 0.6.1、product-design 0.3.0 完成一轮；grad-companion 按用户决定不做；frontend-craft 第二批样例暂缓。
 
 各技能的自测（都不调用模型）：
 
@@ -90,6 +92,8 @@ python maintenance/presentation-craft/evals/check.py                      # 17 �
 python -B -m unittest discover -s maintenance/imagecraft/tests            # 99 项
 python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 276 项，Windows 上跳过 1 项
 python maintenance/docvision/evals/check.py                                # 5 项
+node maintenance/frontend-craft/evals/check.mjs                            # 126 项，只做静态和模拟 DOM
+node maintenance/frontend-craft/evals/test_pagecheck.mjs                   # 85 项，要先设 FC_NODE_MODULES、FC_CHROME
 ```
 
 需要的 Python 包：pillow、numpy、opencv-python-headless、pymupdf、python-pptx、pypdf、pypdfium2。原环境装在仓库根的 `.venv`（已被忽略）。
@@ -113,8 +117,8 @@ python maintenance/docvision/evals/check.py                                # 5 �
 - **用户确认过的假设。** 被喜欢的页面靠的是原创主视觉和大的尺度对比；工具类和后台类页面是弱项。
 - **打算怎么做。** 做成零件（模板、设计参数），而不是继续写规则；评判信号由 AI 自己建立，方式是做出只差一个因素的成对页面，让用户二选一。
 - **用户 2026-11-12 定的顺序。** 先由优化者亲手做一组不同类型的页面、积累自己的判断和经验，再提炼进技能，最后才用弱模型验证；页面本身不是目的。8 类页面的清单、进度和手记在 `maintenance/frontend-craft/practice/2026-11/JOURNAL.md`。2026-11-13 八页都已做完（面包房工作台和预订页、长文阅读、实验对比看板、书店活动页、通知设置、树叶图鉴、作品《昼长》），手记末尾有“八页做完之后”的总结；技能本身还没有改，下一步是把手记提炼进技能，开始前先把方案讲给用户。用户强调：他的选择里要分清普遍的道理和个人口味，口味不写成规则。模型：以 `deepseek-flash` 为主，摸底和最终复测各加一次 `gpt-6.1-sol`。
-- **2026-11-13 第一批提炼已做完。** frontend-craft 0.6.0、product-design 0.3.0：四个起步样例（工作台、看板、设置、图鉴检索）、场景文档开头的类别对照表、`scripts/pagecheck.mjs` 检查脚本、产品设计的四个取舍问题。用 deepseek-flash 各跑一次：新题目“东门驿站”上看板一类差别明显（旧版替读者下结论，新版只摆数据），工作台差别不大；面包房任务（拿掉了工作台样例，因为它就是面包房的页面）好坏参半，顾客预订页在手机上第一屏变成了说明。记录在 `maintenance/frontend-craft/reports/frontend-craft-0.6.0-batch1-2026-11-13.md`。同一天用 gpt-6.1-sol 在驿站题上新旧各跑一次：它没有读场景文档，也没有打开样例，检查脚本报的问题大部分没改，新旧成品很接近——新加的东西对只读必要内容的模型基本没起作用，于是改成 0.6.1：对照表放进 SKILL.md 第 1 步，看样例、处理检查结果写成明确步骤，检查脚本加了“算错的值（NaN、undefined）”一项。复测：gpt-6.1-sol 这次读了样例、跑了 3 次检查，看板不再给建议；deepseek 第一次没有触发技能（作废），第二次正常，但看板有一列 NaN 没发现，这也是检查脚本加那一项的起因。用户盲看后表示都不错，分不出好坏；对应关系和结论已补进记录。还欠：第二批样例（是否做待用户决定）（阅读、活动展示、艺术展示、局部 3D、手机表单）。
-- **（已回答）** 第三阶段的摸底用哪个模型跑：`gpt-6.1-sol` 更接近用户平时做页面的模型但消耗订阅额度，`deepseek-flash` 便宜但问题可能来自模型本身。用户还没定。
+- **2026-11-13 第一批提炼已做完。** frontend-craft 0.6.0、product-design 0.3.0：四个起步样例（工作台、看板、设置、图鉴检索）、场景文档开头的类别对照表、`scripts/pagecheck.mjs` 检查脚本、产品设计的四个取舍问题。用 deepseek-flash 各跑一次：新题目“东门驿站”上看板一类差别明显（旧版替读者下结论，新版只摆数据），工作台差别不大；面包房任务（拿掉了工作台样例，因为它就是面包房的页面）好坏参半，顾客预订页在手机上第一屏变成了说明。记录在 `maintenance/frontend-craft/reports/frontend-craft-0.6.0-batch1-2026-11-13.md`。同一天用 gpt-6.1-sol 在驿站题上新旧各跑一次：它没有读场景文档，也没有打开样例，检查脚本报的问题大部分没改，新旧成品很接近——新加的东西对只读必要内容的模型基本没起作用，于是改成 0.6.1：对照表放进 SKILL.md 第 1 步，看样例、处理检查结果写成明确步骤，检查脚本加了“算错的值（NaN、undefined）”一项。复测：gpt-6.1-sol 这次读了样例、跑了 3 次检查，看板不再给建议；deepseek 第一次没有触发技能（作废），第二次正常，但看板有一列 NaN 没发现，这也是检查脚本加那一项的起因。用户盲看后表示都不错，分不出好坏；对应关系和结论已补进记录。收尾时又用 deepseek 跑了一次面包房（0.6.1）：顾客预订页这次认作表单，手机第一屏就能选面包（第一款离顶部 398 px，0.6.0 时 944 px）。用户决定就此收尾：第二批样例（阅读、活动展示、艺术展示、局部 3D、手机表单）暂缓，等以后有真实页面出问题时再做。
+- **（已回答）** 第三阶段的摸底用哪个模型跑：用户定的是 `deepseek-flash` 为主，`gpt-6.1-sol` 做对照；GPT 每次开跑前先问，因为用订阅额度。
 
 三个展示技能（frontend-craft、presentation-craft、video-craft）现在互不引用，各自重复写了参考选用、配色字体层级和看图审查。presentation-craft 两次实测的成品也有“标题与正文尺度对比偏弱”的观感，和前端的问题相似，可以一并留意。
 
@@ -124,6 +128,10 @@ python maintenance/docvision/evals/check.py                                # 5 �
 - git-governance：用户是否有固定的“私人文件夹”约定。
 - presentation-craft：近似预览不收（已定）；字号阈值留 16 pt，改为要求标题约为正文 2 倍（用户盲选两组对照，已定）。
 - 远端的 `product` 分支是很早以前的旧分支，这轮没有动过。
+- docvision：MinerU 环境缺的依赖是否装进环境（现在靠用户目录补），待用户决定；面向“给 AI 做大批量识别”的批量任务还没测。
+- imagecraft：用户提过论文配图要按论文格式出，这次测试的提示词没写这个要求，可以单独测一次。
+- frontend-craft：第二批样例暂缓；样例配色可能被原样搬到别的题材；检查写成必须处理后出现过用 `!important` 补字号的写法。
+- 本地 dev、main 都没有推送，推送要用户开口。
 
 ## 八、没有随仓库带走的东西
 
@@ -138,3 +146,8 @@ python maintenance/docvision/evals/check.py                                # 5 �
 - 没查清就说“这台机器没有显卡”。实际是沙箱挡住了显卡设备。imagecraft 和 docvision 的检测代码有同样的毛病，已修。
 - 没问用户就用更贵的模型起了一次实测，被叫停。
 - 提交说明的标题和正文之间漏了空行，重写过一次提交。
+- 第三阶段一开始就用弱模型跑摸底，用户要的是先亲手做页面、有了自己的判断再改技能，被叫停。
+- 把用户个人口味的选择写成“我押错了”并想据此改规则；用户提醒要分清普遍的道理和个人口味。
+- 没量过的数字写进手记两次（手机筛选区高度、夜晚所占比例），之后各用一次提交更正。
+- 统计检查脚本的运行次数时把“读脚本文件”也算了进去，记录写多了，另提交更正。
+- 差点用面包房页面做成的样例去测面包房任务，等于让模型抄答案；开跑前发现，改用拿掉这个样例的版本和新题目。
