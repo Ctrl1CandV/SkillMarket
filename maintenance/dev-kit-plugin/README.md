@@ -2,7 +2,7 @@
 
 开发技能组，替代已停用的 agent-parliament。核心是开发前后两头：开工时问清需求、写成确认单；收尾时由独立审查者按确认单逐条验收。中间的实现主要交给模型本身，只配了测试、接口设计、排错和代码审查四个方法技能。
 
-运行文件在 [plugins/dev-kit-plugin/skills/](../../plugins/dev-kit-plugin/skills/)。来源与本地改动见 [UPSTREAM.md](UPSTREAM.md)，待办见 [TODO.md](TODO.md)。
+运行文件在 [plugins/dev-kit-plugin/skills/](../../plugins/dev-kit-plugin/skills/)。2026-11-17 用图论课程设计在 pi（deepseek-flash）和 Codex（gpt-6.1-sol）上各跑一次，dev-kickoff 和 dev-acceptance 通过验收，见[试用记录](evals/2026-11-17-shortest-path/REPORT.md)。来源与本地改动见 [UPSTREAM.md](UPSTREAM.md)，待办见 [TODO.md](TODO.md)。
 
 ## 组成（0.1.0，2026-11-17）
 
