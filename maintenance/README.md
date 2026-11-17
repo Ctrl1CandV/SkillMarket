@@ -17,6 +17,7 @@
 | [experiment-design](experiment-design/) | 0.1.0 初版方法取舍、合成方案与[提交前独立复查](experiment-design/reports/prepublish-review-2026-10-25.md)；0.1.1 补充基线复现与余量检查，真实研究验收与完整示例见 [TODO](experiment-design/TODO.md) |
 | [skill-eval](skill-eval/PROPOSAL.md) | 仅在 dev 立案：启动条件与候选范围，尚未实现 |
 | [agent-parliament-plugin](agent-parliament-plugin/) | 上游核验报告、去 MCP 化交付报告、结构与流程模拟检查 |
+| [dev-kit-plugin](dev-kit-plugin/) | 0.1.0 开发技能组：三轮追问定下的决定、外来技能的来源与本地改动、结构自检脚本、code-reviewer 脚本的回归样本、图论课程设计试用计划；还没有实测 |
 | [docvision](docvision/) | [0.2.0 正式发布核验](docvision/reports/release-0.2.0-2026-10-28.md)：真实公式/复杂表格 API 对照、专用区域任务、缓存与并发修复、完整回归；8 GB 与规模准确率待补；0.5.1 只修正显卡检测，完整一轮优化未开始 |
 | [mineru](mineru/) | 已安装副本核验报告（暂不收录） |
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办；0.3.0 增加借鉴用途，尚未在真实检索里试过 |
@@ -31,6 +32,7 @@
 - **product-design / frontend-craft**：0.2.0-rc.1 / 0.5.0-rc.1 的实施、比较、用户反馈和核查已收尾，按用户随后授权将运行变更提交到 main/dev、维护归档仅留 dev，见[收尾记录](frontend-craft/upgrades/2026-10-26/reports/closeout.md)。[阅读反馈](frontend-craft/upgrades/2026-10-26/reports/user-feedback-2026-10-26.md)认可两版布局、认为差距不明显，略偏向旧版标题层级；原终审 INSUFFICIENT_EVIDENCE 与整体视觉提升未证实的事实保留。原包已归档、临时服务与日志已清理，完整入口见[本轮归档](frontend-craft/upgrades/2026-10-26/README.md)和 [TODO](frontend-craft/TODO.md)。
 - **grad-companion-plugin**：三项阅读优化已实施，真实使用与其余旧方案待办见 [TODO](grad-companion-plugin/TODO.md)。
 - **agent-parliament-plugin**：真实宿主安装试用与上游许可正文确认，见 [TODO](agent-parliament-plugin/TODO.md)。
+- **dev-kit-plugin**：用图论课程设计做第一次真实试用（用户用 Codex，优化者用 pi + deepseek-flash），见 [TODO](dev-kit-plugin/TODO.md)。
 - **docvision**：0.3.0 只保留本地两引擎与 PaddleOCR 官方 API：首次使用询问远程密钥、拒绝后持久本地、模型固定路径、中间文件回收项目内；Gemini/GLM/Mistral/MinerU 云端因无真实 key 已删除，见 [0.3.0 报告](docvision/reports/scope-consent-0.3.0-2026-10-28.md) 与 [TODO](docvision/TODO.md)。旧 `mineru` 副本由 docvision 取代，历史报告保留。
 - **mineru**：修复中文 data_id、复杂页码与离线模式回落云端等问题并重验后，再评估收录，见 [TODO](mineru/TODO.md)。
 - **skill-search**：触发条件与范围已按用户审查优化，待真实使用观察，见 [TODO](skill-search/TODO.md)。
