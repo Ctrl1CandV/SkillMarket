@@ -13,7 +13,7 @@
 ## 第一遍：用户在 Codex 里跑
 
 - 项目文件夹：`D:\Program Project\ShortestPathTraffic`，是一个新的 git 仓库，里面只有 `任务书.md`。
-- 技能临时放在项目内的 `.agents/skills/`：dev-kickoff、dev-acceptance、tdd、codebase-design、diagnose、code-reviewer、frontend-craft。用 `.git/info/exclude` 排除，不进项目提交。不属于全局安装，测完可以删。
+- 技能：原计划临时放在项目内的 `.agents/skills/`；后来用户要求直接装进 Codex，改为装在 `~/.codex/skills`，项目内那份已删除。
 - 模型：gpt-6.1-sol。
 - 开场只说一句：“用 dev-kickoff 开工：做这门课程设计，任务书在 任务书.md。”开工的问题由用户本人回答。
 - 做完以后先不提醒，看它会不会自己进入 dev-acceptance；不会的话，再说“收尾”。

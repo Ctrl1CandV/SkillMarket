@@ -8,7 +8,7 @@
 - [product-design](product-design/SKILL.md)：0.3.1，为新建产品、整体重设计与核心流程调整建立设计依据，把用户任务、真实内容和对象关系转成页面职责、展示重点与表现方向，再衔接界面实现。
 - [frontend-craft](frontend-craft/SKILL.md)：0.6.2，依据项目方向完成页面级内容编排、构图、排版、配色和交互细节，并通过实际画面修订；先按页面类别选尺度和做法，附工作台、数据看板、设置、图鉴检索四个可直接改的起步样例，以及三种宽度截图并量出问题的检查脚本；与 product-design 配合，局部精修也可直接使用。
 - [grad-companion](plugins/grad-companion-plugin/)：辅助读研期间的论文阅读、研究记录、实验积累与阶段复盘；新增 [experiment-design](plugins/grad-companion-plugin/skills/experiment-design/SKILL.md)，把研究想法转成可执行、有判别力的实验计划。
-- [dev-kit](plugins/dev-kit-plugin/)：0.1.0，开发项目的两头。[dev-kickoff](plugins/dev-kit-plugin/skills/dev-kickoff/SKILL.md) 开工前按决定树追问使用者、倾向、功能与架构、展示、审美和验收档位，写成确认单；[dev-acceptance](plugins/dev-kit-plugin/skills/dev-acceptance/SKILL.md) 做完后开发者先自测，再交给没参与开发的审查者按确认单逐条验收，按完整功能提交。中间配 tdd、codebase-design（取自 mattpocock/skills）、diagnose 排错和 code-reviewer 代码审查；product-design 与四个 craft 技能会先读确认单。写成通用文字，可用于 Claude Code、Codex、pi 等宿主；替代已停用的 agent-parliament。
+- [dev-kit](plugins/dev-kit-plugin/)：0.1.1，开发项目的两头。[dev-kickoff](plugins/dev-kit-plugin/skills/dev-kickoff/SKILL.md) 开工前按决定树追问使用者、倾向、功能与架构、展示、审美和验收档位，写成确认单；[dev-acceptance](plugins/dev-kit-plugin/skills/dev-acceptance/SKILL.md) 做完后开发者先自测，再交给没参与开发的审查者按确认单逐条验收，按完整功能提交。中间配 tdd、codebase-design（取自 mattpocock/skills）、diagnose 排错和 code-reviewer 代码审查；product-design 与四个 craft 技能会先读确认单。写成通用文字，可用于 Claude Code、Codex、pi 等宿主；替代已停用的 agent-parliament。
 - [agent-parliament](plugins/agent-parliament-plugin/skills/orchestrator/SKILL.md)：组织规划、质疑、实现、审查与验证，不依赖专用 MCP 服务；可由同一代理顺序执行。
 - [skill-search](skill-search/SKILL.md)：0.3.0，针对明确的技能搜索请求或复杂项目中的能力缺口，寻找能直接使用、或开发时值得借鉴的技能；检查已有能力、读候选正文、分清指标口径与许可，找不到就停止。
 - [docvision](docvision/SKILL.md)：0.5.2，数字 PDF 批量筛读与本地 OCR，筛读时会提示页面上看不见的文字；疑难区域按需用 PaddleOCR API 对照纠错，图表与架构图实际看图。保留原稿和有依据的校正，支持云任务续接、文献搬家、环境验收与回退。

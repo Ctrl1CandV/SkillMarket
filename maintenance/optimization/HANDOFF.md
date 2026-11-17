@@ -74,7 +74,7 @@
 | frontend-craft | 0.6.2 | 先由优化者亲手做九类页面积累判断，再提炼：类别对照表放进主流程第 1 步；工作台、数据看板、设置、图鉴检索四个可直接改的起步样例；`scripts/pagecheck.mjs` 三种宽度截图并量出问题（含没算出来的 NaN） | 每种配置只跑 1 次；用户盲看分不出新旧好坏，能拿得出的证据都是量得出、查得到的；阅读、活动、艺术展示、3D、手机表单没有样例；样例可能让页面越来越像样例本身；把检查写成必须处理后出现过“为过检查而补”的写法 |
 | product-design | 0.3.1 | 第 3 步加四个检验取舍的问题（信息在哪个时刻有用、数据多了少了排法还成不成立、先压缩再删、看板还是报告） | 没有单独实测，只随 frontend-craft 的任务一起跑过 |
 | video-craft | 0.3.1 | Windows 回归通过；联系表标出冻住的画面；starter 加缓慢推近；修 audiocheck 的 Windows 路径 | 每个版本只跑 1 次；GPT 两条成片用户盲看认为差别不明显，揭晓后觉得新版前半段发灰、略差；DeepSeek 一对用户盲选新版（曲线图更好），旧版两次都被接口断连打断过；真人配音没测 |
-| dev-kit（插件） | 0.1.0 | 2026-11-17 新建，替代 agent-parliament。经三轮追问和用户定下：新写 dev-kickoff（开工追问、写确认单）和 dev-acceptance（开发者自测 + 独立审查者按确认单验收）；Matt 的 tdd、codebase-design 原文入库，只改引用；diagnose 重写；code-reviewer 正文重写，脚本取自上游。上面五个技能（imagecraft、presentation-craft、frontend-craft、product-design、video-craft）各加一句“有确认单先读它”，因此各升一个小版本 | 完全没有实测，只有结构自检（81 项）；code-reviewer 的三个脚本没运行过；Codex 的 request_user_input 在默认模式下能否使用没核实；Antigravity、ZCode 没查。决定记录与试用计划在 `maintenance/dev-kit-plugin/` |
+| dev-kit（插件） | 0.1.1 | 2026-11-17 新建，替代 agent-parliament。经三轮追问和用户定下：新写 dev-kickoff（开工追问、写确认单）和 dev-acceptance（开发者自测 + 独立审查者按确认单验收）；Matt 的 tdd、codebase-design 原文入库，只改引用；diagnose 重写；code-reviewer 正文重写，脚本取自上游。上面五个技能（imagecraft、presentation-craft、frontend-craft、product-design、video-craft）各加一句“有确认单先读它”，因此各升一个小版本 ；随后用 pi + deepseek-flash 跑了一遍课程设计（开工由优化者代答），开工、实现、子代理审查都走通了，看到的 4 个问题在 0.1.1 补上 | 只跑过一次，开工是代答；0.1.1 没重跑；code-reviewer 的三个脚本没运行过；Codex 的 request_user_input 在默认模式下能否使用没核实；Antigravity、ZCode 没查。决定记录与试用计划在 `maintenance/dev-kit-plugin/` |
 
 ## 五、迁到 Windows 后先做什么
 
