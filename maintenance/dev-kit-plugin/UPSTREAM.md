@@ -29,13 +29,13 @@
 
 ## alirezarezvani/claude-skills（MIT 许可）
 
-code-reviewer 的 `rules/`、`languages/`、`scripts/` 原样复制自 `engineering-team/skills/code-reviewer`，固定在提交 `7b1abd5e8aff00ecb66e38956274586cb22ad681`（2026-10-26），并附上对方的 `LICENSE`。对方的 `SKILL.md` 和 `README.md` 没有采用。`assets/` 和 `expected_outputs/` 只是脚本的回归样本，移到了 [code-reviewer-fixtures/](code-reviewer-fixtures/)。
+code-reviewer 的 `rules/`、`languages/`（0.1.0 时还有 `scripts/`）原样复制自 `engineering-team/skills/code-reviewer`，固定在提交 `7b1abd5e8aff00ecb66e38956274586cb22ad681`（2026-10-26），并附上对方的 `LICENSE`。对方的 `SKILL.md` 和 `README.md` 没有采用。`assets/` 和 `expected_outputs/` 只是脚本的回归样本，移到了 [code-reviewer-fixtures/](code-reviewer-fixtures/)。
 
 用户本机 `~/.agents/skills/code-reviewer` 的情况：
 - 和对方旧版比较（忽略换行差异）：除 `code_quality_checker.py` 有 134 行不同外，抽查的其余文件都相同。新版的这个脚本多了 C 语言支持。
 - 那份 `SKILL.md` 是用户早先的改写，本仓库新的中文正文以它为底，加上了 Matt 的 code-review 里那组坏味道清单。
 
-三个脚本这次没有运行过：运行刚下载的第三方脚本被权限拦下。只核对了内容：调用外部程序的只有 git 和同目录的另一个脚本，不联网，不删文件。
+2026-11-17 的实验里，唯一运行过的 `code_quality_checker.py` 给埋了 6 个真实缺陷的代码打了满分，按事先定的标准，code-reviewer 0.2.0 删除了三个脚本及其回归样本（见 [实验结果](evals/2026-11-17-method-skills/REPORT.md)）。当时的情况：三个脚本这次没有运行过：运行刚下载的第三方脚本被权限拦下。只核对了内容：调用外部程序的只有 git 和同目录的另一个脚本，不联网，不删文件。
 
 ## 本机旧技能
 

@@ -9,7 +9,7 @@ mkdir -p "$OUT/task" "$OUT/log" "$OUT/skills" || exit 1
 cp -r "$ROOT"/plugins/dev-kit-plugin/skills/* "$OUT/skills/" || exit 1
 (cd "$ROOT" && git rev-parse --short HEAD) > "$OUT/log/skills-commit.txt"
 F="$HERE/fixtures"; T="$OUT/task"
-g() { git -C "$T" "$@" -q; }
+g() { git -C "$T" "$@" >/dev/null; }
 case "$X" in
   e1) cp "$F/e1-tdd/需求.md" "$T/"; git -C "$T" init -q; g add -A; g commit -m "需求"
       MSG="按 需求.md 实现地铁票价模块。核心计费逻辑要先写测试再写实现。" ;;

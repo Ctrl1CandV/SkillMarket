@@ -2,9 +2,9 @@
 
 开发技能组，替代已停用的 agent-parliament。核心是开发前后两头：开工时问清需求、写成确认单；收尾时由独立审查者按确认单逐条验收。中间的实现主要交给模型本身，只配了测试、接口设计、排错和代码审查四个方法技能。
 
-运行文件在 [plugins/dev-kit-plugin/skills/](../../plugins/dev-kit-plugin/skills/)。2026-11-17 用图论课程设计在 pi（deepseek-flash）和 Codex（gpt-6.1-sol）上各跑一次，dev-kickoff 和 dev-acceptance 通过验收，见[试用记录](evals/2026-11-17-shortest-path/REPORT.md)。来源与本地改动见 [UPSTREAM.md](UPSTREAM.md)，待办见 [TODO.md](TODO.md)。
+运行文件在 [plugins/dev-kit-plugin/skills/](../../plugins/dev-kit-plugin/skills/)。2026-11-17 用图论课程设计在 pi（deepseek-flash）和 Codex（gpt-6.1-sol）上各跑一次，dev-kickoff 和 dev-acceptance 通过验收，见[试用记录](evals/2026-11-17-shortest-path/REPORT.md)；tdd、diagnose、codebase-design、code-reviewer 各用一个预先定好标准的小实验验证通过，见[实验结果](evals/2026-11-17-method-skills/REPORT.md)。0.2.0 起插件收尾，后续只按真实使用中观察到的问题再改。来源与本地改动见 [UPSTREAM.md](UPSTREAM.md)，待办见 [TODO.md](TODO.md)。
 
-## 组成（0.1.0，2026-11-17）
+## 组成（0.2.0，2026-11-18 收尾）
 
 | 技能 | 作用 | 来源 |
 |---|---|---|
@@ -13,7 +13,7 @@
 | tdd | 先写测试，按约定的接缝逐个切片 | mattpocock/skills 原文，只改了引用 |
 | codebase-design | 深模块词汇、接口设计两遍 | mattpocock/skills 原文，并入 design-an-interface |
 | diagnose | 先有会变红的复现命令，再找原因 | 重写，骨架取自 Matt 的 diagnosing-bugs |
-| code-reviewer | 代码质量审查 | 正文重写；规则、语言指南、脚本取自 alirezarezvani/claude-skills |
+| code-reviewer | 代码质量审查 | 正文重写；规则、语言指南取自 alirezarezvani/claude-skills（打分脚本在 0.2.0 删除） |
 
 product-design、frontend-craft、imagecraft、presentation-craft、video-craft 各加了一句“有确认单先读它”。
 
