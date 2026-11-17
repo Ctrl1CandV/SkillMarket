@@ -3,8 +3,8 @@ name: code-reviewer
 description: 审查一段代码改动的正确性、安全、兼容性和可维护性，只报有触发条件和后果的实际问题。用于审 PR 或 diff、提交前做代码质量检查；dev-acceptance 的审查者看代码时也用它。项目写明的编码规范优先，一组常见坏味道作兜底。
 license: MIT
 metadata:
-  version: "0.1.0"
-  upstream: "alirezarezvani/claude-skills@7b1abd5 engineering-team/skills/code-reviewer（rules、languages、scripts）"
+  version: "0.2.0"
+  upstream: "alirezarezvani/claude-skills@7b1abd5 engineering-team/skills/code-reviewer（rules、languages）"
 ---
 
 # 代码审查
@@ -65,18 +65,6 @@ metadata:
 
 权限允许时，跑项目已有的检查，比如测试、类型检查、lint。不能跑的，说明原因，并请派你来的一方去跑指定的检查。没跑过的检查，不说跑过。
 
-## 可选脚本
-
-三个脚本只用 Python 标准库，路径相对本文件：
-
-```
-python "<技能目录>/scripts/pr_analyzer.py" "<仓库>" --base <起点> --head HEAD --json
-python "<技能目录>/scripts/code_quality_checker.py" "<路径>" --json
-python "<技能目录>/scripts/review_report_generator.py" "<仓库>" --format markdown --output "<输出路径>"
-```
-
-脚本靠正则和启发式规则打分，给出的分数、阈值和“通过”或“驳回”建议，只用来提示该看哪里，不能当结论。脚本标出的问题，要对照实际的控制流和数据流核实；脚本没标出的地方，不代表没有问题。
-
 ## 报告
 
 1. 先按影响分组列出问题。
@@ -85,4 +73,4 @@ python "<技能目录>/scripts/review_report_generator.py" "<仓库>" --format m
 
 没有问题时，写“没有需要处理的问题”，但这不等于证明没有缺陷。合不合并由用户或项目流程决定，不看分数。
 
-规则、语言指南和脚本来自 alirezarezvani/claude-skills（MIT 许可），说明正文为本仓库重写，坏味道清单参考 mattpocock/skills 的 code-review（MIT 许可）。
+规则和语言指南来自 alirezarezvani/claude-skills（MIT 许可），说明正文为本仓库重写，坏味道清单参考 mattpocock/skills 的 code-review（MIT 许可）。
