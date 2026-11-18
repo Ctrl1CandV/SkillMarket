@@ -4,6 +4,7 @@
 
 - **浏览器里用的模块**：`kit.js` 提供缓动、弹簧、随机数、颜色、字体和注册函数；`sound.js` 负责合成音乐、音效和配音，测响度，编 Opus/WebM。
 - **Node 命令行工具**：渲染、检查、出音轨。它们通过 Playwright 驱动无头 Chromium 打开场景页，逐帧调用 `__seek(t)` 截图，再交给 ffmpeg 编码。
+- 图片、录屏或其他引擎的镜头已有文件时，可单独用 `cut.mjs` 做有声动态分镜或最终组装，只依赖 Node 与带 libx264 的 FFmpeg。格式和可复制的命令见[剪辑单](editing.md)。
 
 ## 安装与环境
 
@@ -48,6 +49,7 @@ seek(0);
 ```
 
 - `seek(t)` 必须是纯函数：同一个 t 永远得到同一帧，可以任意顺序调用。
+- 有异步素材时让 `seek(t)` 返回 Promise，完成取帧和绘制后再 resolve，截图会等待。长录屏、实拍和其他已经渲染的片段直接放进剪辑单更省资源。
 - 画布、DOM、SVG、WebGL 可以混用。WebGL 在软件 GL（SwiftShader）上很慢，按 1/3 分辨率渲染再放大到 2D 画布上，天空就是这样做的。
 - 页面用 `file://` 打开，取媒体文件时 `fetch` 会失败。字体用 `FontFace` 加载；音频交给 Node 读成 base64 再传给页面（`--vo` 已经处理好）。
 
@@ -79,14 +81,18 @@ seek(0);
 
 乐谱页只需要一行：`<script type="module" src="score.js"></script>`。
 
+已有歌曲、对白或最终混音可直接传给 `render.mjs … video picture.mp4 --audio song.wav --mux final.mp4`。播放带声音的 `final.mp4`。制作局部试片时加 `--from 8 --to 12`，画面和这条全长母带都从第 8 秒取。歌曲选段如果另有源入点，先裁成从项目零点开始的音频，或用[剪辑单的音轨入点](editing.md)。检查最终母带可运行 `audiocheck.mjs final.mp4 page.html check.png`，无需配乐页。片段从场景第 8 秒开始时给检查命令加 `--scene-offset 8`，事件线会对齐到片段本地时间。
+
 ## 命令
 
 | 工具 | 用法 | 说明 |
 |---|---|---|
-| `render.mjs` | `page stills <dir> t…` / `sheet <jpg> [--every s] [--times a,b] [--cols n] [--w px] [--still s]` / `strip <jpg> --at t… [--offsets f…]` / `video <out.webm\|.mp4> [--crf n] [--audio a.webm] [--mux out]` | 联系表里和上一格几乎没有变化的格子标“= same”，连续静止达到 `--still` 秒（默认 2）时在输出里列出时段；视频用 JPEG 帧通过管道交给 ffmpeg |
+| `cut.mjs` | `edit.json final.mp4` | 静帧、已有镜头和可选成品音轨，按剪辑单出 MP4 |
+| `captions.mjs` | `source.srt cues.js [--from a --to b]` | 把已有录音的定时字幕转为场景可直接导入的秒数，见[字幕示例](timed-text.md) |
+| `render.mjs` | `page stills <dir> t…` / `sheet <jpg> [--every s] [--times a,b] [--cols n] [--w px] [--still s]` / `strip <jpg> --at t… [--offsets f…]` / `video <out.webm\|.mp4> [--crf n] [--from a --to b] [--audio track] [--mux out]` | 联系表里和上一格几乎没有变化的格子标“= same”，连续静止达到 `--still` 秒（默认 2）时在输出里列出时段；视频用 JPEG 帧通过管道交给 ffmpeg |
 | `audio.mjs` | `page score out.webm [--vo dir] [--stems] [--target -16] [--wav out.wav]` | 合成、归一、限幅、编码 |
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
-| `audiocheck.mjs` | `media page out.png [--from a --to b]` | 从成片解码，画频谱、包络和事件线 |
+| `audiocheck.mjs` | `media page out.png [--from a --to b] [--scene-offset s]` | 从成片解码，画频谱、包络和事件线 |
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
 | `textcheck.mjs` | `page [--margin 80] [--sel '#caps .cap']` | 字幕边距与最小字号 |
 | `montage.mjs` | `out.jpg width img…` | 几张图横排缩小 |

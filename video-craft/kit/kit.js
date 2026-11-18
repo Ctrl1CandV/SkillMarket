@@ -109,5 +109,8 @@ export const FONT_STACK = {
 // register the seek entry point used by the renderer
 export function register({ duration, fps = 30, width, height, seek, meta = {} }) {
   window.__video = { duration, fps, width, height, meta };
-  window.__seek = (t) => { seek(t); return true; };
+  window.__seek = (t) => {
+    const frame = seek(t);
+    return frame && typeof frame.then === 'function' ? frame.then(() => true) : true;
+  };
 }

@@ -291,7 +291,10 @@ export function momentary(buf, hop = 0.1) {
 export function peakDb(buf) { let p = 0; for (let c = 0; c < buf.numberOfChannels; c++) for (const v of buf.getChannelData(c)) p = Math.max(p, Math.abs(v)); return 20 * Math.log10(p); }
 
 export function normalize(buf, target = -16, ceilingDb = -1.5) {
-  const gain = Math.pow(10, (target - lufs(buf)) / 20), ceil = Math.pow(10, ceilingDb / 20), sr = buf.sampleRate, n = buf.length;
+  const measured = lufs(buf);
+  // Silence and clips shorter than the 400 ms measurement window have no integrated value.
+  const gain = Number.isFinite(measured) ? Math.pow(10, (target - measured) / 20) : 1;
+  const ceil = Math.pow(10, ceilingDb / 20), sr = buf.sampleRate, n = buf.length;
   const ch = [...Array(buf.numberOfChannels)].map((_, c) => buf.getChannelData(c));
   const need = new Float32Array(n);
   for (let i = 0; i < n; i++) { let p = 0; for (const x of ch) p = Math.max(p, Math.abs(x[i] * gain)); need[i] = p > ceil ? ceil / p : 1; }

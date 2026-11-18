@@ -34,7 +34,6 @@ const BOKEH = makeBokeh();
 const SPARK = (() => { const r = rng(31); return Array.from({ length: 240 }, () => ({ x: r() * W, y: r(), s: 2 + r() * 4, a: r() * 6.28, sp: 10 + r() * 30, tw: r() * 6.28 })); })();
 const RAYS = (() => { const r = rng(64); return Array.from({ length: 14 }, (_, i) => ({ x: 80 + (i / 13) * 1500 + (r() - 0.5) * 80, y: 60 + r() * 420, d: i * 0.07 + r() * 0.05 })); })();
 const GRAIN = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), im = g.createImageData(256, 256), r = rng(2); for (let i = 0; i < im.data.length; i += 4) { const v = 128 + (r() - 0.5) * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } g.putImageData(im, 0, 0); return c; })();
-let lastHorizon = [150, 180, 210];
 
 // ---------- sky scene (landscape, sun) ----------
 function drawSkyScene(t, alpha, extra) {
@@ -48,7 +47,7 @@ function drawSkyScene(t, alpha, extra) {
   ctx.drawImage(sky.canvas, 0, 0, W, H);
   // horizon colour drives the haze of the mountains
   const hz = project(cam, 3 * D, 0, W, H);
-  if (hz && hz[1] > 8 && hz[1] < H - 8) lastHorizon = sky.sample(0.85, clamp(hz[1] / H, 0.01, 0.99));
+  const horizon = sky.sample(0.85, clamp(hz ? hz[1] / H : 0.99, 0.01, 0.99));
   // the sun
   const sp = project(cam, el, sun.az, W, H);
   const low = 1 - clamp((el - 2 * D) / (14 * D));
@@ -62,7 +61,7 @@ function drawSkyScene(t, alpha, extra) {
   }
   const shadow = [lerp(24, 26, low), lerp(34, 13, low), lerp(46, 24, low)].map(Math.round);
   const altK = clamp(Math.log(cam.alt / 300) / Math.log(30));
-  drawLand(ctx, cam, W, H, { horizon: lastHorizon, shadow, backlit: low, drop: altK * 1150, alpha: 1 - altK * 0.6, rim: low, sunX: sp ? sp[0] : 0 });
+  drawLand(ctx, cam, W, H, { horizon, shadow, backlit: low, drop: altK * 1150, alpha: 1 - altK * 0.6, rim: low, sunX: sp ? sp[0] : 0 });
   if (extra) extra(cam, sun, sp);
   ctx.restore();
 }

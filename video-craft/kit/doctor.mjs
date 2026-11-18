@@ -1,12 +1,12 @@
 // doctor.mjs — what this machine can do: browser, WebGL, encoders, voices, ffmpeg. Read-only.
 // usage: node doctor.mjs
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+
 import { launch, FFMPEG } from './env.mjs';
 const out = { node: process.version };
 try {
   const b = await launch(), p = await b.newPage();
-  await p.goto('file://' + fileURLToPath(import.meta.url));   // WebCodecs needs a secure context; file:// counts
+  await p.goto(import.meta.url);   // WebCodecs needs a secure context; file:// counts
   out.browser = b.version();
   Object.assign(out, await p.evaluate(async () => {
     const r = {};

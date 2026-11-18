@@ -4,7 +4,7 @@
 //   VC_FFMPEG        ffmpeg executable; default: ffmpeg on PATH
 import { createRequire } from 'node:module';
 import { join, resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 function load(name) {
@@ -24,4 +24,4 @@ export const launch = (extra = []) => chromium.launch({
   executablePath: process.env.VC_CHROME || undefined,
   args: ['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required', '--font-render-hinting=none', '--disable-lcd-text', ...extra],
 });
-export const fileUrl = (p) => 'file://' + resolve(p);
+export const fileUrl = (p) => pathToFileURL(resolve(p)).href;
