@@ -1,0 +1,272 @@
+<!doctype html>
+<!--
+  练习页 2：青桐社区游泳馆 · 暑期少儿班报名（家长多在手机上填，也有人在前台电脑上帮填）
+  frontend-craft：表单类。单列；先选班次（名额会变，决定了能不能报），再填孩子和家长；费用和所选班次一直跟在提交按钮旁。
+  modern-web-guidance 用到的指南：forms、validate-input-after-interaction、accessible-error-announcement、
+  autofill-sign-up-form、typography、form-factor-adaptation、color。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>青桐社区游泳馆 · 暑期少儿班报名</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #eef4f5; --surface: #fff; --line: #767676; --soft-line: #cfdadc;
+    --ink: #13262b; --ink-2: #4a5d61;
+    --accent: #0b6e79; --accent-soft: #e2f1f2;
+    --error: #b3261e;
+    --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.6 var(--font); }
+  input, select, textarea, button { font: inherit; font-size: max(1rem, 1em); color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  header { background: var(--accent); color: #fff; padding: 1.5rem 1rem 3.5rem; }
+  header .wrap, main { max-inline-size: 40rem; margin-inline: auto; }
+  header h1 { margin: 0; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.125rem); line-height: 1.25; text-wrap: balance; }
+  header p { margin: .5rem 0 0; opacity: .92; }
+  main { padding: 0 1rem 3rem; margin-top: -2.25rem; }
+
+  form { display: grid; gap: 1.25rem; }
+  .card { background: var(--surface); border-radius: 1rem; padding: 1.25rem; border: 1px solid var(--soft-line); }
+  fieldset.card { margin: 0; min-inline-size: 0; }
+  legend { font-size: 1.125rem; font-weight: 700; padding: 0; float: left; inline-size: 100%; margin-bottom: .25rem; }
+  legend + * { clear: both; }
+  .field { display: grid; gap: .25rem; margin-top: 1rem; }
+  .field > label, .group-label { font-weight: 600; }
+  .req { color: var(--error); font-weight: 400; margin-inline-start: .25rem; }
+  .opt { color: var(--ink-2); font-weight: 400; margin-inline-start: .25rem; }
+  .hint { color: var(--ink-2); font-size: .875rem; margin: 0; }
+  input[type=text], input[type=tel], input[type=date], input[type=email] {
+    inline-size: 100%; min-block-size: 3rem; padding: .5rem .75rem; border: 1px solid var(--line); border-radius: .5rem; background: #fff; }
+  .text-in:user-invalid, .text-in.touched:invalid { border-color: var(--error); box-shadow: inset 4px 0 0 var(--error); }
+  .error-msg { display: none; color: var(--error); font-size: .875rem; margin: 0; }
+  .error-msg::before { content: "⚠ "; }
+  input:user-invalid ~ .error-msg, .group[data-invalid] .error-msg { display: block; }
+
+  /* 班次：一个选项就是一整块可点的区域，名额用文字写清，不只靠颜色 */
+  .sessions { display: grid; gap: .625rem; margin-top: .75rem; }
+  .session { display: grid; grid-template-columns: auto 1fr auto; gap: .25rem .75rem; align-items: center; min-block-size: 3rem; padding: .75rem 1rem; border: 1px solid var(--soft-line); border-radius: .75rem; cursor: pointer; }
+  .session:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .session:has(input:disabled) { cursor: not-allowed; color: var(--ink-2); background: #f6f8f8; }
+  .session input { inline-size: 1.25rem; block-size: 1.25rem; accent-color: var(--accent); margin: 0; }
+  .session .when { font-weight: 600; }
+  .session .left { font-size: .875rem; white-space: nowrap; }
+  .session .left.few { color: var(--error); font-weight: 600; }
+  .choices { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+  .choice { display: flex; align-items: center; gap: .5rem; min-block-size: 3rem; padding: .25rem 1rem; border: 1px solid var(--soft-line); border-radius: 999px; cursor: pointer; }
+  .choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .choice input { accent-color: var(--accent); inline-size: 1.125rem; block-size: 1.125rem; margin: 0; }
+  .agree { display: flex; gap: .75rem; align-items: flex-start; min-block-size: 3rem; padding-block: .5rem; cursor: pointer; }
+  .agree input { inline-size: 1.25rem; block-size: 1.25rem; margin-top: .2rem; accent-color: var(--accent); flex: none; }
+
+  .summary-box { position: sticky; bottom: 0; background: var(--surface); border-top: 1px solid var(--soft-line); border-radius: 1rem 1rem 0 0; padding: 1rem 1.25rem; display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; box-shadow: 0 -0.5rem 1.5rem rgb(19 38 43 / .08); }
+  .summary-box { flex-wrap: nowrap; }
+  .summary-box .picked { flex: 1; min-inline-size: 0; }
+  #picked-text { font-size: .875rem; color: var(--ink-2); }
+  .summary-box button { flex: none; }
+  .summary-box .fee { font-size: 1.375rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  button[type=submit] { min-block-size: 3rem; padding: .5rem 1.5rem; border: 0; border-radius: .75rem; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; }
+  button[type=submit]:hover { background: #095b64; }
+  button[type=submit]:disabled { background: #7a9599; cursor: progress; }
+
+  .error-summary { border: 2px solid var(--error); border-radius: 1rem; padding: 1rem 1.25rem; background: #fff; }
+  .error-summary h2 { margin: 0 0 .5rem; font-size: 1.125rem; color: var(--error); }
+  .error-summary ul { margin: 0; padding-inline-start: 1.25rem; }
+  .error-summary a { color: var(--ink); }
+  .done { background: var(--surface); border-radius: 1rem; padding: 1.5rem 1.25rem; border: 1px solid var(--soft-line); }
+  .done h2 { margin-top: 0; }
+  .nowrap { white-space: nowrap; }
+  .sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (forced-colors: active) {
+    .session:has(input:checked), .choice:has(input:checked) { outline: 3px solid Highlight; }
+    .text-in:user-invalid, .text-in.touched:invalid { border: 2px solid CanvasText; }
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>暑期少儿游泳班报名</h1>
+  <p>青桐社区游泳馆 · 6 至 12 岁 · <span class="nowrap">每期 10 节课，800 元</span></p>
+</div></header>
+
+<main>
+  <div class="error-summary" id="errors" tabindex="-1" hidden>
+    <h2>还有 <span id="err-count"></span> 处要改</h2>
+    <ul id="err-list"></ul>
+  </div>
+
+  <form id="signup" action="/signup" method="post" novalidate aria-labelledby="form-title">
+    <h2 id="form-title" class="sr-only">报名表</h2>
+
+    <fieldset class="card group" id="g-session" data-error="session-error">
+      <legend>1. 选班次<span class="req">必选</span></legend>
+      <p class="hint">名额按报名先后确认，满了的班次不能选。</p>
+      <div class="sessions" id="sessions"></div>
+      <p class="error-msg" id="session-error">请选一个班次。</p>
+    </fieldset>
+
+    <fieldset class="card">
+      <legend>2. 孩子的情况</legend>
+      <div class="field">
+        <label for="child">孩子姓名<span class="req">必填</span></label>
+        <input class="text-in" type="text" id="child" name="child" required autocomplete="off" data-error="child-error" maxlength="20">
+        <p class="error-msg" id="child-error">请填写孩子的姓名。</p>
+      </div>
+      <div class="field">
+        <label for="birth">出生日期<span class="req">必填</span></label>
+        <p class="hint" id="birth-hint">本期只收 2014 年 9 月到 2020 年 8 月出生的孩子（6 至 12 岁）。</p>
+        <input class="text-in" type="date" id="birth" name="birth" required min="2014-09-01" max="2020-08-31" aria-describedby="birth-hint" data-error="birth-error">
+        <p class="error-msg" id="birth-error">出生日期不在 6 至 12 岁的范围内，或没有填写。</p>
+      </div>
+      <div class="field group" id="g-level" data-error="level-error">
+        <span class="group-label" id="level-label">现在会游到什么程度<span class="req">必选</span></span>
+        <div class="choices" role="radiogroup" aria-labelledby="level-label">
+          <label class="choice"><input type="radio" name="level" value="0" required>还不会下水</label>
+          <label class="choice"><input type="radio" name="level" value="1">能在水里漂起来</label>
+          <label class="choice"><input type="radio" name="level" value="2">能游 25 米</label>
+        </div>
+        <p class="hint">用来分组，不影响报名。</p>
+        <p class="error-msg" id="level-error">请选一项，方便教练分组。</p>
+      </div>
+    </fieldset>
+
+    <fieldset class="card">
+      <legend>3. 家长联系方式</legend>
+      <div class="field">
+        <label for="parent">家长姓名<span class="req">必填</span></label>
+        <input class="text-in" type="text" id="parent" name="parent" required autocomplete="name" enterkeyhint="next" data-error="parent-error">
+        <p class="error-msg" id="parent-error">请填写家长姓名。</p>
+      </div>
+      <div class="field">
+        <label for="tel">手机号<span class="req">必填</span></label>
+        <p class="hint" id="tel-hint">开课前一天会发短信提醒，11 位，不用加 +86。</p>
+        <input class="text-in" type="tel" id="tel" name="tel" required autocomplete="tel-national" inputmode="tel" pattern="1[3-9]\d{9}" maxlength="11" enterkeyhint="next"
+          autocorrect="off" spellcheck="false" aria-describedby="tel-hint" data-error="tel-error">
+        <p class="error-msg" id="tel-error">手机号要 11 位，以 1 开头。</p>
+      </div>
+      <div class="field">
+        <label for="tel2">紧急联系电话<span class="opt">选填</span></label>
+        <p class="hint" id="tel2-hint">上课时联系不上您，就打这个号码。</p>
+        <input class="text-in" type="tel" id="tel2" name="tel2" autocomplete="off" inputmode="tel" pattern="1[3-9]\d{9}|0\d{2,3}-?\d{7,8}" enterkeyhint="done" aria-describedby="tel2-hint" data-error="tel2-error">
+        <p class="error-msg" id="tel2-error">号码格式不对：手机 11 位，座机带区号。</p>
+      </div>
+      <div class="group" id="g-agree" data-error="agree-error">
+        <label class="agree"><input type="checkbox" id="agree" name="agree" required>
+          <span>孩子没有心脏病、癫痫等不宜游泳的情况；上课期间由家长按时接送。</span></label>
+        <p class="error-msg" id="agree-error">需要确认这一条才能报名。</p>
+      </div>
+    </fieldset>
+
+    <div class="summary-box">
+      <div class="picked"><div id="picked-text">还没选班次</div><div class="fee">800 元</div></div>
+      <button type="submit" id="submit">提交报名</button>
+    </div>
+  </form>
+
+  <section class="done" id="done" role="status" hidden></section>
+</main>
+<div aria-live="polite" class="sr-only" id="live"></div>
+
+<script>
+const SESSIONS = [
+  { id: 's1', when: '7 月 6 日–17 日 · 上午 9:00', left: 3 },
+  { id: 's2', when: '7 月 6 日–17 日 · 下午 4:00', left: 0 },
+  { id: 's3', when: '7 月 20 日–31 日 · 上午 9:00', left: 11 },
+  { id: 's4', when: '8 月 3 日–14 日 · 下午 4:00', left: 7 },
+];
+const $ = (s) => document.querySelector(s);
+$('#sessions').innerHTML = SESSIONS.map((s) => `
+  <label class="session"><input type="radio" name="session" value="${s.id}" required ${s.left ? '' : 'disabled'}>
+    <span class="when">${s.when.split(" · ")[0]} · <span class="nowrap">${s.when.split(" · ")[1]}</span></span>
+    <span class="left ${s.left && s.left <= 3 ? 'few' : ''}">${s.left ? '剩 ' + s.left + ' 个名额' : '已满'}</span></label>`).join('');
+
+const form = $('#signup');
+// 让 aria-invalid 和 aria-describedby 跟着 :user-invalid 走；单选和勾选按组判断
+const linkError = (el, errorId, shown) => {
+  const ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter((id) => id && id !== errorId);
+  if (shown) ids.push(errorId);
+  ids.length ? el.setAttribute('aria-describedby', ids.join(' ')) : el.removeAttribute('aria-describedby');
+};
+const groupOf = (el) => el.closest('.group[data-error]');
+function sync(el, announce = false) {
+  const g = groupOf(el);
+  if (g && (el.type === 'radio' || el.type === 'checkbox')) {
+    const inputs = [...g.querySelectorAll('input')];
+    const bad = inputs.some((i) => !i.validity.valid) && g.dataset.touched;
+    bad ? g.setAttribute('data-invalid', '') : g.removeAttribute('data-invalid');
+    inputs.forEach((i) => { i.setAttribute('aria-invalid', String(!!bad)); linkError(i, g.dataset.error, bad); });
+    if (bad && announce) say(document.getElementById(g.dataset.error).textContent);
+    return;
+  }
+  const bad = el.matches(':user-invalid') || (el.classList.contains('touched') && !el.validity.valid);
+  const was = el.getAttribute('aria-invalid') === 'true';
+  el.setAttribute('aria-invalid', String(bad));
+  linkError(el, el.dataset.error, bad);
+  if (bad && !was && announce) say(document.getElementById(el.dataset.error).textContent);
+}
+let sayTimer;
+function say(text) { clearTimeout(sayTimer); sayTimer = setTimeout(() => { $('#live').textContent = ''; setTimeout(() => ($('#live').textContent = text), 50); }, 300); }
+for (const el of form.querySelectorAll('input')) {
+  el.setAttribute('aria-invalid', 'false');
+  el.addEventListener('blur', () => sync(el, true));
+  el.addEventListener('change', () => { const g = groupOf(el); if (g) g.dataset.touched = '1'; sync(el, true); });
+  el.addEventListener('input', () => { if (el.getAttribute('aria-invalid') === 'true') sync(el); });
+}
+form.addEventListener('change', (e) => {
+  if (e.target.name === 'session') {
+    const s = SESSIONS.find((x) => x.id === e.target.value);
+    $('#picked-text').textContent = '已选：' + s.when;
+  }
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  form.querySelectorAll('.group').forEach((g) => (g.dataset.touched = '1'));
+  const fields = [...form.querySelectorAll('input')];
+  // :user-invalid 只在交互后生效；提交时没碰过的空字段也要按出错显示
+  fields.forEach((el) => { if (!groupOf(el)) el.classList.add('touched'); });
+  const problems = [];
+  const seen = new Set();
+  for (const el of fields) {
+    el.dispatchEvent(new Event('blur'));
+    if (el.validity.valid) continue;
+    const g = groupOf(el);
+    const key = g ? g.id : el.id;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    problems.push({ target: g ? g.querySelector('input:not(:disabled)') : el, text: document.getElementById(g ? g.dataset.error : el.dataset.error).textContent });
+  }
+  const box = $('#errors');
+  if (problems.length) {
+    $('#err-count').textContent = problems.length;
+    $('#err-list').innerHTML = problems.map((p, i) => `<li><a href="#${p.target.id || ''}" data-i="${i}">${p.text}</a></li>`).join('');
+    box.hidden = false;
+    box.querySelectorAll('a').forEach((a, i) => a.addEventListener('click', (ev) => { ev.preventDefault(); problems[i].target.focus(); }));
+    box.focus();
+    return;
+  }
+  box.hidden = true;
+  $('#submit').disabled = true;
+  $('#submit').textContent = '正在提交…';
+  setTimeout(() => {
+    const s = SESSIONS.find((x) => x.id === form.session.value);
+    form.hidden = true;
+    const done = $('#done');
+    done.hidden = false;
+    done.innerHTML = `<h2>报名已提交</h2><p>${form.child.value} · ${s.when}</p><p>工作人员会在两个工作日内打电话到 ${form.tel.value.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')} 确认，确认后再交费。</p>`;
+    window.scrollTo({ top: 0 });
+  }, 600);
+});
+</script>
+<style>
+  /* 提交时没碰过的空字段，也按出错显示（:user-invalid 只认交互过的） */
+  input.touched:invalid ~ .error-msg { display: block; }
+</style>
+</body>
+</html>

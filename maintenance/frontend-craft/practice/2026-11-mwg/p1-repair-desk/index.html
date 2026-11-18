@@ -1,0 +1,331 @@
+<!doctype html>
+<!--
+  练习页 1：梧桐里小区物业 · 报修派单台（调度员在办公室电脑上用，早上集中派单，白天跟进）
+  frontend-craft：工作台类。最大的字给房号（认人认地方靠它）；强调色只给“紧急”；左队列右详情。
+  modern-web-guidance 用到的指南：dialog、declarative-dialog-popover-control、viewport-aware-dropdowns、
+  persistent-toast-notifications、typography、color、natural-interactions、motion。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>梧桐里物业 · 报修派单</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f4f2ee; --surface: #fffdf9; --sunk: #ebe7e0; --line: #d9d3c9;
+    --ink: #22201c; --ink-2: #5e584f; --ink-3: #6f685e;
+    --accent: #1f5f8b; --accent-ink: #fff;
+    --urgent: #b3261e; --urgent-bg: #fbe9e7;
+    --ok: #2e6b3a;
+    --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.6 var(--font); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem; padding: .75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .bar h1 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .bar .meta { color: var(--ink-2); }
+  .bar .spacer { flex: 1; }
+  .counts { display: flex; gap: 1rem; color: var(--ink-2); }
+  .counts b { color: var(--ink); font-size: 1.125rem; }
+  .counts .urgent b { color: var(--urgent); }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(22rem, 28rem); gap: 1.25rem; padding: 1.25rem 1.5rem 2rem; max-width: 90rem; margin: 0 auto; }
+  @media (max-width: 56rem) { main { grid-template-columns: minmax(0, 1fr); padding: 1rem; } aside.detail { position: static; } }
+  @media (max-width: 40rem) {
+    .row { grid-template-columns: minmax(0, 1fr) auto; }
+    .row > div:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+    .bar { padding: .75rem 1rem; }
+  }
+
+  .queue h2 { font-size: .9375rem; color: var(--ink-2); font-weight: 600; margin: 1.25rem 0 .5rem; display: flex; gap: .5rem; align-items: baseline; }
+  .queue h2:first-child { margin-top: 0; }
+  .queue h2 span { font-weight: 400; }
+  .list { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: .75rem; }
+  .row { display: grid; grid-template-columns: 6.5rem 1fr auto; gap: .25rem 1rem; align-items: center; padding: .75rem 1rem; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; }
+  .row[aria-current="true"] { background: #e7eef4; box-shadow: inset 4px 0 0 var(--accent); }
+  .pick { all: unset; display: flex; align-items: center; min-block-size: 2.75rem; min-inline-size: 0; cursor: pointer; border-radius: .25rem; }
+  .room { font-size: 1.375rem; font-weight: 600; letter-spacing: .01em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .pick:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+  .what { font-weight: 600; }
+  .sub { color: var(--ink-2); font-size: .875rem; }
+  .tag { display: inline-block; font-size: .8125rem; padding: .0625rem .5rem; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
+  .tag.urgent { color: var(--urgent); background: var(--urgent-bg); border-color: #e4b4ae; font-weight: 600; }
+  .actions { display: flex; gap: .5rem; align-items: center; }
+  .btn { min-block-size: 2.5rem; padding: .375rem .875rem; border-radius: .5rem; border: 1px solid var(--line); background: var(--surface); }
+  .btn:hover { background: var(--sunk); }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover { background: #184d72; }
+  .btn.danger { color: var(--urgent); border-color: #e4b4ae; }
+  .more { min-inline-size: 2.5rem; padding-inline: .5rem; }
+
+  /* 行内“更多”：按钮组放在 popover 里，用锚点定位贴着按钮，放不下就翻到另一侧 */
+  .panel { margin: 0; padding: .375rem; border: 1px solid var(--line); border-radius: .625rem; background: var(--surface); box-shadow: 0 .5rem 1.5rem rgb(0 0 0 / .14);
+    position-area: block-end span-inline-start; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline; inset: auto; margin-block: .25rem; }
+  .panel button { display: block; inline-size: 100%; text-align: start; min-block-size: 2.5rem; padding: .375rem .75rem; border: 0; border-radius: .375rem; background: transparent; }
+  .panel button:hover { background: var(--sunk); }
+  .panel .danger { color: var(--urgent); }
+
+  aside.detail { background: var(--surface); border: 1px solid var(--line); border-radius: .75rem; padding: 1.25rem; align-self: start; position: sticky; top: 1rem; }
+  .detail .room { font-size: 2rem; }
+  .detail h3 { margin: 1.25rem 0 .5rem; font-size: .9375rem; color: var(--ink-2); }
+  .detail p { margin: .25rem 0; }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: .25rem 1rem; margin: .75rem 0 0; }
+  .facts dt { color: var(--ink-2); }
+  .facts dd { margin: 0; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  .workers { display: grid; gap: .5rem; }
+  .worker { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: center; padding: .5rem .75rem; border: 1px solid var(--line); border-radius: .5rem; cursor: pointer; }
+  .worker:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: #f0f5f9; }
+  .worker input { inline-size: 1.125rem; block-size: 1.125rem; accent-color: var(--accent); }
+  .load { color: var(--ink-2); font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .assign-row { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+  .log { list-style: none; margin: 0; padding: 0; color: var(--ink-2); font-size: .875rem; }
+  .log li { padding: .25rem 0; border-top: 1px dashed var(--line); }
+  .log li:first-child { border-top: 0; }
+
+  /* 撤销确认：原生模态对话框 */
+  dialog { border: 1px solid var(--line); border-radius: .875rem; padding: 1.25rem 1.5rem; max-inline-size: min(30rem, calc(100vw - 2rem)); background: var(--surface); color: var(--ink); }
+  dialog:modal { overscroll-behavior: contain; }
+  dialog::backdrop { background: rgb(34 32 28 / .45); overflow: hidden; overscroll-behavior: contain; }
+  dialog h2 { margin: 0 0 .5rem; font-size: 1.25rem; }
+  dialog label { display: block; margin: 1rem 0 .375rem; font-weight: 600; }
+  dialog textarea { inline-size: 100%; min-block-size: 5rem; padding: .5rem .625rem; border: 1px solid var(--line); border-radius: .5rem; background: #fff; resize: vertical; }
+  dialog .hint { color: var(--ink-2); font-size: .875rem; margin: .375rem 0 0; }
+  dialog .buttons { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  /* 提示条：popover=manual，放在固定的通知区里 */
+  .toast-region { position: fixed; inset-inline-end: 1rem; inset-block-end: 1rem; display: grid; gap: .5rem; z-index: 10; }
+  .toast { position: static; margin: 0; display: flex; gap: .75rem; align-items: center; max-inline-size: min(26rem, calc(100vw - 2rem)); padding: .75rem .75rem .75rem 1rem;
+    border: 1px solid #2c2a26; border-radius: .625rem; background: #2c2a26; color: #fff;
+    opacity: 1; transition: opacity .2s, display .2s; transition-behavior: allow-discrete; }
+  .toast:not(:popover-open) { opacity: 0; }
+  @starting-style { .toast:popover-open { opacity: 0; } }
+  .toast button { min-block-size: 2.25rem; border: 1px solid #77716a; background: transparent; color: #fff; border-radius: .375rem; padding: .25rem .625rem; }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } .btn:active { transform: none; } }
+
+  /* 系统强制颜色：选中与紧急不能只靠底色 */
+  @media (forced-colors: active) {
+    .row[aria-current="true"] { outline: 3px solid Highlight; outline-offset: -3px; }
+    .tag.urgent { border: 2px solid CanvasText; }
+    .worker:has(input:checked) { outline: 2px solid Highlight; }
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>梧桐里物业 · 报修派单</h1>
+  <span class="meta" id="today"></span>
+  <span class="spacer"></span>
+  <div class="counts" aria-label="今日概况">
+    <span class="urgent">紧急待派 <b id="c-urgent">0</b></span>
+    <span>待派 <b id="c-wait">0</b></span>
+    <span>处理中 <b id="c-doing">0</b></span>
+  </div>
+</header>
+
+<main>
+  <section class="queue" aria-label="工单队列" id="queue"></section>
+  <aside class="detail" id="detail" aria-live="polite"></aside>
+</main>
+
+<dialog id="cancel-dialog" aria-labelledby="cancel-title" aria-describedby="cancel-desc">
+  <h2 id="cancel-title">撤销这张工单？</h2>
+  <p id="cancel-desc"></p>
+  <form method="dialog" id="cancel-form">
+    <label for="cancel-reason">撤销原因（业主回访时会看到）</label>
+    <textarea id="cancel-reason" name="reason" required placeholder="例如：业主已自行修好"></textarea>
+    <p class="hint">撤销后工单进入“已撤销”，七天内可以恢复。</p>
+    <div class="buttons">
+      <button class="btn danger" value="cancel-ticket">撤销工单</button>
+      <button class="btn" value="keep" formnovalidate autofocus>保留工单</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast-region" role="region" aria-label="通知" id="toasts"></div>
+<div class="sr-live" aria-live="polite" id="live" style="position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)"></div>
+
+<script>
+const WORKERS = [
+  { id: 'zhang', name: '张师傅', skill: '水电', load: 3 },
+  { id: 'li', name: '李师傅', skill: '门窗、木作', load: 1 },
+  { id: 'wang', name: '王师傅', skill: '电梯（联系维保公司）', load: 0 },
+  { id: 'zhao', name: '赵师傅', skill: '公共照明、弱电', load: 2 },
+];
+const tickets = [
+  { id: 'BX-1108', room: '7-2-1401', type: '水电', what: '卫生间水管爆裂，楼下渗水', time: '07:42', urgent: true, status: 'wait', phone: '尾号 6031' },
+  { id: 'BX-1109', room: '3-1-302', type: '电梯', what: '3 号楼 1 单元电梯困人后停运', time: '07:55', urgent: true, status: 'wait', phone: '尾号 2210' },
+  { id: 'BX-1105', room: '12-1-601', type: '门窗', what: '阳台推拉门脱轨，关不上', time: '昨天 19:20', urgent: false, status: 'wait', phone: '尾号 8846' },
+  { id: 'BX-1106', room: '5-3-202', type: '公共照明', what: '5 号楼 3 单元二楼楼道灯不亮', time: '昨天 21:03', urgent: false, status: 'wait', phone: '尾号 1197' },
+  { id: 'BX-1107', room: '9-2-1102', type: '水电', what: '厨房插座跳闸，一插电饭煲就断', time: '06:58', urgent: false, status: 'wait', phone: '尾号 5530' },
+  { id: 'BX-1101', room: '1-1-901', type: '水电', what: '马桶水箱一直流水', time: '昨天 10:15', urgent: false, status: 'doing', worker: 'zhang', phone: '尾号 4402' },
+  { id: 'BX-1102', room: '6-2-501', type: '门窗', what: '入户门锁芯卡住', time: '昨天 11:40', urgent: false, status: 'doing', worker: 'li', phone: '尾号 7714' },
+  { id: 'BX-1103', room: '2-1-1203', type: '公共照明', what: '电梯厅感应灯常亮', time: '昨天 14:02', urgent: false, status: 'doing', worker: 'zhao', phone: '尾号 3365' },
+  { id: 'BX-1098', room: '8-1-301', type: '水电', what: '热水器漏水（已换阀门）', time: '前天 16:30', urgent: false, status: 'visit', worker: 'zhang', phone: '尾号 9021' },
+  { id: 'BX-1099', room: '11-2-702', type: '门窗', what: '纱窗破损（已换纱网）', time: '前天 17:05', urgent: false, status: 'visit', worker: 'li', phone: '尾号 6688' },
+];
+tickets.forEach((t) => (t.log = [`${t.time} 业主报修`]));
+const GROUPS = [
+  ['wait-urgent', '紧急待派', (t) => t.status === 'wait' && t.urgent],
+  ['wait', '待派', (t) => t.status === 'wait' && !t.urgent],
+  ['doing', '处理中', (t) => t.status === 'doing'],
+  ['visit', '待回访', (t) => t.status === 'visit'],
+];
+let current = tickets[0].id;
+const $ = (s, r = document) => r.querySelector(s);
+const workerName = (id) => WORKERS.find((w) => w.id === id)?.name ?? '未派';
+
+function renderQueue() {
+  const q = $('#queue');
+  q.innerHTML = '';
+  for (const [key, label, test] of GROUPS) {
+    const items = tickets.filter(test);
+    if (!items.length) continue;
+    const h = document.createElement('h2');
+    h.innerHTML = `${label} <span>${items.length} 张</span>`;
+    const ul = document.createElement('ul');
+    ul.className = 'list';
+    for (const t of items) {
+      const li = document.createElement('li');
+      li.className = 'row';
+      li.setAttribute('aria-current', String(t.id === current));
+      li.innerHTML = `
+        <button class="pick room" type="button" data-pick="${t.id}" aria-label="${t.room}，${t.what}">${t.room}</button>
+        <div><div class="what">${t.what}</div>
+          <div class="sub">${t.id} · ${t.type} · ${t.time}${t.worker ? ' · ' + workerName(t.worker) : ''} ${t.urgent ? '<span class="tag urgent">紧急</span>' : ''}</div></div>
+        <div class="actions">
+          ${t.status === 'wait' ? `<button class="btn" type="button" data-pick="${t.id}">派单</button>` : ''}
+          <button class="btn more" type="button" popovertarget="m-${t.id}" aria-label="${t.room} 的更多操作">⋯</button>
+          <div class="panel" id="m-${t.id}" popover>
+            <button type="button" data-urgent="${t.id}">${t.urgent ? '取消紧急' : '标为紧急'}</button>
+            <button type="button" data-copy="${t.id}">复制业主电话后四位</button>
+            <button type="button" class="danger" data-cancel="${t.id}">撤销工单…</button>
+          </div>
+        </div>`;
+      ul.append(li);
+    }
+    q.append(h, ul);
+  }
+  $('#c-urgent').textContent = tickets.filter((t) => t.status === 'wait' && t.urgent).length;
+  $('#c-wait').textContent = tickets.filter((t) => t.status === 'wait' && !t.urgent).length;
+  $('#c-doing').textContent = tickets.filter((t) => t.status === 'doing').length;
+}
+
+function renderDetail() {
+  const t = tickets.find((x) => x.id === current);
+  const d = $('#detail');
+  if (!t) { d.innerHTML = '<p class="sub">从左边选一张工单。</p>'; return; }
+  const statusText = { wait: '待派单', doing: '处理中', visit: '待回访', cancelled: '已撤销' }[t.status];
+  d.innerHTML = `
+    <div class="room">${t.room}</div>
+    <p class="what">${t.what} ${t.urgent ? '<span class="tag urgent">紧急</span>' : ''}</p>
+    <dl class="facts"><dt>工单</dt><dd>${t.id}</dd><dt>类别</dt><dd>${t.type}</dd><dt>报修</dt><dd>${t.time}，${t.phone}</dd>
+      <dt>状态</dt><dd>${statusText}${t.worker ? '，' + workerName(t.worker) : ''}</dd></dl>
+    ${t.status === 'wait' || t.status === 'doing' ? `
+    <h3 id="assign-title">${t.status === 'wait' ? '派给' : '改派给'}</h3>
+    <form id="assign">
+      <fieldset aria-labelledby="assign-title"><div class="workers">
+        ${WORKERS.map((w) => `<label class="worker"><input type="radio" name="w" value="${w.id}" ${w.id === (t.worker ?? suggest(t)) ? 'checked' : ''}>
+          <span><b>${w.name}</b><br><span class="sub">${w.skill}</span></span><span class="load">手上 ${w.load} 单</span></label>`).join('')}
+      </div></fieldset>
+      <div class="assign-row"><button class="btn primary" type="submit">${t.status === 'wait' ? '派单' : '改派'}</button></div>
+    </form>` : ''}
+    <h3>记录</h3><ul class="log">${t.log.map((l) => `<li>${l}</li>`).join('')}</ul>`;
+  $('#assign')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const w = new FormData(e.target).get('w');
+    const prev = t.worker;
+    if (prev) WORKERS.find((x) => x.id === prev).load--;
+    WORKERS.find((x) => x.id === w).load++;
+    t.worker = w; t.status = 'doing';
+    t.log.push(`${clock()} ${prev ? '改派' : '派给'} ${workerName(w)}`);
+    const next = tickets.find((x) => x.status === 'wait');
+    renderQueue();
+    current = next ? next.id : t.id;
+    renderDetail();
+    toast(`${t.room} 已派给 ${workerName(w)}。可在“处理中”里改派。`);
+    $(`[data-pick="${current}"]`)?.focus();
+  });
+}
+const suggest = (t) => (t.type === '水电' ? 'zhang' : t.type === '门窗' ? 'li' : t.type === '电梯' ? 'wang' : 'zhao');
+const clock = () => new Date().toTimeString().slice(0, 5);
+
+// 提示条：对话框打开时先不出，关掉再出；文字同时写进页面状态（工单记录），不只靠提示条
+const pending = [];
+function toast(text) {
+  if ($('#cancel-dialog').open) { pending.push(text); return; }
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.popover = 'manual';
+  el.id = 't' + Date.now();
+  el.innerHTML = `<span>${text}</span><button type="button" popovertarget="${el.id}" popovertargetaction="hide">关闭</button>`;
+  $('#toasts').append(el);
+  el.showPopover();
+  if ('ariaNotify' in document) document.ariaNotify(text);
+  else { $('#live').textContent = ''; setTimeout(() => ($('#live').textContent = text), 50); }
+  const timer = setTimeout(() => close(el), 6000);
+  el.addEventListener('toggle', (e) => { if (e.newState === 'closed') { clearTimeout(timer); setTimeout(() => el.remove(), 250); } });
+}
+function close(el) {
+  if (el.contains(document.activeElement)) {
+    const others = [...$('#toasts').children].filter((x) => x !== el);
+    (others.at(-1)?.querySelector('button') ?? $(`[data-pick="${current}"]`))?.focus();
+  }
+  if (el.matches(':popover-open')) el.hidePopover();
+}
+
+const dlg = $('#cancel-dialog');
+let cancelTarget = null;
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.pick) {
+    current = b.dataset.pick; renderQueue(); renderDetail();
+    if (matchMedia('(max-width: 56rem)').matches && !b.classList.contains('pick')) $('#detail').scrollIntoView({ block: 'start' });
+    else $(`.pick[data-pick="${current}"]`).focus();
+  }
+  if (b.dataset.urgent) {
+    const t = tickets.find((x) => x.id === b.dataset.urgent);
+    t.urgent = !t.urgent; t.log.push(`${clock()} ${t.urgent ? '标为紧急' : '取消紧急'}`);
+    b.closest('[popover]').hidePopover(); renderQueue(); renderDetail(); toast(`${t.room} ${t.urgent ? '已标为紧急' : '已取消紧急'}。`);
+  }
+  if (b.dataset.copy) {
+    const t = tickets.find((x) => x.id === b.dataset.copy);
+    navigator.clipboard?.writeText(t.phone.replace('尾号 ', '')).catch(() => {});
+    b.closest('[popover]').hidePopover(); toast(`已复制 ${t.room} 业主电话后四位。`);
+  }
+  if (b.dataset.cancel) {
+    cancelTarget = tickets.find((x) => x.id === b.dataset.cancel);
+    b.closest('[popover]').hidePopover();
+    $('#cancel-desc').textContent = `${cancelTarget.room}：${cancelTarget.what}`;
+    $('#cancel-reason').value = '';
+    dlg.showModal();
+  }
+});
+dlg.addEventListener('close', () => {
+  const choice = dlg.returnValue; dlg.returnValue = '';
+  if (choice === 'cancel-ticket' && cancelTarget) {
+    cancelTarget.status = 'cancelled';
+    cancelTarget.log.push(`${clock()} 撤销：${$('#cancel-reason').value.trim()}`);
+    if (current === cancelTarget.id) current = tickets.find((x) => x.status === 'wait')?.id ?? current;
+    renderQueue(); renderDetail();
+    pending.push(`${cancelTarget.room} 已撤销，七天内可在“已撤销”里恢复。`);
+  }
+  const msgs = pending.splice(0); msgs.forEach(toast);
+});
+
+$('#today').textContent = '11 月 18 日 周三';
+renderQueue(); renderDetail();
+</script>
+</body>
+</html>

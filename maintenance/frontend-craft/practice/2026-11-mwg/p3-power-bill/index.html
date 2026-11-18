@@ -1,0 +1,198 @@
+<!doctype html>
+<!--
+  练习页 3：云溪电力（虚构）· 家庭电费月账单（住户手机上看为主，晚上常开深色模式；也会在电脑上对照往月）
+  frontend-craft：阅读 + 数据类。先回答“这个月多少钱、为什么比上月多”，再给可对照的往月明细。
+  modern-web-guidance 用到的指南：dark-mode、dark-mode-toggle、color（色阶用 color-mix，不直接调 oklch 明度）、
+  responsive-table、typography（clamp 字号）、motion。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try { document.querySelector('meta[name="color-scheme"]').content = localStorage.getItem('bill-scheme') ?? 'light dark'; } catch {}</script>
+<title>10 月电费账单 · 云溪电力</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    &:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+    &:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
+
+    --brand-l: #1d5c8f; --brand-d: #8cc4f0;
+    --bg: light-dark(#f5f6f3, #15181c);
+    --surface-l: #ffffff; --surface-d: #1e232a;
+    --surface: light-dark(var(--surface-l), var(--surface-d));
+    --ink: light-dark(#1b1f24, #e9ecef);
+    --ink-2: light-dark(#545b63, #a9b1ba);
+    --line: light-dark(#d7dbd8, #343b44);
+    --brand: light-dark(var(--brand-l), var(--brand-d));
+    /* 浅色的淡底和白混；深色的淡底要和卡片底色混，和黑混会比卡片还暗，看起来像个洞 */
+    --brand-soft: light-dark(color-mix(in oklab, var(--brand-l), var(--surface-l) 88%), color-mix(in oklab, var(--brand-d), var(--surface-d) 80%));
+    --peak: light-dark(#b8571b, #f0a36b);
+    --valley: light-dark(#2f7a52, #7fcfa2);
+    --up: light-dark(#a8321f, #ff9a85);
+    --track: light-dark(#e2e5e1, #2c323a);
+    accent-color: var(--brand);
+    --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.6 var(--font); }
+  :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  .wrap { max-inline-size: 60rem; margin-inline: auto; padding-inline: 1rem; }
+
+  header { padding-block: 1rem; display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+  header .who { flex: 1 1 14rem; color: var(--ink-2); font-size: .875rem; }
+  header .who b { color: var(--ink); font-size: 1rem; }
+
+  /* 主题：三态（跟随系统 / 浅色 / 深色），默认跟随系统 */
+  .sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .scheme { margin: 0; min-inline-size: 0; display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: .1875rem; background: var(--surface); }
+  .scheme label { position: relative; display: inline-flex; align-items: center; min-block-size: 2.5rem; padding-inline: .875rem; border-radius: 999px; cursor: pointer; font-size: .875rem; color: var(--ink-2); }
+  .scheme input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .scheme label:has(input:checked) { background: var(--brand-soft); color: var(--ink); font-weight: 600; }
+  .scheme label:has(input:focus-visible) { outline: 3px solid var(--brand); outline-offset: 1px; }
+
+  .hero { background: var(--surface); border: 1px solid var(--line); border-radius: 1.25rem; padding: 1.25rem 1.25rem 1.5rem; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .amount .label { color: var(--ink-2); }
+  .amount .num { font-size: clamp(2.25rem, 1.6rem + 3vw, 3.5rem); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .amount .num small { font-size: .45em; font-weight: 600; margin-inline-end: .1em; }
+  .amount .due { margin-top: .5rem; }
+  .why h2 { font-size: 1rem; margin: 0 0 .5rem; }
+  .why ul { margin: 0; padding-inline-start: 1.125rem; }
+  .why li + li { margin-top: .25rem; }
+  .up { color: var(--up); font-weight: 600; }
+
+  section.block { margin-top: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 1.25rem; padding: 1.25rem; }
+  section.block h2 { margin: 0 0 .75rem; font-size: 1.125rem; }
+  .tier { display: grid; gap: .5rem; }
+  .bar { position: relative; block-size: .875rem; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .bar span { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: inherit; background: var(--brand); }
+  .tier .marks { display: flex; justify-content: space-between; color: var(--ink-2); font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .split { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: .75rem; }
+  .dot { display: inline-block; inline-size: .75rem; block-size: .75rem; border-radius: 50%; vertical-align: -.05em; margin-inline-end: .375rem; }
+  .dot.peak { background: var(--peak); } .dot.valley { background: var(--valley); }
+
+  /* 往月明细：宽时是表格，表头和月份固定；窄时按容器宽度变成逐月卡片 */
+  .table-wrap { overflow: auto; max-block-size: min(32rem, 80vh); container-type: inline-size; border: 1px solid var(--line); border-radius: .75rem; }
+  table { border-collapse: separate; border-spacing: 0; inline-size: 100%; font-variant-numeric: tabular-nums; }
+  caption { text-align: start; padding: .75rem 1rem; color: var(--ink-2); font-size: .875rem; }
+  th, td { padding: .625rem 1rem; text-align: end; border-top: 1px solid var(--line); white-space: nowrap; }
+  thead th { position: sticky; inset-block-start: 0; z-index: 1; background: var(--surface); color: var(--ink-2); font-weight: 600; font-size: .875rem; border-top: 0; border-bottom: 1px solid var(--line); }
+  tbody th { position: sticky; inset-inline-start: 0; background: var(--surface); text-align: start; font-weight: 600; }
+  thead th:first-child { inset-inline-start: 0; z-index: 2; text-align: start; }
+  tr.current th, tr.current td { background: var(--brand-soft); }
+  td.up { color: var(--up); }
+  td.down { color: var(--valley); }
+  @container (width < 34rem) {
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { display: none; }
+    caption { display: block; }
+    tr { border-top: 1px solid var(--line); padding: .5rem 0; }
+    tbody th { position: static; border-top: 0; padding-block: .25rem; }
+    td { display: flex; justify-content: space-between; gap: 1rem; border-top: 0; padding-block: .125rem; }
+    td::before { content: attr(data-label); color: var(--ink-2); font-weight: 400; }
+  }
+
+  @media (max-width: 40rem) { .table-wrap { max-block-size: none; overflow: visible; } }
+  .nowrap { white-space: nowrap; }
+  footer { color: var(--ink-2); font-size: .875rem; padding-block: 1.5rem 2.5rem; }
+
+  @media (prefers-contrast: more) {
+    :root { --line: light-dark(#6b7177, #8c949c); --ink-2: light-dark(#3d434a, #c9cfd5); }
+    .bar { box-shadow: inset 0 0 0 1px var(--line); }
+  }
+  @media (forced-colors: active) {
+    .bar { border: 1px solid CanvasText; background: Canvas; }
+    .bar span { background: Highlight; }
+    .dot { forced-color-adjust: none; border: 1px solid CanvasText; }
+    .scheme label:has(input:checked) { outline: 2px solid Highlight; }
+    tr.current th { text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="who"><b>户号尾号 3307</b><br>梧桐路 18 号 3 栋 502 · 居民生活用电</div>
+    <fieldset class="scheme">
+      <legend class="sr-only">显示主题</legend>
+      <label><input type="radio" name="scheme" value="light dark">跟随系统</label>
+      <label><input type="radio" name="scheme" value="light">浅色</label>
+      <label><input type="radio" name="scheme" value="dark">深色</label>
+    </fieldset>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="amount">
+        <div class="label">2026 年 10 月电费</div>
+        <div class="num"><small>¥</small>238.46</div>
+        <div class="due">用电 412 千瓦时 · 请在 <b>11 月 25 日</b>前交费</div>
+      </div>
+      <div class="why">
+        <h2>比 9 月多了 <span class="up">36.10 元</span>，主要因为：</h2>
+        <ul>
+          <li>用电多了 63 千瓦时（9 月 349），多出来的大多在晚上 8 点到 10 点的峰时。</li>
+          <li>峰时用电占 58%，9 月是 49%；峰时每千瓦时比谷时贵 0.30 元。</li>
+          <li>今年累计还在第一档，单价没有变。</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="block" aria-labelledby="tier-title">
+      <h2 id="tier-title">今年的阶梯用量</h2>
+      <div class="tier">
+        <div>累计 <b>2,184</b> 千瓦时，离第二档还有 576 千瓦时（第二档每千瓦时贵 0.05 元）。</div>
+        <div class="bar" role="img" aria-label="第一档已用 79%"><span style="inline-size:79%"></span></div>
+        <div class="marks"><span>0</span><span>第一档 2,760</span></div>
+      </div>
+      <div class="split">
+        <span><i class="dot peak"></i>峰时（8:00–22:00）<span class="nowrap">239 千瓦时，150.57 元</span></span>
+        <span><i class="dot valley"></i>谷时（22:00–次日 8:00）<span class="nowrap">173 千瓦时，87.89 元</span></span>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="hist-title">
+      <h2 id="hist-title">近 12 个月</h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-labelledby="hist-cap">
+        <table>
+          <caption id="hist-cap">每月用电与电费；同比是和去年同月相比</caption>
+          <thead><tr><th scope="col">月份</th><th scope="col">用电（千瓦时）</th><th scope="col">其中峰时</th><th scope="col">电费（元）</th><th scope="col">同比</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>示例账单，数据为虚构。电价按居民阶梯与峰谷电价示例计算。</footer>
+</div>
+
+<script>
+const HIST = [
+  ['2026 年 10 月', 412, 239, 238.46, 12], ['2026 年 9 月', 349, 171, 202.36, -4], ['2026 年 8 月', 521, 318, 302.20, 9],
+  ['2026 年 7 月', 498, 301, 288.95, 6], ['2026 年 6 月', 302, 160, 175.18, -2], ['2026 年 5 月', 215, 109, 124.70, -8],
+  ['2026 年 4 月', 198, 101, 114.84, -3], ['2026 年 3 月', 236, 122, 136.88, 1], ['2026 年 2 月', 289, 150, 167.62, 5],
+  ['2026 年 1 月', 334, 176, 193.72, 3], ['2025 年 12 月', 318, 167, 184.44, -1], ['2025 年 11 月', 287, 148, 166.46, 2],
+];
+const cols = ['用电（千瓦时）', '其中峰时', '电费（元）', '同比'];
+document.getElementById('rows').innerHTML = HIST.map(([m, kwh, peak, fee, yoy], i) => `
+  <tr class="${i === 0 ? 'current' : ''}"><th scope="row">${m}${i === 0 ? '（本月）' : ''}</th>
+    <td data-label="${cols[0]}">${kwh}</td><td data-label="${cols[1]}">${peak}</td><td data-label="${cols[2]}">${fee.toFixed(2)}</td>
+    <td data-label="${cols[3]}" class="${yoy > 0 ? 'up' : 'down'}">${yoy > 0 ? '+' : '−'}${Math.abs(yoy)}%</td></tr>`).join('');
+
+const meta = document.querySelector('meta[name="color-scheme"]');
+for (const r of document.querySelectorAll('input[name=scheme]')) {
+  r.checked = r.value === meta.content;
+  r.addEventListener('change', () => {
+    meta.content = r.value;
+    try { r.value === 'light dark' ? localStorage.removeItem('bill-scheme') : localStorage.setItem('bill-scheme', r.value); } catch {}
+  });
+}
+addEventListener('storage', (e) => {
+  if (e.key !== 'bill-scheme') return;
+  meta.content = e.newValue ?? 'light dark';
+  document.querySelectorAll('input[name=scheme]').forEach((r) => (r.checked = r.value === meta.content));
+});
+</script>
+</body>
+</html>
