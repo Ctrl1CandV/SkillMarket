@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>工单 · 报修处理台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">报修处理台 <small>学生公寓</small></a>
+  <nav aria-label="页面">
+    <a href="index.html" aria-current="page">工单</a>
+    <a href="stats.html">近两周</a>
+  </nav>
+  <span class="now" id="now"></span>
+  <a class="btn primary" href="new.html">新建报修 <kbd>N</kbd></a>
+</header>
+
+<main>
+  <h1 class="sr">工单</h1>
+  <div class="tools">
+    <div class="switch" role="group" aria-label="看哪些工单">
+      <button type="button" data-view="todo" aria-pressed="true">待办<b id="n-todo"></b></button>
+      <button type="button" data-view="all" aria-pressed="false">全部<b id="n-all"></b></button>
+    </div>
+    <select class="field-inline" id="f-status" aria-label="状态" hidden></select>
+    <select class="field-inline" id="f-building" aria-label="楼栋"></select>
+    <select class="field-inline" id="f-category" aria-label="类别"></select>
+    <div class="search">
+      <input class="field-inline" id="f-text" type="search" placeholder="搜房间号、报修人、内容" aria-label="搜房间号、报修人或内容" autocomplete="off">
+    </div>
+  </div>
+  <div id="view"></div>
+  <p class="foot"><span>示例数据，人名和电话都是编的。</span><button class="linkbtn" type="button" id="reset">恢复成最初的示例</button></p>
+</main>
+
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-undo">撤销</button></div>
+
+<script src="../data/tickets.js"></script>
+<script src="../shared/core.js"></script>
+<script src="list.js"></script>
+</body>
+</html>

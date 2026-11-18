@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>近两周 · 报修处理台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">报修处理台 <small>学生公寓</small></a>
+  <nav aria-label="页面">
+    <a href="index.html">工单</a>
+    <a href="stats.html" aria-current="page">近两周</a>
+  </nav>
+  <span class="now" id="now"></span>
+  <a class="btn primary" href="new.html">新建报修 <kbd>N</kbd></a>
+</header>
+
+<main id="view"></main>
+
+<script src="../data/tickets.js"></script>
+<script src="../shared/core.js"></script>
+<script src="stats.js"></script>
+</body>
+</html>

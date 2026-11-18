@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>新建报修 · 报修处理台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">报修处理台 <small>学生公寓</small></a>
+  <nav aria-label="页面">
+    <a href="index.html">工单</a>
+    <a href="stats.html">近两周</a>
+  </nav>
+  <span class="now" id="now"></span>
+  <a class="btn primary" href="new.html" aria-current="page">新建报修</a>
+</header>
+
+<main>
+  <div class="new">
+    <form id="form" novalidate autocomplete="off">
+      <h1 class="page-title">新建报修<small>按电话里问的顺序填</small></h1>
+
+      <div class="q" id="q-building">
+        <span class="legend" id="l-building">哪栋楼</span>
+        <div class="opts" role="radiogroup" aria-labelledby="l-building" aria-describedby="e-building" id="buildings"></div>
+        <p class="err" id="e-building">选一下是哪栋楼。</p>
+      </div>
+
+      <div class="q" id="q-room">
+        <label for="room">房间号</label>
+        <p class="help" id="h-room">三位数，第一位是楼层，比如 512。</p>
+        <input class="short" id="room" name="room" type="text" inputmode="numeric" maxlength="3" autocomplete="off" aria-describedby="h-room e-room">
+        <p class="err" id="e-room">房间号是三位数字，第一位是 1 到 6。</p>
+      </div>
+
+      <div class="q" id="q-category">
+        <span class="legend" id="l-category">哪一类问题</span>
+        <div class="opts" role="radiogroup" aria-labelledby="l-category" aria-describedby="e-category" id="categories"></div>
+        <p class="err" id="e-category">选一下类别，好知道派给哪位师傅。</p>
+      </div>
+
+      <div class="q" id="q-description">
+        <label for="description">学生怎么说的</label>
+        <p class="help" id="h-description">照原话记一句。选了类别后，下面有常见的说法，点一下就填进去。</p>
+        <textarea id="description" name="description" rows="2" autocomplete="off" aria-describedby="h-description e-description"></textarea>
+        <p class="err" id="e-description">记一句是什么问题，师傅要看。</p>
+        <div class="chips" id="phrases"></div>
+        <label class="urgent-box" for="urgent">
+          <input type="checkbox" id="urgent" name="urgent">
+          <span>紧急，30 分钟内要派出去<small id="urgent-why">漏水、断电、有焦味、人进不去屋，都算紧急。</small></span>
+        </label>
+      </div>
+
+      <div class="q two">
+        <div id="q-reporter">
+          <label for="reporter">报修人</label>
+          <p class="help" id="h-reporter">学生的姓名。</p>
+          <input id="reporter" name="reporter" type="text" autocomplete="off" aria-describedby="h-reporter e-reporter">
+          <p class="err" id="e-reporter">记一下学生的姓名。</p>
+        </div>
+        <div id="q-phone">
+          <label for="phone">手机号</label>
+          <p class="help" id="h-phone">11 位，师傅上门前要联系。</p>
+          <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="off" aria-describedby="h-phone e-phone">
+          <p class="err" id="e-phone">手机号是 11 位数字。</p>
+        </div>
+      </div>
+
+      <div class="q" id="q-available">
+        <label for="available">什么时候方便上门</label>
+        <p class="help" id="h-available">可以不填。</p>
+        <input id="available" name="available" type="text" autocomplete="off" aria-describedby="h-available">
+        <div class="chips" id="times"></div>
+      </div>
+
+      <div class="submit">
+        <button class="btn primary big" type="submit">保存，去派单</button>
+        <a class="linkbtn" href="index.html">不录了</a>
+      </div>
+    </form>
+
+    <aside class="side" aria-live="polite" aria-label="这张单现在的样子">
+      <h2>这张单</h2>
+      <div id="slip"></div>
+    </aside>
+  </div>
+</main>
+
+<script src="../data/tickets.js"></script>
+<script src="../shared/core.js"></script>
+<script src="new.js"></script>
+</body>
+</html>

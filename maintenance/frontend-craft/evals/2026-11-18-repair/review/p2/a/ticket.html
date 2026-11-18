@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>工单详情 · 报修处理台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">报修处理台 <small>学生公寓</small></a>
+  <nav aria-label="页面">
+    <a href="index.html">工单</a>
+    <a href="stats.html">近两周</a>
+  </nav>
+  <span class="now" id="now"></span>
+  <a class="btn primary" href="new.html">新建报修 <kbd>N</kbd></a>
+</header>
+
+<main>
+  <a class="back" href="index.html">← 回到工单</a>
+  <div id="view"></div>
+</main>
+
+<dialog id="cancel-dialog" aria-labelledby="cancel-title">
+  <form method="dialog" id="cancel-form">
+    <h2 id="cancel-title">取消这张工单？</h2>
+    <p id="cancel-what"></p>
+    <label for="cancel-reason">取消的原因</label>
+    <input id="cancel-reason" type="text" autocomplete="off" placeholder="比如：学生说自己修好了">
+    <div class="actions">
+      <button class="btn quiet" type="submit" value="keep" autofocus>不取消</button>
+      <button class="btn danger" type="submit" value="cancel">取消工单</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-undo">撤销</button></div>
+
+<script src="../data/tickets.js"></script>
+<script src="../shared/core.js"></script>
+<script src="ticket.js"></script>
+</body>
+</html>

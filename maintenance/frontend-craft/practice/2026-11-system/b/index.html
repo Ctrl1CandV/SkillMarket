@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>报修处理台（方向 B）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">修</span><span>报修处理台<small>学生公寓</small></span></a>
+    <button class="new" type="button" disabled title="这一版只做了这一屏">＋ 新建报修</button>
+    <nav aria-label="工单分类" id="nav"></nav>
+    <p class="rail-foot"><span id="now"></span><br>示例数据<button type="button" id="reset">恢复示例</button></p>
+  </aside>
+
+  <section class="list" aria-label="工单列表">
+    <div class="list-tools">
+      <input id="f-text" type="search" placeholder="搜房间号、报修人、内容" aria-label="搜房间号、报修人或内容" autocomplete="off">
+      <div class="pair">
+        <select id="f-building" aria-label="楼栋"></select>
+        <select id="f-category" aria-label="类别"></select>
+      </div>
+      <p class="list-title" id="list-title"></p>
+    </div>
+    <ol id="rows"></ol>
+  </section>
+
+  <main class="pane" id="pane" aria-live="polite"></main>
+</div>
+
+<dialog id="cancel-dialog" aria-labelledby="cancel-title">
+  <form method="dialog">
+    <h2 id="cancel-title">取消这张工单？</h2>
+    <p id="cancel-what"></p>
+    <label for="cancel-reason">取消的原因</label>
+    <input id="cancel-reason" type="text" autocomplete="off">
+    <div class="actions">
+      <button class="b ghost" type="submit" value="keep" autofocus>不取消</button>
+      <button class="b danger" type="submit" value="cancel">取消工单</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-undo">撤销</button></div>
+
+<script src="../data/tickets.js"></script>
+<script src="../shared/core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
