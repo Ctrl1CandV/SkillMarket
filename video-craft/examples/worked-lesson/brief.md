@@ -23,10 +23,10 @@
 
 把新题交给能输出结构化数据的模型时，可直接供给[四字段 JSON Schema](variant.schema.json)，再给本题的要求。生成后先运行 `python build_voice.py --variant variant.json --print-script`。把 `weigh`、`found`、`reset`、`ask` 各读一次，对照这次想讲的四次称量。比如“轻币在盘外”在画面上应当对应“两盘一样高”。这一步能在重录前发现模型沿用了上一道题。
 
-在这个示例目录放入改好的 `variant.json`，以下两步会重新配音并在另一目录生成可渲染的工作副本。第一步使用名为晓晓的在线神经音色；也可将 `--edge-voice zh-CN-XiaoxiaoNeural` 换成 `--takes 录音目录` 使用自己的普通话录音。第二步的网页时间线与旁白均取自工作副本。
+在这个示例目录放入改好的 `variant.json`，以下两步会重新配音并在另一目录生成可渲染的工作副本。第一步用本地 VoxCPM 克隆 `teacher` 声音卡（安装见[人声](../../references/voice.md)）；也可换成 `--recordings 录音目录` 使用自己的普通话录音，或在没有显卡时用 `--edge-voice zh-CN-XiaoxiaoNeural` 走微软在线声音。第二步的网页时间线与旁白均取自工作副本。
 
 ```text
-python build_voice.py --variant variant.json --edge-voice zh-CN-XiaoxiaoNeural --out out/new-lesson
+python build_voice.py --variant variant.json --voice teacher --out out/new-lesson
 node ../../kit/render.mjs out/new-lesson/index.html video out/new-lesson/picture.mp4 --audio out/new-lesson/voice.m4a --mux out/new-lesson/film.mp4
 ```
 
@@ -52,4 +52,4 @@ node ../../kit/render.mjs out/new-lesson/index.html video out/new-lesson/picture
 node ../../kit/render.mjs index.html video out/picture.mp4 --audio voice.m4a --mux out/film.mp4
 ```
 
-本片使用微软 Edge 在线神经音色 `zh-CN-XiaoxiaoNeural`、语速 `-4%`，按每一整句的新录音重新安排镜头，没有拉长人声去填旧时间。重做配音可用自有录音或同一在线音色。先用 `python build_voice.py --print-script` 输出逐句台词。真人录音每句保存为与左列同名的 WAV，例如 `ask.wav`，再执行 `python build_voice.py --takes 录音目录`。使用在线音色时在 Python 环境安装 `edge-tts` 并准备 FFmpeg，执行 `python build_voice.py --edge-voice zh-CN-XiaoxiaoNeural`。这会向微软发送台词并生成分句 WAV。脚本按每句实际长度排时，练习后另留独立的静默段。模型可以从本片借“筛去一组 → 同法再判 → 换输入再练”的剪法，美术和题材可以重选。
+本片旁白由本地 VoxCPM1.5 克隆 `kit/voices/teacher` 声音卡生成，每句生成三遍，按转写、停顿和长度留下最好的一遍。镜头按每一句的实际长度重新安排，没有拉长人声去填旧时间。重做配音时，先用 `python build_voice.py --print-script` 输出逐句台词，再执行 `python build_voice.py --voice teacher`。用真人录音时，每句保存为与左列同名的 WAV（例如 `ask.wav`），再执行 `python build_voice.py --recordings 录音目录`。没有显卡时可用 `--edge-voice zh-CN-XiaoxiaoNeural`，这会把台词发给微软，声音也更平。脚本按每句实际长度排时，练习后另留独立的静默段。模型可以从本片借“筛去一组 → 同法再判 → 换输入再练”的剪法，美术和题材可以重选。

@@ -32,7 +32,7 @@ node capture.mjs out/spot.json
 
 第二条将三张状态图、控件位置和下载内容更新到工作副本的 `material/`。核对这一版应为 **19:10 灯光对位、19:30 音响联调、19:55 观众入场、20:10 正式开场**。具体结果可读 [proof.js](material/proof.js) 的 `exported`，随后画面直接从中取值。需要调整特写对象时，改新输入的 `copy.featureTask`（从零开始），再用同一文件重采。
 
-录好新台词并替换工作副本的 `voice/01.mp3`。若选择在线配音，准备 FFmpeg 和 Python 包 `edge-tts`，可在 PowerShell 运行 `./voices.ps1 -CasePath ./out/spot.json -Scratch ./out/recordings`，它把同一新文件的六句公开台词发给微软 Edge 在线神经音色云希，先保存分句 WAV，再更新包内 MP3。跨平台也可运行 `python ../../kit/narrate.py out/spot.json out/voice --voice zh-CN-YunxiNeural`，然后用 `--vo out/voice` 混音。时长变化影响下一镜时，调整新输入中的 `voice[].at` 与 `shots`，再运行 `node capture.mjs out/spot.json`。
+录好新台词并替换工作副本的 `voice/01.mp3`。也可以用本地 VoxCPM 重新生成：在 PowerShell 运行 `./voices.ps1 -CasePath ./out/spot.json -Scratch ./out/recordings`，它用 `promo` 声音卡生成六句，每句三遍取最好，先保存分句 WAV，再更新包内 MP3。跨平台可运行 `python ../../kit/narrate.py out/spot.json out/voice --voice promo --takes 3`，然后用 `--vo out/voice` 混音。没有显卡时加 `--engine edge --voice zh-CN-YunxiNeural` 改用微软在线声音。时长变化影响下一镜时，调整新输入中的 `voice[].at` 与 `shots`，再运行 `node capture.mjs out/spot.json`。
 
 在本示例目录运行，环境设置见[工具说明](../../references/kit.md)：
 
@@ -46,4 +46,4 @@ node ../../kit/render.mjs index.html video out/picture.mp4 --audio out/sound.wav
 - 换软件时，在 [capture.mjs](capture.mjs) 中换掉页面、选择器和导出断言。先留下真实的原始输入与输出，确认按钮触发了什么，再决定哪些界面区域需要放大。屏幕内的指针按脚本录到的控件坐标重演，画面使用三个真实状态截图。
 - 换传播场景时，从 [scene.js](scene.js) 的 `opening` 与 `brand` 动手。例如换成印务软件，就可以让同一张印样从有问题的打样走到成品。画面若要展示五行以上，重新取景并复查字号与画面底边。
 
-本例的六句旁白使用 `zh-CN-YunxiNeural` 整句合成，首尾留出辅音和气口，配乐和按钮声由 [score.js](score.js) 合成。看成片先试着读出音响的实际改动，再点开产品，用另一组数字独立复算一遍。
+本例的六句旁白由本地 VoxCPM1.5 克隆 `promo` 声音卡整句生成，首尾留出辅音和气口，配乐和按钮声由 [score.js](score.js) 合成。看成片先试着读出音响的实际改动，再点开产品，用另一组数字独立复算一遍。

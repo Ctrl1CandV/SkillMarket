@@ -1,7 +1,8 @@
 """Rebuild narration and picture cues together; Python stdlib + FFmpeg.
 
-Use --takes with recordings (one WAV per cue), or --edge-voice to render neural
-speech online. --print-script shows the words without accessing any service.
+Use --voice to render the lines locally with VoxCPM and a voice card (kit/voices), --recordings with
+recordings (one WAV per cue), or --edge-voice to render them online with Microsoft Edge voices.
+--print-script shows the words without accessing any service.
 """
 import argparse
 import json
@@ -77,18 +78,19 @@ def read_plan(variant=None):
     return example, practice, pause, script
 
 
-def build(takes, dest, variant, edge_voice=None, speech_rate="-4%"):
+def build(takes, dest, variant, voice=None, edge_voice=None, speech_rate="-4%"):
     example, practice, pause, script = read_plan(variant)
     dest.mkdir(parents=True, exist_ok=True)
-    rate = 24000
+    rate = 48000
     with tempfile.TemporaryDirectory() as work:
         temp = Path(work)
-        if edge_voice:
+        if voice or edge_voice:
             lines = temp / "lines.json"
             lines.write_text(json.dumps({k: v for k, v in script if v}, ensure_ascii=False), encoding="utf-8")
             generator = BASE.parent.parent / "kit" / "narrate.py"
-            subprocess.run([sys.executable, str(generator), str(lines), str(temp),
-                            "--voice", edge_voice, "--rate=" + speech_rate], check=True)
+            engine = (["--engine", "voxcpm", "--voice", voice, "--takes", "3"] if voice else
+                      ["--engine", "edge", "--voice", edge_voice, "--rate=" + speech_rate])
+            subprocess.run([sys.executable, str(generator), str(lines), str(temp)] + engine, check=True)
         source = takes or temp
         mix = bytearray()
         cues = []
@@ -114,7 +116,7 @@ def build(takes, dest, variant, edge_voice=None, speech_rate="-4%"):
             file.writeframes(mix)
         subprocess.run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", str(wav),
                         "-af", "loudnorm=I=-17:TP=-2:LRA=11", "-ar", "48000",
-                        "-c:a", "aac", "-b:a", "128k", str(dest / "voice.m4a")], check=True)
+                        "-c:a", "aac", "-b:a", "160k", str(dest / "voice.m4a")], check=True)
     timeline = dict(width=1280, height=720, fps=FPS, duration=cues[-1]["end"],
                     example=example, practice=practice, cues=cues)
     (dest / "timing.js").write_text("window.LESSON = " + json.dumps(timeline, indent=2, ensure_ascii=False) + ";\n", encoding="utf-8")
@@ -128,7 +130,9 @@ def build(takes, dest, variant, edge_voice=None, speech_rate="-4%"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     source = parser.add_mutually_exclusive_group()
-    source.add_argument("--takes", type=Path, help="directory of recordings, e.g. ask.wav")
+    source.add_argument("--voice", help="voice card for local VoxCPM speech, e.g. teacher")
+    source.add_argument("--recordings", type=Path,
+                        help="directory of your own recordings, one WAV per cue, e.g. ask.wav")
     source.add_argument("--edge-voice", help="send the lines to Edge neural TTS using this named voice")
     parser.add_argument("--rate", default="-4%", help="neural speech rate, e.g. --rate=-4%%")
     parser.add_argument("--print-script", action="store_true")
@@ -139,7 +143,8 @@ if __name__ == "__main__":
         for cue_id, sentence in read_plan(options.variant)[3]:
             if sentence:
                 print(cue_id, sentence)
-    elif options.takes or options.edge_voice:
-        build(options.takes, options.out, options.variant, options.edge_voice, options.rate)
+    elif options.voice or options.recordings or options.edge_voice:
+        build(options.recordings, options.out, options.variant, options.voice, options.edge_voice, options.rate)
     else:
-        parser.error("Give --takes DIR for local speech, or --edge-voice zh-CN-XiaoxiaoNeural for online speech.")
+        parser.error("Give --voice teacher for local speech, --recordings DIR for your own recordings, "
+                     "or --edge-voice zh-CN-XiaoxiaoNeural for online speech.")

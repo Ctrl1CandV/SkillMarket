@@ -2,7 +2,12 @@
 
 `kit/` 里有两类文件。
 
-- **浏览器里用的模块**：`kit.js` 提供缓动、弹簧、随机数、颜色、字体和注册函数；`sound.js` 负责合成音乐、音效和配音，测响度，编 Opus/WebM。
+- **浏览器里用的模块**：
+  - `kit.js`：缓动、弹簧、随机数、颜色、字体、注册函数，以及跟随录音的 `songAt`、`envAt`、`pulse`。
+  - `draw.js`：分层、噪声、光晕与 bloom、山脊剪影、视差相机、逐渐画出的线、暗角和颗粒。
+  - `shader.js`：把一段 GLSL 片元着色器变成一张可叠加的画布，画星云、极光、烟和液态光。
+  - `sound.js`：合成音乐、音效和配音，测响度，编 Opus/WebM。
+- **Python 工具**：`songmap.py` 给歌曲做地图，`shotlist.py` 给成片列镜头表并标出可疑剪辑，`narrate.py` 生成旁白。需要 Python 3.9+、NumPy 和 FFmpeg。
 - **Node 命令行工具**：渲染、检查、出音轨。它们通过 Playwright 驱动无头 Chromium 打开场景页，逐帧调用 `__seek(t)` 截图，再交给 ffmpeg 编码。
 - 图片、录屏或其他引擎的镜头已有文件时，可单独用 `cut.mjs` 做有声动态分镜或最终组装，只依赖 Node 与带 libx264 的 FFmpeg。格式和可复制的命令见[剪辑单](editing.md)。
 
@@ -22,6 +27,10 @@ npx playwright install chromium        # 或 chromium-headless-shell
 | `VC_NODE_MODULES` | 含 `node_modules/playwright-core` 的目录（默认依次找当前目录、kit 目录） |
 | `VC_CHROME` | Chromium 或 chrome-headless-shell 的可执行文件 |
 | `VC_FFMPEG` | ffmpeg 路径（默认用 PATH 里的） |
+| `VC_FFPROBE` | ffprobe 路径（默认取 ffmpeg 旁边的同名文件），供 `shotlist.py` 与 `mux_original.py` |
+| `VC_PYTHON` | doctor 检查的 Python（默认 `python`）；装了 VoxCPM 的环境另建时指向它 |
+| `VC_VOXCPM` | VoxCPM 模型目录或 Hugging Face id（默认 `openbmb/VoxCPM1.5`） |
+| `VC_WHISPER` | faster-whisper 模型目录或名字（默认 `large-v3-turbo`），供 `songmap.py --lyrics` 与 `narrate.py --takes` |
 
 有些沙箱需要额外设置 `LD_LIBRARY_PATH`（缺系统库时）和 `FONTCONFIG_FILE`（没有中文字体时）。`node kit/doctor.mjs` 会报告浏览器版本、WebGL 渲染器、WebCodecs 支持哪些编码、语音数量，以及 ffmpeg 有没有 VP9/H.264/AAC 编码器，并给出建议。
 
@@ -66,6 +75,30 @@ seek(0);
 | `hex, mixHex, rgba` | 颜色工具 |
 | `loadFonts(list)`、`FONT_STACK` | 预加载字体，失败时只警告；CSS 后备字体栈 |
 | `register({...})` | 注册 `window.__video` 和 `window.__seek` |
+| `songAt(map, t)` | 歌曲 t 秒处的拍、小节及相位，所在段落和段内进度，响度、低频、高频，低频重音 `kick`、高频 `snap`（取自 `accents`，约每小节一次），正在唱的那句 `line`。`map` 来自 `songmap.js` |
+| `envAt(curve, fps, t)`、`pulse(hits, t, decay, minStrength)` | 读逐帧曲线；最近一次击打后衰减的脉冲 |
+
+## draw.js
+
+[用代码画出完成的画面](drawing.md)讲什么时候用哪一个；[layers 示例](../examples/layers/scene.js)把它们都用上了。
+
+| 名称 | 用途 |
+|---|---|
+| `layer(w, h)` | 离屏画布：光层、人物层、缓存的静态背景 |
+| `noise(seed)` → `n(x, y)`、`n.fbm(x, y, oct)` | 0–1 的平滑噪声与分形和：雾、云、山脊、抖动 |
+| `bloom(ctx, src, {base, amount, radii})` | 把光层叠加两层模糊副本，让光像光 |
+| `glow(ctx, x, y, r, [r,g,b], alpha)` | 柔和的径向光 |
+| `ridge(seed, width, {base, amp, scale, steps})`、`fillRidge(ctx, ys, fill, {dx, bottom})` | 山脊、沙丘；`steps` 给出平顶，成为屋顶和城市 |
+| `view(ctx, cam, depth, fn)` | 对一层套相机 `{x, y, z, rot}`；depth 越小越远，相机动时产生视差 |
+| `strokeTo(ctx, pts, k)` | 按长度画出折线的前 k（0–1），返回笔尖位置 |
+| `finish(ctx, frame, {vignette, grain})` | 收尾的暗角与逐帧颗粒 |
+| `mix(a, b, k)`、`css(c, a)` | `[r,g,b]` 颜色混合与转成 CSS |
+
+## shader.js
+
+| 名称 | 用途 |
+|---|---|
+| `shader(w, h, frag, {scale, uniforms})` → `{canvas, draw(t, extra)}` | 全屏片元着色器。`frag` 里可直接用 `t`、`res`、输出 `o`，以及 `hash`、`noise`、`fbm`；`extra` 的每个键成为一个 `float` 或 `vecN` uniform（不要用 `t`、`res`、`o` 作键），只在部分帧出现的键列进 `uniforms`，缺席的帧为 0。`draw` 后把 `canvas` 用 `drawImage` 叠进主画布。`scale: 0.5` 适合柔和的画面。示例见[着色器层](drawing.md#着色器层) |
 
 ## sound.js
 
@@ -94,7 +127,9 @@ seek(0);
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
 | `audiocheck.mjs` | `media page out.png [--from a --to b] [--scene-offset s]` | 从成片解码，画频谱、包络和事件线 |
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
-| `narrate.py` | `cues.json voice-dir --voice zh-CN-XiaoxiaoNeural` | 从带 id 的整句文字合成旁白 WAV；需 Python、edge-tts、FFmpeg 和网络 |
+| `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；写出 `songmap.json/.js/.md/.png`，见 [MV](music-video.md) |
+| `shotlist.py` | `film.mp4 [--song songmap.json [--offset T0]] [--json out.json]` | 成片镜头表：长度分布、连续同长、只放大上一镜的切、黑场、静止段、切点离拍点多远 |
+| `narrate.py` | `cues.json voice-dir [--voice teacher] [--takes 3] [--engine voxcpm\|edge]` | 逐句旁白 WAV，全片同一个声音；本地 VoxCPM 优先，Edge 在线声音作后备，见[人声](voice.md) |
 | `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |
 | `mux_original.py` | `picture.mp4 song.m4a final.mp4` | 从完整母带生成 MV，检查时长；兼容的音频格式直接复制，需 FFmpeg 与 FFprobe |
 | `textcheck.mjs` | `page [--margin 80] [--sel '#caps .cap']` | 字幕边距与最小字号 |

@@ -62,7 +62,9 @@ def main():
         "当前目录是独立考核工作区，上一层的 video-craft 是本次快照。可在当前目录内制作、渲染与取帧。"
         "已有 Node、Python、FFmpeg 和 FFprobe；运行包使用 VC_CHROME 和 VC_NODE_MODULES 定位浏览器与 Playwright。"
         "原曲只供本地分析与合片；请使用本地工具处理媒体。模型工具上下文只带分析结果、原创画面与工程文本。"
-        "任务文件、检查结果与中间产物均放在当前目录。\n", encoding="utf-8")
+        "任务文件、检查结果与中间产物均放在当前目录。"
+        + ("命令行里的 python 已装 NumPy、Pillow 和 faster-whisper，VC_WHISPER 指向本地转写模型。"
+           if os.environ.get("VC_WHISPER") else "") + "\n", encoding="utf-8")
 
     cli = shutil.which("pi.cmd" if os.name == "nt" else "pi")
     if not cli:
