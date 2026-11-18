@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "example": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "string", "enum": ["左盘高", "右盘高", "两盘平"] }
+    },
+    "practice": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "string", "enum": ["左盘高", "右盘高", "两盘平"] }
+    },
+    "thinkingSeconds": { "type": "number", "exclusiveMinimum": 0 },
+    "ask": { "type": "string", "pattern": "\\{q_test\\}" }
+  },
+  "required": ["example", "practice", "thinkingSeconds", "ask"],
+  "additionalProperties": false
+}

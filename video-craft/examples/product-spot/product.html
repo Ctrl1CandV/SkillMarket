@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>倒场 · 演出倒排台本</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1e9d6;color:#231d24;font:16px/1.45 "Microsoft YaHei","PingFang SC",Arial,sans-serif}
+main{width:min(1120px,calc(100% - 56px));margin:0 auto;padding:26px 0 22px}.mast{display:flex;align-items:center;gap:14px;border-bottom:2px solid;padding-bottom:16px}
+.mark{width:38px;height:35px;background:#ff5435;clip-path:polygon(0 70%,100% 0,100% 29%,0 100%)}h1{font-size:34px;margin:0;letter-spacing:-2px}.mast small{margin-left:auto;color:#59504b;letter-spacing:1px}
+.panels{display:grid;grid-template-columns:1fr 1.17fr;gap:30px;margin-top:26px}h2{font-size:22px;margin:0 0 14px}.control{padding-right:5px}
+label,th,.small{font-size:15px;color:#514941}label{display:block}input,button{font:inherit}input{background:#fffaf0;color:#241d21;border:1px solid #afa698;border-radius:3px}
+#show{width:100%;font:bold 44px/1.1 Consolas,"Courier New",monospace;padding:5px 12px;margin:5px 0 14px;letter-spacing:1px}.task{display:flex;gap:8px;margin-top:7px;align-items:center}.task input:first-child{width:100%;min-width:0;padding:6px 8px}.task input[type=number]{width:66px;text-align:center;padding:6px 0}
+button{border:1px solid #776f63;border-radius:3px;cursor:pointer;color:#291f21;background:transparent;padding:8px 13px}button:focus-visible,input:focus-visible{outline:3px solid #b9422c;outline-offset:2px}.remove{padding:4px 10px}.actions{display:flex;gap:9px;margin-top:14px}.main-action{background:#262128;color:white;border-color:#262128}
+.sheet{background:#fffaf0;border-top:6px solid #e34f32;box-shadow:0 4px 0 #dfd5bd;padding:16px 23px 18px;align-self:start}.sheet header{display:flex;align-items:center;justify-content:space-between}.sheet h2{margin:0}.showtag{font-size:18px;font-weight:bold;color:#a63b25}.rule{height:1px;background:#d9d1be;margin:12px 0}
+table{width:100%;border-collapse:collapse;text-align:left}th{font-weight:normal}.clock{font:600 29px/1.5 Consolas,monospace;white-space:nowrap}.clock small{font:12px sans-serif}.mins{text-align:right}td{border-bottom:1px solid #e8dfce;font-size:19px}.end td{border:0}.end .clock,.end td:nth-child(2){color:#a63b25}
+#status{min-height:22px;margin:8px 0 0;color:#9d301f}.download{display:block;margin:10px 0 0 auto}footer{font-size:14px;color:#675c50;margin-top:20px}
+@media(max-width:720px){main{width:calc(100% - 28px)}.panels{grid-template-columns:1fr}.mast small{font-size:11px}.clock{font-size:25px}.task input[type=number]{width:55px}}
+</style>
+<main>
+<div class="mast"><i class="mark" aria-hidden="true"></i><h1>倒场</h1><span>演出倒排台本</span><small>BACKTIME ／ STAGE DESK</small></div>
+<div class="panels"><form class="control" id="form"><h2>这场怎么排？</h2>
+<label for="show">开场时间 · 24 小时制</label><input id="show" value="19:30" placeholder="19:30" required pattern="[0-2][0-9]:[0-5][0-9]" autocomplete="off">
+<div class="small">准备环节 · 按实际先后填写分钟数</div><div id="tasks"></div>
+<div class="actions"><button type="button" id="add">＋ 添加环节</button><button class="main-action" type="submit" id="rebuild">倒排台本 ↗</button></div><div id="status" role="status"></div></form>
+<section class="sheet"><header><h2>执行台本</h2><span id="showtag" class="showtag"></span></header><div class="rule"></div><table><thead><tr><th>开始</th><th>环节</th><th class="mins">时长</th></tr></thead><tbody id="result"></tbody></table><button class="download" id="download">↓ 下载文本台本</button></section></div>
+<footer>所有计算都在当前页面完成。修改环节后，点击“倒排台本”更新执行时间。</footer>
+</main>
+<script>
+const byId = id => document.getElementById(id);
+const defaultTasks = [['灯光对位',20],['音响联调',25],['观众入场',15]];
+let current;
+function makeTask(name = '', minutes = 10) {
+  const row = document.createElement('div');
+  row.className = 'task';
+  const nameInput = document.createElement('input');
+  nameInput.value = name; nameInput.required = true; nameInput.setAttribute('aria-label','环节名称');
+  const duration = document.createElement('input');
+  duration.type = 'number'; duration.min = '1'; duration.max = '1440'; duration.step = '1';
+  duration.value = minutes; duration.required = true; duration.setAttribute('aria-label','环节分钟数');
+  const remove = document.createElement('button');
+  remove.type = 'button'; remove.className = 'remove'; remove.textContent = '×'; remove.setAttribute('aria-label','移除环节');
+  remove.onclick = () => { row.remove(); dirty(); };
+  row.append(nameInput, duration, remove); byId('tasks').append(row);
+}
+function clock(total) {
+  const day = Math.floor(total / 1440);
+  const minute = total - day * 1440;
+  return { day: day === 0 ? '' : (day === -1 ? '前日' : '前' + (-day) + '日'), time: [Math.floor(minute/60),minute%60].map(x=>String(x).padStart(2,'0')).join(':') };
+}
+function recalculate() {
+  const value = byId('show').value;
+  const parts = value.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+  if (!parts) { byId('status').textContent = '请输入 00:00 至 23:59 之间的时间。'; return; }
+  const tasks = [...document.querySelectorAll('.task')].map(row=>({name:row.children[0].value.trim(),minutes:Number(row.children[1].value)}));
+  if (!tasks.length || tasks.some(item=>!item.name || !Number.isInteger(item.minutes) || item.minutes < 1 || item.minutes > 1440)) {
+    byId('status').textContent = '请至少填写一个有名称、时长为 1 至 1440 分钟的环节。'; return;
+  }
+  const end = Number(parts[1])*60+Number(parts[2]);
+  let start = end-tasks.reduce((sum,x)=>sum+x.minutes,0);
+  current = tasks.map(item=>{ const result={...item,...clock(start)}; start+=item.minutes; return result; });
+  current.push({name:'正式开场',minutes:0,...clock(end)});
+  byId('result').replaceChildren();
+  for (const item of current) {
+    const tr=document.createElement('tr'), time=document.createElement('td'), day=document.createElement('small');
+    time.className='clock'; time.textContent=item.time; day.textContent=item.day; time.append(day);
+    const name=document.createElement('td'), minutes=document.createElement('td');
+    name.textContent=item.name; minutes.className='mins'; minutes.textContent=item.minutes ? item.minutes+' 分' : '—';
+    if (!item.minutes) tr.className='end';
+    tr.append(time,name,minutes); byId('result').append(tr);
+  }
+  byId('status').textContent=''; byId('showtag').textContent=value+' 开场'; byId('download').disabled=false;
+}
+function dirty() { byId('download').disabled = true; byId('status').textContent='时间有改动，点击“倒排台本”更新。'; }
+byId('form').oninput = dirty;
+byId('form').onsubmit = event => { event.preventDefault(); recalculate(); };
+byId('add').onclick = ()=>{makeTask();dirty();};
+byId('download').onclick = ()=>{
+  const lines=['倒场 / 执行台本',...current.map(x=>[x.day+x.time,x.name,x.minutes?x.minutes+' 分':''].filter(Boolean).join('  '))];
+  const url=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\r\n')+'\r\n'],{type:'text/plain;charset=utf-8'}));
+  const a=document.createElement('a'); a.href=url; a.download='执行台本.txt'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+defaultTasks.forEach(([name,duration])=>makeTask(name,duration)); recalculate();
+</script></html>

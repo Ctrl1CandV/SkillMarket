@@ -2,7 +2,7 @@
 name: video-craft
 description: 用代码、录屏、已有素材或渲染镜头制作和修改视频。从已有创意出发完成导演设计、动态分镜、声画剪辑和成片复核。适用于教学讲解、软件演示与产品宣传、歌曲 MV、影视感短片、数据故事、片头及混合形式。
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Video craft
@@ -13,11 +13,15 @@ metadata:
 
 用一两句话记下观众在片中会经历什么，以及**哪一刻的画面和声音能让这种体验发生**。教学片可以是观众终于能预测结果的那一帧。MV 可以是同一旋律回来时，同一地点看上去已完全不同。电影可以只留一个尚未解开的疑问。两个拍法都成立时，挑它们分歧最大的瞬间做样帧或有声试片，按实际效果选。
 
+**想照着一条成片动手时，打开[有声参考片](examples/screening.html)。** 每条都有可跳转的镜头和可改的工程。先看与当前难题最接近的几秒，再读下表对应的镜头拆解。在工作副本里换成自己的题目、歌曲或产品，先出这一小段，对照原片检查观众还能不能看出动作与结果。只能读文件的模型可直接打开拆解里的分镜图。需要另一种拍法时，[三位创作者的作品与拆法](references/watch-notes.md)给了三个不同的起点。
+
+改编中容易抄回旧答案时，先只给模型本次要改的输入。教学例让它写两次称量各看到什么，MV 让它选从哪句唱到哪句，产品片让它给出原开场和提前的分钟数。程序据此算出结果、时间码或台本。重渲前把生成的台词或几秒试剪与新要求对一遍，尤其是示例里曾经正确、这次应当变化的地方。
+
 | 这段最需要解决什么 | 可借的做法 | 可拆的现成镜头 |
 |---|---|---|
-| 把机制讲清楚，让人能照做，或让数据支持一个判断 | [教学、数据与产品展示](references/explain-and-demo.md)、[核心画面](references/pictures.md) | [天空的微观镜头](examples/sky/brief.md)、[旁白驱动的最小工程](examples/starter/scene.js) |
-| 让人看清软件操作，或相信产品能做到某件事 | [教学、数据与产品展示](references/explain-and-demo.md)，先取得真实输入、操作和结果 | [两清的关系图与产品揭晓](examples/promo/brief.md) |
-| 让表演、歌词、意象随一首歌发展 | [歌曲 MV](references/music-video.md)，先在实际音轨上标记乐句、变化与留白 | [原创音乐短片](examples/music-film/brief.md) |
+| 把机制讲清楚，让人能照做，或让数据支持一个判断 | [教学、数据与产品展示](references/explain-and-demo.md)、[核心画面](references/pictures.md) | [带旁白的例题和练习](examples/worked-lesson/brief.md)、[天空的微观镜头](examples/sky/brief.md) |
+| 让人看清软件操作，或相信产品能做到某件事 | [教学、数据与产品展示](references/explain-and-demo.md)，先取得真实输入、操作和结果 | [有实际产品可试的宣传片](examples/product-spot/brief.md)、[两清的关系图与产品揭晓](examples/promo/brief.md) |
+| 让表演、歌词、意象随一首歌发展 | [歌曲 MV](references/music-video.md)，先在实际音轨上标记乐句、变化与留白 | [有演唱、歌词和副歌的 MV](examples/sung-mv/brief.md)、[器乐《回潮》](examples/music-film/brief.md) |
 | 用空间、动作、光和声音讲一个场面，或完成一个奇观镜头 | [电影镜头与场面调度](references/cinematography.md) | [雾夜灯塔的五镜头](examples/short-film/brief.md)、[虹彩鳞翅特写](examples/iridescence/brief.md) |
 | 其他形式或几种混合 | 按段落找决定剪辑的线索。人物纪实可能跟着一次犹豫，体育集锦跟随动作，品牌片的中段也可能需要演示证据 | 按需要借镜头、声音或检查工具，画风由本片决定 |
 
