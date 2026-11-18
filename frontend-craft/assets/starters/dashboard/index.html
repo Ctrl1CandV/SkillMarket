@@ -20,9 +20,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>实验对比 · CIFAR-10 正则化消融</title>
 <style>
   :root {
+  color-scheme: light;
     --bg: #F3F4F6; --surface: #FFFFFF; --ink: #1A2230; --ink-2: #5A6473; --line: #E1E4E9; --wash: #F6F7F9;
     --base: #7B8695; --aug: #3272BF; --ls: #1E8A72; --both: #D4480F;
     --fail: #B42318; --fail-wash: #FDECEA; --run: #3272BF;
@@ -30,10 +32,10 @@
     --num: "Bahnschrift", "DIN Alternate", var(--sans); --mono: "Cascadia Mono", Consolas, "SF Mono", monospace;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 var(--sans); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 0.875rem/1.55 var(--sans); }
   .wrap { max-width: 1320px; margin: 0 auto; padding: 20px 28px 56px; }
-  .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; color: var(--ink-2); font-size: 13px; }
-  .top b { color: var(--ink); font-size: 14px; }
+  .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; color: var(--ink-2); font-size: 0.8125rem; }
+  .top b { color: var(--ink); font-size: 0.875rem; }
   .top .sp { flex: 1; }
   .live { display: inline-flex; align-items: center; gap: 6px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--run); display: inline-block; }
@@ -42,78 +44,81 @@
 
   .kpis { margin: 18px 0 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
   .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
-  .kpi .k { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; } .kpi .k i { width: 10px; height: 10px; border-radius: 3px; }
-  .kpi .v { font: 600 34px/1.2 var(--num); margin-top: 6px; } .kpi .v small { font: 14px var(--sans); color: var(--ink-2); margin-left: 3px; }
-  .kpi .d { font-size: 13px; color: var(--ink-2); } .kpi .delta { font: 500 16px var(--num); color: var(--ink-2); margin-left: 12px; } .kpi .running { color: var(--run); font-weight: 700; }
-  @media (max-width: 640px) { .kpis { grid-template-columns: 1fr 1fr; gap: 10px; } .kpi { padding: 12px 14px; } .kpi .v { font-size: 28px; } }
+  .kpi .k { font-size: 0.8125rem; color: var(--ink-2); display: flex; align-items: center; gap: 8px; } .kpi .k i { width: 10px; height: 10px; border-radius: 3px; }
+  .kpi .v { font: 600 2.125rem/1.2 var(--num); margin-top: 6px; } .kpi .v small { font: 0.875rem var(--sans); color: var(--ink-2); margin-left: 3px; }
+  .kpi .d { font-size: 0.8125rem; color: var(--ink-2); } .kpi .delta { font: 500 1rem var(--num); color: var(--ink-2); margin-left: 12px; } .kpi .running { color: var(--run); font-weight: 700; }
+  @media (max-width: 640px) { .kpis { grid-template-columns: 1fr 1fr; gap: 10px; } .kpi { padding: 12px 14px; } .kpi .v { font-size: 1.75rem; } }
   .grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1fr); gap: 16px; }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px 16px; min-width: 0; }
-  .card h2 { font-size: 16px; margin: 0; font-weight: 700; }
-  .card .sub { color: var(--ink-2); font-size: 13px; margin: 2px 0 0; }
+  .card h2 { font-size: 1rem; margin: 0; font-weight: 700; }
+  .card .sub { color: var(--ink-2); font-size: 0.8125rem; margin: 2px 0 0; }
   .head { display: flex; justify-content: space-between; align-items: start; gap: 16px; flex-wrap: wrap; }
   .seg { display: inline-flex; background: var(--wash); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
-  .seg button { font: 500 13px var(--sans); border: 0; background: transparent; color: var(--ink-2); height: 30px; padding: 0 12px; border-radius: 6px; cursor: pointer; }
+  .seg button { font: 500 0.8125rem var(--sans); border: 0; background: transparent; color: var(--ink-2); min-height: 30px; padding: 0 12px; border-radius: 6px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(26, 34, 48, .14); }
   .tools { display: flex; gap: 8px; align-items: center; }
-  .ghost { font: 500 13px var(--sans); height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .ghost { font: 500 0.8125rem var(--sans); min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; }
   #chart { margin-top: 10px; position: relative; user-select: none; }
   #chart svg { display: block; width: 100%; overflow: visible; }
-  svg text { font: 12px var(--sans); fill: var(--ink-2); }
-  svg .end { font: 600 13px var(--sans); }
-  .tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 12px; line-height: 1.7; white-space: nowrap; z-index: 2; transform: translate(12px, -50%); }
-  .tip b { font-family: var(--num); font-size: 13px; } .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
-  .note { color: var(--ink-2); font-size: 12px; margin: 8px 0 0; }
+  svg text { font: 0.75rem var(--sans); fill: var(--ink-2); }
+  svg .end { font: 600 0.8125rem var(--sans); }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; line-height: 1.7; white-space: nowrap; z-index: 2; transform: translate(12px, -50%); }
+  .tip b { font-family: var(--num); font-size: 0.8125rem; } .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+  .note { color: var(--ink-2); font-size: 0.75rem; margin: 8px 0 0; }
 
   /* 排名：每个种子一个点，灰带是基线三个种子的范围 */
   .rank { margin-top: 12px; }
   .rrow { display: grid; grid-template-columns: 124px minmax(0, 1fr) 62px; gap: 12px; align-items: center; padding: 12px 8px; border-top: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
   .rrow:first-child { border-top: 0; }
   .rrow:hover, .rrow.on { background: var(--wash); }
-  .rrow .nm { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .rrow .nm { font-weight: 700; font-size: 0.875rem; display: flex; align-items: center; gap: 8px; }
   .rrow .nm i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
-  .rrow .mean { font: 600 20px/1 var(--num); text-align: right; }
-  .rrow .verdict { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); margin-top: -4px; padding-left: 18px; }
+  .rrow .mean { font: 600 1.25rem/1 var(--num); text-align: right; }
+  .rrow .verdict { grid-column: 1 / -1; font-size: 0.75rem; color: var(--ink-2); margin-top: -4px; padding-left: 18px; }
   .rrow .verdict b { color: var(--ink); font-weight: 700; }
   .rrow svg { height: 26px; }
-  .axis { display: grid; grid-template-columns: 124px minmax(0, 1fr) 62px; gap: 12px; padding: 0 8px; color: var(--ink-2); font-size: 12px; }
+  .axis { display: grid; grid-template-columns: 124px minmax(0, 1fr) 62px; gap: 12px; padding: 0 8px; color: var(--ink-2); font-size: 0.75rem; }
   .axis div:nth-child(2) { display: flex; justify-content: space-between; }
 
   .runs { margin-top: 16px; padding: 18px 0 6px; }
   .runs .head { padding: 0 20px 10px; }
   .scroll { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 13px; }
-  th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--wash); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.8125rem; }
+  th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 0.75rem; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; background: var(--wash); }
   td { padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   th:first-child, td:first-child { padding-left: 20px; } th:last-child, td:last-child { padding-right: 20px; }
-  td.r, th.r { text-align: right; } td.num { font: 500 14px var(--num); text-align: right; }
-  td.id { font: 12px var(--mono); color: var(--ink-2); }
+  td.r, th.r { text-align: right; } td.num { font: 500 0.875rem var(--num); text-align: right; }
+  td.id { font: 0.75rem var(--mono); color: var(--ink-2); }
   td .m { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; } td .m i { width: 8px; height: 8px; border-radius: 2px; }
   .st { display: inline-flex; align-items: center; gap: 6px; }
   .st.fail { color: var(--fail); font-weight: 700; } .st.run { color: var(--run); font-weight: 700; } .st.done { color: var(--ink-2); }
   tr.fail td { background: var(--fail-wash); } tr.dim td { opacity: .35; }
   tr:last-child td { border-bottom: 0; }
   .why { color: var(--ink); margin-left: 10px; }
-  .sd { display: none; color: var(--ink-2); font-size: 12px; }
+  .sd { display: none; color: var(--ink-2); font-size: 0.75rem; }
   th.state { width: 38%; }
   .bar { display: inline-block; width: 72px; height: 6px; border-radius: 3px; background: var(--line); vertical-align: middle; margin-right: 8px; overflow: hidden; }
   .bar u { display: block; height: 100%; background: var(--run); }
-  .foot { color: var(--ink-2); font-size: 12px; margin-top: 14px; }
+  .foot { color: var(--ink-2); font-size: 0.75rem; margin-top: 14px; }
 
   @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
   @media (max-width: 640px) {
     .wrap { padding: 14px 14px 40px; }
-    .seg button, .ghost { height: 40px; }
+    .seg button, .ghost { min-height: 40px; }
     .card { padding: 14px 14px 12px; } .runs { padding: 14px 0 4px; } .runs .head { padding: 0 14px 8px; }
-    .rrow, .axis { grid-template-columns: 118px minmax(0, 1fr) 52px; gap: 8px; } .rrow .nm { font-size: 13px; }
+    .rrow, .axis { grid-template-columns: 118px minmax(0, 1fr) 52px; gap: 8px; } .rrow .nm { font-size: 0.8125rem; }
     /* 手机上表格改成一条一条的记录，不横向拖动 */
     table, tbody, tr, td { display: block; } thead { display: none; }
     tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
     tr.fail { background: var(--fail-wash); } tr.fail td { background: none; }
     td, th:first-child, td:first-child, td:last-child { padding: 0; border: 0; white-space: normal; }
     td.id { display: none; } td.method { order: 1; grid-column: 1 / -1; }
-    td.num.final { order: 4; text-align: left; font-size: 20px; } td.num.final:not(.nolabel)::before { content: "最终 "; font: 12px var(--sans); color: var(--ink-2); } td.num.final.nolabel { font-size: 14px; } .sd { display: inline; }
-    td.num.best { order: 5; } td.num.best::before { content: "最好 "; font: 12px var(--sans); color: var(--ink-2); }
+    td.num.final { order: 4; text-align: left; font-size: 1.25rem; } td.num.final:not(.nolabel)::before { content: "最终 "; font: 0.75rem var(--sans); color: var(--ink-2); } td.num.final.nolabel { font-size: 0.875rem; } .sd { display: inline; }
+    td.num.best { order: 5; } td.num.best::before { content: "最好 "; font: 0.75rem var(--sans); color: var(--ink-2); }
     td.seed, td.time { display: none; } td.state { grid-column: 1 / -1; order: 2; text-align: left; } .why { display: block; margin: 2px 0 0; }
+  }
+  @media (forced-colors: active) {
+    [aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]) { outline: 2px solid Highlight; outline-offset: -2px; }
   }
 </style>
 </head>

@@ -21,10 +21,12 @@ if (!pw) {
   process.exit(2);
 }
 
+// A page opened as a local file cannot read its own linked stylesheets (Chrome treats each file as another origin),
+// so the checks that look at the CSS rules would skip them silently. This flag lets them read local files.
 export async function launch() {
   const tries = process.env.FC_CHROME ? [{ executablePath: process.env.FC_CHROME }] : [{}, { channel: 'chrome' }, { channel: 'msedge' }];
   let last;
-  for (const how of tries) { try { return await pw.chromium.launch({ headless: true, ...how }); } catch (err) { last = err; } }
+  for (const how of tries) { try { return await pw.chromium.launch({ headless: true, args: ['--allow-file-access-from-files'], ...how }); } catch (err) { last = err; } }
   console.error('frontend-craft scripts: no browser could be started. Set FC_CHROME to a Chrome or Chromium executable. (' + String(last && last.message).split('\n')[0] + ')');
   process.exit(2);
 }
@@ -38,9 +40,10 @@ export function target(input, query = '') {
 }
 
 // Open one page at one size. Phones (narrower than 700 px) get touch and a mobile viewport.
-export async function open(browser, input, { width = 1440, height = 900, query = '' } = {}) {
+// emulate: extra context options, e.g. { forcedColors: 'active' } or { colorScheme: 'dark' }.
+export async function open(browser, input, { width = 1440, height = 900, query = '', emulate = {} } = {}) {
   const mobile = width < 700;
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile });
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile, ...emulate });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e.message).slice(0, 200)));
