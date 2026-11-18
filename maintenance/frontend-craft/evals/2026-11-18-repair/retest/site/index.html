@@ -1,0 +1,14 @@
+<!doctype html>
+<!--
+学生公寓报修处理台；从 queue / settings / dashboard 起步样例的结构决定改写。
+1. 列表是单人值班分派队列，不是展示型后台：不设侧栏和指标横幅；详情是对象工作台；新建是电话录入表单；统计是主管自助分析看板。
+2. 列表和详情的颜色只给时间压力（紧急、逾期），其余状态和操作保持中性色；统计用同一强调色表示报修数量。
+3. 因为有7种状态但值班任务分为派单、跟进、回访，所以列表用任务标签并保留精确状态筛选。
+   因为房间号是学生来电时的定位信息，所以楼栋房间突出、工单号次要；描述保留真实长度。
+   因为5位师傅有工种限制，所以右栏显示负荷，详情仅提供匹配师傅，空调只派韩师傅。
+   因为紧急单30分钟内派出，所以按紧急待派、超时、普通待派、维修跟进、待确认排序，时间原因直接出现在行内。
+   因为照片只有数量没有文件，所以详情只说明学生自述数量，不生成虚构缩略图。
+   因为主管需要独立比较，所以统计提供14天每日量、楼栋/类别分布、修好耗时分布和明确定义的积压，不写结论。
+-->
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>公寓报修 · 后勤服务</title><link rel="stylesheet" href="styles.css"></head>
+<body><header class="top"><a class="brand" href="#list"><span class="brand-mark">修</span><span>公寓报修<small>后勤服务中心</small></span></a><nav aria-label="主导航"><a href="#list" data-nav="list">工单处理</a><a href="#stats" data-nav="stats">近两周情况</a></nav><div class="top-date">2026.11.18<span>周三 · 15:20</span></div><span class="duty">值班员</span></header><main id="app"></main><footer class="footer"><span>学生公寓报修处理台 <span class="muted"> / 示例数据</span></span><span>离线本地保存 · 固定时间 2026-11-18 15:20</span></footer><dialog id="dialog"></dialog><div id="toast" role="status" aria-live="polite"></div><script src="data/tickets.js"></script><script src="app.js"></script></body></html>

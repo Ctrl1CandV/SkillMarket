@@ -32,6 +32,15 @@ const linked = run(path.join(here, 'pagecheck/linked.html'));
 ok(/font sizes set in px/.test(linked.text) && /\.price/.test(linked.text), 'px font sizes in a linked stylesheet reported');
 ok(/-dark\.png/.test(linked.text), 'dark screenshot offered when only the meta says the page supports dark');
 
+// traps met on real pages: a label drawn above a dark bar, white text on a translucent dark fill, text inside a closed <details>
+const traps = run(path.join(here, 'pagecheck/traps.html'));
+for (const v of traps.views) {
+  ok(v.low_contrast.length === 0, `${v.viewport}: traps page low_contrast should be empty, got ${JSON.stringify(v.low_contrast)}`);
+  ok(v.overlapping.length === 0, `${v.viewport}: closed <details> is not overlapping text, got ${JSON.stringify(v.overlapping)}`);
+}
+ok(traps.views[0].first_screen_hues.length === 1, `one colored hue in the first screen, got ${JSON.stringify(traps.views[0].first_screen_hues)}`);
+ok(/colored hues in first screen 1/.test(traps.text), 'hue count printed');
+
 const good = run(path.join(here, 'pagecheck/good.html'));
 for (const v of good.views) for (const key of ['overlapping', 'small_text', 'line_start_punctuation', 'one_char_per_line', 'low_contrast', 'clipped', 'small_taps', 'script_errors', 'broken_values', 'spacing_spill'])
   ok(v[key].length === 0, `${v.viewport}: ${key} should be empty, got ${JSON.stringify(v[key])}`);

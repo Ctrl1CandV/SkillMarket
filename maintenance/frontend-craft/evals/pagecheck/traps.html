@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">
+<title>不该报的情况</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; padding: 2rem; font: 1rem/1.5 system-ui, sans-serif; color: #1a1a1a; background: #fff; }
+  /* 数字标在深色柱子上方：它不在柱子的颜色上 */
+  .bars { display: flex; gap: 1rem; align-items: end; height: 8rem; margin-top: 3rem; }
+  .bar { position: relative; width: 3rem; background: #1a1a1a; }
+  .bar span { position: absolute; left: 0; right: 0; top: -1.5rem; text-align: center; }
+  /* 半透明的深色格子上写白字：叠在白底上其实够深 */
+  td { padding: 0.5rem 1rem; }
+  .dark { background: color-mix(in srgb, #1a1a1a 85%, transparent); color: #fff; }
+  /* 折叠起来的内容和下面的文字在同一个位置 */
+  .stack { position: relative; margin-top: 2rem; }
+  .stack p { margin: 0; }
+  .accent { color: #b3261e; }
+</style></head>
+<body>
+<h1>不该报的情况</h1>
+<div class="bars"><div class="bar" style="height:60%"><span>6</span></div><div class="bar" style="height:90%"><span>9</span></div></div>
+<table><tr><td class="dark">半透明深底白字</td><td>浅底</td></tr></table>
+<div class="stack"><details><summary>改派给别人</summary><p>折叠里的说明文字，不该算压住别的字</p></details><p>取消这张工单</p></div>
+<p>只有<span class="accent">超时</span>和<span class="accent">紧急</span>用红色。</p>
+</body></html>

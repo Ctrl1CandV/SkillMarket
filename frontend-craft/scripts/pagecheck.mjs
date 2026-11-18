@@ -8,7 +8,8 @@
 // low contrast, clipped text, text drawn on top of other text, punctuation pushed to the start of a line,
 // text squeezed into one character per line, small touch targets, how many font sizes the page really uses,
 // text that spills out of its box when the reader widens text spacing (WCAG 1.4.12), font sizes set in px,
-// and a missing color-scheme. It also saves a forced-colors screenshot, and a dark one when the page supports dark.
+// and a missing color-scheme. It also counts the colored hues in the first screen (to compare with what should carry color),
+// and saves a forced-colors screenshot, and a dark one when the page supports dark.
 // It cannot tell whether the page is good. A clean report means "nothing measurable is wrong": still open the screenshots.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -29,6 +30,7 @@ function measure(mobile) {
   const vw = document.documentElement.clientWidth;
   const css = (el) => getComputedStyle(el);
   const hidden = (el) => {   // not shown, or shown only to screen readers
+    if (el.checkVisibility && !el.checkVisibility()) return true;   // e.g. inside a closed <details>: it still has a box, but is not drawn
     for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
       const s = css(e); if (s.display === 'none' || s.visibility === 'hidden' || +s.opacity <= 0.05) return true;
       if (e === document.body) break;
@@ -42,7 +44,16 @@ function measure(mobile) {
   const rgb = (c) => { if (colors.has(c)) return colors.get(c); cx.clearRect(0, 0, 1, 1); cx.fillStyle = '#000'; cx.fillStyle = c; cx.fillRect(0, 0, 1, 1);
     const [r, g, b, a] = cx.getImageData(0, 0, 1, 1).data, v = [r, g, b, a / 255]; colors.set(c, v); return v; };
   const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
-  const backdrop = (el) => { for (let e = el; e && e.nodeType === 1; e = e.parentElement) { const s = css(e); if (s.backgroundImage && s.backgroundImage !== 'none') return null; const c = rgb(s.backgroundColor); if (c.length >= 3 && (c[3] === undefined || c[3] > 0.9)) return c; } return [255, 255, 255]; };
+  // the first opaque background that is really behind the text; a label positioned outside its parent (above a bar, say) is not on the parent's color
+  const behind = (e, box) => { if (!box) return true; const r = e.getBoundingClientRect(), x = (box.left + box.right) / 2, y = (box.top + box.bottom) / 2; return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+  // translucent fills (rgba, color-mix with transparent) are laid over what is under them
+  const backdrop = (el, box) => { const layers = [];
+    for (let e = el; e && e.nodeType === 1; e = e.parentElement) { const s = css(e); if (!behind(e, box)) continue; if (s.backgroundImage && s.backgroundImage !== 'none') return null;
+      const c = rgb(s.backgroundColor); if (c[3] > 0.9) { layers.push(c); break; } if (c[3] > 0.02) layers.push(c); }
+    if (!layers.length || layers[layers.length - 1][3] <= 0.9) layers.push([255, 255, 255, 1]);
+    let out = layers.pop().slice(0, 3);
+    while (layers.length) { const [r, g, b, a] = layers.pop(); out = [r * a + out[0] * (1 - a), g * a + out[1] * (1 - a), b * a + out[2] * (1 - a)]; }
+    return out; };
   const name = (el) => el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/)[0] : '');
   const short = (s, n = 22) => { s = s.replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n) + '…' : s; };
   const DECOR = /^[\p{P}\p{S}\s]+$/u, CLOSE = /[，。、；：！？）》」』”’]/;
@@ -65,7 +76,7 @@ function measure(mobile) {
     if (px < 11.5 && !decor) small.push({ text: short(raw), size: +px.toFixed(1), svg: !!svg });
     if (!decor) items.push({ el, box, rects: rects.slice(0, 6), text: short(raw, 16), floating: floating(el) });
     if (!decor && !el.closest('[disabled], [aria-disabled="true"]')) {
-      const bg = backdrop(el), fg = rgb(s.color);
+      const bg = backdrop(el, box), fg = rgb(s.color);
       if (bg && fg.length >= 3 && !svg) { const a = lum(fg), b = lum(bg), ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), large = px >= 24 || (px >= 18.5 && +s.fontWeight >= 700);
         if (ratio < (large ? 3 : 4.5)) lowContrast.push({ text: short(raw), ratio: +ratio.toFixed(2), size: key }); }
     }
@@ -118,12 +129,25 @@ function measure(mobile) {
     for (const a of ['style', 'title', 'aria-label', 'd', 'points', 'width', 'height', 'x', 'y', 'cx', 'cy', 'r', 'transform', 'value'])
       if (el.hasAttribute(a) && BROKEN.test(el.getAttribute(a))) broken.push({ el: name(el), where: a, value: short(el.getAttribute(a), 40) });
   }
+  // how many colored hues the first screen uses (text, fills, borders); grays and near-whites do not count
+  const vh = window.innerHeight, hues = new Map();
+  const hueOf = ([r, g, b, a]) => { if (a !== undefined && a < 0.3) return null; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 510;
+    if (d < 40 || l > 0.94) return null; const s = d / 255 / (1 - Math.abs(2 * l - 1)); if (s < 0.25) return null;
+    let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h = (h * 60 + 360) % 360; return Math.round(h / 30) % 12; };
+  for (const el of document.body.querySelectorAll('*')) {
+    const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2 || r.top >= vh || r.bottom <= 0 || hidden(el)) continue;
+    const s = css(el), add = (c, weight) => { const h = hueOf(rgb(c)); if (h !== null) hues.set(h, (hues.get(h) || 0) + weight); };
+    if ([...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) add(s.color, 1);
+    add(s.backgroundColor, 1);
+    if (parseFloat(s.borderTopWidth) + parseFloat(s.borderLeftWidth) + parseFloat(s.borderBottomWidth) > 0.5) add(s.borderTopColor !== 'rgba(0, 0, 0, 0)' ? s.borderTopColor : s.borderLeftColor, 1);
+  }
   const ranked = Object.entries(sizeChars).map(([k, v]) => [+k, v]).sort((a, b) => b[1] - a[1]), body = ranked.length ? ranked[0][0] : null, largest = ranked.length ? Math.max(...ranked.map((r) => r[0])) : null;
   const used = ranked.filter(([, n]) => n >= 3).map(([k]) => k).sort((a, b) => a - b);
   return { scroll_x: scrollX, sticking_out: culprits.slice(0, 8), page_height: document.documentElement.scrollHeight, chars: total, body_size: body, largest_size: largest,
     largest_to_body: body ? +(largest / body).toFixed(2) : null, sizes_in_use: used, small_text: small.slice(0, 10), small_text_count: small.length,
     low_contrast: lowContrast.slice(0, 10), low_contrast_count: lowContrast.length, clipped: clipped.slice(0, 8), overlapping: overlap, line_start_punctuation: lineStart.slice(0, 8),
-    one_char_per_line: squeezed.slice(0, 8), small_taps: taps.slice(0, 10), small_taps_count: taps.length, broken_values: broken.slice(0, 10), broken_values_count: broken.length };
+    one_char_per_line: squeezed.slice(0, 8), small_taps: taps.slice(0, 10), small_taps_count: taps.length, broken_values: broken.slice(0, 10), broken_values_count: broken.length,
+    first_screen_hues: [...hues.entries()].filter(([, n]) => n >= 2).map(([h]) => h * 30).sort((a, b) => a - b) };
 }
 
 // Runs inside the page after the WCAG 1.4.12 spacing has been applied: text that no longer fits its box.
@@ -196,7 +220,7 @@ for (const v of report.views) {
   if (v.small_taps_count) lines.push(`touch targets under 40px: ${v.small_taps_count} — ${eg(v.small_taps, (o) => `${o.el} "${o.text}" ${o.w}x${o.h}`)}`);
   if (v.sizes_in_use.length > 9) lines.push(`${v.sizes_in_use.length} font sizes in use (${v.sizes_in_use.join(', ')}): close sizes read as untidy, merge them into fewer steps`);
   kinds += lines.length;
-  console.log(`== ${v.viewport} ==  body ${v.body_size}px, largest ${v.largest_size}px (x${v.largest_to_body}), sizes ${v.sizes_in_use.join('/')}, page height ${v.page_height}px`);
+  console.log(`== ${v.viewport} ==  body ${v.body_size}px, largest ${v.largest_size}px (x${v.largest_to_body}), sizes ${v.sizes_in_use.join('/')}, page height ${v.page_height}px, colored hues in first screen ${v.first_screen_hues.length}${v.first_screen_hues.length ? ' (' + v.first_screen_hues.join('°/') + '°)' : ''}`);
   for (const line of lines) console.log('  ! ' + line);
 }
 const pl = report.page_level, pageLines = [];
