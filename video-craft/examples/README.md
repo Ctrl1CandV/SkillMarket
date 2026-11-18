@@ -4,7 +4,7 @@
 
 | 工程 | 看什么 | 从哪里改 |
 |---|---|---|
-| [九枚硬币，只称两次](worked-lesson/brief.md) · 77 秒教学 | 观察天平，排除六枚，用另一组称量结果自行解题 | 改 [四字段变体卡](worked-lesson/variant.json) 的称量结果、问句或思考时间，即可重算旁白与画面 |
+| [九枚硬币，只称两次](worked-lesson/brief.md) · 68 秒教学 | 观察天平，排除六枚，用另一组称量结果自行解题 | 改 [四字段变体卡](worked-lesson/variant.json) 的称量结果、问句或思考时间，即可重算旁白与画面 |
 | [纸鸟](sung-mv/brief.md) · 23 秒歌曲 MV | 听两句“飞呀”的音高和时值，观察同一只鸟在两次呼唤时占多大画面 | 从[命名镜头剪辑](sung-mv/excerpt.mjs)选“第二次飞呀”到“落在掌心”，或用自己的母带替换[逐字旋律](sung-mv/song.mjs) |
 | [开场，提前十五分](product-spot/brief.md) · 26 秒软件广告 | 一个临时变更如何影响后台全组；真实下载的台本兑现片尾承诺 | 只把原时刻和提前量交给[改期工具](product-spot/retime.mjs)，再打开[实际软件](product-spot/product.html)核对重排结果 |
 | [starter](starter/) · 一杯水里有多少个分子 | 旁白长度如何决定字幕、数字和声音事件 | `scene.js` 里的台词、数据和时间线。有逐句录音时，放到 `vo/01.wav` 等文件，先运行 `vo.mjs vo vo/vo.js`，导出音轨时加 `--vo vo` |

@@ -55,6 +55,8 @@ install(score, { reverb: 0.2, irSec: 2.4 });
 
 ## 配音
 
+选音色、查机械感、比较新版和旧版时，见[人声的试音与替换](voice.md)。
+
 1. 按镜头或自然说话的句组录音。在 [starter](../examples/starter/score.js) 的工作流里，每段一个文件，如 `vo/01.wav`、`vo/02.wav`，与场景里的 `LINES[i].id` 对应。
 2. 用 `node <kit>/vo.mjs vo vo/vo.js` 量出每段长度。场景 `import` 这份结果，用它生成时间线。按动作、换气和阅读留空。
 3. 在 `score.js` 里用 `voice(m, t, id)` 把每段放到对应的位置。音乐压过台词时，可试 `duck(m.music, 说话区间, { depth: -9 })` 后实际试听。

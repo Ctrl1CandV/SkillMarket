@@ -1,16 +1,16 @@
 """Rebuild narration and picture cues together; Python stdlib + FFmpeg.
 
-Without --takes, Windows' installed Mandarin voice reads each line. To use an
-actor or another platform, record one WAV per spoken cue using --print-script.
+Use --takes with recordings (one WAV per cue), or --edge-voice to render neural
+speech online. --print-script shows the words without accessing any service.
 """
 import argparse
-import base64
 import json
 import math
 import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import wave
 
@@ -77,42 +77,18 @@ def read_plan(variant=None):
     return example, practice, pause, script
 
 
-def synthesize(script, temp):
-    voices = temp / "lines.json"
-    voices.write_text(json.dumps(dict(script), ensure_ascii=False), encoding="utf-8")
-    command = r"""
-$ErrorActionPreference = 'Stop'
-Add-Type -AssemblyName System.Speech
-$syn = New-Object System.Speech.Synthesis.SpeechSynthesizer
-$voice = $syn.GetInstalledVoices() | Where-Object { $_.VoiceInfo.Culture.Name -eq 'zh-CN' } | Select-Object -First 1
-if (-not $voice) { throw 'No zh-CN voice. Supply your recordings with --takes.' }
-$syn.SelectVoice($voice.VoiceInfo.Name)
-$syn.Rate = 1
-$lines = Get-Content -Raw -Encoding utf8 -LiteralPath $env:LESSON_LINES | ConvertFrom-Json
-foreach ($line in $lines.PSObject.Properties) {
-  if ($line.Value) {
-    $file = Join-Path (Split-Path $env:LESSON_LINES) ($line.Name + '.wav')
-    $syn.SetOutputToWaveFile($file)
-    $syn.Speak([string]$line.Value)
-    $syn.SetOutputToNull()
-  }
-}
-$syn.Dispose()
-"""
-    encoded = base64.b64encode(command.encode("utf-16-le")).decode("ascii")
-    shell = shutil.which("pwsh") or "powershell.exe"
-    subprocess.run([shell, "-NoProfile", "-EncodedCommand", encoded],
-                   env={**os.environ, "LESSON_LINES": str(voices)}, check=True)
-
-
-def build(takes, dest, variant):
+def build(takes, dest, variant, edge_voice=None, speech_rate="-4%"):
     example, practice, pause, script = read_plan(variant)
     dest.mkdir(parents=True, exist_ok=True)
     rate = 24000
     with tempfile.TemporaryDirectory() as work:
         temp = Path(work)
-        if takes is None:
-            synthesize(script, temp)
+        if edge_voice:
+            lines = temp / "lines.json"
+            lines.write_text(json.dumps({k: v for k, v in script if v}, ensure_ascii=False), encoding="utf-8")
+            generator = BASE.parent.parent / "kit" / "narrate.py"
+            subprocess.run([sys.executable, str(generator), str(lines), str(temp),
+                            "--voice", edge_voice, "--rate=" + speech_rate], check=True)
         source = takes or temp
         mix = bytearray()
         cues = []
@@ -122,7 +98,6 @@ def build(takes, dest, variant):
             if line:
                 audio = subprocess.check_output([
                     FFMPEG, "-hide_banner", "-loglevel", "error", "-i", str(source / (name + ".wav")),
-                    "-af", "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.035",
                     "-ar", str(rate), "-ac", "1", "-f", "s16le", "pipe:1"])
             voice_end = start + len(audio) / (rate * 2)
             if line and len(audio) < rate // 4:
@@ -139,7 +114,7 @@ def build(takes, dest, variant):
             file.writeframes(mix)
         subprocess.run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", str(wav),
                         "-af", "loudnorm=I=-17:TP=-2:LRA=11", "-ar", "48000",
-                        "-c:a", "aac", "-b:a", "80k", str(dest / "voice.m4a")], check=True)
+                        "-c:a", "aac", "-b:a", "128k", str(dest / "voice.m4a")], check=True)
     timeline = dict(width=1280, height=720, fps=FPS, duration=cues[-1]["end"],
                     example=example, practice=practice, cues=cues)
     (dest / "timing.js").write_text("window.LESSON = " + json.dumps(timeline, indent=2, ensure_ascii=False) + ";\n", encoding="utf-8")
@@ -152,7 +127,10 @@ def build(takes, dest, variant):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--takes", type=Path, help="directory of recordings, e.g. ask.wav")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--takes", type=Path, help="directory of recordings, e.g. ask.wav")
+    source.add_argument("--edge-voice", help="send the lines to Edge neural TTS using this named voice")
+    parser.add_argument("--rate", default="-4%", help="neural speech rate, e.g. --rate=-4%%")
     parser.add_argument("--print-script", action="store_true")
     parser.add_argument("--out", type=Path, default=BASE)
     parser.add_argument("--variant", type=Path, help="four-field card describing scale outcomes")
@@ -161,5 +139,7 @@ if __name__ == "__main__":
         for cue_id, sentence in read_plan(options.variant)[3]:
             if sentence:
                 print(cue_id, sentence)
+    elif options.takes or options.edge_voice:
+        build(options.takes, options.out, options.variant, options.edge_voice, options.rate)
     else:
-        build(options.takes, options.out, options.variant)
+        parser.error("Give --takes DIR for local speech, or --edge-voice zh-CN-XiaoxiaoNeural for online speech.")

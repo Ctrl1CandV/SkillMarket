@@ -2,7 +2,7 @@
 name: video-craft
 description: 用代码、录屏、已有素材或渲染镜头制作和修改视频。从已有创意出发完成导演设计、动态分镜、声画剪辑和成片复核。适用于教学讲解、软件演示与产品宣传、歌曲 MV、影视感短片、数据故事、片头及混合形式。
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Video craft
@@ -27,6 +27,8 @@ metadata:
 
 ## 从样片到成片
 
+**先定用哪一种人声。** 有歌曲原声的 MV 直接用那份录音排镜和合片。有旁白的片子先拿一句含专名或数字、带转折的完整台词试音。自己写歌时，先试听连唱的一句和拖长的尾字，再决定是否录全曲。用耳朵分别听字头、连贯性、气口和底噪；辨词正确的音色仍可能生硬。[人声试音、替换与 A/B 听样](references/voice.md)
+
 1. **确定材料与观看条件。** 简短记下用途、观看设备、画幅、时长、已有的图像/录屏/音轨，以及还需要制作的部分。核对会出现在画面里的事实、数字和产品状态。画幅由投放位置决定，已有歌曲按实际录音计时。新拍的片子若没有规格，可先按横屏 1080p、30 fps 工作。成片需要的舞蹈、人物表演、摄影或复杂三维可取自提供的素材、实际录制、绘制或离线渲染，按手头能力选择。重要素材缺失时，先用能替换的占位确定剪辑，并说清最终采用的处理。
 2. **试最难成立的一镜。** 在目标画幅里做出片中最依赖观众判断的瞬间。可能是鼠标松开后的结果、两个人是否在看同一处，或近景里的一次光线变化。需要看运动的，做动作前后几秒并配上声音。需要看字的，按目标设备的显示尺寸看。具体的布光、构图和镜头衔接见[画面质感](references/look.md)和[运动与剪辑](references/motion.md)。
 3. **用声音和粗画面排一遍。** 把时长落在真正的素材上。旁白先录临时声或用 `vo.mjs` 量句长，歌曲取原轨，剧情以动作完成、视线转移和声音的进出来定切点。在分镜上为关键段写出入镜状态、变化、出镜状态及跨切点延续的动作或声音。把样帧和现有片段按这些时长剪在一起，这就是动态分镜。播放一次，看哪一处因果断了、信息看不完、音乐到了画面还没到；删镜、换顺序或改停留，再做昂贵的渲染。极短或单镜头项目可直接在工作镜头上试。素材混剪和动态分镜有[可运行的剪辑单](references/editing.md)。
@@ -43,6 +45,8 @@ metadata:
 | 拼动态分镜、真录屏或独立镜头，接原曲或临时旁白 | `node <kit>/cut.mjs edit.json out/cut.mp4` · [剪辑单格式](references/editing.md) |
 | 全片节奏、关键样帧与切点 | `render.mjs page.html sheet out/sheet.jpg --every 1`，或使用 `stills`、`strip` |
 | 接配音、合成乐谱与检查分轨 | `vo.mjs`、`audio.mjs`、`mixcheck.mjs` · [声音与配音](references/sound.md) |
+| 生成整句旁白、比较两版听感 | [神经旁白](kit/narrate.py) · [同响度听样](kit/listen_pair.py) |
+| 给整曲 MV 接上完整原录音 | `python kit/mux_original.py picture.mp4 song.m4a film.mp4` · [原声合片](references/music-video.md#整首原声交付) |
 | 使用录音自带的 SRT 歌词或对白字幕，裁取歌曲的一段 | `captions.mjs` · [已有字幕的对时与排版](references/timed-text.md) |
 | 检查网页字幕、成片声音 | `textcheck.mjs`、`audiocheck.mjs` |
 | 输出网页影片并合入音轨 | `node <kit>/render.mjs page.html video out/picture.mp4 --audio track.wav --mux out/final.mp4` |

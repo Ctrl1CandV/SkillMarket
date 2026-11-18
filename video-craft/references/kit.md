@@ -94,6 +94,9 @@ seek(0);
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
 | `audiocheck.mjs` | `media page out.png [--from a --to b] [--scene-offset s]` | 从成片解码，画频谱、包络和事件线 |
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
+| `narrate.py` | `cues.json voice-dir --voice zh-CN-XiaoxiaoNeural` | 从带 id 的整句文字合成旁白 WAV；需 Python、edge-tts、FFmpeg 和网络 |
+| `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |
+| `mux_original.py` | `picture.mp4 song.m4a final.mp4` | 从完整母带生成 MV，检查时长；兼容的音频格式直接复制，需 FFmpeg 与 FFprobe |
 | `textcheck.mjs` | `page [--margin 80] [--sel '#caps .cap']` | 字幕边距与最小字号 |
 | `montage.mjs` | `out.jpg width img…` | 几张图横排缩小 |
 | `doctor.mjs` | — | 环境探测 |
