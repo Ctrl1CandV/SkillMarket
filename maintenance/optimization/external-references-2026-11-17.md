@@ -13,6 +13,8 @@
 
 建议的先后：开发技能组 → 网络检索 → Windows 软件操作 → 现代网页规范。理由在最后一节。
 
+> 后续（2026-11-18）：开发技能组做成 dev-kit 插件，做法见 `maintenance/dev-kit-plugin/`；Windows 软件操作采用 agent-desktop，做成 windows-ops；现代网页规范试装后不发布，有用的几条并入 frontend-craft。网络检索还没做。
+
 ## 1. modern-web-guidance（Google Chrome）
 
 **是什么。** Apache-2.0，约 2.1 万星，2026 年 3 月建，昨天还在更新。由 Chrome、Edge、Firefox 和 MDN 团队共同维护。它是一个技能加一个命令行工具：技能入口只有约 200 个词元，正文告诉模型“写网页界面前先搜”；命令行在本地用关键词加向量检索 262 个现代网页特性的指南，再把命中的那一篇取回上下文。还有一个 `legacy-scan` 扫描项目里的旧写法。Claude Code 里用 `/plugin marketplace add GoogleChrome/modern-web-guidance` 安装。

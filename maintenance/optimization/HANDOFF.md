@@ -75,6 +75,8 @@
 | product-design | 0.3.1 | 第 3 步加四个检验取舍的问题（信息在哪个时刻有用、数据多了少了排法还成不成立、先压缩再删、看板还是报告） | 没有单独实测，只随 frontend-craft 的任务一起跑过 |
 | video-craft | 0.5.0 | 九个独立工程，三条教学、歌曲 MV、软件宣传参考片可离线带声观看，并按时间码找到源码和可改输入。含 2B 改编实测，见[维护记录](../video-craft/README.md) | 小模型试验限于教学改题；真人演唱、长片和观众试映待测 |
 | dev-kit（插件） | 0.2.0 | 2026-11-17 新建，替代 agent-parliament。经三轮追问和用户定下：新写 dev-kickoff（开工追问、写确认单）和 dev-acceptance（开发者自测 + 独立审查者按确认单验收）；Matt 的 tdd、codebase-design 原文入库，只改引用；diagnose 重写；code-reviewer 正文重写，脚本取自上游。上面五个技能（imagecraft、presentation-craft、frontend-craft、product-design、video-craft）各加一句“有确认单先读它”，因此各升一个小版本 ；随后用 pi + deepseek-flash 跑了一遍课程设计（开工由优化者代答），开工、实现、子代理审查都走通了，看到的 4 个问题在 0.1.1 补上 ；之后用户在 Codex（gpt-6.1-sol）里本人开发同一课题，开工、实现、独立审查都走通，用户认为效果可以，dev-kickoff 和 dev-acceptance 视为通过验收 | 每种配置只跑一次；pi 那次的开工是代答，0.1.1 在 pi 上没重跑；四个方法技能只各做过一次 deepseek-flash 小实验；code-reviewer 的三个脚本没运行过；Codex 的 request_user_input 在默认模式下能否使用没核实；Antigravity、ZCode 没查。决定记录与试用计划在 `maintenance/dev-kit-plugin/` |
+| windows-ops | 0.1.0 | 2026-11-18 新建。用户嫌截图式电脑操作慢、占屏幕，要求装用简单。路线顺序是命令行、COM（WPS/Office 文档后台读写）、agent-desktop 读界面结构（固定 1.3.1，默认不动鼠标）、截图；用户的确认规则写进技能。亲手试了资源管理器、设置、WPS、Excel、VS Code；pi + deepseek-flash 跑一次，四件事全对，2 分钟、0.025。见 `maintenance/windows-ops/` | Codex、ZCode、Claude Code 上没试；需要真正点界面的任务没让模型做过；“范围不清先问”没考察（pi 不能交互） |
+| modern-web-guidance | 不发布 | 2026-11-18 引入后做了疫苗预约四组对照：增量只有三处细节，费用高六成，这三处已写进 frontend-craft 第 5 步。技能文件移到 `maintenance/modern-web-guidance/skill/`，供优化前端时查规则；已从 Claude Code 和 Codex 删除 | — |
 
 ## 五、迁到 Windows 后先做什么
 
@@ -133,7 +135,8 @@ node maintenance/frontend-craft/evals/test_pagecheck.mjs                   # 85 
 - imagecraft：用户提过论文配图要按论文格式出，这次测试的提示词没写这个要求，可以单独测一次。
 - frontend-craft：第二批样例暂缓；样例配色可能被原样搬到别的题材；检查写成必须处理后出现过用 `!important` 补字号的写法。
 - dev-kit：0.2.0 收尾。四个方法技能各做一个小实验并通过，code-reviewer 删除打分脚本，superpowers 已在 Codex 停用，见 `maintenance/dev-kit-plugin/evals/2026-11-17-method-skills/REPORT.md`。此前已用图论课程设计在 pi 和 Codex 上各跑一次并通过验收，见 `maintenance/dev-kit-plugin/evals/2026-11-17-shortest-path/REPORT.md`。已装进 Codex；其余宿主的安装和全局说明里的提醒，由用户以后安排的负责更新的 Agent 来做。会话期间用户 Python 新装的 edge-tts 经用户确认是其他项目装的。
-- 本地 dev、main 都没有推送，推送要用户开口。
+- 2026-11-17 外部参考定的四项：开发技能组 → dev-kit 0.2.0；现代网页规范 → 并入 frontend-craft 0.7.0，指南本身不发布；Windows 软件操作 → windows-ops 0.1.0；**网络检索还没做**，要先和用户定搜索来源。三项都已推送（dev `a1c057d`、main `532a74e`）。dev-kit 只装在 Codex，frontend-craft 和 windows-ops 装在 Claude Code 和 Codex；ZCode、Antigravity 由用户安排的 Agent 安装。
+- windows-ops：本机装好的 agent-desktop 在 `%LOCALAPPDATA%\agent-desktop`；以后在 Codex 或 ZCode 上用一次真实任务试，再决定要不要补规则。
 
 ## 八、没有随仓库带走的东西
 
