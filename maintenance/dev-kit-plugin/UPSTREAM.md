@@ -29,7 +29,7 @@
 
 ## alirezarezvani/claude-skills（MIT 许可）
 
-code-reviewer 的 `rules/`、`languages/`（0.1.0 时还有 `scripts/`）原样复制自 `engineering-team/skills/code-reviewer`，固定在提交 `7b1abd5e8aff00ecb66e38956274586cb22ad681`（2026-10-26），并附上对方的 `LICENSE`。对方的 `SKILL.md` 和 `README.md` 没有采用。`assets/` 和 `expected_outputs/` 只是脚本的回归样本，移到了 [code-reviewer-fixtures/](code-reviewer-fixtures/)。
+code-reviewer 的 `rules/`、`languages/`（0.1.0 时还有 `scripts/`）原样复制自 `engineering-team/skills/code-reviewer`，固定在提交 `7b1abd5e8aff00ecb66e38956274586cb22ad681`（2026-10-26），并附上对方的 `LICENSE`。对方的 `SKILL.md` 和 `README.md` 没有采用。`assets/` 和 `expected_outputs/` 只是脚本的回归样本，0.1.0 时放在维护目录，0.2.0 随脚本一起删除。
 
 用户本机 `~/.agents/skills/code-reviewer` 的情况：
 - 和对方旧版比较（忽略换行差异）：除 `code_quality_checker.py` 有 134 行不同外，抽查的其余文件都相同。新版的这个脚本多了 C 语言支持。

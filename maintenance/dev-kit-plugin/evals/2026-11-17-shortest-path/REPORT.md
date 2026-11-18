@@ -100,7 +100,7 @@
 ### 任务目录之外
 
 - `~/.codex/config.toml` 新增了这个项目的受信任登记。这是 Codex 在会话开始时自己写的，属于正常行为。
-- 用户的 Python（`%APPDATA%\Python\Python312\site-packages`）在 22:38 新装了 edge-tts 和它的依赖（aiohttp 等）。这个时间在会话期间，但 Codex 主会话和 5 个子代理的记录里都没有安装命令，也没有出现 edge-tts，不像是这次开发装的，需要用户确认来源。
+- 用户的 Python（`%APPDATA%\Python\Python312\site-packages`）在 22:38 新装了 edge-tts 和它的依赖（aiohttp 等）。这个时间在会话期间，但 Codex 主会话和 5 个子代理的记录里都没有安装命令，也没有出现 edge-tts，不像是这次开发装的；用户事后确认是其他项目装的。
 - 临时目录里新出现的几张 `ScreenShot_*.png`，在会话开始前就已经有同类文件，不是这次开发产生的。
 
 ## 两次对照与验收结论

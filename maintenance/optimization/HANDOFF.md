@@ -132,7 +132,7 @@ node maintenance/frontend-craft/evals/test_pagecheck.mjs                   # 85 
 - docvision：MinerU 环境缺的依赖是否装进环境（现在靠用户目录补），待用户决定；面向“给 AI 做大批量识别”的批量任务还没测。
 - imagecraft：用户提过论文配图要按论文格式出，这次测试的提示词没写这个要求，可以单独测一次。
 - frontend-craft：第二批样例暂缓；样例配色可能被原样搬到别的题材；检查写成必须处理后出现过用 `!important` 补字号的写法。
-- dev-kit：0.2.0 收尾。四个方法技能各做一个小实验并通过，code-reviewer 删除打分脚本，superpowers 已在 Codex 停用，见 `maintenance/dev-kit-plugin/evals/2026-11-17-method-skills/REPORT.md`。此前已用图论课程设计在 pi 和 Codex 上各跑一次并通过验收，见 `maintenance/dev-kit-plugin/evals/2026-11-17-shortest-path/REPORT.md`。已装进 Codex；其余宿主的安装和全局说明里的提醒，由用户以后安排的负责更新的 Agent 来做。待用户确认：用户 Python 里 22:38 新装的 edge-tts 是否是用户自己装的。
+- dev-kit：0.2.0 收尾。四个方法技能各做一个小实验并通过，code-reviewer 删除打分脚本，superpowers 已在 Codex 停用，见 `maintenance/dev-kit-plugin/evals/2026-11-17-method-skills/REPORT.md`。此前已用图论课程设计在 pi 和 Codex 上各跑一次并通过验收，见 `maintenance/dev-kit-plugin/evals/2026-11-17-shortest-path/REPORT.md`。已装进 Codex；其余宿主的安装和全局说明里的提醒，由用户以后安排的负责更新的 Agent 来做。会话期间用户 Python 新装的 edge-tts 经用户确认是其他项目装的。
 - 本地 dev、main 都没有推送，推送要用户开口。
 
 ## 八、没有随仓库带走的东西
