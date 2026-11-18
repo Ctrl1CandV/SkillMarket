@@ -1,6 +1,6 @@
 # frontend-craft 待办
 
-当前版本为 frontend-craft 0.7.0（2026-11-18）：按 Google modern-web-guidance 的对照与三页练习，实现写法交给该技能，修正与它冲突的三处，补上它没有的三处，pagecheck 与起步样例随之更新，见[对照](reports/mwg-gap-2026-11-18.md)、[练习日记](practice/2026-11-mwg/JOURNAL.md)。上一版 0.6.1 与 product-design 0.3.0（2026-11-13）。把 11 月九类练习页的经验提炼进技能，分两批；第一批（四个起步样例、类别对照表、检查脚本、四个取舍问题）已完成并用 deepseek-flash 各跑一次对照，见[第一批记录](reports/frontend-craft-0.6.0-batch1-2026-11-13.md)。之后改成 0.6.1（对照表放进主流程、看样例和处理检查结果写成明确步骤、检查脚本能查出 NaN），gpt-6.1-sol 和 deepseek-flash 复测过，用户盲看分不出新旧好坏。2026-11-13 用户决定就此收尾，第二批暂缓。
+当前版本为 frontend-craft 0.7.0（2026-11-18）：参照 Google modern-web-guidance 做了对照和三页练习，修正与它冲突的三处，补上它没有的三处，pagecheck 与起步样例随之更新，见[对照](reports/mwg-gap-2026-11-18.md)、[练习日记](practice/2026-11-mwg/JOURNAL.md)。原打算让实现写法交给该技能；疫苗预约对照（0.6.2 基线、0.7.0、加指南、修订版各一次）显示指南的增量只有几处细节、费用高出不少，于是把这几条写进第 5 步的实现清单，指南不发布，见[对照结果](evals/2026-11-18-vaccine/REPORT.md)。上一版 0.6.1 与 product-design 0.3.0（2026-11-13）。把 11 月九类练习页的经验提炼进技能，分两批；第一批（四个起步样例、类别对照表、检查脚本、四个取舍问题）已完成并用 deepseek-flash 各跑一次对照，见[第一批记录](reports/frontend-craft-0.6.0-batch1-2026-11-13.md)。之后改成 0.6.1（对照表放进主流程、看样例和处理检查结果写成明确步骤、检查脚本能查出 NaN），gpt-6.1-sol 和 deepseek-flash 复测过，用户盲看分不出新旧好坏。2026-11-13 用户决定就此收尾，第二批暂缓。
 
 上一版为 frontend-craft 0.5.0-rc.3 与 product-design 0.2.0-rc.2。配色与样式选择作为独立目标实施，新增九组搭配库、三类可复用模板及导出；静态检查、代表性浏览器画面与操作已完成，用户已查看并认可，见[配色实施记录](reports/color-directions-implementation-2026-10-29.md)。按用户授权，将两个目标分别提交推送 main/dev；运行技能进入两分支，维护资料仅留 dev。
 

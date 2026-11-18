@@ -1,5 +1,5 @@
 // 对照计划第 3 项：实际操作两组页面，按同样的步骤记录结果。
-//   node behave.mjs <A|B> <page.html> <out-dir>
+//   node behave.mjs <A|B|C|A2> <page.html> <out-dir>   （C 是 0.6.2 基线，A2 是修订后的 0.7.0）
 // 两组的元素名不同，步骤相同；每组的选择器写在下面，是优化者读了各自页面后填的。
 import { mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -11,6 +11,8 @@ mkdirSync(out, { recursive: true });
 const S = {
   A: { toMine: '#tab-mine', cancel: '[data-cancel]', dialog: '#dlg-cancel', toForm: async (p) => { await p.click('#tab-book'); await p.locator('[data-time]:not([disabled])').first().click(); await p.click('#bar1-next'); }, submit: '#bar2-next', phone: '#f-phone', pick: (p) => p.locator('[data-time]:not([disabled])').first().check({ force: true }), picked: '.slot:has(input:checked)' },
   B: { toMine: null, cancel: '[data-act="cancel"]', dialog: '#dlg-cancel', toForm: async () => {}, submit: '#submit-booking', phone: '#phone', pick: (p) => p.locator('.slots button.slot:not([aria-disabled="true"])').first().click(), picked: '.slots [aria-pressed="true"]' },
+  C: { toMine: '.tabs [data-hot="mine"]', cancel: '[data-act="cancel"]', dialog: '#dlg', toForm: async (p) => { await p.locator('[data-time]:not([disabled])').first().click(); await p.click('#cta-btn'); }, submit: '#book-form button[type=submit]', phone: '#f-phone', pick: (p) => p.locator('[data-time]:not([disabled])').first().click(), picked: '[data-time][aria-pressed="true"]' },
+  A2: { toMine: '#tab-mine', cancel: '[data-act="cancel"]', dialog: '#cancel-dialog', toForm: async (p) => { await p.locator('input[name="day"]:not([disabled])').first().check({ force: true }); await p.locator('input[name="slot"]:not([disabled])').first().check({ force: true }); await p.click('#next-btn'); }, submit: '#next-btn', phone: '#phone', pick: async (p) => { await p.locator('input[name="day"]:not([disabled])').first().check({ force: true }); await p.locator('input[name="slot"]:not([disabled])').first().check({ force: true }); }, picked: '.slot input:checked + .slot-in' },
 }[arm];
 const rows = [];
 const rec = (k, v) => rows.push([k, v]);
