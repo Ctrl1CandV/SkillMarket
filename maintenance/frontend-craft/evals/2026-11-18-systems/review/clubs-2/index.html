@@ -1,0 +1,11 @@
+<!doctype html>
+<!--
+页面取舍：活动是目录检索，详情是阅读+表单，我的报名是记录列表，后台是签到工作台。
+沿用 catalog 的筛选/结果关系、settings 的依赖提示、workbench 的按人操作与移动重排，而非照搬题材。
+颜色只给当前选择、可执行动作和需要留意的名额状态；其余用纸白与墨色。
+因为28个活动无海报，所以用日期作为识别锚点，不制造占位海报；因为标题长且费用不同，所以完整标题、费用和余量在每张卡同时可见。
+因为学生手机浏览、负责人电脑整理，所以学生用卡片，后台桌面用表格而手机改为人员行。
+因为截止优先于满员，所以截止活动不再提供候补；因为候补不能保证参加，所以提交前后均明确身份与顺序。
+-->
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>集合同学 · 校园社团活动</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="top"><div class="top-inner"><a class="brand" href="#events"><span class="brand-mark">集</span><span>集合同学<small>校园社团活动</small></span></a><nav aria-label="主导航"><a href="#events" data-nav="events">发现活动</a><a href="#mine" data-nav="mine">我的报名 <span id="my-count"></span></a><a href="#admin" data-nav="admin">社团后台</a></nav><span class="user"><i>林</i> 林雨桐</span></div></header><main id="app"></main><footer><span class="footer-brand">集合同学</span><span>课表之外，还有很多可能。</span><small>离线演示 · 数据仅保存在此浏览器 · 示例个人信息</small></footer><dialog id="modal"></dialog><div id="toast" role="status" aria-live="polite"></div><script src="data/clubs.js"></script><script src="app.js"></script></body></html>

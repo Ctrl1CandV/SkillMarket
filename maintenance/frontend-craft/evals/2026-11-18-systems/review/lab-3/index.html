@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>知仪 · 学院共享仪器</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<aside class="sidebar">
+<a class="brand" href="#instruments"><span class="brand-mark">知</span><span>知仪<small>学院共享仪器平台</small></span></a>
+<div class="side-label">工作空间</div>
+<nav aria-label="主导航"><a href="#instruments" data-nav="instruments"><span>▦</span>仪器</a><a href="#mine" data-nav="mine"><span>▤</span>我的预约<i id="mine-count"></i></a><a href="#admin" data-nav="admin"><span>⚙</span>管理员</a></nav>
+<div class="side-bottom"><div class="local"><span class="dot"></span>本地工作空间</div><p>开放时间　08:00–22:00<br>预约窗口　未来 7 天</p><button class="text-button" id="rules-button">预约须知 ↗</button></div>
+<div class="profile"><span class="avatar">许</span><div><b>许静怡</b><small>陈老师课题组</small></div><span class="profile-dot">●</span></div>
+</aside>
+<div class="workspace"><header class="topbar"><div id="breadcrumb">共享平台 / 仪器</div><div class="clock"><span class="dot"></span>2026 年 11 月 18 日　周三 <b>10:40</b><span class="demo">演示时间</span></div></header><main id="main"></main><footer>知仪 · 让实验有序发生<span>离线可用 · 更改仅保存在当前浏览器</span></footer></div>
+<dialog id="modal" aria-labelledby="dialog-title"><div id="modal-body"></div></dialog>
+<div id="toast" role="status" hidden></div>
+<script src="data/lab.js"></script><script src="app.js"></script>
+</body></html>

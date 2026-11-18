@@ -1,0 +1,15 @@
+<!doctype html>
+<!--
+页面取舍（从 workbench 起步样例的共享表头、对象优先、移动重排演变）：
+仪器是目录兼空档比较；日程是精确操作工作台；我的预约、管理员是记录工作台。学生反复使用，不做宣传横幅或指标看板。
+颜色只强调可预约/当前选择，其他占用和历史采用中性色；危险操作以文字和边框补充。
+因为只有六台仪器且无照片，所以用三列对象卡与原创线稿辨认，而不是虚构照片。
+因为时段有1/2/4小时，所以卡片标最小时长，日程保留小时刻度，预约允许最小时长的整数倍。
+因为培训、审批、送样是不同约束，所以分别说明，不把“未培训”伪装成满约。
+因为手机主要查看自己的预约，所以记录在窄屏重排，七日日程提供独立横向滚动，不缩小文字。
+因为校准数据仅到18点但任务明确全天，所以11月20日XRD按8–22点封锁，保留原数据不改。
+-->
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>共用实验室 · 仪器预约</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="top"><a class="brand" href="#instruments"><span class="mark">⌘</span><span>共用实验室<small>SHARED LAB / 学院仪器预约</small></span></a><nav aria-label="主导航"><a href="#instruments" data-nav="instruments">仪器</a><a href="#mine" data-nav="mine">我的预约 <span id="mine-count"></span></a><a href="#admin" data-nav="admin">管理员</a></nav><div class="identity"><span class="avatar">许</span><span>许静怡<small>陈老师课题组</small></span></div></header>
+<main id="app"></main><footer><span>共用实验室 · 让仪器有序共享</span><span>本地演示 · 当前时间 2026.11.18 10:40 · 数据保存在此浏览器</span></footer>
+<dialog id="dialog" aria-labelledby="dialog-title"></dialog><div id="toast" role="status" hidden></div><script src="data/lab.js"></script><script src="app.js"></script></body></html>

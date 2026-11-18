@@ -1,0 +1,14 @@
+/* 可读性与可操作区域：次要信息不低于 12px，手机保留完整点击面。 */
+:root{--muted:#626c79}
+.brand-en,.profile small,.eyebrow,.strip-content small,.strip-link,.note-count,.added small,.new-mark,.tag,.table-head,.tabs button small,footer,.note header small{font-size:.75rem}
+.brand-en,.side-bottom,.workspace span{color:#566b5e}
+.tag[data-tag='推理']{color:#79603e}
+.paper-meta,.added{color:var(--muted)}
+.new-mark{font-size:.75rem}
+@media(max-width:800px){.topbar>:last-child{font-size:.75rem}.strip-link{font-size:.75rem}.brand{min-height:40px}nav a{min-height:42px}}
+@media(max-width:520px){nav{gap:4px}nav a{padding:7px 8px;gap:6px;white-space:nowrap}nav a>span{font-size:1rem}.chip,.filter-line select,.text-button,.pagination button{min-height:40px}.filter-line select{max-width:100%}.page-heading .primary{min-height:40px;display:inline-flex;align-items:center}.strip-link{display:inline-flex;align-items:center;min-height:40px;font-size:.75rem}.back{min-height:40px;display:inline-flex;align-items:center}.paper-title{padding:3px 0}.check-tags label{min-height:42px}.schedule-row>button{min-height:40px}.pagination>span>span{display:block;margin-left:0!important;margin-top:4px}}
+small{font-size:.75rem}
+.meeting-hero .strip-link{margin-left:0}
+@media(max-width:800px){button,select{min-height:42px}.tabs button{min-width:42px}.pagination button{min-width:42px}.form-actions a{min-height:42px;display:inline-flex;align-items:center}.method-tabs button{min-height:42px}}
+[aria-invalid=true]{border-color:#a54035;outline-color:#a54035}
+@media(forced-colors:active){[aria-invalid=true]{outline:2px solid Mark}}

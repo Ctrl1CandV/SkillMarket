@@ -1,0 +1,3164 @@
+{
+ "now": "2026-11-18T16:00",
+ "me": "许静怡",
+ "members": [
+  "陈老师",
+  "许静怡",
+  "唐文博",
+  "梁可馨",
+  "何雨桐",
+  "罗俊杰"
+ ],
+ "tags": [
+  "长文本",
+  "检索增强",
+  "评测",
+  "对齐",
+  "推理",
+  "多模态"
+ ],
+ "papers": [
+  {
+   "id": "P026",
+   "title": "When to Retrieve: Latent Planning for RAG",
+   "authors": [
+    "N. Li",
+    "E. Kim"
+   ],
+   "year": 2025,
+   "venue": "ICML",
+   "doi": "10.3213/icml.2025.629",
+   "arxiv": "2504.28033",
+   "tags": [
+    "推理",
+    "检索增强"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-11-16T12:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 6 benchmarks show improvements of 2.3 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P041",
+   "title": "Document Understanding with Hierarchical Chunking",
+   "authors": [
+    "A. Zhang",
+    "H. Smith",
+    "L. Ivanova"
+   ],
+   "year": 2025,
+   "venue": "ICML",
+   "doi": "10.7838/icml.2025.316",
+   "arxiv": "2507.22749",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-11-16T03:00",
+   "abstract": "We study multimodal understanding and propose chunking-based methods. Experiments on 3 benchmarks show improvements of 3.8 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P056",
+   "title": "Test-Time Compute Scaling for Latent Planning",
+   "authors": [
+    "A. Smith",
+    "K. Müller"
+   ],
+   "year": 2023,
+   "venue": "NeurIPS",
+   "doi": "10.5113/neurips.2023.688",
+   "arxiv": "2302.13003",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-11-15T04:00",
+   "abstract": "We study reasoning and propose planning-based methods. Experiments on 4 benchmarks show improvements of 8.1 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "唐文博": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P081",
+   "title": "When to Retrieve: Token Pruning for RAG",
+   "authors": [
+    "F. Okafor",
+    "R. Rossi",
+    "J. Liu",
+    "S. Chen",
+    "K. Kim",
+    "K. Li"
+   ],
+   "year": 2025,
+   "venue": "NeurIPS",
+   "doi": "10.4930/neurips.2025.179",
+   "arxiv": "2507.26594",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-11-12T00:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 9 benchmarks show improvements of 8.5 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "何雨桐": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-11-22T00:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-12-02T00:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P019",
+   "title": "Retrieval-Augmented Generation with Structured Prompts",
+   "authors": [
+    "R. Smith",
+    "C. Kim",
+    "C. Wang",
+    "A. Ivanova",
+    "T. Kim",
+    "Y. Chen"
+   ],
+   "year": 2023,
+   "venue": "EMNLP",
+   "doi": "10.4563/emnlp.2023.868",
+   "arxiv": "2305.16037",
+   "tags": [
+    "检索增强",
+    "长文本"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-11-11T12:00",
+   "abstract": "We study retrieval augmentation and propose prompts-based methods. Experiments on 5 benchmarks show improvements of 1.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-11-20T12:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "许静怡",
+    "唐文博",
+    "梁可馨"
+   ]
+  },
+  {
+   "id": "P003",
+   "title": "Where Does Long-Context Retrieval Fail? A Sparse Routing Study",
+   "authors": [
+    "L. Müller",
+    "S. Müller"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2507.22760",
+   "tags": [
+    "检索增强",
+    "长文本"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-11-06T02:00",
+   "abstract": "We study long-context modeling and propose study-based methods. Experiments on 9 benchmarks show improvements of 8.7 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "罗俊杰",
+     "at": "2026-11-17T02:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P091",
+   "title": "Faithful Citation in RAG through Learned Memory",
+   "authors": [
+    "H. Müller",
+    "N. Okafor",
+    "S. Garcia",
+    "T. Kim",
+    "C. Tanaka",
+    "H. Cohen",
+    "B. Wang",
+    "B. Liu"
+   ],
+   "year": 2024,
+   "venue": "CVPR",
+   "doi": "10.6514/cvpr.2024.476",
+   "arxiv": "2402.24975",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-31T06:00",
+   "abstract": "We study retrieval augmentation and propose memory-based methods. Experiments on 7 benchmarks show improvements of 6.1 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P053",
+   "title": "Efficient Long-Context Attention via Multi-Agent Debate",
+   "authors": [
+    "J. Müller",
+    "E. Garcia",
+    "B. Li"
+   ],
+   "year": 2026,
+   "venue": "CVPR",
+   "doi": "10.6283/cvpr.2026.907",
+   "arxiv": "2610.23478",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-10-30T11:00",
+   "abstract": "We study long-context modeling and propose debate-based methods. Experiments on 4 benchmarks show improvements of 7.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P014",
+   "title": "Efficient Long-Context Attention via Calibration",
+   "authors": [
+    "E. Park",
+    "M. Garcia",
+    "A. Ivanova",
+    "A. Okafor",
+    "B. Zhang",
+    "R. Liu",
+    "R. Garcia",
+    "K. Rossi"
+   ],
+   "year": 2026,
+   "venue": "CVPR",
+   "doi": "10.7922/cvpr.2026.550",
+   "arxiv": "2608.15939",
+   "tags": [
+    "检索增强",
+    "长文本"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-10-24T11:00",
+   "abstract": "We study long-context modeling and propose calibration-based methods. Experiments on 6 benchmarks show improvements of 9.0 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "读完",
+    "何雨桐": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P039",
+   "title": "Faithful Citation in RAG through Multi-Agent Debate",
+   "authors": [
+    "A. Chen",
+    "E. Liu",
+    "H. Ivanova",
+    "J. Liu",
+    "J. Tanaka",
+    "B. Liu"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2508.22915",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-20T05:00",
+   "abstract": "We study retrieval augmentation and propose debate-based methods. Experiments on 9 benchmarks show improvements of 2.2 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-11-12T05:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "梁可馨"
+   ]
+  },
+  {
+   "id": "P005",
+   "title": "Where Does Long-Context Retrieval Fail? A Structured Prompts Study",
+   "authors": [
+    "J. Cohen",
+    "N. Kim",
+    "T. Nguyen",
+    "R. Nguyen",
+    "Y. Müller"
+   ],
+   "year": 2024,
+   "venue": "COLM",
+   "doi": "10.8420/colm.2024.106",
+   "arxiv": "2404.21335",
+   "tags": [
+    "对齐",
+    "长文本"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-10-14T13:00",
+   "abstract": "We study long-context modeling and propose study-based methods. Experiments on 8 benchmarks show improvements of 7.7 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P067",
+   "title": "Rethinking Small Verifiers Evaluation",
+   "authors": [
+    "J. Park",
+    "S. Cohen",
+    "F. Rossi",
+    "H. Ivanova",
+    "T. Okafor",
+    "M. Chen"
+   ],
+   "year": 2024,
+   "venue": "EMNLP",
+   "doi": "10.3793/emnlp.2024.645",
+   "arxiv": "2402.11611",
+   "tags": [
+    "多模态",
+    "评测"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-14T04:00",
+   "abstract": "We study evaluation and propose evaluation-based methods. Experiments on 4 benchmarks show improvements of 8.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P066",
+   "title": "Retrieval-Augmented Generation with Synthetic Data",
+   "authors": [
+    "A. Kim",
+    "E. Singh",
+    "J. Singh",
+    "E. Tanaka",
+    "P. Rossi",
+    "Y. Rossi",
+    "M. Liu",
+    "N. Tanaka"
+   ],
+   "year": 2024,
+   "venue": "TACL",
+   "doi": "10.3160/tacl.2024.591",
+   "arxiv": "2401.23684",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-10-14T03:00",
+   "abstract": "We study retrieval augmentation and propose data-based methods. Experiments on 9 benchmarks show improvements of 2.8 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完",
+    "何雨桐": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "罗俊杰",
+     "at": "2026-10-15T03:00",
+     "text": "训练成本太高，我们做不了。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P016",
+   "title": "Reward Hacking in Token Pruning",
+   "authors": [
+    "R. Garcia",
+    "A. Okafor"
+   ],
+   "year": 2024,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2401.22459",
+   "tags": [
+    "对齐",
+    "长文本"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-12T09:00",
+   "abstract": "We study alignment and propose pruning-based methods. Experiments on 3 benchmarks show improvements of 8.2 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完",
+    "梁可馨": "读完",
+    "何雨桐": "在读",
+    "罗俊杰": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-11-04T09:00",
+     "text": "用的指标我们也可以用。"
+    },
+    {
+     "who": "唐文博",
+     "at": "2026-10-15T09:00",
+     "text": "可以作为相关工作引用。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P076",
+   "title": "When to Retrieve: Curriculum Sampling for RAG",
+   "authors": [
+    "F. Garcia",
+    "H. Kim",
+    "B. Park",
+    "R. Garcia",
+    "R. Li",
+    "J. Garcia",
+    "A. Rossi"
+   ],
+   "year": 2025,
+   "venue": "CVPR",
+   "doi": "10.7057/cvpr.2025.505",
+   "arxiv": "2505.11895",
+   "tags": [
+    "推理",
+    "检索增强"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-10-05T16:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 5 benchmarks show improvements of 8.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "读完",
+    "梁可馨": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "唐文博",
+     "at": "2026-10-07T16:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    },
+    {
+     "who": "何雨桐",
+     "at": "2026-10-11T16:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P015",
+   "title": "A Benchmark for Contrastive Signals in Language Models",
+   "authors": [
+    "J. Liu",
+    "S. Müller",
+    "C. Park"
+   ],
+   "year": 2023,
+   "venue": "ICLR",
+   "doi": "10.1475/iclr.2023.183",
+   "arxiv": "2302.23169",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-10-05T12:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 8 benchmarks show improvements of 9.9 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P062",
+   "title": "Self-Critique for Small Verifiers",
+   "authors": [
+    "B. Nguyen",
+    "Y. Park",
+    "T. Wang",
+    "A. Smith",
+    "S. Wang",
+    "N. Chen"
+   ],
+   "year": 2026,
+   "venue": "NeurIPS",
+   "doi": "10.5289/neurips.2026.317",
+   "arxiv": "2609.23430",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-10-03T15:00",
+   "abstract": "We study alignment and propose verifiers-based methods. Experiments on 6 benchmarks show improvements of 2.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-10-20T15:00",
+     "text": "表 3 的基线设置不公平，没调参。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P084",
+   "title": "Test-Time Compute Scaling for Mixture of Experts",
+   "authors": [
+    "F. Smith",
+    "B. Park",
+    "P. Cohen",
+    "S. Singh",
+    "F. Müller",
+    "H. Garcia",
+    "M. Garcia"
+   ],
+   "year": 2024,
+   "venue": "EMNLP",
+   "doi": "10.2264/emnlp.2024.185",
+   "arxiv": "2401.17940",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-02T22:00",
+   "abstract": "We study reasoning and propose experts-based methods. Experiments on 7 benchmarks show improvements of 4.0 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "许静怡": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-10-09T22:00",
+     "text": "表 3 的基线设置不公平，没调参。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-10-15T22:00",
+     "text": "代码开源了，可以直接复现。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P052",
+   "title": "Scaling Latent Planning to Million-Token Contexts",
+   "authors": [
+    "K. Nguyen",
+    "R. Liu",
+    "A. Tanaka",
+    "S. Chen"
+   ],
+   "year": 2024,
+   "venue": "ICML",
+   "doi": "10.4362/icml.2024.273",
+   "arxiv": "2405.12200",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-10-01T05:00",
+   "abstract": "We study long-context modeling and propose contexts-based methods. Experiments on 3 benchmarks show improvements of 8.2 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-10-16T05:00",
+     "text": "和组会上讲的那篇结论相反。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P006",
+   "title": "A Benchmark for Latent Planning in Language Models",
+   "authors": [
+    "S. Smith",
+    "P. Müller",
+    "A. Rossi"
+   ],
+   "year": 2024,
+   "venue": "COLM",
+   "doi": "10.9838/colm.2024.983",
+   "arxiv": "2406.28761",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-10-01T03:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 8 benchmarks show improvements of 6.3 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P001",
+   "title": "Process Supervision for Structured Prompts",
+   "authors": [
+    "A. Cohen",
+    "A. Chen",
+    "J. Liu"
+   ],
+   "year": 2026,
+   "venue": "EMNLP",
+   "doi": "10.6035/emnlp.2026.168",
+   "arxiv": "2608.27284",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-09-23T12:00",
+   "abstract": "We study reasoning and propose prompts-based methods. Experiments on 4 benchmarks show improvements of 4.1 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P024",
+   "title": "Document Understanding with Sparse Routing",
+   "authors": [
+    "R. Nguyen",
+    "L. Rossi",
+    "H. Kim",
+    "K. Müller",
+    "P. Singh",
+    "L. Smith",
+    "J. Zhang"
+   ],
+   "year": 2025,
+   "venue": "ICLR",
+   "doi": "10.1975/iclr.2025.554",
+   "arxiv": "2501.13669",
+   "tags": [
+    "多模态",
+    "评测"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-09-21T23:00",
+   "abstract": "We study multimodal understanding and propose routing-based methods. Experiments on 4 benchmarks show improvements of 7.1 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-10-04T23:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P074",
+   "title": "Self-Critique for Small Verifiers",
+   "authors": [
+    "B. Chen",
+    "T. Singh",
+    "F. Singh"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.1365/naacl.2025.440",
+   "arxiv": "2507.15709",
+   "tags": [
+    "对齐",
+    "评测"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-09-20T20:00",
+   "abstract": "We study alignment and propose verifiers-based methods. Experiments on 6 benchmarks show improvements of 7.2 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-10-13T20:00",
+     "text": "表 3 的基线设置不公平，没调参。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P025",
+   "title": "Reward Hacking in Contrastive Signals",
+   "authors": [
+    "R. Rossi",
+    "P. Wang",
+    "P. Okafor",
+    "E. Nguyen",
+    "Y. Müller",
+    "S. Tanaka",
+    "A. Wang",
+    "F. Smith"
+   ],
+   "year": 2024,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2408.11617",
+   "tags": [
+    "多模态",
+    "对齐"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-09-19T11:00",
+   "abstract": "We study alignment and propose signals-based methods. Experiments on 3 benchmarks show improvements of 4.0 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-10-19T11:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    },
+    {
+     "who": "唐文博",
+     "at": "2026-09-25T11:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P007",
+   "title": "Self-Critique for Multi-Agent Debate",
+   "authors": [
+    "R. Liu",
+    "E. Li",
+    "R. Chen"
+   ],
+   "year": 2024,
+   "venue": "CVPR",
+   "doi": "10.9396/cvpr.2024.825",
+   "arxiv": "2403.27423",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-09-18T10:00",
+   "abstract": "We study alignment and propose debate-based methods. Experiments on 3 benchmarks show improvements of 2.2 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P002",
+   "title": "Self-Critique for Calibration",
+   "authors": [
+    "K. Wang",
+    "F. Chen",
+    "J. Nguyen",
+    "H. Rossi",
+    "P. Smith",
+    "B. Zhang"
+   ],
+   "year": 2024,
+   "venue": "ACL",
+   "doi": "10.8556/acl.2024.811",
+   "arxiv": "2406.17052",
+   "tags": [
+    "对齐",
+    "推理"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-09-16T16:00",
+   "abstract": "We study alignment and propose calibration-based methods. Experiments on 6 benchmarks show improvements of 4.7 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": false,
+   "starred_by": [
+    "唐文博",
+    "何雨桐"
+   ]
+  },
+  {
+   "id": "P054",
+   "title": "When to Retrieve: Uncertainty Estimates for RAG",
+   "authors": [
+    "J. Okafor",
+    "A. Park",
+    "P. Garcia",
+    "S. Li",
+    "N. Cohen"
+   ],
+   "year": 2024,
+   "venue": "EMNLP",
+   "doi": "10.7565/emnlp.2024.754",
+   "arxiv": "2406.13072",
+   "tags": [
+    "检索增强",
+    "评测"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-09-13T23:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 4 benchmarks show improvements of 6.4 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-10-08T23:00",
+     "text": "用的指标我们也可以用。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "唐文博"
+   ]
+  },
+  {
+   "id": "P096",
+   "title": "Self-Critique for Contrastive Signals",
+   "authors": [
+    "M. Park",
+    "H. Zhang"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2502.19503",
+   "tags": [
+    "对齐",
+    "检索增强"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-09-12T23:00",
+   "abstract": "We study alignment and propose signals-based methods. Experiments on 7 benchmarks show improvements of 4.9 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P087",
+   "title": "Grounded Curriculum Sampling for Vision-Language Models",
+   "authors": [
+    "K. Okafor",
+    "M. Liu",
+    "B. Nguyen",
+    "P. Garcia"
+   ],
+   "year": 2024,
+   "venue": "NeurIPS",
+   "doi": "10.5033/neurips.2024.953",
+   "arxiv": "2411.13413",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-09-12T00:00",
+   "abstract": "We study multimodal understanding and propose models-based methods. Experiments on 5 benchmarks show improvements of 5.4 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "罗俊杰": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P094",
+   "title": "Grounded Synthetic Data for Vision-Language Models",
+   "authors": [
+    "T. Zhang",
+    "T. Ivanova"
+   ],
+   "year": 2024,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2411.17875",
+   "tags": [
+    "多模态",
+    "评测"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-09-10T05:00",
+   "abstract": "We study multimodal understanding and propose models-based methods. Experiments on 5 benchmarks show improvements of 2.4 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P034",
+   "title": "Test-Time Compute Scaling for Sparse Routing",
+   "authors": [
+    "F. Li",
+    "R. Chen",
+    "Y. Chen",
+    "D. Okafor",
+    "K. Wang",
+    "P. Chen",
+    "F. Garcia",
+    "K. Tanaka"
+   ],
+   "year": 2025,
+   "venue": "NeurIPS",
+   "doi": "10.7070/neurips.2025.187",
+   "arxiv": "2507.28169",
+   "tags": [
+    "对齐",
+    "推理"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-09-09T23:00",
+   "abstract": "We study reasoning and propose routing-based methods. Experiments on 6 benchmarks show improvements of 1.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-10-07T23:00",
+     "text": "和组会上讲的那篇结论相反。"
+    },
+    {
+     "who": "唐文博",
+     "at": "2026-10-07T23:00",
+     "text": "训练成本太高，我们做不了。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-10-04T23:00",
+     "text": "用的指标我们也可以用。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P049",
+   "title": "Self-Critique for Synthetic Data",
+   "authors": [
+    "L. Cohen",
+    "B. Liu",
+    "E. Chen"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2502.28329",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-09-09T08:00",
+   "abstract": "We study alignment and propose data-based methods. Experiments on 5 benchmarks show improvements of 8.7 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P027",
+   "title": "Retrieval-Augmented Generation with Calibration",
+   "authors": [
+    "B. Zhang",
+    "N. Kim",
+    "M. Tanaka",
+    "A. Tanaka",
+    "R. Okafor",
+    "M. Okafor",
+    "B. Singh"
+   ],
+   "year": 2024,
+   "venue": "TACL",
+   "doi": "10.8026/tacl.2024.485",
+   "arxiv": "2405.17736",
+   "tags": [
+    "检索增强",
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-09-07T08:00",
+   "abstract": "We study retrieval augmentation and propose calibration-based methods. Experiments on 6 benchmarks show improvements of 1.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "许静怡": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-10-07T08:00",
+     "text": "训练成本太高，我们做不了。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": [
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P022",
+   "title": "Self-Critique for Synthetic Data",
+   "authors": [
+    "L. Wang",
+    "P. Okafor",
+    "A. Kim",
+    "A. Park",
+    "F. Li",
+    "K. Cohen",
+    "L. Smith"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.7374/naacl.2025.719",
+   "arxiv": "2509.11363",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-09-04T13:00",
+   "abstract": "We study alignment and propose data-based methods. Experiments on 9 benchmarks show improvements of 3.7 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "读完"
+   },
+   "notes": [
+    {
+     "who": "唐文博",
+     "at": "2026-09-26T13:00",
+     "text": "附录 B 的消融值得看。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P023",
+   "title": "Chain-of-Thought Learned Memory",
+   "authors": [
+    "D. Wang",
+    "P. Cohen",
+    "S. Park",
+    "B. Rossi",
+    "Y. Cohen",
+    "E. Okafor"
+   ],
+   "year": 2023,
+   "venue": "ACL",
+   "doi": "10.9781/acl.2023.377",
+   "arxiv": "2302.11893",
+   "tags": [
+    "推理",
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-09-04T02:00",
+   "abstract": "We study reasoning and propose memory-based methods. Experiments on 6 benchmarks show improvements of 5.8 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P073",
+   "title": "Document Understanding with Multi-Agent Debate",
+   "authors": [
+    "H. Smith",
+    "C. Cohen",
+    "P. Zhang",
+    "S. Wang",
+    "S. Nguyen",
+    "H. Park"
+   ],
+   "year": 2026,
+   "venue": "CVPR",
+   "doi": "10.6117/cvpr.2026.594",
+   "arxiv": "2601.19938",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-09-03T00:00",
+   "abstract": "We study multimodal understanding and propose debate-based methods. Experiments on 4 benchmarks show improvements of 1.3 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": false,
+   "starred_by": [
+    "何雨桐"
+   ]
+  },
+  {
+   "id": "P077",
+   "title": "Document Understanding with Curriculum Sampling",
+   "authors": [
+    "M. Cohen",
+    "D. Garcia",
+    "L. Wang"
+   ],
+   "year": 2023,
+   "venue": "NeurIPS",
+   "doi": "10.4453/neurips.2023.305",
+   "arxiv": "2309.23580",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-09-01T04:00",
+   "abstract": "We study multimodal understanding and propose sampling-based methods. Experiments on 3 benchmarks show improvements of 7.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-09-13T04:00",
+     "text": "代码开源了，可以直接复现。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": [
+    "许静怡",
+    "何雨桐"
+   ]
+  },
+  {
+   "id": "P063",
+   "title": "When to Retrieve: Token Pruning for RAG",
+   "authors": [
+    "L. Ivanova",
+    "Y. Singh",
+    "K. Park",
+    "N. Ivanova",
+    "R. Tanaka",
+    "E. Müller"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2301.19780",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-09-01T00:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 9 benchmarks show improvements of 4.5 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-09-10T00:00",
+     "text": "训练成本太高，我们做不了。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P093",
+   "title": "When to Retrieve: Token Pruning for RAG",
+   "authors": [
+    "Y. Li",
+    "T. Müller",
+    "C. Singh"
+   ],
+   "year": 2024,
+   "venue": "ACL",
+   "doi": "10.4679/acl.2024.498",
+   "arxiv": "2411.11017",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-08-31T13:00",
+   "abstract": "We study retrieval augmentation and propose rag-based methods. Experiments on 7 benchmarks show improvements of 9.7 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P011",
+   "title": "Process Supervision for Token Pruning",
+   "authors": [
+    "N. Singh",
+    "C. Zhang",
+    "D. Kim",
+    "R. Rossi",
+    "Y. Cohen",
+    "M. Tanaka",
+    "T. Garcia",
+    "L. Cohen"
+   ],
+   "year": 2026,
+   "venue": "ICML",
+   "doi": "10.4916/icml.2026.317",
+   "arxiv": "2608.13872",
+   "tags": [
+    "多模态",
+    "推理"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-08-31T00:00",
+   "abstract": "We study reasoning and propose pruning-based methods. Experiments on 4 benchmarks show improvements of 1.1 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P060",
+   "title": "Process Supervision for Sparse Routing",
+   "authors": [
+    "D. Kim",
+    "A. Park",
+    "M. Zhang",
+    "L. Tanaka"
+   ],
+   "year": 2026,
+   "venue": "ICML",
+   "doi": "10.9357/icml.2026.594",
+   "arxiv": "2602.14090",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-08-29T01:00",
+   "abstract": "We study reasoning and propose routing-based methods. Experiments on 9 benchmarks show improvements of 6.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "许静怡": "读完",
+    "梁可馨": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-09-12T01:00",
+     "text": "用的指标我们也可以用。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P079",
+   "title": "Chart Question Answering via Small Verifiers",
+   "authors": [
+    "H. Kim",
+    "E. Park",
+    "L. Liu"
+   ],
+   "year": 2026,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2612.24672",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-08-26T01:00",
+   "abstract": "We study multimodal understanding and propose verifiers-based methods. Experiments on 4 benchmarks show improvements of 6.5 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-09-06T01:00",
+     "text": "这篇是综述，适合新人入门。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P065",
+   "title": "A Benchmark for Structured Prompts in Language Models",
+   "authors": [
+    "R. Park",
+    "K. Smith",
+    "S. Garcia",
+    "K. Kim",
+    "L. Zhang"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2501.21452",
+   "tags": [
+    "评测",
+    "长文本"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-08-21T04:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 4 benchmarks show improvements of 7.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "在读",
+    "梁可馨": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-09-04T04:00",
+     "text": "这篇是综述，适合新人入门。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P028",
+   "title": "Efficient Long-Context Attention via Structured Prompts",
+   "authors": [
+    "F. Singh",
+    "H. Park",
+    "Y. Liu",
+    "E. Kim",
+    "K. Cohen"
+   ],
+   "year": 2025,
+   "venue": "ICML",
+   "doi": "10.6499/icml.2025.867",
+   "arxiv": "2507.26243",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-08-20T07:00",
+   "abstract": "We study long-context modeling and propose prompts-based methods. Experiments on 6 benchmarks show improvements of 2.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-09-05T07:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P080",
+   "title": "Chain-of-Thought Token Pruning",
+   "authors": [
+    "R. Smith",
+    "A. Cohen",
+    "D. Ivanova",
+    "S. Rossi",
+    "N. Cohen"
+   ],
+   "year": 2026,
+   "venue": "ICML",
+   "doi": "10.2192/icml.2026.390",
+   "arxiv": "2603.29365",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-08-14T16:00",
+   "abstract": "We study reasoning and propose pruning-based methods. Experiments on 6 benchmarks show improvements of 2.8 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-08-25T16:00",
+     "text": "和组会上讲的那篇结论相反。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-08-16T16:00",
+     "text": "主要贡献是数据集，方法一般。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P044",
+   "title": "Test-Time Compute Scaling for Sparse Routing",
+   "authors": [
+    "L. Li",
+    "R. Chen",
+    "M. Li",
+    "N. Cohen",
+    "P. Smith",
+    "T. Ivanova"
+   ],
+   "year": 2024,
+   "venue": "ACL",
+   "doi": "10.3551/acl.2024.370",
+   "arxiv": "2401.27265",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-08-12T08:00",
+   "abstract": "We study reasoning and propose routing-based methods. Experiments on 5 benchmarks show improvements of 5.3 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P029",
+   "title": "Efficient Long-Context Attention via Synthetic Data",
+   "authors": [
+    "M. Tanaka",
+    "R. Müller",
+    "K. Müller",
+    "C. Müller",
+    "J. Tanaka",
+    "J. Kim",
+    "S. Rossi",
+    "C. Park"
+   ],
+   "year": 2024,
+   "venue": "TACL",
+   "doi": "10.3811/tacl.2024.948",
+   "arxiv": "2405.22651",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-08-05T12:00",
+   "abstract": "We study long-context modeling and propose data-based methods. Experiments on 7 benchmarks show improvements of 6.7 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "许静怡": "读完",
+    "唐文博": "读完",
+    "梁可馨": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-08-21T12:00",
+     "text": "这篇是综述，适合新人入门。"
+    },
+    {
+     "who": "梁可馨",
+     "at": "2026-09-02T12:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-08-15T12:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P072",
+   "title": "Scaling Multi-Agent Debate to Million-Token Contexts",
+   "authors": [
+    "K. Nguyen",
+    "B. Okafor",
+    "K. Singh"
+   ],
+   "year": 2026,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2603.25497",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-07-28T08:00",
+   "abstract": "We study long-context modeling and propose contexts-based methods. Experiments on 4 benchmarks show improvements of 6.7 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完",
+    "何雨桐": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-08-03T08:00",
+     "text": "用的指标我们也可以用。"
+    },
+    {
+     "who": "罗俊杰",
+     "at": "2026-08-01T08:00",
+     "text": "训练成本太高，我们做不了。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P047",
+   "title": "Preference Optimization with Token Pruning",
+   "authors": [
+    "L. Müller",
+    "S. Zhang",
+    "M. Liu",
+    "H. Wang",
+    "E. Tanaka",
+    "F. Wang",
+    "M. Chen",
+    "K. Cohen"
+   ],
+   "year": 2025,
+   "venue": "EMNLP",
+   "doi": "10.5461/emnlp.2025.170",
+   "arxiv": "2503.15096",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-07-21T09:00",
+   "abstract": "We study alignment and propose pruning-based methods. Experiments on 8 benchmarks show improvements of 6.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P069",
+   "title": "Process Supervision for Learned Memory",
+   "authors": [
+    "K. Cohen",
+    "H. Tanaka",
+    "R. Li",
+    "F. Park"
+   ],
+   "year": 2026,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2606.27897",
+   "tags": [
+    "推理",
+    "评测"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-07-20T09:00",
+   "abstract": "We study reasoning and propose memory-based methods. Experiments on 9 benchmarks show improvements of 6.4 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "罗俊杰",
+     "at": "2026-08-01T09:00",
+     "text": "表 3 的基线设置不公平，没调参。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "陈老师"
+   ]
+  },
+  {
+   "id": "P083",
+   "title": "Reward Hacking in Small Verifiers",
+   "authors": [
+    "T. Wang",
+    "F. Singh",
+    "B. Chen",
+    "P. Müller",
+    "E. Liu",
+    "B. Müller",
+    "B. Nguyen",
+    "H. Tanaka"
+   ],
+   "year": 2023,
+   "venue": "ICML",
+   "doi": "10.4055/icml.2023.160",
+   "arxiv": "2312.29822",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-07-16T22:00",
+   "abstract": "We study alignment and propose verifiers-based methods. Experiments on 8 benchmarks show improvements of 8.5 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P017",
+   "title": "A Benchmark for Learned Memory in Language Models",
+   "authors": [
+    "S. Chen",
+    "H. Park"
+   ],
+   "year": 2025,
+   "venue": "ICLR",
+   "doi": "10.1773/iclr.2025.861",
+   "arxiv": "2512.20585",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-07-16T10:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 8 benchmarks show improvements of 4.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P037",
+   "title": "Chain-of-Thought Small Verifiers",
+   "authors": [
+    "K. Tanaka",
+    "C. Wang",
+    "P. Cohen"
+   ],
+   "year": 2024,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2410.17783",
+   "tags": [
+    "多模态",
+    "推理"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-07-13T09:00",
+   "abstract": "We study reasoning and propose verifiers-based methods. Experiments on 9 benchmarks show improvements of 8.3 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "梁可馨": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "唐文博"
+   ]
+  },
+  {
+   "id": "P088",
+   "title": "Chain-of-Thought Calibration",
+   "authors": [
+    "K. Smith",
+    "M. Rossi",
+    "Y. Müller",
+    "C. Zhang",
+    "N. Singh",
+    "K. Zhang",
+    "L. Ivanova"
+   ],
+   "year": 2026,
+   "venue": "NeurIPS",
+   "doi": "10.2622/neurips.2026.276",
+   "arxiv": "2606.20300",
+   "tags": [
+    "对齐",
+    "推理"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-07-13T01:00",
+   "abstract": "We study reasoning and propose calibration-based methods. Experiments on 9 benchmarks show improvements of 3.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "罗俊杰": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P032",
+   "title": "Where Does Long-Context Retrieval Fail? A Sparse Routing Study",
+   "authors": [
+    "Y. Singh",
+    "K. Liu",
+    "L. Nguyen"
+   ],
+   "year": 2025,
+   "venue": "EMNLP",
+   "doi": "10.5164/emnlp.2025.339",
+   "arxiv": "2507.20769",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-07-11T14:00",
+   "abstract": "We study long-context modeling and propose study-based methods. Experiments on 5 benchmarks show improvements of 8.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "读完",
+    "梁可馨": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-07-15T14:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P068",
+   "title": "A Benchmark for Token Pruning in Language Models",
+   "authors": [
+    "T. Chen",
+    "B. Garcia",
+    "D. Tanaka",
+    "F. Garcia",
+    "B. Singh",
+    "J. Garcia",
+    "M. Cohen"
+   ],
+   "year": 2026,
+   "venue": "ICML",
+   "doi": "10.6031/icml.2026.177",
+   "arxiv": "2602.28061",
+   "tags": [
+    "评测",
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-07-11T13:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 3 benchmarks show improvements of 7.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P070",
+   "title": "Chain-of-Thought Latent Planning",
+   "authors": [
+    "E. Cohen",
+    "P. Liu",
+    "L. Singh",
+    "J. Garcia",
+    "R. Li"
+   ],
+   "year": 2025,
+   "venue": "ACL",
+   "doi": "10.2628/acl.2025.470",
+   "arxiv": "2503.26344",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-07-11T09:00",
+   "abstract": "We study reasoning and propose planning-based methods. Experiments on 8 benchmarks show improvements of 5.5 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "读完",
+    "梁可馨": "在读"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-07-14T09:00",
+     "text": "主要贡献是数据集，方法一般。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P046",
+   "title": "Retrieval-Augmented Generation with Mixture of Experts",
+   "authors": [
+    "J. Müller",
+    "L. Zhang",
+    "T. Garcia",
+    "E. Smith",
+    "M. Chen",
+    "F. Li",
+    "J. Rossi"
+   ],
+   "year": 2024,
+   "venue": "ICLR",
+   "doi": "10.2186/iclr.2024.292",
+   "arxiv": "2409.25636",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-07-11T06:00",
+   "abstract": "We study retrieval augmentation and propose experts-based methods. Experiments on 3 benchmarks show improvements of 8.3 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P010",
+   "title": "Test-Time Compute Scaling for Hierarchical Chunking",
+   "authors": [
+    "M. Okafor",
+    "K. Nguyen",
+    "P. Li",
+    "E. Liu"
+   ],
+   "year": 2026,
+   "venue": "ICML",
+   "doi": "10.5776/icml.2026.892",
+   "arxiv": "2609.25894",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-07-06T14:00",
+   "abstract": "We study reasoning and propose chunking-based methods. Experiments on 9 benchmarks show improvements of 9.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "唐文博"
+   ]
+  },
+  {
+   "id": "P057",
+   "title": "Document Understanding with Hierarchical Chunking",
+   "authors": [
+    "F. Tanaka",
+    "R. Liu",
+    "D. Smith",
+    "N. Okafor",
+    "K. Liu",
+    "R. Chen",
+    "E. Wang"
+   ],
+   "year": 2024,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2403.23696",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-06-29T07:00",
+   "abstract": "We study multimodal understanding and propose chunking-based methods. Experiments on 7 benchmarks show improvements of 4.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "在读",
+    "梁可馨": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-07-06T07:00",
+     "text": "可以作为相关工作引用。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P036",
+   "title": "Grounded Multi-Agent Debate for Vision-Language Models",
+   "authors": [
+    "F. Rossi",
+    "M. Park",
+    "J. Chen",
+    "A. Li",
+    "A. Rossi",
+    "B. Müller"
+   ],
+   "year": 2025,
+   "venue": "CVPR",
+   "doi": "10.2848/cvpr.2025.480",
+   "arxiv": "2512.24713",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-06-27T02:00",
+   "abstract": "We study multimodal understanding and propose models-based methods. Experiments on 7 benchmarks show improvements of 6.4 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完",
+    "罗俊杰": "在读"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-06-30T02:00",
+     "text": "主要贡献是数据集，方法一般。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P089",
+   "title": "Chain-of-Thought Uncertainty Estimates",
+   "authors": [
+    "P. Li",
+    "J. Park",
+    "N. Smith",
+    "S. Rossi",
+    "S. Kim",
+    "K. Chen"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.6686/naacl.2025.731",
+   "arxiv": "2505.26314",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-06-25T07:00",
+   "abstract": "We study reasoning and propose estimates-based methods. Experiments on 7 benchmarks show improvements of 1.2 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "唐文博": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-06-26T07:00",
+     "text": "主要贡献是数据集，方法一般。"
+    },
+    {
+     "who": "唐文博",
+     "at": "2026-06-25T07:00",
+     "text": "可以作为相关工作引用。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P095",
+   "title": "Rethinking Calibration Evaluation",
+   "authors": [
+    "Y. Rossi",
+    "C. Smith",
+    "F. Wang",
+    "T. Liu",
+    "H. Kim",
+    "L. Tanaka"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.1095/naacl.2025.214",
+   "arxiv": "2506.21189",
+   "tags": [
+    "推理",
+    "评测"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-06-25T02:00",
+   "abstract": "We study evaluation and propose evaluation-based methods. Experiments on 5 benchmarks show improvements of 1.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P008",
+   "title": "Reward Hacking in Uncertainty Estimates",
+   "authors": [
+    "K. Kim",
+    "E. Cohen",
+    "R. Okafor",
+    "D. Park",
+    "J. Tanaka"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2301.16835",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-06-22T10:00",
+   "abstract": "We study alignment and propose estimates-based methods. Experiments on 9 benchmarks show improvements of 9.1 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "罗俊杰",
+     "at": "2026-07-20T10:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": [
+    "唐文博"
+   ]
+  },
+  {
+   "id": "P061",
+   "title": "Document Understanding with Curriculum Sampling",
+   "authors": [
+    "D. Cohen",
+    "M. Kim",
+    "N. Zhang"
+   ],
+   "year": 2024,
+   "venue": "EMNLP",
+   "doi": "10.9166/emnlp.2024.572",
+   "arxiv": "2412.12444",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-06-21T09:00",
+   "abstract": "We study multimodal understanding and propose sampling-based methods. Experiments on 5 benchmarks show improvements of 4.4 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完",
+    "梁可馨": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-07-05T09:00",
+     "text": "代码开源了，可以直接复现。"
+    },
+    {
+     "who": "唐文博",
+     "at": "2026-07-06T09:00",
+     "text": "这篇是综述，适合新人入门。"
+    },
+    {
+     "who": "梁可馨",
+     "at": "2026-06-26T09:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "陈老师"
+   ]
+  },
+  {
+   "id": "P071",
+   "title": "Contamination-Aware Contrastive Signals Evaluation",
+   "authors": [
+    "R. Singh",
+    "M. Liu",
+    "L. Cohen",
+    "R. Nguyen",
+    "M. Nguyen",
+    "P. Singh",
+    "C. Nguyen",
+    "J. Liu"
+   ],
+   "year": 2026,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2609.14532",
+   "tags": [
+    "检索增强",
+    "评测"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-06-19T22:00",
+   "abstract": "We study evaluation and propose evaluation-based methods. Experiments on 4 benchmarks show improvements of 4.1 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-07-03T22:00",
+     "text": "代码开源了，可以直接复现。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "陈老师"
+   ]
+  },
+  {
+   "id": "P030",
+   "title": "Retrieval-Augmented Generation with Contrastive Signals",
+   "authors": [
+    "Y. Singh",
+    "Y. Chen"
+   ],
+   "year": 2025,
+   "venue": "NeurIPS",
+   "doi": "10.9110/neurips.2025.985",
+   "arxiv": "2502.10329",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-06-12T09:00",
+   "abstract": "We study retrieval augmentation and propose signals-based methods. Experiments on 5 benchmarks show improvements of 6.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读",
+    "唐文博": "在读",
+    "何雨桐": "在读",
+    "罗俊杰": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "陈老师",
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P045",
+   "title": "Efficient Long-Context Attention via Multi-Agent Debate",
+   "authors": [
+    "L. Liu",
+    "S. Garcia",
+    "F. Cohen",
+    "M. Cohen",
+    "M. Liu",
+    "J. Rossi",
+    "D. Li"
+   ],
+   "year": 2024,
+   "venue": "CVPR",
+   "doi": "10.3286/cvpr.2024.923",
+   "arxiv": "2412.21699",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-06-11T03:00",
+   "abstract": "We study long-context modeling and propose debate-based methods. Experiments on 8 benchmarks show improvements of 9.4 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "梁可馨": "读完",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-06-29T03:00",
+     "text": "和组会上讲的那篇结论相反。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P055",
+   "title": "A Benchmark for Learned Memory in Language Models",
+   "authors": [
+    "D. Wang",
+    "H. Kim",
+    "F. Rossi",
+    "J. Kim",
+    "K. Cohen",
+    "T. Garcia"
+   ],
+   "year": 2023,
+   "venue": "ICLR",
+   "doi": "10.3837/iclr.2023.932",
+   "arxiv": "2310.23484",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-06-10T09:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 8 benchmarks show improvements of 5.5 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完",
+    "梁可馨": "读完",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "许静怡",
+     "at": "2026-06-24T09:00",
+     "text": "可以作为相关工作引用。"
+    },
+    {
+     "who": "梁可馨",
+     "at": "2026-06-21T09:00",
+     "text": "和组会上讲的那篇结论相反。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P092",
+   "title": "Efficient Long-Context Attention via Learned Memory",
+   "authors": [
+    "K. Singh",
+    "H. Wang",
+    "N. Li"
+   ],
+   "year": 2024,
+   "venue": "COLM",
+   "doi": "10.8811/colm.2024.264",
+   "arxiv": "2404.25238",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "陈老师",
+   "added": "2026-06-09T07:00",
+   "abstract": "We study long-context modeling and propose memory-based methods. Experiments on 5 benchmarks show improvements of 9.0 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P020",
+   "title": "Grounded Structured Prompts for Vision-Language Models",
+   "authors": [
+    "R. Singh",
+    "L. Park",
+    "J. Singh",
+    "A. Li",
+    "M. Kim",
+    "F. Müller"
+   ],
+   "year": 2025,
+   "venue": "CVPR",
+   "doi": "10.7596/cvpr.2025.681",
+   "arxiv": "2510.29450",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-06-08T07:00",
+   "abstract": "We study multimodal understanding and propose models-based methods. Experiments on 7 benchmarks show improvements of 6.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P038",
+   "title": "Document Understanding with Contrastive Signals",
+   "authors": [
+    "D. Ivanova",
+    "R. Wang",
+    "E. Zhang",
+    "P. Garcia",
+    "B. Zhang",
+    "C. Okafor",
+    "N. Singh"
+   ],
+   "year": 2025,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2506.21166",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-06-06T22:00",
+   "abstract": "We study multimodal understanding and propose signals-based methods. Experiments on 5 benchmarks show improvements of 7.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "陈老师",
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P078",
+   "title": "Retrieval-Augmented Generation with Calibration",
+   "authors": [
+    "L. Garcia",
+    "J. Zhang",
+    "K. Okafor",
+    "A. Garcia",
+    "A. Smith",
+    "M. Park"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2303.27121",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-30T22:00",
+   "abstract": "We study retrieval augmentation and propose calibration-based methods. Experiments on 7 benchmarks show improvements of 2.2 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P004",
+   "title": "Preference Optimization with Sparse Routing",
+   "authors": [
+    "K. Singh",
+    "B. Kim",
+    "D. Li",
+    "A. Zhang",
+    "F. Cohen",
+    "S. Okafor",
+    "M. Okafor",
+    "K. Kim"
+   ],
+   "year": 2024,
+   "venue": "ICML",
+   "doi": "10.8910/icml.2024.610",
+   "arxiv": "2411.14776",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-29T09:00",
+   "abstract": "We study alignment and propose routing-based methods. Experiments on 3 benchmarks show improvements of 1.2 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "在读",
+    "罗俊杰": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P048",
+   "title": "Chart Question Answering via Structured Prompts",
+   "authors": [
+    "F. Kim",
+    "L. Smith",
+    "L. Singh"
+   ],
+   "year": 2025,
+   "venue": "NeurIPS",
+   "doi": "10.1107/neurips.2025.608",
+   "arxiv": "2507.29909",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-24T06:00",
+   "abstract": "We study multimodal understanding and propose prompts-based methods. Experiments on 6 benchmarks show improvements of 2.4 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P042",
+   "title": "A Benchmark for Mixture of Experts in Language Models",
+   "authors": [
+    "J. Chen",
+    "F. Müller"
+   ],
+   "year": 2024,
+   "venue": "ICML",
+   "doi": "10.4619/icml.2024.608",
+   "arxiv": "2407.22070",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-24T05:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 3 benchmarks show improvements of 6.8 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "罗俊杰": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "唐文博",
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P018",
+   "title": "Preference Optimization with Calibration",
+   "authors": [
+    "M. Ivanova",
+    "N. Müller",
+    "S. Zhang",
+    "Y. Cohen",
+    "J. Chen",
+    "E. Zhang",
+    "E. Kim",
+    "D. Wang"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2304.21915",
+   "tags": [
+    "对齐",
+    "推理"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-20T14:00",
+   "abstract": "We study alignment and propose calibration-based methods. Experiments on 3 benchmarks show improvements of 8.2 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P031",
+   "title": "Chart Question Answering via Hierarchical Chunking",
+   "authors": [
+    "H. Tanaka",
+    "S. Müller",
+    "L. Müller",
+    "C. Liu",
+    "A. Garcia",
+    "S. Müller",
+    "R. Okafor"
+   ],
+   "year": 2025,
+   "venue": "ICML",
+   "doi": "10.2708/icml.2025.779",
+   "arxiv": "2504.10907",
+   "tags": [
+    "多模态",
+    "推理"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-05-20T09:00",
+   "abstract": "We study multimodal understanding and propose chunking-based methods. Experiments on 4 benchmarks show improvements of 1.2 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "读完"
+   },
+   "notes": [
+    {
+     "who": "唐文博",
+     "at": "2026-05-31T09:00",
+     "text": "表 3 的基线设置不公平，没调参。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P013",
+   "title": "Faithful Citation in RAG through Sparse Routing",
+   "authors": [
+    "S. Chen",
+    "R. Liu",
+    "L. Li",
+    "D. Kim",
+    "P. Garcia",
+    "D. Tanaka",
+    "K. Nguyen",
+    "P. Rossi"
+   ],
+   "year": 2024,
+   "venue": "NAACL",
+   "doi": "10.5176/naacl.2024.742",
+   "arxiv": "2405.22050",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-19T03:00",
+   "abstract": "We study retrieval augmentation and propose routing-based methods. Experiments on 5 benchmarks show improvements of 3.2 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P035",
+   "title": "Test-Time Compute Scaling for Mixture of Experts",
+   "authors": [
+    "A. Zhang",
+    "N. Park",
+    "B. Zhang",
+    "C. Tanaka",
+    "M. Chen",
+    "F. Chen",
+    "N. Kim",
+    "P. Rossi"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.4206/naacl.2025.543",
+   "arxiv": "2504.22746",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-17T20:00",
+   "abstract": "We study reasoning and propose experts-based methods. Experiments on 8 benchmarks show improvements of 1.9 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "读完"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P058",
+   "title": "Test-Time Compute Scaling for Learned Memory",
+   "authors": [
+    "H. Liu",
+    "M. Liu",
+    "J. Garcia",
+    "B. Nguyen",
+    "E. Tanaka"
+   ],
+   "year": 2026,
+   "venue": "EMNLP",
+   "doi": "10.5908/emnlp.2026.200",
+   "arxiv": "2606.27266",
+   "tags": [
+    "推理",
+    "长文本"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-17T11:00",
+   "abstract": "We study reasoning and propose memory-based methods. Experiments on 4 benchmarks show improvements of 4.2 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "唐文博": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [
+    {
+     "who": "唐文博",
+     "at": "2026-06-06T11:00",
+     "text": "主要贡献是数据集，方法一般。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P043",
+   "title": "A Benchmark for Synthetic Data in Language Models",
+   "authors": [
+    "R. Tanaka",
+    "C. Tanaka",
+    "T. Wang",
+    "T. Garcia"
+   ],
+   "year": 2025,
+   "venue": "NAACL",
+   "doi": "10.1182/naacl.2025.764",
+   "arxiv": "2501.24299",
+   "tags": [
+    "多模态",
+    "评测"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-05-17T07:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 9 benchmarks show improvements of 9.6 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P009",
+   "title": "Self-Critique for Small Verifiers",
+   "authors": [
+    "K. Chen",
+    "M. Garcia"
+   ],
+   "year": 2024,
+   "venue": "NAACL",
+   "doi": "10.2691/naacl.2024.373",
+   "arxiv": "2401.13863",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-15T10:00",
+   "abstract": "We study alignment and propose verifiers-based methods. Experiments on 7 benchmarks show improvements of 7.0 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "梁可馨": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-06-13T10:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P021",
+   "title": "Faithful Citation in RAG through Hierarchical Chunking",
+   "authors": [
+    "Y. Ivanova",
+    "F. Cohen",
+    "S. Garcia",
+    "Y. Ivanova",
+    "S. Rossi",
+    "B. Zhang",
+    "M. Ivanova",
+    "A. Smith"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2308.28829",
+   "tags": [
+    "检索增强"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-14T11:00",
+   "abstract": "We study retrieval augmentation and propose chunking-based methods. Experiments on 6 benchmarks show improvements of 4.5 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "许静怡": "在读",
+    "梁可馨": "读完"
+   },
+   "notes": [
+    {
+     "who": "梁可馨",
+     "at": "2026-06-02T11:00",
+     "text": "方法和我们的想法很像，区别在于它用了外部记忆。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P086",
+   "title": "Self-Critique for Token Pruning",
+   "authors": [
+    "F. Smith",
+    "L. Park",
+    "T. Ivanova",
+    "N. Müller",
+    "R. Smith",
+    "R. Kim",
+    "H. Nguyen"
+   ],
+   "year": 2023,
+   "venue": "TACL",
+   "doi": "10.1622/tacl.2023.668",
+   "arxiv": "2305.16125",
+   "tags": [
+    "对齐"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-14T00:00",
+   "abstract": "We study alignment and propose pruning-based methods. Experiments on 9 benchmarks show improvements of 9.7 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读",
+    "梁可馨": "读完"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P050",
+   "title": "Document Understanding with Small Verifiers",
+   "authors": [
+    "C. Tanaka",
+    "B. Liu"
+   ],
+   "year": 2025,
+   "venue": "ICLR",
+   "doi": "10.9830/iclr.2025.309",
+   "arxiv": "2503.26383",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-13T13:00",
+   "abstract": "We study multimodal understanding and propose verifiers-based methods. Experiments on 5 benchmarks show improvements of 8.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完",
+    "罗俊杰": "读完"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "罗俊杰"
+   ]
+  },
+  {
+   "id": "P085",
+   "title": "Where Does Long-Context Retrieval Fail? A Multi-Agent Debate Study",
+   "authors": [
+    "K. Liu",
+    "B. Singh",
+    "J. Liu",
+    "S. Cohen",
+    "Y. Zhang",
+    "L. Wang"
+   ],
+   "year": 2023,
+   "venue": "TACL",
+   "doi": "10.7237/tacl.2023.125",
+   "arxiv": "2307.10686",
+   "tags": [
+    "推理",
+    "长文本"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-12T23:00",
+   "abstract": "We study long-context modeling and propose study-based methods. Experiments on 6 benchmarks show improvements of 8.8 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": false,
+   "starred_by": [
+    "何雨桐"
+   ]
+  },
+  {
+   "id": "P090",
+   "title": "A Benchmark for Hierarchical Chunking in Language Models",
+   "authors": [
+    "Y. Okafor",
+    "J. Kim",
+    "F. Li",
+    "A. Rossi",
+    "T. Tanaka",
+    "A. Chen",
+    "R. Smith"
+   ],
+   "year": 2025,
+   "venue": "COLM",
+   "doi": "10.6635/colm.2025.955",
+   "arxiv": "2506.11854",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "许静怡",
+   "added": "2026-05-12T15:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 3 benchmarks show improvements of 8.9 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完",
+    "罗俊杰": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P064",
+   "title": "Test-Time Compute Scaling for Contrastive Signals",
+   "authors": [
+    "B. Cohen",
+    "A. Garcia",
+    "E. Ivanova",
+    "J. Ivanova",
+    "C. Chen"
+   ],
+   "year": 2026,
+   "venue": "COLM",
+   "doi": "10.3753/colm.2026.269",
+   "arxiv": "2610.14822",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-05-11T00:00",
+   "abstract": "We study reasoning and propose signals-based methods. Experiments on 7 benchmarks show improvements of 6.0 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": false,
+   "starred_by": []
+  },
+  {
+   "id": "P033",
+   "title": "Chart Question Answering via Uncertainty Estimates",
+   "authors": [
+    "D. Singh",
+    "J. Wang",
+    "Y. Rossi",
+    "S. Li",
+    "T. Nguyen"
+   ],
+   "year": 2025,
+   "venue": "ICML",
+   "doi": "10.7818/icml.2025.891",
+   "arxiv": "2502.25473",
+   "tags": [
+    "多模态"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-10T14:00",
+   "abstract": "We study multimodal understanding and propose estimates-based methods. Experiments on 3 benchmarks show improvements of 5.4 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {},
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P012",
+   "title": "Self-Critique for Multi-Agent Debate",
+   "authors": [
+    "N. Kim",
+    "F. Wang",
+    "B. Singh",
+    "S. Chen"
+   ],
+   "year": 2026,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2604.20482",
+   "tags": [
+    "多模态",
+    "对齐"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-07T21:00",
+   "abstract": "We study alignment and propose debate-based methods. Experiments on 3 benchmarks show improvements of 9.3 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "何雨桐": "读完"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-05-13T21:00",
+     "text": "这篇是综述，适合新人入门。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": [
+    "许静怡"
+   ]
+  },
+  {
+   "id": "P051",
+   "title": "A Benchmark for Curriculum Sampling in Language Models",
+   "authors": [
+    "N. Wang",
+    "J. Cohen",
+    "N. Chen",
+    "D. Singh",
+    "Y. Nguyen",
+    "C. Okafor",
+    "T. Singh",
+    "S. Müller"
+   ],
+   "year": 2023,
+   "venue": "ACL",
+   "doi": "10.8261/acl.2023.421",
+   "arxiv": "2307.10329",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "何雨桐",
+   "added": "2026-05-06T14:00",
+   "abstract": "We study evaluation and propose models-based methods. Experiments on 8 benchmarks show improvements of 5.6 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "许静怡": "在读",
+    "唐文博": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P075",
+   "title": "Where Does Long-Context Retrieval Fail? A Curriculum Sampling Study",
+   "authors": [
+    "E. Chen",
+    "A. Park",
+    "H. Okafor",
+    "B. Kim",
+    "C. Wang",
+    "R. Okafor"
+   ],
+   "year": 2024,
+   "venue": "ACL",
+   "doi": "10.2721/acl.2024.604",
+   "arxiv": "2407.28533",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "唐文博",
+   "added": "2026-05-06T00:00",
+   "abstract": "We study long-context modeling and propose study-based methods. Experiments on 4 benchmarks show improvements of 3.3 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "唐文博": "读完",
+    "何雨桐": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": []
+  },
+  {
+   "id": "P082",
+   "title": "Contamination-Aware Mixture of Experts Evaluation",
+   "authors": [
+    "C. Singh",
+    "F. Ivanova",
+    "H. Chen",
+    "R. Park",
+    "H. Li",
+    "D. Smith",
+    "C. Zhang"
+   ],
+   "year": 2025,
+   "venue": "NeurIPS",
+   "doi": "10.8119/neurips.2025.442",
+   "arxiv": "2508.24976",
+   "tags": [
+    "评测"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-05T20:00",
+   "abstract": "We study evaluation and propose evaluation-based methods. Experiments on 8 benchmarks show improvements of 5.2 points over strong baselines, with lower compute cost. We release code and data.",
+   "reading": {
+    "罗俊杰": "在读"
+   },
+   "notes": [],
+   "pdf": true,
+   "starred_by": [
+    "梁可馨"
+   ]
+  },
+  {
+   "id": "P040",
+   "title": "Test-Time Compute Scaling for Sparse Routing",
+   "authors": [
+    "R. Liu",
+    "Y. Garcia",
+    "C. Ivanova",
+    "S. Ivanova",
+    "P. Park",
+    "K. Nguyen"
+   ],
+   "year": 2023,
+   "venue": "ICML",
+   "doi": "10.5889/icml.2023.952",
+   "arxiv": "2310.12397",
+   "tags": [
+    "推理"
+   ],
+   "added_by": "梁可馨",
+   "added": "2026-05-03T13:00",
+   "abstract": "We study reasoning and propose routing-based methods. Experiments on 9 benchmarks show improvements of 5.5 points over strong baselines, with comparable compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "读完",
+    "唐文博": "读完"
+   },
+   "notes": [
+    {
+     "who": "陈老师",
+     "at": "2026-05-05T13:00",
+     "text": "推导没看懂，第 4 节需要再读。"
+    }
+   ],
+   "pdf": false,
+   "starred_by": [
+    "许静怡",
+    "梁可馨"
+   ]
+  },
+  {
+   "id": "P059",
+   "title": "Scaling Multi-Agent Debate to Million-Token Contexts",
+   "authors": [
+    "H. Zhang",
+    "D. Singh"
+   ],
+   "year": 2023,
+   "venue": "arXiv",
+   "doi": "",
+   "arxiv": "2310.12552",
+   "tags": [
+    "长文本"
+   ],
+   "added_by": "罗俊杰",
+   "added": "2026-05-02T11:00",
+   "abstract": "We study long-context modeling and propose contexts-based methods. Experiments on 9 benchmarks show improvements of 6.8 points over strong baselines, with higher compute cost. We release code and data.",
+   "reading": {
+    "陈老师": "在读",
+    "许静怡": "在读",
+    "何雨桐": "读完",
+    "罗俊杰": "在读"
+   },
+   "notes": [
+    {
+     "who": "何雨桐",
+     "at": "2026-05-06T11:00",
+     "text": "实验只在英文上做，中文效果存疑。"
+    }
+   ],
+   "pdf": true,
+   "starred_by": []
+  }
+ ],
+ "meeting": {
+  "next": "2026-11-20T15:00",
+  "presenter": "唐文博",
+  "paper": "P081",
+  "queue": [
+   {
+    "presenter": "梁可馨",
+    "paper": "P016",
+    "date": "2026-11-27"
+   },
+   {
+    "presenter": "何雨桐",
+    "paper": "P005",
+    "date": "2026-12-04"
+   },
+   {
+    "presenter": "罗俊杰",
+    "paper": "P001",
+    "date": "2026-12-11"
+   }
+  ]
+ }
+}

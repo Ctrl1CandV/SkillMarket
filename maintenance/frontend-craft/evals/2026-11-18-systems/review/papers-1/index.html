@@ -1,0 +1,22 @@
+<!doctype html>
+<!--
+产品与页面决定（参考 frontend-craft catalog 的检索关系与 settings 的分组、保存反馈）：
+1. 文献库是目录检索，六位成员反复找英文论文，不做指标仪表盘；单篇是连续阅读＋个人编辑；添加是表单；组会是按日期检索的工作列表。
+2. 颜色只给当前可行动/选中状态（松绿色）；论文内容、主题标签、成员头像均用中性色，不把六个标签变成六种颜色。
+3. 因为96篇英文标题长度不同，所以用完整标题的纵向列表，不用等高小卡；作者、出处与组内阅读在同一行记录中。
+   因为一篇有多个主题、六个人的进度，所以主题是单选检索入口，年份、读完的人是可叠加条件；单篇列全体六人。
+   因为边读PDF边用，所以正文限宽、笔记与自己的状态保持临近，不冒充存在的PDF；组会用旁栏轻提示而不是首页横幅。
+   因为老师在手机查组会，所以导航在窄屏收成顶栏、安排保持日期/讲者/论文完整，不缩放桌面表格。
+   因为离线没有服务器，所以明确本地保存，提供导出/恢复；DOI和arXiv只识别编号，不能假造在线补全。
+-->
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>共读 · 课题组文献库</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<aside class="sidebar" id="sidebar"></aside>
+<div class="workspace"><header class="topbar"><span id="crumb">课题组空间 <span class="slash">/</span> 文献库</span><span class="today">2026年11月18日 · 周三</span></header><main id="main"></main><footer class="foot">示例课题组 · 论文与人名均为虚构 <span>离线工作空间 / 数据仅保存在此浏览器</span></footer></div>
+<dialog id="scheduleDialog"><form id="scheduleForm"><div class="dialog-head"><h2>排入组会</h2><button type="button" class="icon-btn" id="closeSchedule" aria-label="关闭">×</button></div><p class="muted">选择论文、日期和分享人。已有安排的日期不会被覆盖。</p><label for="schedulePaper">分享论文</label><select id="schedulePaper" required></select><label for="scheduleDate">日期</label><p class="hint" id="dateHint">选择今天或之后的日期；时间默认为 15:00。</p><input type="date" id="scheduleDate" min="2026-11-18" required aria-describedby="dateHint"><label for="schedulePerson">分享人</label><select id="schedulePerson"></select><p id="scheduleError" class="error" role="alert"></p><div class="actions"><button type="button" id="cancelSchedule" class="btn">取消</button><button class="btn primary" type="submit">确认安排</button></div></form></dialog>
+<dialog id="copyDialog"><div class="dialog-head"><h2>引用格式</h2><button class="icon-btn" id="closeCopy" aria-label="关闭">×</button></div><label for="citeFormat">格式</label><select id="citeFormat"><option value="bib">BibTeX</option><option value="text">文本引用</option></select><label for="citeText">引用内容</label><textarea id="citeText" rows="9" readonly></textarea><p class="hint">若浏览器不允许自动复制，可选中内容后按 Ctrl+C。</p><button class="btn primary" id="copyText">复制引用</button></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<input type="file" id="restoreFile" accept="application/json,.json" hidden>
+<script src="data/papers.js"></script><script src="app.js"></script>
+</body></html>
