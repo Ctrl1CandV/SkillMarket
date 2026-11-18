@@ -1,3 +1,3 @@
-{"clubs": {"N": ["01-home", "05-detail", "03-nav-我的报名4", "04-nav-社团工作台↗"], "S7": ["01-home", "06-detail", "03-nav-我的报名", "04-nav-社团后台↗"], "S8": ["01-home", "05-detail", "03-nav-我的报名5", "04-nav-社团后台"]},
- "lab": {"N": ["01-home", "04-detail", "02-mine", "03-admin"], "S7": ["01-home", "02-detail", "03-mine", "04-admin"], "S8": ["01-home", "05-detail", "03-nav-我的预约3", "04-nav-管理员"]},
- "papers": {"N": ["01-home", "08-detail", "02-nav-组会安排", "03-nav-添加文献"], "S7": ["01-home", "05-detail", "03-nav-▦组会安排", "04-nav-＋添加文献"], "S8": ["01-home", "08-detail", "03-nav-组会安排", "04-nav-添加文献"]}}
+{"clubs": {"N": ["01-home", "05-detail", "03-nav-我的报名4", "04-nav-社团工作台↗"], "S7": ["01-home", "06-detail", "03-nav-我的报名", "04-nav-社团后台↗"], "S8": ["01-home", "05-detail", "03-nav-我的报名5", "04-nav-社团后台"], "S9": ["01-home", "07-detail", "03-nav-我的报名4", "04-nav-社团后台"]},
+ "lab": {"N": ["01-home", "04-detail", "02-mine", "03-admin"], "S7": ["01-home", "02-detail", "03-mine", "04-admin"], "S8": ["01-home", "05-detail", "03-nav-我的预约3", "04-nav-管理员"], "S9": ["01-home", "04-detail", "02-mine", "03-admin"]},
+ "papers": {"N": ["01-home", "08-detail", "02-nav-组会安排", "03-nav-添加文献"], "S7": ["01-home", "05-detail", "03-nav-▦组会安排", "04-nav-＋添加文献"], "S8": ["01-home", "08-detail", "03-nav-组会安排", "04-nav-添加文献"], "S9": ["01-home", "05-detail", "04-nav-查看组会安排→", "02-nav-＋添加文献"]}}

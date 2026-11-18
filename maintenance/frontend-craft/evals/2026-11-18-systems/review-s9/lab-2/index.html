@@ -1,0 +1,27 @@
+<!doctype html>
+<!--
+学院共享仪器 / 产品与画面决定
+1. 仪器页属于多人使用的预约系统：学生带着实验任务比较六台设备，不做营销首页。
+   日程是精确操作页；我的预约是个人记录；管理员从 queue 起步样例改为审批队列，保留紧凑行、对象与动作并置，去掉派工逻辑。
+2. 深青导航、光路形标志与六幅自绘仪器线图构成身份；青色用于空闲和主操作，黄色表示待批/校准，灰色表示占用。每种状态同时写文字。
+3. 因为只有六台且最小时段不同，所以用三列设备卡同时比较规则和可用连续时段，不用大图。
+   因为只可约七天且每天8–22点，所以首页七日切换、详情七列时间网格共用日期，过去时间禁用。
+   因为许静怡只培训过共聚焦和流式，所以无权限设备仍能看日程，表单位置解释培训路径而不是藏掉设备。
+   因为液质联用为管理员操作，所以标记送样，表单要求填写方法而不是声称独立上机。
+   因为手机主要看个人预约，所以预约记录在窄屏重排为卡片，日程切换单日，不缩小七列文字。
+规则取舍：11/20 XRD按任务优先全天关闭；七日为11/18–24；时长为最小时段整数倍，整点开始。
+-->
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>共享仪器 · 学院仪器预约</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<aside class="sidebar">
+<a class="brand" href="#instruments"><span class="brand-mark">⌘</span><span>共享仪器<small>学院公共实验平台</small></span></a>
+<div class="nav-label">工作空间</div>
+<nav aria-label="主导航"><a href="#instruments" data-nav="instruments"><span class="nav-icon">▦</span>仪器<span class="nav-end">06</span></a><a href="#mine" data-nav="mine"><span class="nav-icon">▤</span>我的预约<span class="nav-end" id="my-count"></span></a></nav>
+<div class="nav-label admin-label">管理工作</div><nav aria-label="管理导航"><a href="#admin" data-nav="admin"><span class="nav-icon">⚑</span>管理员<span class="nav-end" id="admin-count"></span></a></nav>
+<div class="side-bottom"><span class="live-dot"></span> 离线演示 · 本机保存<p>开放时间 08:00—22:00<br>预约未来 7 天的仪器时段</p><button class="side-help" id="rules-btn">预约规则与使用说明 ↗</button></div>
+</aside>
+<div class="workspace"><header class="topbar"><span id="breadcrumb">公共实验平台 / 仪器</span><div class="top-right"><span class="clock">2026.11.18　周三 10:40</span><span class="avatar">许</span><span class="identity">许静怡<small>陈老师课题组</small></span></div></header><main id="app"></main><footer>学院公共实验平台<span>示例数据 · 时间固定于 2026 年 11 月 18 日 · 数据仅保存在当前浏览器</span></footer></div>
+<dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog><div id="toast" role="status" hidden></div>
+<script src="data/lab.js"></script><script src="app.js"></script>
+</body></html>

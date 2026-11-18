@@ -1,0 +1,30 @@
+<!doctype html>
+<!--
+课题组文献库 / 共读
+类型：文献库是供六人反复使用的目录检索（从 catalog 起步，继承筛选、结果数、空态和上下文保留）；
+单篇是连续阅读+协作记录；添加是明确保存的表单；组会是按日期排列的共享日程。不要营销横幅和虚构 PDF。
+颜色与图形：深橄榄给稳定导航和主操作；琥珀给尚无人读，绿色给读完。原创书页标志、日历页和六人姓名头像构成身份，不用图片冒充论文。
+因为 96 篇论文是英文长标题，所以使用宽行列表、英文衬线标题，不用等高图片卡；中文元信息另起行。
+因为六人阅读状态有空缺、在读、读完，所以列表区分“无人开始”与“尚无人读完”，单篇完整列六人，避免误认重复阅读。
+因为组会每周一次且手机要查看，所以桌面右栏露出下次组会、组会页按日期连续排列，手机顺序不变、不缩小表格。
+因为 PDF 不存在且禁止联网，所以无打开 PDF 假入口；添加时导入只是解析，DOI/arXiv 明示手动补全。
+因为本地存储不是共享服务器，所以全局明示本机存储，并提供 JSON 备份交换，不伪装同步。
+-->
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>共读 · 课题组文献库</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+<aside class="sidebar">
+<a class="brand" href="#library"><svg width="37" height="37" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 8c6-1 10 1 15 5 5-4 9-6 15-5v24c-6-1-10 0-15 4-5-4-9-5-15-4V8Z" stroke="currentColor" stroke-width="2"/><path d="M20 13v23M10 15l6 2m-6 5 6 2m9-7 5-2m-5 9 5-2" stroke="currentColor" stroke-width="1.5"/></svg><span>共读<small>课题组文献库</small></span></a>
+<div class="space-label">WORKSPACE / 研究空间</div>
+<nav aria-label="主导航"><a href="#library" data-nav="library"><span class="navicon">▤</span>文献库 <span id="navcount" class="navcount">96</span></a><a href="#meetings" data-nav="meetings"><span class="navicon">▦</span>组会安排</a><a href="#add" data-nav="add"><span class="navicon">＋</span>添加文献</a></nav>
+<div class="sidebar-note"><div class="mini-book">6 人 · 一起读，留下思考</div><p>论文不再散落，<br>让每次阅读都有回响。</p></div>
+<div class="sidebar-bottom"><div class="local"><i></i> 离线可用 · 仅存此浏览器</div><div class="backup"><button id="export">导出备份</button><span>/</span><button id="import">导入备份</button><input type="file" id="backupfile" accept=".json,application/json" hidden></div><div class="user"><span class="avatar me">许</span><span>许静怡<small>当前成员</small></span><span class="user-dot">●</span></div></div>
+</aside>
+<div class="shell"><header class="topbar"><span id="crumb">研究空间 / 文献库</span><span>2026 年 11 月 18 日 <span class="weekday">星期三</span></span></header><main id="main" tabindex="-1"></main><footer>共读 · 把阅读留在组里 <span>示例文献与人名 · 无真实 PDF · 不联网、不实时同步</span></footer></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="schedule"><form id="scheduleform"><div class="dialog-head"><h2 id="schedule-title">安排组会</h2><button type="button" class="iconbtn" data-close="schedule" aria-label="关闭">×</button></div><p class="muted">选一篇论文，留出一起讨论的时间。</p><label for="meetingpaper">讨论文献</label><select id="meetingpaper" required></select><label for="presenter">主讲成员</label><select id="presenter" required></select><div class="two"><div><label for="meetingdate">日期</label><input id="meetingdate" type="date" min="2026-11-18" required></div><div><label for="meetingtime">时间</label><input id="meetingtime" type="time" value="15:00" required></div></div><p id="schedule-error" class="error" role="alert"></p><div class="form-actions"><button type="button" class="btn" data-close="schedule">取消</button><button class="btn primary">保存安排</button></div></form></dialog>
+<dialog id="citation"><div class="dialog-head"><h2>引用文献</h2><button class="iconbtn" data-close="citation" aria-label="关闭">×</button></div><label for="citeformat">引用格式</label><select id="citeformat"><option value="bib">BibTeX</option><option value="apa">APA</option><option value="gb">GB/T 7714（简式）</option></select><label for="citetext">引用内容</label><textarea id="citetext" rows="9" readonly></textarea><div class="form-actions"><span class="muted">复制失败时，可直接选择文字复制。</span><button id="copycite" class="btn primary">复制引用</button></div></dialog>
+<dialog id="confirm"><h2 id="confirm-title">确认操作</h2><p id="confirm-text"></p><div class="form-actions"><button class="btn" id="confirm-no" autofocus>取消</button><button class="btn primary" id="confirm-yes">确认</button></div></dialog>
+<script src="data/papers.js"></script><script src="app.js"></script>
+</body></html>

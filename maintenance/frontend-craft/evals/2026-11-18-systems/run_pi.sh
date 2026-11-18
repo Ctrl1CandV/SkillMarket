@@ -6,7 +6,7 @@
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"; ROOT="$(cd "$HERE/../../../.." && pwd)"
 TASK="$1"; ARM="$2"; OUT="$3"; MODEL="${4:-openai/gpt-6.1-sol}"
-commit_of() { case "$1" in S7) echo 04ea1c4 ;; S8) echo d1a61b6 ;; *) echo "" ;; esac; }
+commit_of() { case "$1" in S7) echo 04ea1c4 ;; S8) echo d1a61b6 ;; S9) echo 27ccaee ;; *) echo "" ;; esac; }
 [ -d "$HERE/$TASK" ] || { echo "没有这道题：$TASK" >&2; exit 2; }
 [ -e "$OUT/task" ] && { echo "已有 task/" >&2; exit 2; }
 : "${FC_NODE_MODULES:?}" "${FC_CHROME:?}"

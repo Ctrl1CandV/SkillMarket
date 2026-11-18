@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>共研 · 学院共享仪器</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="#instruments"><span class="brand-mark">共</span><div>共研<span>OPEN LAB · 共享仪器平台</span></div></a>
+  <div class="workspace">学院公共实验平台 <span>⌄</span></div>
+  <div class="nav-label">工作空间 / WORKSPACE</div>
+  <nav><a href="#instruments" data-nav="instruments"><i data-icon="grid"></i>仪器总览<span class="nav-count">06</span></a><a href="#mine" data-nav="mine"><i data-icon="calendar"></i>我的预约<span id="mine-count" class="nav-count"></span></a><a href="#admin" data-nav="admin"><i data-icon="shield"></i>管理工作台<span class="tiny-dot"></span></a></nav>
+  <div class="sidebar-bottom"><div class="lab-open"><span class="live-dot"></span>实验室开放中 <span>08:00 — 22:00</span></div><button class="help-link" onclick="showRules()"><i data-icon="info"></i>预约规则与使用指南 <span>↗</span></button><div class="profile"><span class="avatar">许</span><div><b>许静怡</b><small>陈老师课题组</small></div><span class="profile-tag">学生</span></div></div>
+</aside>
+<div class="app"><header class="topbar"><div id="breadcrumb">工作空间 <span>/</span> 仪器总览</div><div class="clock"><span class="live-dot"></span>2026 年 11 月 18 日 · 周三 <b>10:40</b><span class="demo-tag">演示时间</span></div></header><main id="main"></main><footer><span>共研 OPEN LAB</span> 让每一次探索，都有序发生。<span class="footer-right">本地运行 · 数据保存在此浏览器</span></footer></div>
+<dialog id="modal"><div id="modal-content"></div></dialog><div id="toast" role="status"></div>
+<script src="data/lab.js"></script><script src="app.js"></script>
+</body></html>

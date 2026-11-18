@@ -1,0 +1,20 @@
+<!doctype html>
+<!--
+页面决策：活动首页是多人各自使用的报名系统，详情是阅读+表单，我的报名是个人记录，社团后台是工作台；不把后台做成宣传页。
+颜色和图形：暖白底、朱橙品牌色用于导航与主动作；绿=可报名，橙=将满，紫=候补，灰=截止。原创校园课余日历插图放首页，社团使用同套线条图标。
+因为 28 个活动有不同截止时间，所以卡片同时展示活动日期、余量和截止状态，详情再展示完整截止时间。
+因为学生主要在手机浏览且有 12 个社团，所以类型横向可滚动，社团用下拉，双条件可交叉筛选；手机卡片单列。
+因为摄影社有 4 个活动且现场需认人，所以后台用活动选择+连续名单；桌面表头对齐，手机改成人员行，姓名与签到并列。
+因为没有海报，所以用类型色带、日期块与社团图标构成信息卡，不伪造活动照片。
+参照：后台沿用 workbench 的先认对象再行动、强调色节制、手机重排；Tabler 已查看截图参考连续表格与低权重分隔，不借用品牌。
+-->
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>课外 · 校园社团活动</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="header"><div class="header-inner"><a class="brand" href="#activities" aria-label="课外首页"><span class="brand-mark">课<span>外</span><i></i></span><span class="brand-sub">AFTER CLASS<br>校园社团活动</span></a><nav aria-label="主导航"><a href="#activities" data-nav="activities">发现活动</a><a href="#mine" data-nav="mine">我的报名 <span id="my-count"></span></a><a href="#admin" data-nav="admin">社团后台</a></nav><div class="user"><span class="avatar">林</span><span>林雨桐<small>同学，晚上好</small></span></div></div></header>
+<main id="app"></main>
+<footer><span class="footer-brand">课外 AFTER CLASS</span><span>让校园生活，多一种可能。</span><small>离线演示 · 示例数据 · 当前时间 2026.11.18 20:30</small></footer>
+<div id="toast" class="toast" role="status" hidden></div>
+<dialog id="confirm-dialog"><form method="dialog"><div class="dialog-icon">!</div><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="dialog-actions"><button value="no" autofocus>再想想</button><button class="primary" value="yes">确认取消</button></div></form></dialog>
+<script src="data/clubs.js"></script><script src="app.js"></script>
+</body></html>
