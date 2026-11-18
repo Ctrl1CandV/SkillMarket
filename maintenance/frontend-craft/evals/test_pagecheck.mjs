@@ -27,6 +27,11 @@ ok(bad.text.includes('no color-scheme declared'), 'missing color-scheme reported
 ok(/-forced\.png/.test(bad.text), 'forced-colors screenshot offered');
 ok(/finding\(s\)/.test(bad.text) && /Open them/.test(bad.text), 'summary tells the reader to open the screenshots');
 
+// a page split into html + css, switching themes by script: its linked sheet must be read, and its dark look shown
+const linked = run(path.join(here, 'pagecheck/linked.html'));
+ok(/font sizes set in px/.test(linked.text) && /\.price/.test(linked.text), 'px font sizes in a linked stylesheet reported');
+ok(/-dark\.png/.test(linked.text), 'dark screenshot offered when only the meta says the page supports dark');
+
 const good = run(path.join(here, 'pagecheck/good.html'));
 for (const v of good.views) for (const key of ['overlapping', 'small_text', 'line_start_punctuation', 'one_char_per_line', 'low_contrast', 'clipped', 'small_taps', 'script_errors', 'broken_values', 'spacing_spill'])
   ok(v[key].length === 0, `${v.viewport}: ${key} should be empty, got ${JSON.stringify(v[key])}`);

@@ -143,7 +143,7 @@ function spacing() {
 function pageLevel() {
   const px = [];
   const walk = (rules) => { for (const r of rules) { if (r.cssRules) walk(r.cssRules); if (r.style && /px$/.test(r.style.fontSize || '')) px.push(r.selectorText || '(rule)'); } };
-  for (const sheet of document.styleSheets) { try { walk(sheet.cssRules); } catch { /* another origin */ } }
+  for (const sheet of document.styleSheets) { try { walk(sheet.cssRules); } catch { /* another site's stylesheet: not the author's to fix */ } }
   for (const el of document.querySelectorAll('[style*="font-size"]')) if (/px$/.test(el.style.fontSize)) px.push(el.tagName.toLowerCase() + '[style]');
   const meta = document.querySelector('meta[name="color-scheme"]');
   return { px_font_rules: px.length, px_font_examples: px.slice(0, 8), color_scheme: getComputedStyle(document.documentElement).colorScheme, color_scheme_meta: meta ? meta.content : null };
@@ -165,10 +165,11 @@ for (const [width, height] of sizes) {
   await context.close();
 }
 // how the page looks in forced colors (Windows high contrast), and in dark when it says it supports dark
+// (a page that switches themes by script may compute as light here, so its <meta name=color-scheme> counts too)
 {
   const [width, height] = sizes[0], extra = [];
   const modes = [['forced', { forcedColors: 'active' }]];
-  if (/dark/.test(report.page_level.color_scheme)) modes.push(['dark', { colorScheme: 'dark' }]);
+  if (/dark/.test(report.page_level.color_scheme + ' ' + (report.page_level.color_scheme_meta || ''))) modes.push(['dark', { colorScheme: 'dark' }]);
   for (const [tag, emulate] of modes) {
     const { page, context } = await open(browser, input, { width, height, query, emulate });
     const shot = `${stem}-${width}-${tag}.png`; await page.screenshot({ path: path.join(outDir, shot) }); extra.push(shot); await context.close();

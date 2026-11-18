@@ -1,0 +1,6 @@
+html[data-theme="light"] { color-scheme: light; --bg: #fbfaf7; --ink: #1d1d1b; }
+html[data-theme="dark"] { color-scheme: dark; --bg: #161714; --ink: #ecebe6; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.7 system-ui, "Microsoft YaHei", sans-serif; }
+main { max-width: 40rem; margin: 0 auto; padding: 2rem 1rem; }
+h1 { font-size: 1.75rem; }
+.price { font-size: 20px; }

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>样式写在外部文件里的页面</title>
+<link rel="stylesheet" href="linked.css">
+<script>
+  // 深浅色由脚本决定：没存过选择时跟随系统
+  document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+</script>
+</head>
+<body>
+<main>
+  <h1>本周菜价</h1>
+  <p>样式写在 linked.css 里，字号用了 px。检查脚本以本地文件打开时也要读得到这份样式。</p>
+  <p class="price">青菜 3.5 元一斤</p>
+</main>
+</body>
+</html>
