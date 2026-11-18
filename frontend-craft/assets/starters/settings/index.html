@@ -20,21 +20,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>通知设置 · 课题组日程</title>
 <style>
   :root {
+  color-scheme: light;
     --bg: #FAFAF7; --surface: #FFFFFF; --ink: #1B1D22; --ink-2: #5E636E; --line: #E3E2DC; --wash: #F1F0EA;
     --blue: #2357C6; --blue-wash: #E6EDFB; --warn: #9A5B00; --warn-wash: #FBF0D9; --red: #B3261E; --red-wash: #FBE9E7;
     --sans: "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif; --num: "Bahnschrift", "DIN Alternate", var(--sans);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 20px; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 0.9375rem/1.6 var(--sans); }
   button, select, input { font: inherit; color: inherit; }
   .page { max-width: 1040px; margin: 0 auto; padding: 28px 28px 140px; display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 0 48px; }
-  .crumbs { grid-column: 1 / -1; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
-  h1 { grid-column: 1 / -1; font-size: 28px; line-height: 1.3; margin: 0 0 22px; }
-  nav.toc { position: sticky; top: 20px; align-self: start; display: grid; gap: 2px; font-size: 14px; }
+  .crumbs { grid-column: 1 / -1; font-size: 0.8125rem; color: var(--ink-2); margin-bottom: 6px; }
+  h1 { grid-column: 1 / -1; font-size: 1.75rem; line-height: 1.3; margin: 0 0 22px; }
+  nav.toc { position: sticky; top: 20px; align-self: start; display: grid; gap: 2px; font-size: 0.875rem; }
   nav.toc a { text-decoration: none; color: var(--ink-2); padding: 7px 12px; border-radius: 8px; border-left: 2px solid transparent; }
   nav.toc a:hover { background: var(--wash); color: var(--ink); }
   nav.toc a.on { color: var(--ink); font-weight: 700; border-left-color: var(--ink); border-radius: 0 8px 8px 0; }
@@ -42,66 +44,69 @@
 
   /* 现在的设置合起来是什么效果：用一段话说清，改任何一项它都跟着变 */
   .now { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 8px; }
-  .now h2 { font-size: 13px; color: var(--ink-2); font-weight: 500; margin: 0 0 6px; letter-spacing: .04em; }
-  .now ul { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.75; }
+  .now h2 { font-size: 0.8125rem; color: var(--ink-2); font-weight: 500; margin: 0 0 6px; letter-spacing: .04em; }
+  .now ul { margin: 0; padding: 0; list-style: none; font-size: 1rem; line-height: 1.75; }
   .now li { padding-left: 18px; position: relative; } .now li::before { content: ""; position: absolute; left: 2px; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
   .now li.off::before { background: var(--line); } .now li.off { color: var(--ink-2); }
   .now b { font-weight: 700; }
   .paused { background: var(--warn-wash); border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; display: flex; gap: 14px; align-items: center; justify-content: space-between; color: #5A3600; }
 
   section { padding-top: 36px; }
-  section > h2 { font-size: 20px; margin: 0 0 2px; }
+  section > h2 { font-size: 1.25rem; margin: 0 0 2px; }
   section > p.lead { color: var(--ink-2); margin: 0 0 10px; }
   .item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; align-items: center; padding: 16px 0; border-top: 1px solid var(--line); }
   .item:last-child { border-bottom: 1px solid var(--line); }
-  .item .t { font-size: 16px; font-weight: 600; } .item .d { color: var(--ink-2); font-size: 14px; grid-column: 1 / -1; }
-  .item .more { grid-column: 1 / -1; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 14px; }
+  .item .t { font-size: 1rem; font-weight: 600; } .item .d { color: var(--ink-2); font-size: 0.875rem; grid-column: 1 / -1; }
+  .item .more { grid-column: 1 / -1; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 0.875rem; }
   .item.dim .t, .item.dim .d { color: var(--ink-2); }
   /* 开关把状态写成字，不只靠颜色 */
-  .sw { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-size: 14px; color: var(--ink-2); min-height: 40px; }
+  .sw { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-size: 0.875rem; color: var(--ink-2); min-height: 40px; }
   .sw input { appearance: none; width: 46px; height: 28px; border-radius: 999px; background: #C9C8C1; position: relative; margin: 0; cursor: pointer; transition: background .15s; flex: none; }
   .sw input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .15s; }
   .sw input:checked { background: var(--blue); } .sw input:checked::after { transform: translateX(18px); }
   .sw input:checked + span { color: var(--ink); font-weight: 700; }
   .sw span { min-width: 2.2em; }
   input:focus-visible, button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-  select { height: 40px; border: 1px solid #BDBBB2; border-radius: 8px; background: var(--surface); padding: 0 10px; }
+  select { min-height: 40px; border: 1px solid #BDBBB2; border-radius: 8px; background: var(--surface); padding: 0 10px; }
   select:disabled, .ghost:disabled { color: #A3A199; background: var(--wash); border-color: var(--line); cursor: default; }
-  .ghost { height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #BDBBB2; background: var(--surface); cursor: pointer; font-size: 14px; }
+  .ghost { min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid #BDBBB2; background: var(--surface); cursor: pointer; font-size: 0.875rem; }
   .ghost:hover:not(:disabled) { border-color: var(--ink); }
   .ck { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; min-height: 40px; } .ck input { width: 20px; height: 20px; accent-color: var(--blue); margin: 0; }
   .ck.dis { color: #A3A199; cursor: default; }
-  .hint { color: var(--warn); background: var(--warn-wash); padding: 2px 8px; border-radius: 4px; font-size: 13px; }
+  .hint { color: var(--warn); background: var(--warn-wash); padding: 2px 8px; border-radius: 4px; font-size: 0.8125rem; }
 
   /* 事件 × 渠道：一张表，列头只写一次 */
   table { border-collapse: collapse; width: 100%; margin-top: 4px; }
   th, td { border-top: 1px solid var(--line); padding: 12px 0; text-align: left; vertical-align: middle; }
-  thead th { border-top: 0; font-size: 13px; color: var(--ink-2); font-weight: 500; padding: 8px 0; position: sticky; top: 0; background: var(--bg); z-index: 1; }
+  thead th { border-top: 0; font-size: 0.8125rem; color: var(--ink-2); font-weight: 500; padding: 8px 0; position: sticky; top: 0; background: var(--bg); z-index: 1; }
   th.c, td.c { width: 92px; text-align: center; }
-  td .t { font-size: 16px; font-weight: 600; } td .d { font-size: 14px; color: var(--ink-2); }
+  td .t { font-size: 1rem; font-weight: 600; } td .d { font-size: 0.875rem; color: var(--ink-2); }
   td.c input { width: 22px; height: 22px; accent-color: var(--blue); cursor: pointer; margin: 0; vertical-align: middle; }
   td.c input:disabled { cursor: default; }
   td.c label { display: inline-grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
   th.c.offcol, td.c.offcol { color: #A3A199; }
   tbody tr:last-child td { border-bottom: 1px solid var(--line); }
-  th.c button { font: inherit; color: var(--blue); background: none; border: 0; padding: 4px; cursor: pointer; display: block; margin: 2px auto 0; font-size: 12px; }
+  th.c button { font: inherit; color: var(--blue); background: none; border: 0; padding: 4px; cursor: pointer; display: block; margin: 2px auto 0; font-size: 0.75rem; }
   th.c button:disabled { color: #A3A199; cursor: default; }
   .danger .item .t { color: var(--ink); } .ghost.red { color: var(--red); border-color: #E2B5B0; } .ghost.red:hover { border-color: var(--red); background: var(--red-wash); }
 
   /* 保存：底部一条，始终说清现在是什么状态 */
   .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); z-index: 5; }
   .bar .in { max-width: 1040px; margin: 0 auto; padding: 12px 28px; display: flex; align-items: center; gap: 14px; min-height: 64px; }
-  .bar .msg { flex: 1; font-size: 14px; color: var(--ink-2); } .bar .msg b { color: var(--ink); }
+  .bar .msg { flex: 1; font-size: 0.875rem; color: var(--ink-2); } .bar .msg b { color: var(--ink); }
   .bar.dirty { background: var(--blue-wash); border-top-color: #BFD0F3; } .bar.dirty .msg { color: var(--ink); }
-  .primary { height: 42px; padding: 0 22px; border-radius: 8px; border: 0; background: var(--blue); color: #fff; font-weight: 700; cursor: pointer; }
+  .primary { min-height: 42px; padding: 0 22px; border-radius: 8px; border: 0; background: var(--blue); color: #fff; font-weight: 700; cursor: pointer; }
   [hidden] { display: none !important; }
 
   @media (max-width: 860px) {
-    .page { grid-template-columns: 1fr; padding: 18px 16px 150px; } nav.toc { display: none; } h1 { font-size: 24px; margin-bottom: 14px; }
-    .now { padding: 14px 16px; } .now ul { font-size: 15px; }
-    th.c, td.c { width: 56px; } td .t { font-size: 15px; } td .d { font-size: 13px; }
-    thead th.c { font-size: 12px; } th.c button { display: none; }
+    .page { grid-template-columns: 1fr; padding: 18px 16px 150px; } nav.toc { display: none; } h1 { font-size: 1.5rem; margin-bottom: 14px; }
+    .now { padding: 14px 16px; } .now ul { font-size: 0.9375rem; }
+    th.c, td.c { width: 56px; } td .t { font-size: 0.9375rem; } td .d { font-size: 0.8125rem; }
+    thead th.c { font-size: 0.75rem; } th.c button { display: none; }
     .bar .in { padding: 10px 16px; flex-wrap: wrap; gap: 8px 10px; } .bar .msg { flex-basis: 100%; }
+  }
+  @media (forced-colors: active) {
+    [aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]) { outline: 2px solid Highlight; outline-offset: -2px; }
   }
 </style>
 </head>

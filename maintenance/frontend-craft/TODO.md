@@ -1,6 +1,6 @@
 # frontend-craft 待办
 
-当前版本为 frontend-craft 0.6.1 与 product-design 0.3.0（2026-11-13）。把 11 月九类练习页的经验提炼进技能，分两批；第一批（四个起步样例、类别对照表、检查脚本、四个取舍问题）已完成并用 deepseek-flash 各跑一次对照，见[第一批记录](reports/frontend-craft-0.6.0-batch1-2026-11-13.md)。之后改成 0.6.1（对照表放进主流程、看样例和处理检查结果写成明确步骤、检查脚本能查出 NaN），gpt-6.1-sol 和 deepseek-flash 复测过，用户盲看分不出新旧好坏。2026-11-13 用户决定就此收尾，第二批暂缓。
+当前版本为 frontend-craft 0.7.0（2026-11-18）：按 Google modern-web-guidance 的对照与三页练习，实现写法交给该技能，修正与它冲突的三处，补上它没有的三处，pagecheck 与起步样例随之更新，见[对照](reports/mwg-gap-2026-11-18.md)、[练习日记](practice/2026-11-mwg/JOURNAL.md)。上一版 0.6.1 与 product-design 0.3.0（2026-11-13）。把 11 月九类练习页的经验提炼进技能，分两批；第一批（四个起步样例、类别对照表、检查脚本、四个取舍问题）已完成并用 deepseek-flash 各跑一次对照，见[第一批记录](reports/frontend-craft-0.6.0-batch1-2026-11-13.md)。之后改成 0.6.1（对照表放进主流程、看样例和处理检查结果写成明确步骤、检查脚本能查出 NaN），gpt-6.1-sol 和 deepseek-flash 复测过，用户盲看分不出新旧好坏。2026-11-13 用户决定就此收尾，第二批暂缓。
 
 上一版为 frontend-craft 0.5.0-rc.3 与 product-design 0.2.0-rc.2。配色与样式选择作为独立目标实施，新增九组搭配库、三类可复用模板及导出；静态检查、代表性浏览器画面与操作已完成，用户已查看并认可，见[配色实施记录](reports/color-directions-implementation-2026-10-29.md)。按用户授权，将两个目标分别提交推送 main/dev；运行技能进入两分支，维护资料仅留 dev。
 
@@ -13,6 +13,9 @@
 0.4.1 四页演示曾获用户认可，并按配色相似的反馈补充搭配方向；历史方法与检查边界见[0.4.1 样式修订](reports/frontend-craft-0.4.1-style-2026-10-25.md)，0.4.0 见[原修订记录](reports/frontend-craft-0.4-diagnosis-2026-10-25.md)。
 
 ## 当前
+
+- [ ] 0.7.0 的对照验证：同一任务分别只用 frontend-craft、以及 frontend-craft 加 modern-web-guidance，用 pi + deepseek-flash 各跑一次，按可量化的检查比较。
+- [ ] 起步样例是由 `tools/make_starters.py` 从 11 月练习页生成的，0.7.0 的 rem、最小高度、color-scheme、强制颜色和 320 宽度修改都写在这个脚本末尾；以后改样例也要改脚本，否则重新生成会丢。
 
 - [ ] 第二批起步样例（阅读、活动展示、艺术展示的小和大两档、局部 3D、手机表单），暂缓，等有真实页面出问题时再做。
 - [ ] 样例配色会被原样搬到别的题材（deepseek 把面包房的暖色用在了快递驿站上），做第二批时考虑在样例开头写明“配色属于原题材”。

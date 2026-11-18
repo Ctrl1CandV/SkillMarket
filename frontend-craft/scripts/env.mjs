@@ -38,9 +38,10 @@ export function target(input, query = '') {
 }
 
 // Open one page at one size. Phones (narrower than 700 px) get touch and a mobile viewport.
-export async function open(browser, input, { width = 1440, height = 900, query = '' } = {}) {
+// emulate: extra context options, e.g. { forcedColors: 'active' } or { colorScheme: 'dark' }.
+export async function open(browser, input, { width = 1440, height = 900, query = '', emulate = {} } = {}) {
   const mobile = width < 700;
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile });
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile, ...emulate });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e.message).slice(0, 200)));

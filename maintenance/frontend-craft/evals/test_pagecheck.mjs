@@ -20,10 +20,15 @@ ok(m.small_taps.some(t => t.w === 24 && t.h === 24), 'small touch target on the 
 ok(d.small_taps_count === 0, 'touch targets are only checked on phone widths');
 ok(d.broken_values.some(b => b.where === 'text' && b.value.includes('NaN 件')), 'NaN in visible text');
 ok(d.broken_values.some(b => b.where === 'style' && b.value.includes('NaN%')) && d.broken_values.some(b => b.where === 'title'), 'NaN / undefined in a style and a tooltip');
+ok(d.low_contrast.some(s => s.text.includes('oklab')), 'low contrast in an oklab color (read through the browser, not the digits)');
+ok(d.spacing_spill.some(s => s.text.includes('写死高度')), 'fixed-height text spills when text spacing is widened');
+ok(bad.text.includes('font sizes set in px'), 'px font sizes reported');
+ok(bad.text.includes('no color-scheme declared'), 'missing color-scheme reported');
+ok(/-forced\.png/.test(bad.text), 'forced-colors screenshot offered');
 ok(/finding\(s\)/.test(bad.text) && /Open them/.test(bad.text), 'summary tells the reader to open the screenshots');
 
 const good = run(path.join(here, 'pagecheck/good.html'));
-for (const v of good.views) for (const key of ['overlapping', 'small_text', 'line_start_punctuation', 'one_char_per_line', 'low_contrast', 'clipped', 'small_taps', 'script_errors', 'broken_values'])
+for (const v of good.views) for (const key of ['overlapping', 'small_text', 'line_start_punctuation', 'one_char_per_line', 'low_contrast', 'clipped', 'small_taps', 'script_errors', 'broken_values', 'spacing_spill'])
   ok(v[key].length === 0, `${v.viewport}: ${key} should be empty, got ${JSON.stringify(v[key])}`);
 ok(good.views.every(v => !v.scroll_x), 'no sideways scroll'); ok(/Nothing measurable found/.test(good.text), 'clean summary');
 for (const f of fs.readdirSync(out)) if (f.endsWith('-first.png')) ok(fs.statSync(path.join(out, f)).size > 2000, 'screenshot written');

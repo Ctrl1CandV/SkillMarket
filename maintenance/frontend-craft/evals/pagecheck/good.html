@@ -1,11 +1,11 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>容易被误报的写法</title>
-<style>body{margin:20px 20px 90px;font:16px/1.7 "Microsoft YaHei UI",sans-serif;background:#fff;color:#222}
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>容易被误报的写法</title>
+<style>:root{color-scheme:light}body{margin:20px 20px 90px;font:1rem/1.7 "Microsoft YaHei UI",sans-serif;background:#fff;color:#222}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 label.opt{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border:1px solid #999;border-radius:8px;width:260px}
 label.opt input{width:22px;height:22px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#222;color:#fff;padding:16px 20px}
 .tip{position:absolute;left:20px;top:60px;opacity:0;background:#000;color:#fff}
-.v{writing-mode:vertical-rl;font-size:40px;height:200px}
+.v{writing-mode:vertical-rl;font-size:2.5rem;block-size:auto;min-height:200px}
 button.big{height:48px;padding:0 20px}</style></head><body>
 <h1>这些都不该被报出来</h1>
 <p>正常的一段话，里面有逗号，也有句号。占位用的点是装饰：<span style="color:#ddd">·</span> <span style="color:#ddd">—</span></p>
@@ -20,4 +20,5 @@ button.big{height:48px;padding:0 20px}</style></head><body>
 <p>普通英文词不算算错的值：Infinity 无边泳池，Nanjing 南京，NaNa 的店。</p>
 <p>把 NaN 当作内容来写也不算：第 37 轮训练损失变成了 NaN，已经换种子重跑。</p>
 <div class="bar">固定在底部的一条，盖在内容上是有意的</div>
+<p style="background:color-mix(in oklab, #1d5c8f, white 88%);color:#1b1f24;padding:8px">color-mix 调出的淡底配深字，对比度足够</p>
 </body></html>

@@ -114,3 +114,82 @@ t = put(t, header("图鉴和检索（按样子找东西）",
      "几百件以上时，筛选项要重新设计（分层、可搜索的筛选），网格可以保留。"]))
 (out / "index.html").write_text(t, encoding="utf-8")
 print("ok", sorted(p.relative_to(dst).as_posix() for p in dst.rglob("*") if p.is_file()))
+
+
+# ---- 2026-11-18: modern-web-guidance pass (frontend-craft 0.7.0) ----
+# Font sizes in rem so the reader's own font-size setting applies; text controls get a minimum height instead of a fixed one
+# (WCAG 1.4.12: widened text spacing must not spill out); every page declares color-scheme.
+def rem(px):
+    v = float(px) / 16
+    return (f"{v:.4f}".rstrip("0").rstrip(".")) + "rem"
+
+
+def to_rem(t):
+    t = re.sub(r"font-size: ?(\d+(?:\.\d+)?)px", lambda m: "font-size: " + rem(m.group(1)), t)
+    t = re.sub(r"font: ?((?:\d00 )?)(\d+(?:\.\d+)?)px", lambda m: "font: " + m.group(1) + rem(m.group(2)), t)
+    return t
+
+
+def min_height(t, selectors):
+    for sel in selectors:
+        pat = re.compile(r"(" + re.escape(sel) + r" \{[^}]*?)(?<![-\w])height: (\d+px)")
+        t, n = pat.subn(r"\1min-height: \2", t)
+        assert n >= 1, (sel, n)
+    return t
+
+
+def declare_scheme(t):
+    if 'name="color-scheme"' not in t and '<meta name="viewport"' in t:
+        t = sub(t, '<meta name="viewport" content="width=device-width, initial-scale=1">', '<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="color-scheme" content="light">')
+    if ":root {" in t and "color-scheme:" not in t:
+        t = t.replace(":root {", ":root {\n  color-scheme: light;", 1)
+    return t
+
+
+TEXT_CONTROLS = {
+    "catalog": [".seg button", ".search input", ".chip"],
+    "dashboard": [".seg button", ".ghost"],   # ".ghost" also catches the phone rule ".seg button, .ghost"
+    "settings": ["select", ".ghost", ".primary"],
+    "workbench": [".bar", ".seg button", ".bhead", ".search input", ".jump button", ".row .act button", ".row.picked .act button", ".toast button"],
+}
+for name, sels in TEXT_CONTROLS.items():
+    for f in sorted((dst / name).glob("*")):
+        if f.suffix not in (".html", ".css", ".js"):
+            continue
+        t = f.read_text(encoding="utf-8")
+        new = to_rem(t)
+        if f.name == "index.html":
+            new = declare_scheme(min_height(new, sels))
+        if f.name == "base.css":
+            new = declare_scheme(new)
+        if new != t:
+            f.write_text(new, encoding="utf-8")
+print("modernized")
+
+# The workbench was made for the shop's tablet and laptop; at 320px (WCAG 1.4.10 reflow width) the brand, tabs and slot headers broke apart.
+wb = dst / "workbench" / "index.html"
+t = wb.read_text(encoding="utf-8")
+if "max-width: 360px" not in t:
+    t = sub(t, "  @media print {", """  @media (max-width: 360px) {
+    .bar { padding: 0 10px; gap: 8px; } .bar .brand { font-size: 1.25rem; white-space: nowrap; }
+    .seg button { padding: 0 12px; white-space: nowrap; }
+    .slot > header { flex-wrap: wrap; row-gap: 2px; } .slot > header h2, .slot > header h2 .num { font-size: 1.25rem; white-space: nowrap; }
+    .slot > header .tag { white-space: nowrap; }
+  }
+  @media print {""")
+    wb.write_text(t, encoding="utf-8")
+print("workbench 320")
+
+# Forced colors (Windows high contrast) drop background colors, so a selected button shown only by its fill looked like the others.
+FORCED = """  @media (forced-colors: active) {
+    [aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]) { outline: 2px solid Highlight; outline-offset: -2px; }
+  }
+"""
+for name in ("catalog", "dashboard", "settings", "workbench"):
+    f = dst / name / "index.html"
+    t = f.read_text(encoding="utf-8")
+    if "forced-colors" not in t:
+        i = t.index("</style>")
+        t = t[:i] + FORCED + t[i:]
+        f.write_text(t, encoding="utf-8")
+print("forced colors")
