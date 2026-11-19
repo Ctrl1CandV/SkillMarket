@@ -7,14 +7,15 @@
 
   写代码前定下的三件事（换成你的题目时，先重写这三条，再动版式）：
   1. 这是哪一类：小区屋顶菜园的成员首页。三十来户人家，每户一块地，早上下楼前、傍晚回家后各看一眼。
-     所以它要像一个做完的系统：有认得出来的标志和侧栏，有概览，有为菜园画的图。不要只剩文字和细线框。
+     所以它要像一个做完的系统：有认得出来的标志和侧栏，有概览，有为菜园做的图标和示意图。不要只剩文字和细线框。
+     语气是工作系统，不是活动页：图形用线描和示意，不用卡通平涂插画。
      也不要口号、欢迎横幅和中文界面里的英文装饰小标题，那些不告诉成员任何事。
   2. 颜色和图形给谁：
      - 番茄红是品牌色：标志、主要按钮、“我的”标记。
      - 蓝色只表示“该浇水了”，琥珀色只表示“可以收了 / 超期了”。别的状态用黑字。
      - 深褐色侧栏是这个系统的身份，像菜园里的土。页面底是中性浅灰，内容在白色面板上。
-     - 插图：每种菜、每件工具一张，同一个 64×64 画布、同一种画法（平涂、一层亮面、不描边），放在同一种浅色圆角底上。
-       插图里的颜色只在插图里出现，不拿来当界面颜色。
+     - 图形：每种菜、每件工具一个线性图标，同一个 24×24 画布、1.6 线宽、圆头，颜色跟着文字走，放在中性浅灰的小方底上。
+       只有表示状态的图块（该浇水、超期）才用状态色。我的地块画成示意图（三条菜畦各种什么），它是信息，不是装饰。
   3. 内容的形状怎么决定版式：
      - 成员每次来先问“我的地要不要浇、今天是不是轮到我”。所以第一屏左上是“我的地块”和“今天轮到我”，按钮就在里面。
      - 三十二块地排成四排，大家说“B 排第 7 块”，不说地块编号的数字含义。所以地块画成和实地一样的四排格子，不做表格。
@@ -25,11 +26,11 @@
   量一量：
   - 1440×900 的第一屏里能看到：我的地块（带“记一次浇水”按钮）、今天轮到我、四张概览卡、地块图的开头。
   - 正文 14 到 15 px，最小的字 12 px；对比度全部过 4.5:1。
-  - 插图至少出现在三个地方（我的地块、换菜角、工具），全是同一套画法。
+  - 图标出现在我的地块、概览、换菜角、工具，全是同一套线宽和画法；整页没有卡通插画。
 
   换成自己的内容时：
   - 数据在页面底部的 PLOTS、SWAP、TOOLS、ROTA 里，规则在 needsWater()、render*() 几个函数。先换数据，看真实形状，再动版式。
-  - 配色、插图题材属于这个样例。换题材时照着“颜色和图形给谁”重新定：你的系统靠什么被认出来，为你的对象画一套同画法的图。
+  - 配色、图标题材属于这个样例。换题材时照着“颜色和图形给谁”重新定：你的系统靠什么被认出来，为你的对象做一套同画法的线性图标或示意图。
   - 多页面系统（列表、详情、我的、后台）共用侧栏、这套字号和面板；后台里专门处理事情的那一页，换成 queue 样例的做法。
 -->
 <html lang="zh-CN">
@@ -62,11 +63,11 @@
   .num { font-family: var(--num); font-variant-numeric: tabular-nums; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-  /* 插图：同一种底、同一个画布 */
-  .art { flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: 14px; background: var(--tint, #eef0f2); }
-  .art svg { width: 78%; height: 78%; }
-  .art.sm { width: 3rem; height: 3rem; border-radius: 11px; }
-  .art.lg { width: 5.5rem; height: 5.5rem; border-radius: 18px; }
+  /* 图标：同一种底、同一个画布 */
+  .art { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9px; background: var(--tint, #f0f1f3); color: var(--fg, var(--ink2)); }
+  .art svg { width: 1.5rem; height: 1.5rem; }
+  .art.sm { width: 2.5rem; height: 2.5rem; border-radius: 8px; }
+  .art.sm svg { width: 1.375rem; height: 1.375rem; }
 
   .app { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-height: 100vh; background: linear-gradient(90deg, var(--soil) 15.5rem, transparent 0); }
 
@@ -103,10 +104,16 @@
   /* 我的 */
   .mine { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.25rem; }
   .plot-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 1.5rem; padding: 1.375rem; border-top: 4px solid var(--brand); }
-  .bed { align-self: start; display: grid; grid-template-columns: repeat(3, 5.5rem); gap: 0.5rem; padding: 0.625rem; border-radius: 16px; background: #6b5443; box-shadow: inset 0 0 0 3px #574436; }
-  .bed .art { width: 5.5rem; height: 5.5rem; border-radius: 12px; }
-  .bed figure { margin: 0; text-align: center; }
-  .bed figcaption { margin-top: 0.25rem; font-size: 0.8125rem; color: #f3eee9; }
+  .bed { align-self: start; width: 16.5rem; }
+  .bed .size { display: flex; justify-content: space-between; font: 400 0.8125rem var(--num); color: var(--ink3); margin-bottom: 0.375rem; }
+  .strips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #cfc6bc; border-radius: 8px; background: #f7f4f0; overflow: hidden; }
+  .strips figure { margin: 0; display: grid; justify-items: center; align-content: center; gap: 0.375rem; min-height: 8.5rem; padding: 0.75rem 0.25rem; color: var(--ink2); }
+  .strips figure + figure { border-left: 1px dashed #cfc6bc; }
+  .strips svg { width: 2rem; height: 2rem; }
+  .strips figcaption { font-size: 0.875rem; color: var(--ink); line-height: 1.3; text-align: center; }
+  .strips figcaption small { display: block; font-size: 0.75rem; color: var(--ink3); }
+  .strips figure.ripe { background: var(--ripe-soft); color: var(--ripe); }
+  .strips figure.ripe small { color: var(--ripe); font-weight: 600; }
   .plot-info .kicker { font-size: 0.875rem; color: var(--ink3); }
   .plot-info h2 { font-size: 1.5rem; line-height: 1.3; margin: 0.125rem 0 0.75rem; }
   .plot-info h2 .num { font-size: 1.75rem; margin-right: 0.375rem; }
@@ -141,7 +148,8 @@
   .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0; }
   .stat { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.125rem; text-decoration: none; }
   .stat:hover { border-color: var(--line2); }
-  .stat .art { width: 3.25rem; height: 3.25rem; border-radius: 12px; }
+  .stat .art { width: 3rem; height: 3rem; border-radius: 10px; }
+  .stat .art svg { width: 1.625rem; height: 1.625rem; }
   .stat b { display: block; font: 600 1.75rem/1.1 var(--num); }
   .stat b small { font: 400 0.875rem var(--font); color: var(--ink3); margin-left: 0.25rem; }
   .stat span { font-size: 0.875rem; color: var(--ink2); }
@@ -217,8 +225,7 @@
   }
   @media (max-width: 640px) {
     .plot-card { grid-template-columns: minmax(0, 1fr); }
-    .bed { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .bed .art { width: 100%; height: auto; aspect-ratio: 1; }
+    .bed { width: 100%; }
     .stats { gap: 0.75rem; }
     .stat { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 0.875rem; }
     .swap { grid-template-columns: minmax(0, 1fr); }
@@ -242,24 +249,25 @@
 </style>
 </head>
 <body>
-<!-- 插图：每种菜、每件工具一张。同一个 64×64 画布，平涂加一层亮面，不描边。 -->
+<!-- 图形：线性图标，同一个 24×24 画布、1.6 线宽、圆头，颜色跟随文字（currentColor）。
+     管理和工作系统里不用卡通平涂插画：那是活动页、面向孩子或大众的展示页的语气。 -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="v-tomato" viewBox="0 0 64 64"><circle cx="32" cy="37" r="19" fill="#df4a30"/><path d="M19.5 33a13 13 0 0 1 9-10" stroke="#f28a70" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M32 19.5l-5.5-4.5 1 6.5-6.5 1 6.5 2.5-2 6 6.5-4.5 6.5 4.5-2-6 6.5-2.5-6.5-1 1-6.5z" fill="#3d8a3a"/><path d="M32 18v-7" stroke="#2e6b2c" stroke-width="3" stroke-linecap="round"/></symbol>
-  <symbol id="v-lettuce" viewBox="0 0 64 64"><ellipse cx="32" cy="45" rx="23" ry="12" fill="#5a9c34"/><path d="M11 42c0-15 9-26 21-26s21 11 21 26c-6-4-13-6-21-6s-15 2-21 6z" fill="#85c24e"/><path d="M19 39c2-9 7-15 13-15s11 6 13 15c-4-2-8-3-13-3s-9 1-13 3z" fill="#b6dc79"/><path d="M32 25v14" stroke="#5a9c34" stroke-width="2" stroke-linecap="round"/></symbol>
-  <symbol id="v-bokchoy" viewBox="0 0 64 64"><path d="M23 57c-4-10-4-21 2-29h14c6 8 6 19 2 29z" fill="#eef5df"/><path d="M28 56c-2-8-2-18 1-26M36 56c2-8 2-18-1-26" stroke="#c7dcae" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M21 33c-7-10-3-22 7-25 2 8 0 17-7 25z" fill="#3f8f3a"/><path d="M43 33c7-10 3-22-7-25-2 8 0 17 7 25z" fill="#4c9d41"/><path d="M32 31c-5-8-4-18 0-25 4 7 5 17 0 25z" fill="#62b04e"/></symbol>
-  <symbol id="v-carrot" viewBox="0 0 64 64"><path d="M21 25c7-3 16-1 21 3L27 58c-1 2-3 2-4 0z" fill="#ef8a26"/><path d="M27 33h6M26 41h5M25 49h3" stroke="#c4651b" stroke-width="2" stroke-linecap="round"/><path d="M31 25c-2-8-7-12-12-13 2 6 6 10 12 13zM33 24c0-9 4-15 8-16 0 7-3 12-8 16zM36 26c4-6 10-8 14-6-3 5-8 7-14 6z" fill="#4c9a3c"/></symbol>
-  <symbol id="v-eggplant" viewBox="0 0 64 64"><path d="M37 19c10 4 14 14 10 25S31 60 21 56 11 41 19 33s10-16 18-14z" fill="#6b3f9e"/><path d="M23 41c0-6 4-10 8-12" stroke="#9c76c8" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M35 14c4 0 8 3 9 8-4-1-8 0-11 2-1-4 0-8 2-10z" fill="#3d8a3a"/></symbol>
-  <symbol id="v-pepper" viewBox="0 0 64 64"><path d="M20 30c0-6 6-8 12-6 6-2 12 0 12 6 0 12-2 25-12 27-10-2-12-15-12-27z" fill="#3f9b3f"/><path d="M25 33c0 8 1 14 4 18" stroke="#7cc46c" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M32 24c0-6 3-9 7-10" stroke="#2c6b2c" stroke-width="3" fill="none" stroke-linecap="round"/></symbol>
-  <symbol id="v-herbs" viewBox="0 0 64 64"><path d="M32 58V16" stroke="#3e7d4a" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="24" cy="46" rx="9" ry="4.5" transform="rotate(-28 24 46)" fill="#58a868"/><ellipse cx="40" cy="40" rx="9" ry="4.5" transform="rotate(28 40 40)" fill="#4f9c5f"/><ellipse cx="25" cy="32" rx="8" ry="4" transform="rotate(-30 25 32)" fill="#6dbb7b"/><ellipse cx="39" cy="26" rx="8" ry="4" transform="rotate(30 39 26)" fill="#62b170"/><ellipse cx="32" cy="15" rx="4" ry="6.5" fill="#7cc78a"/></symbol>
-  <symbol id="t-can" viewBox="0 0 64 64"><path d="M20 30c0-8 4-12 8-12s8 4 8 12" stroke="#34588b" stroke-width="4" fill="none"/><path d="M12 30h28v20a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill="#4a78b8"/><path d="M16 34v14" stroke="#7aa0d6" stroke-width="3" stroke-linecap="round"/><path d="M40 37l13-12" stroke="#4a78b8" stroke-width="5" stroke-linecap="round"/><circle cx="54.5" cy="23.5" r="4.5" fill="#34588b"/></symbol>
-  <symbol id="t-barrow" viewBox="0 0 64 64"><path d="M44 27l12-6" stroke="#5b4a3f" stroke-width="3.5" stroke-linecap="round"/><path d="M8 26h38l-8 16H17z" fill="#d0452c"/><path d="M13 30h28" stroke="#ea7a62" stroke-width="3" stroke-linecap="round"/><path d="M38 42l5 10" stroke="#5b4a3f" stroke-width="3.5" stroke-linecap="round"/><circle cx="22" cy="48" r="7.5" fill="#33363b"/><circle cx="22" cy="48" r="2.5" fill="#d9dce0"/></symbol>
-  <symbol id="t-hoe" viewBox="0 0 64 64"><path d="M16 57L44 15" stroke="#9b7653" stroke-width="4.5" stroke-linecap="round"/><path d="M38 9h17l-3 11H41z" fill="#6b7280"/><path d="M42 12h9" stroke="#9aa1aa" stroke-width="2.5" stroke-linecap="round"/></symbol>
-  <symbol id="t-shears" viewBox="0 0 64 64"><path d="M30 34L45 11l4.5 3L35 37z" fill="#9aa1aa"/><path d="M34 34L19 11l-4.5 3L29 37z" fill="#c0c5cc"/><path d="M28 37l-8 18M36 37l8 18" stroke="#d0452c" stroke-width="6.5" stroke-linecap="round"/><circle cx="32" cy="35" r="3.2" fill="#33363b"/></symbol>
-  <symbol id="i-plots" viewBox="0 0 64 64"><rect x="10" y="12" width="20" height="18" rx="4" fill="#7a5d48"/><rect x="34" y="12" width="20" height="18" rx="4" fill="#5a9c34"/><rect x="10" y="34" width="20" height="18" rx="4" fill="#85c24e"/><rect x="34" y="34" width="20" height="18" rx="4" fill="#7a5d48"/><path d="M44 30v-7M44 25c-1-4-4-6-8-6 0 4 3 6 8 6z" stroke="#fff" stroke-width="0" fill="#b6dc79"/></symbol>
-  <symbol id="i-drop" viewBox="0 0 64 64"><path d="M32 9C24 21 17 30 17 39a15 15 0 0 0 30 0c0-9-7-18-15-30z" fill="#2160c4"/><path d="M24 40a8 8 0 0 0 6 8" stroke="#8fb3ec" stroke-width="3.5" stroke-linecap="round" fill="none"/></symbol>
-  <symbol id="i-basket" viewBox="0 0 64 64"><circle cx="26" cy="27" r="9" fill="#df4a30"/><path d="M26 18.5v-4" stroke="#2e6b2c" stroke-width="2.5" stroke-linecap="round"/><path d="M33 29c0-8 5-13 12-14 0 8-5 13-12 14z" fill="#85c24e"/><path d="M18 31c0-10 6-16 14-16s14 6 14 16" stroke="#a8742f" stroke-width="3.5" fill="none"/><path d="M10 31h44l-6 22H16z" fill="#c98a3c"/><path d="M15 38h34M17 45h30" stroke="#a8742f" stroke-width="2.5"/></symbol>
-  <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#c8402a"/><path d="M8 30h24" stroke="#f6c9bf" stroke-width="2.5" stroke-linecap="round"/><path d="M20 30V18" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M20 20.5c-1-5-5-8-10-8 0 5 4 8 10 8z" fill="#fff"/><path d="M20 18.5c1-6 5-9 11-9 0 6-5 9-11 9z" fill="#fff"/></symbol>
-  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="#e9a21b"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="#e9a21b" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="v-tomato" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="6.5"/><path d="M8.8 7.8l3.2 1.6 3.2-1.6M12 9.4V5.2"/></g></symbol>
+  <symbol id="v-lettuce" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c0-5 3.6-9 8-9s8 4 8 9"/><path d="M4 15c2.5 2.5 5 3.5 8 3.5s5.5-1 8-3.5"/><path d="M12 6.5v11.5M8.2 9.5c1.4 1.2 2.3 3 2.6 6M15.8 9.5c-1.4 1.2-2.3 3-2.6 6"/></g></symbol>
+  <symbol id="v-bokchoy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 20.5c-1-3-1-6.2.6-9.3h3.6c1.6 3.1 1.6 6.3.6 9.3z"/><path d="M10.2 11.2C7.4 9.4 6.8 6 8.2 3.8c2 1 3 4 2 7.4M13.8 11.2c2.8-1.8 3.4-5.2 2-7.4-2 1-3 4-2 7.4"/></g></symbol>
+  <symbol id="v-carrot" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 8.5l9 2-6.4 10.2c-.6.9-1.8.6-1.9-.4z"/><path d="M11.5 9.4c-.5-2.5-2-4-4-4.6M13 9.7c.4-2.6 1.9-4.2 3.9-4.8M9.6 13.5h2M9.2 16.5h1.4"/></g></symbol>
+  <symbol id="v-eggplant" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6.5c3 2 3.4 6 1.4 9.4s-6.4 5.6-8.9 4.1-2.4-5.6.6-8.4 3.9-6.6 6.9-5.1z"/><path d="M14.4 6.3c.5-1.5 1.5-2.5 3-2.6"/></g></symbol>
+  <symbol id="v-pepper" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 10.5c0-2 2-3 4.5-2.3 2.5-.7 4.5.3 4.5 2.3 0 4.5-1 9.3-4.5 9.8-3.5-.5-4.5-5.3-4.5-9.8z"/><path d="M12 8.2c0-2 1-3.2 2.5-3.5"/></g></symbol>
+  <symbol id="v-herbs" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V4.5"/><path d="M12 17.5c-2.6 0-4.1-1-5-2.6 1.6-.8 3.6-.7 5 .6M12 13c2.6 0 4.1-1 5-2.6-1.6-.8-3.6-.7-5 .6M12 8.6c-2 0-3.3-.8-4-2.1 1.2-.6 2.8-.5 4 .5"/></g></symbol>
+  <symbol id="t-can" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h9v8a1.5 1.5 0 0 1-1.5 1.5h-6A1.5 1.5 0 0 1 5 18z"/><path d="M14 12.5l4.6-3.8M7.2 10V8.6a2.3 2.3 0 0 1 4.6 0V10"/><circle cx="19.6" cy="7.9" r="1.1"/></g></symbol>
+  <symbol id="t-barrow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h13l-3 6H6z"/><circle cx="8" cy="18" r="2"/><path d="M16 9l4-2M13 15l2 4"/></g></symbol>
+  <symbol id="t-hoe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20L15.5 6.5"/><path d="M13.5 4.5h6l-1 4h-4.2z"/></g></symbol>
+  <symbol id="t-shears" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12.5L16.5 4M13 12.5L7.5 4"/><circle cx="8.8" cy="17.5" r="2.6"/><circle cx="15.2" cy="17.5" r="2.6"/><path d="M11 12.5l-1.3 2.7M13 12.5l1.3 2.7"/></g></symbol>
+  <symbol id="i-plots" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5C9 8 6.5 11.2 6.5 14.3a5.5 5.5 0 0 0 11 0c0-3.1-2.5-6.3-5.5-10.8z"/><path d="M9.6 15a2.6 2.6 0 0 0 2 2.4"/></g></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-2 9H6zM8 10a4 4 0 0 1 8 0M9.5 13.5v2.5M14.5 13.5v2.5"/></g></symbol>
+  <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#c8402a"/><path d="M9 30h22" stroke="#f3c2b8" stroke-width="2.2" stroke-linecap="round"/><path d="M20 30V18.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M20 21c-1-4.6-4.6-7.4-9.2-7.4 0 4.6 3.7 7.4 9.2 7.4zM20 19c1-5.4 4.6-8.4 10-8.4 0 5.4-4.6 8.4-10 8.4z" fill="#fff"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><g fill="none" stroke="#b5780f" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M5.5 18.5l1.6-1.6M16.9 7.1l1.6-1.6"/></g></symbol>
 </svg>
 
 <div class="app">
@@ -322,7 +330,7 @@
 // 示例数据：人家都是编的。“现在”固定在 2026-11-19 周四 08:40。
 const NOW = new Date('2026-11-19T08:40');
 const ME = 'B-07';
-const CROPS = { tomato: ['番茄', '#fbe9e4'], lettuce: ['生菜', '#ecf5e2'], bokchoy: ['小白菜', '#e9f3e5'], carrot: ['胡萝卜', '#fdefdf'], eggplant: ['茄子', '#f1eaf7'], pepper: ['青椒', '#e8f3e4'], herbs: ['薄荷', '#e7f2ec'] };
+const CROPS = { tomato: ['番茄'], lettuce: ['生菜'], bokchoy: ['小白菜'], carrot: ['胡萝卜'], eggplant: ['茄子'], pepper: ['青椒'], herbs: ['薄荷'] };
 // [地块, 人家, 种的菜, 上次浇水, 可以收的菜]
 const PLOTS = [
   ['A-01', '赵家', ['bokchoy', 'carrot'], '2026-11-18T18:10'], ['A-02', '钱家', ['lettuce'], '2026-11-16T07:30'], ['A-03', '孙家', ['tomato', 'pepper'], '2026-11-18T19:00', 'pepper'], ['A-04', '', [], ''],
@@ -361,7 +369,7 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } c
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const art = (id, tint, cls = '') => `<span class="art ${cls}" style="--tint:${tint}"><svg aria-hidden="true"><use href="#${id}"/></svg></span>`;
+const art = (id, cls = '', style = '') => `<span class="art ${cls}"${style ? ` style="${style}"` : ''}><svg aria-hidden="true"><use href="#${id}"/></svg></span>`;
 const hm = (d) => `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
 const lastWatered = (p) => state.watered[p.id] || p.watered;
 function ago(iso) {
@@ -373,8 +381,8 @@ const needsWater = (p) => p.who && p.crops.length && (new Date(NOW.toDateString(
 
 function renderMine() {
   const p = PLOTS.find((x) => x.id === ME), need = needsWater(p);
-  const bed = p.crops.map((c) => `<figure>${art('v-' + c, CROPS[c][1])}<figcaption>${CROPS[c][0]}</figcaption></figure>`).join('');
-  $('#my-plot').innerHTML = `<div class="bed" aria-hidden="true">${bed}</div>
+  const bed = p.crops.map((c) => `<figure class="${c === p.ripe ? 'ripe' : ''}"><svg aria-hidden="true"><use href="#v-${c}"/></svg><figcaption>${CROPS[c][0]}<small>${c === p.ripe ? '可以收了' : '长着'}</small></figcaption></figure>`).join('');
+  $('#my-plot').innerHTML = `<div class="bed" aria-hidden="true"><p class="size"><span>3 米宽，三条菜畦</span><span>北</span></p><div class="strips">${bed}</div></div>
     <div class="plot-info"><p class="kicker">我家的地</p><h2><span class="num">${p.id}</span>B 排第 7 块</h2>
       <div class="facts">
         <p class="fact ${need ? 'water' : 'ok'}"><span class="dot"></span>${need ? '今天该浇了' : '今天浇过了'}<span class="sub">上次 ${ago(lastWatered(p))}</span></p>
@@ -394,11 +402,11 @@ function renderStats() {
   const growing = PLOTS.filter((p) => p.who && p.crops.length).length, dry = PLOTS.filter(needsWater).length;
   const waiting = SWAP.filter((s) => !s.takenBy && !state.taken[s.id]).length, out = TOOLS.filter((t) => t.state !== 'in').length, late = TOOLS.filter((t) => t.state === 'late').length;
   $('#stats').innerHTML = [
-    ['#field', '', 'i-plots', '#f1ece6', `${growing}<small>/ 32 块</small>`, '在种的地，2 块空着'],
-    ['#field', 'water', 'i-drop', 'var(--water-soft)', `${dry}<small>块</small>`, '今天该浇的地'],
-    ['#swap', '', 'i-basket', '#fbf0e2', `${waiting}<small>份</small>`, '换菜角里等人拿'],
-    ['#tools', late ? 'ripe' : '', 't-shears', '#f1f2f4', `${out}<small>件借出</small>`, late ? `${late} 件超期没还` : '都按时还了'],
-  ].map(([href, cls, icon, tint, big, label]) => `<a class="panel stat ${cls}" href="${href}">${art(icon, tint)}<span><b>${big}</b><span>${label}</span></span></a>`).join('');
+    ['#field', '', 'i-plots', '', `${growing}<small>/ 32 块</small>`, '在种的地，2 块空着'],
+    ['#field', 'water', 'i-drop', '--tint:var(--water-soft);--fg:var(--water)', `${dry}<small>块</small>`, '今天该浇的地'],
+    ['#swap', '', 'i-basket', '', `${waiting}<small>份</small>`, '换菜角里等人拿'],
+    ['#tools', late ? 'ripe' : '', 't-shears', late ? '--tint:var(--ripe-soft);--fg:var(--ripe)' : '', `${out}<small>件借出</small>`, late ? `${late} 件超期没还` : '都按时还了'],
+  ].map(([href, cls, icon, style, big, label]) => `<a class="panel stat ${cls}" href="${href}">${art(icon, '', style)}<span><b>${big}</b><span>${label}</span></span></a>`).join('');
   $('#nav-water').textContent = dry;
 }
 
@@ -417,14 +425,14 @@ function renderField() {
 function renderSwap() {
   $('#swap-list').innerHTML = SWAP.map((s) => {
     const mine = state.taken[s.id], other = s.takenBy;
-    return `<li class="item${mine || other ? ' taken' : ''}">${art('v-' + s.crop, CROPS[s.crop][1], 'sm')}<div><h3>${esc(s.what)}</h3><p>${esc(s.who)} · 在 ${s.plot} 的地头</p><p class="when">${s.until}</p>
+    return `<li class="item${mine || other ? ' taken' : ''}">${art('v-' + s.crop, 'sm')}<div><h3>${esc(s.what)}</h3><p>${esc(s.who)} · 在 ${s.plot} 的地头</p><p class="when">${s.until}</p>
       ${mine ? `<span class="mine-tag">你要了，记得${s.until}去拿</span>` : other ? `<p class="when">${esc(other)}已经要了</p>` : `<button class="btn" type="button" data-act="take" data-id="${s.id}">我要了</button>`}</div></li>`;
   }).join('');
 }
 
 function renderLists() {
   $('#notice-list').innerHTML = NOTICES.map((n) => `<li><span class="date"><b>${n.d}</b><small>${n.m}</small></span><div><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></li>`).join('');
-  $('#tool-list').innerHTML = TOOLS.map((t) => `<li>${art(t.art, '#f1f2f4', 'sm')}<div><h3>${t.name}</h3><p>${esc(t.note)}</p></div><span class="end">${t.state === 'in' ? '<span class="tag calm">在柜子里</span>' : t.state === 'late' ? '<span class="tag ripe">超期 1 天</span>' : '<span class="tag calm">借出</span>'}</span></li>`).join('');
+  $('#tool-list').innerHTML = TOOLS.map((t) => `<li>${art(t.art, 'sm')}<div><h3>${t.name}</h3><p>${esc(t.note)}</p></div><span class="end">${t.state === 'in' ? '<span class="tag calm">在柜子里</span>' : t.state === 'late' ? '<span class="tag ripe">超期 1 天</span>' : '<span class="tag calm">借出</span>'}</span></li>`).join('');
 }
 
 function render() { renderMine(); renderStats(); renderField(); renderSwap(); renderLists(); }
