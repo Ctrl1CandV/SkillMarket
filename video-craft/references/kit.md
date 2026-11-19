@@ -127,7 +127,7 @@ seek(0);
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
 | `audiocheck.mjs` | `media page out.png [--from a --to b] [--scene-offset s]` | 从成片解码，画频谱、包络和事件线 |
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
-| `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；写出 `songmap.json/.js/.md/.png`，见 [MV](music-video.md) |
+| `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；写出 `songmap.json/.js/.md/.png`；加 `--lyrics` 时另写歌词字幕草稿 `lyrics.draft.srt`（每次重写；复制成 `lyrics.srt` 再改），见 [MV](music-video.md) |
 | `shotlist.py` | `film.mp4 [--song songmap.json [--offset T0]] [--json out.json]` | 成片镜头表：长度分布、连续同长、只放大上一镜的切、黑场、静止段、切点离拍点多远 |
 | `narrate.py` | `cues.json voice-dir [--voice teacher] [--takes 3] [--engine voxcpm\|edge]` | 逐句旁白 WAV，全片同一个声音；本地 VoxCPM 优先，Edge 在线声音作后备，见[人声](voice.md) |
 | `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |

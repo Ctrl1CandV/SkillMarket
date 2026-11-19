@@ -7,6 +7,10 @@ Writes into the output folder:
   songmap.js    the same data as an ES module: import SONG from './out/song/songmap.js'
   songmap.md    a section table with loudness, character and the lines sung in each section
   songmap.png   an overview to look at (needs Pillow; skipped without it)
+  lyrics.draft.srt  with --lyrics: a subtitle draft, one cue per transcribed phrase (it may hold two sung
+                lines). Rewritten on every run; copy it to lyrics.srt, correct the words against the real
+                lyrics, add a translation line for a foreign-language song, then captions.mjs turns that
+                into a timed module. The script never touches lyrics.srt.
 
 Scenes read songmap.json through kit.js (`songAt`, `envAt`, `pulse`) so light, cuts and motion can follow
 the actual recording. Beat and section detection are estimates: listen at the boundaries you cut on.
@@ -288,6 +292,27 @@ def to_unit(db, floor=-42.0):
     return np.clip((db - floor) / -floor, 0, 1)
 
 
+def write_srt(path, lines):
+    """Subtitle draft from the transcript: one cue per phrase, ending before the next one starts."""
+    if not lines:
+        return "no sung lines found, so no lyrics draft was written"
+
+    def stamp(t):
+        ms = int(round(t * 1000))
+        return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
+
+    cues = []
+    for k, line in enumerate(lines):
+        end = max(line["t1"], line["t0"] + 0.3)               # long enough to see
+        if k + 1 < len(lines):                                 # never into the next cue
+            end = min(end, lines[k + 1]["t0"] - 0.05)
+        end = max(end, line["t0"] + 0.05)
+        cues.append(f"{k + 1}\n{stamp(line['t0'])} --> {stamp(end)}\n{line['text']}\n")
+    path.write_text("\n".join(cues), encoding="utf-8")
+    return (f"wrote {path}: a draft. Copy it to lyrics.srt and correct every line against the real lyrics "
+            "before it goes on screen.")
+
+
 def overview(path, out, dur, env_fps, rms, low, high, beats, downbeats, secs, lyrics):
     try:
         from PIL import Image, ImageDraw, ImageFont
@@ -466,9 +491,12 @@ def main():
            "Loudness is the section mean relative to the loudest frame. Lyrics, when present, are an unchecked "
            "machine transcript."]
     (args.out / "songmap.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    srt_note = write_srt(args.out / "lyrics.draft.srt", lyrics["lines"]) if lyrics else None
     overview(args.audio, args.out / "songmap.png", dur, env_fps, rms, low, high, beats, downbeats, secs, lyrics)
     print("\n".join(md[2:3] + md[4:4 + len(secs) + 2]))
     print(f"wrote {args.out / 'songmap.json'}")
+    if srt_note:
+        print(srt_note)
 
 
 if __name__ == "__main__":
