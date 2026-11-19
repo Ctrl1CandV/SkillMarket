@@ -24,6 +24,14 @@
      - 换菜角里的东西是一袋袋菜，大家按菜认，不按人认。所以每一份先画菜，再写谁家、什么时候来取。
      - 概览只放会让人去做一件事的数字（该浇的地、等人拿的菜、借出没还的工具），每张卡点进去就是对应的一块。
 
+  三套视觉方向（结构和数据不变，换 <html data-direction="..."> 即可；预览时在地址后加 ?direction=flat 或 ?direction=navy）：
+  - 不写（默认）：石墨侧栏加面板。深灰侧栏、浅灰底、白面板、墨色按钮。多数成员系统从这里起步。
+  - flat：顶栏、无卡片、细线分区。白底，靠 2 像素墨线和 1 像素细线分区，概览是一条被竖线隔开的数字带。
+    适合数据多、要显得冷静精确的系统（实验记录、文献库、运维）。
+  - navy：海军蓝传统管理系统。深蓝侧栏、冷灰底、深蓝主按钮，字和间距更紧凑，面板标题下有分隔线。
+    适合使用者习惯传统企业后台、一屏要放更多东西的系统。
+  选一套，在开头注释写为什么选它。换题材可以换颜色，但不要退回米色底、鼠尾草绿、英文装饰小标题那一套默认样子。
+
   量一量：
   - 1440×900 的第一屏里能看到：我的地块（带“记一次浇水”按钮）、今天轮到我、四张概览卡、地块图的开头。
   - 正文 14 到 15 px，最小的字 12 px；对比度全部过 4.5:1。
@@ -209,6 +217,58 @@
   .toast[hidden] { display: none; }
   .toast button { min-height: 2.25rem; padding: 0 0.875rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 7px; background: transparent; color: #fff; cursor: pointer; }
 
+  /* ===== 另外两套视觉方向：结构和数据不变，只在 <html data-direction="..."> 上切换 ===== */
+  /* flat：顶栏、无卡片、细线分区 */
+  html[data-direction="flat"] { --page: #fff; --line: #e4e6e9; }
+  [data-direction="flat"] .app { background: none; }
+  [data-direction="flat"] .side { background: #fff; color: var(--ink); border-bottom: 1px solid var(--ink); }
+  [data-direction="flat"] .logo small, [data-direction="flat"] .me small { color: var(--ink3); }
+  [data-direction="flat"] .nav a { color: var(--ink2); border-radius: 0; }
+  [data-direction="flat"] .nav a:hover { background: none; color: var(--ink); }
+  [data-direction="flat"] .nav a[aria-current="page"] { background: none; color: var(--ink); box-shadow: inset 0 -3px 0 var(--ink); }
+  [data-direction="flat"] .panel { background: none; border: 0; border-top: 2px solid var(--ink); border-radius: 0; }
+  [data-direction="flat"] .panel-head { padding: 0.75rem 0 0; }
+  [data-direction="flat"] .plot-card, [data-direction="flat"] .duty { padding: 1rem 0 0; }
+  [data-direction="flat"] .field, [data-direction="flat"] .swap, [data-direction="flat"] .list { padding-left: 0; padding-right: 0; }
+  [data-direction="flat"] .stats { gap: 0; margin: 2rem 0; border-top: 1px solid var(--line); }
+  [data-direction="flat"] .stat { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 1rem 1.25rem; }
+  [data-direction="flat"] .art { background: none; }
+  [data-direction="flat"] .stat.water .art { color: var(--water); } [data-direction="flat"] .stat.ripe .art { color: var(--ripe); }
+  [data-direction="flat"] .item { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 0.875rem 0; }
+  [data-direction="flat"] .week li { border-radius: 0; }
+  [data-direction="flat"] .btn { border-radius: 2px; }
+  @media (min-width: 861px) {
+    [data-direction="flat"] .app { grid-template-columns: minmax(0, 1fr); }
+    [data-direction="flat"] .side { position: sticky; top: 0; z-index: 5; height: auto; flex-direction: row; align-items: center; gap: 2.5rem; padding: 0 2.5rem; }
+    [data-direction="flat"] .logo { padding: 0.75rem 0; }
+    [data-direction="flat"] .nav { display: flex; gap: 0.25rem; }
+    [data-direction="flat"] .nav a { min-height: 3.75rem; padding: 0 0.875rem; }
+    [data-direction="flat"] .me { margin: 0 0 0 auto; border: 0; padding: 0; }
+    [data-direction="flat"] main { max-width: 84rem; margin: 0 auto; width: 100%; padding-top: 2rem; }
+    [data-direction="flat"] .mine, [data-direction="flat"] .cols { gap: 3rem; }
+  }
+  @media (min-width: 1281px) {
+    [data-direction="flat"] .stats { border-bottom: 1px solid var(--line); }
+    [data-direction="flat"] .stat { border-bottom: 0; }
+    [data-direction="flat"] .stat + .stat { border-left: 1px solid var(--line); }
+  }
+  /* navy：海军蓝传统管理系统，更紧凑 */
+  html[data-direction="navy"] { --soil: #13294b; --soil2: #1e3a66; --soil-ink: #eef3fb; --soil-ink2: #a8b9d6; --brand: #1b3d73; --page: #eef1f6; --line: #dbe1ea; --r: 4px; }
+  [data-direction="navy"] body { font-size: 0.875rem; }
+  [data-direction="navy"] .avatar { background: #3b5687; }
+  [data-direction="navy"] .side { gap: 1.25rem; }
+  [data-direction="navy"] .nav a { min-height: 2.5rem; border-radius: 3px; }
+  [data-direction="navy"] .title h1 { font-size: 1.5rem; }
+  [data-direction="navy"] main { padding-top: 1.25rem; }
+  [data-direction="navy"] .mine, [data-direction="navy"] .cols, [data-direction="navy"] .stack { gap: 1rem; }
+  [data-direction="navy"] .stats { gap: 1rem; margin: 1rem 0; }
+  [data-direction="navy"] .plot-card, [data-direction="navy"] .duty { padding: 1.125rem; }
+  [data-direction="navy"] .panel-head { padding: 0.875rem 1.125rem 0.75rem; border-bottom: 1px solid var(--line); }
+  [data-direction="navy"] .panel-head h2 { font-size: 1rem; }
+  [data-direction="navy"] .btn { min-height: 2.25rem; border-radius: 3px; }
+  [data-direction="navy"] .cell { min-height: 3.25rem; }
+  @media (max-width: 640px) { [data-direction="navy"] .btn, [data-direction="navy"] .nav a { min-height: 2.75rem; } }
+
   @media (max-width: 1280px) {
     .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .cols { grid-template-columns: minmax(0, 1fr); }
@@ -328,6 +388,8 @@
 <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="undo">撤销</button></div>
 
 <script>
+// 预览另外两套视觉方向：地址后加 ?direction=flat 或 ?direction=navy。正式使用时直接写在 <html data-direction> 上。
+{ const d = new URLSearchParams(location.search).get('direction'); if (d === 'flat' || d === 'navy') document.documentElement.dataset.direction = d; }
 // 示例数据：人家都是编的。“现在”固定在 2026-11-19 周四 08:40。
 const NOW = new Date('2026-11-19T08:40');
 const ME = 'B-07';
