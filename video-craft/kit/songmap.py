@@ -245,10 +245,27 @@ def transcribe(path, language):
         cuda = ctranslate2.get_cuda_device_count() > 0
     except Exception:
         cuda = False
-    model = WhisperModel(model_ref, device="cuda" if cuda else "cpu", compute_type="float16" if cuda else "int8")
+    if cuda and os.name == "nt":           # cuBLAS often ships only inside torch: let CTranslate2 find it there
+        import importlib.util
+        spec = importlib.util.find_spec("torch")
+        lib = Path(spec.origin).parent / "lib" if spec and spec.origin else None
+        if lib and lib.is_dir():
+            os.add_dll_directory(str(lib))
     audio = decode(path, 16000)
-    segs, info = model.transcribe(audio, language=language, beam_size=5, temperature=0, word_timestamps=True,
-                                  vad_filter=False, condition_on_previous_text=False)
+
+    def run(device):
+        model = WhisperModel(model_ref, device=device, compute_type="float16" if device == "cuda" else "int8")
+        segs, info = model.transcribe(audio, language=language, beam_size=5, temperature=0, word_timestamps=True,
+                                      vad_filter=False, condition_on_previous_text=False)
+        return list(segs), info
+
+    try:
+        segs, info = run("cuda" if cuda else "cpu")
+    except RuntimeError as error:          # a GPU without the CUDA libraries CTranslate2 needs: use the CPU
+        if not cuda:
+            raise
+        print(f"transcribing on the CPU instead ({error})", file=sys.stderr)
+        segs, info = run("cpu")
     lines, dropped = [], []
     filler = {"thank you", "thank you.", "thanks for watching", "thanks for watching!", "you", "bye", "bye."}
     for s in segs:

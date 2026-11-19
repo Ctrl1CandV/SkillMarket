@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>time machine · dream</title>
+<style>
+html,body{margin:0;background:#000;overflow:hidden}
+#cv{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#lyric{position:absolute;z-index:1;left:0;right:0;bottom:7.5%;text-align:center;color:#f3eee6;opacity:0;
+  text-shadow:0 2px 14px rgba(0,0,0,.8),0 0 4px rgba(0,0,0,.6)}
+/* a soft dark pool behind the two lines, so they stay readable over a bright pillow or a lit hand */
+#lyric::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:1400px;height:240px;transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side,rgba(0,0,0,.5),rgba(0,0,0,.28) 55%,rgba(0,0,0,0))}
+#lyric-en{font:400 46px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}
+#lyric-zh{font:400 37px/1.3 "Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;margin-top:8px;opacity:.86;letter-spacing:.06em}
+</style></head>
+<body><canvas id="cv" width="1920" height="1080"></canvas>
+<div id="lyric"><div id="lyric-en"></div><div id="lyric-zh"></div></div>
+<script type="module" src="scene.js"></script></body></html>

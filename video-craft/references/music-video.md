@@ -140,7 +140,7 @@ MV 默认带歌词字幕，观众也这样期待。
 1. **文字。** 用用户给的歌词或官方歌词。`songmap.py --lyrics` 每次都会重写 `lyrics.draft.srt`：时间来自转写，文字是草稿，一条是转写的一段，可能含几句。把它复制成 `lyrics.srt` 再改：逐句对照正确的歌词改文字，保留时间；一条里有两句就按 `songmap.json` 里逐词的时间拆开，转写漏掉的句子照逐词时间补上，写着 `(repeated, check by ear)` 的条目一定要改。用户没给歌词、自己又核对不了时，向用户要。
 2. **译文。** 外语歌在原文下一行加中文译文。译意思和语气，不逐字译；译文和原文同进同出。
 3. **转成时间表。** `node <kit>/captions.mjs out/song/lyrics.srt lyrics.mjs`。截取一段歌时加 `--from <T0> --to <T1>`，时间就从成片的 0 秒算起。字幕只取这个 `lyrics.mjs`，不用 `songAt` 返回的 `line`，那是没改过的转写。
-4. **样式。** 全片一个位置（通常在画面下方三分之一内居中），一种字体；原文不小于画面高的 1/24，译文不小于 1/30；浅色字加柔和阴影，不加底框。每句在自己的时间里淡入淡出（各约 0.15 秒），淡出在这一条结束前完成，下一句再进，前后两句不会叠在一起。间奏里不留字。主体经过字幕区时，调构图让开，不要把字幕挪来挪去。
+4. **样式。** 全片一个位置（通常在画面下方三分之一内居中），一种字体；原文不小于画面高的 1/24，译文不小于 1/30；浅色字加柔和阴影，字后面垫一团边缘透明的淡暗晕（下面的 `::before`），白枕头、亮天空上也读得清，但不加底框。每句在自己的时间里淡入淡出（各约 0.15 秒），淡出在这一条结束前完成，下一句再进，前后两句不会叠在一起。间奏里不留字。主体经过字幕区时，调构图让开，不要把字幕挪来挪去。
 5. **片头。** 可以在第一句之前用一两秒小字给出歌名和歌手。
 
 原文和译文要分别设字号，所以按换行拆成两个元素：
@@ -164,8 +164,12 @@ function drawLyrics(t) {                       // 在 seek(t) 里调用；t 是�
 ```
 
 ```css
-#lyric { position: absolute; left: 0; right: 0; bottom: 9%; text-align: center; color: #f4efe6;
-         text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6); }
+#lyric { position: absolute; z-index: 1; left: 0; right: 0; bottom: 9%; text-align: center; color: #f4efe6;
+         text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8), 0 0 4px rgba(0, 0, 0, 0.6); }
+/* 字后的暗晕。z-index: 1 让它留在画布之上、文字之下 */
+#lyric::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 73vw; height: 22vh;
+                 transform: translate(-50%, -50%);
+                 background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.28) 55%, rgba(0, 0, 0, 0)); }
 #lyric-en { font-size: calc(100vh / 22); }
 #lyric-zh { font-size: calc(100vh / 28); opacity: 0.85; margin-top: 0.3em; }
 ```
