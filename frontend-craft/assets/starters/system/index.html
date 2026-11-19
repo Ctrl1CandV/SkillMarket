@@ -8,12 +8,13 @@
   写代码前定下的三件事（换成你的题目时，先重写这三条，再动版式）：
   1. 这是哪一类：小区屋顶菜园的成员首页。三十来户人家，每户一块地，早上下楼前、傍晚回家后各看一眼。
      所以它要像一个做完的系统：有认得出来的标志和侧栏，有概览，有为菜园做的图标和示意图。不要只剩文字和细线框。
-     语气是工作系统，不是活动页：图形用线描和示意，不用卡通平涂插画。
+     语气是工作系统，不是活动页：图形用线描和示意，不用卡通平涂插画；文案用简短的陈述句（“领取”“登记完成”），不用口语和玩笑。
      也不要口号、欢迎横幅和中文界面里的英文装饰小标题，那些不告诉成员任何事。
   2. 颜色和图形给谁：
-     - 番茄红是品牌色：标志、主要按钮、“我的”标记。
-     - 蓝色只表示“该浇水了”，琥珀色只表示“可以收了 / 超期了”。别的状态用黑字。
-     - 深褐色侧栏是这个系统的身份，像菜园里的土。页面底是中性浅灰，内容在白色面板上。
+     - 身份：深灰侧栏加一个墨绿标志。墨绿只用在标志上。
+     - 主要按钮和“我的”标记用墨色，不另设品牌强调色。
+     - 蓝色只表示“需要浇水”，琥珀色只表示“可以采收 / 逾期”。别的状态用黑字。
+     - 页面底是中性浅灰，内容在白色面板上；圆角 6 像素以内。
      - 图形：每种菜、每件工具一个线性图标，同一个 24×24 画布、1.6 线宽、圆头，颜色跟着文字走，放在中性浅灰的小方底上。
        只有表示状态的图块（该浇水、超期）才用状态色。我的地块画成示意图（三条菜畦各种什么），它是信息，不是装饰。
   3. 内容的形状怎么决定版式：
@@ -44,13 +45,13 @@
     color-scheme: light;
     --page: #f2f3f5; --surface: #fff; --ink: #1c1e21; --ink2: #43474d; --ink3: #5f656d;
     --line: #e1e3e7; --line2: #c5c9cf;
-    --soil: #2b2420; --soil2: #3a312b; --soil-ink: #f3eee9; --soil-ink2: #bdb3aa;
-    --brand: #c8402a; --brand-soft: #fbeae6;
+    --soil: #1f2328; --soil2: #2e333a; --soil-ink: #eef0f2; --soil-ink2: #aab1b9;
+    --brand: #1f2328; --mark: #2f5d50;
     --water: #2160c4; --water-soft: #e6eefb;
     --ripe: #935600; --ripe-soft: #fbf0dc;
     --font: "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
     --num: Bahnschrift, "DIN Alternate", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
-    --r: 12px;
+    --r: 6px;
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -64,9 +65,9 @@
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
   /* 图标：同一种底、同一个画布 */
-  .art { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9px; background: var(--tint, #f0f1f3); color: var(--fg, var(--ink2)); }
+  .art { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 6px; background: var(--tint, #f0f1f3); color: var(--fg, var(--ink2)); }
   .art svg { width: 1.5rem; height: 1.5rem; }
-  .art.sm { width: 2.5rem; height: 2.5rem; border-radius: 8px; }
+  .art.sm { width: 2.5rem; height: 2.5rem; border-radius: 5px; }
   .art.sm svg { width: 1.375rem; height: 1.375rem; }
 
   .app { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-height: 100vh; background: linear-gradient(90deg, var(--soil) 15.5rem, transparent 0); }
@@ -78,13 +79,13 @@
   .logo b { display: block; font-size: 1.125rem; letter-spacing: 0.02em; }
   .logo small { display: block; font-size: 0.8125rem; color: var(--soil-ink2); }
   .nav { display: grid; gap: 0.25rem; }
-  .nav a { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 9px; text-decoration: none; color: var(--soil-ink2); }
+  .nav a { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 5px; text-decoration: none; color: var(--soil-ink2); }
   .nav a svg { width: 1.25rem; height: 1.25rem; flex: none; }
   .nav a:hover { background: var(--soil2); color: var(--soil-ink); }
-  .nav a[aria-current="page"] { background: var(--soil2); color: var(--soil-ink); font-weight: 600; box-shadow: inset 3px 0 0 var(--brand); }
+  .nav a[aria-current="page"] { background: var(--soil2); color: var(--soil-ink); font-weight: 600; box-shadow: inset 3px 0 0 var(--soil-ink); }
   .nav .badge { margin-left: auto; min-width: 1.5rem; padding: 0 0.375rem; border-radius: 99px; background: var(--water); color: #fff; font: 600 0.8125rem/1.5rem var(--num); text-align: center; }
   .me { margin-top: auto; display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 0.5rem 0; border-top: 1px solid var(--soil2); }
-  .avatar { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 600; flex: none; }
+  .avatar { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #4a515a; color: #fff; font-weight: 600; flex: none; }
   .me b { display: block; font-size: 0.9375rem; }
   .me small { display: block; font-size: 0.8125rem; color: var(--soil-ink2); }
 
@@ -103,12 +104,12 @@
 
   /* 我的 */
   .mine { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.25rem; }
-  .plot-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 1.5rem; padding: 1.375rem; border-top: 4px solid var(--brand); }
+  .plot-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 1.5rem; padding: 1.375rem; }
   .bed { align-self: start; width: 16.5rem; }
   .bed .size { display: flex; justify-content: space-between; font: 400 0.8125rem var(--num); color: var(--ink3); margin-bottom: 0.375rem; }
-  .strips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #cfc6bc; border-radius: 8px; background: #f7f4f0; overflow: hidden; }
+  .strips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line2); border-radius: 4px; background: #f6f7f8; overflow: hidden; }
   .strips figure { margin: 0; display: grid; justify-items: center; align-content: center; gap: 0.375rem; min-height: 8.5rem; padding: 0.75rem 0.25rem; color: var(--ink2); }
-  .strips figure + figure { border-left: 1px dashed #cfc6bc; }
+  .strips figure + figure { border-left: 1px dashed var(--line2); }
   .strips svg { width: 2rem; height: 2rem; }
   .strips figcaption { font-size: 0.875rem; color: var(--ink); line-height: 1.3; text-align: center; }
   .strips figcaption small { display: block; font-size: 0.75rem; color: var(--ink3); }
@@ -125,19 +126,19 @@
   .fact.ok .dot { background: #5f8f4e; }
   .fact span.sub { color: var(--ink3); font-weight: 400; }
   .acts { display: flex; flex-wrap: wrap; gap: 0.625rem; margin-top: 1.125rem; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0 1.125rem; border: 1px solid var(--line2); border-radius: 9px; background: var(--surface); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0 1.125rem; border: 1px solid var(--line2); border-radius: 5px; background: var(--surface); cursor: pointer; text-decoration: none; white-space: nowrap; }
   .btn:hover { border-color: var(--ink2); }
   .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
-  .btn.primary:hover { background: #a93422; }
+  .btn.primary:hover { background: #000; }
   .btn svg { width: 1.125rem; height: 1.125rem; }
   .btn[disabled] { cursor: default; opacity: 1; background: var(--page); border-color: var(--line); color: var(--ink3); font-weight: 400; }
 
-  .duty { display: flex; flex-direction: column; padding: 1.375rem; background: var(--water-soft); border-color: #c9d8f2; }
+  .duty { display: flex; flex-direction: column; padding: 1.375rem; }
   .duty .kicker { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--water); font-weight: 600; }
   .duty h2 { font-size: 1.25rem; margin: 0.375rem 0 0.25rem; }
   .duty p { color: var(--ink2); }
   .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.25rem; margin: 1rem 0 0; }
-  .week li { padding: 0.375rem 0 0.3125rem; border-radius: 8px; text-align: center; font-size: 0.8125rem; color: var(--ink3); background: rgb(255 255 255 / 0.6); }
+  .week li { padding: 0.375rem 0 0.3125rem; border-radius: 3px; text-align: center; font-size: 0.8125rem; color: var(--ink3); background: var(--page); }
   .week li b { display: block; color: var(--ink); font-weight: 500; }
   .week li.today { background: var(--water); color: #e6eefb; }
   .week li.today b { color: #fff; }
@@ -148,7 +149,7 @@
   .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0; }
   .stat { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.125rem; text-decoration: none; }
   .stat:hover { border-color: var(--line2); }
-  .stat .art { width: 3rem; height: 3rem; border-radius: 10px; }
+  .stat .art { width: 3rem; height: 3rem; border-radius: 6px; }
   .stat .art svg { width: 1.625rem; height: 1.625rem; }
   .stat b { display: block; font: 600 1.75rem/1.1 var(--num); }
   .stat b small { font: 400 0.875rem var(--font); color: var(--ink3); margin-left: 0.25rem; }
@@ -165,30 +166,30 @@
   .legend i { display: inline-block; width: 0.875rem; height: 0.875rem; border-radius: 4px; margin-right: 0.375rem; vertical-align: -0.125rem; border: 1px solid var(--line2); background: var(--surface); }
   .legend i.w { background: var(--water-soft); border-color: var(--water); }
   .legend i.e { background: repeating-linear-gradient(135deg, #eceef1 0 4px, #f8f9fa 4px 8px); }
-  .legend i.m { border: 2px solid var(--brand); }
+  .legend i.m { border: 2px solid var(--ink); }
   .rows { display: grid; gap: 0.5rem; }
   .row { display: grid; grid-template-columns: 1.5rem repeat(8, minmax(0, 1fr)); gap: 0.375rem; align-items: stretch; }
   .row > b { align-self: center; font: 600 0.9375rem var(--num); color: var(--ink3); }
-  .cell { position: relative; min-height: 3.75rem; padding: 0.375rem 0.5rem; border: 1px solid var(--line2); border-radius: 8px; background: var(--surface); line-height: 1.35; }
+  .cell { position: relative; min-height: 3.75rem; padding: 0.375rem 0.5rem; border: 1px solid var(--line2); border-radius: 4px; background: var(--surface); line-height: 1.35; }
   .cell .id { display: block; font: 600 0.8125rem var(--num); color: var(--ink2); }
   .cell .who { display: block; font-size: 0.8125rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cell.w { background: var(--water-soft); border-color: var(--water); }
   .cell.w .id { color: var(--water); }
   .cell.e { background: repeating-linear-gradient(135deg, #eceef1 0 4px, #f8f9fa 4px 8px); border-style: dashed; }
   .cell.e .who { color: var(--ink3); }
-  .cell.m { box-shadow: 0 0 0 2px var(--brand); border-color: var(--brand); }
+  .cell.m { box-shadow: 0 0 0 2px var(--ink); border-color: var(--ink); }
   .cell .ripe { position: absolute; top: 0.375rem; right: 0.375rem; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--ripe); }
   .path { height: 0.875rem; margin-left: 1.875rem; border-radius: 4px; background: repeating-linear-gradient(90deg, #d9dce0 0 14px, transparent 14px 22px); opacity: 0.8; }
 
   /* 换菜角 */
   .swap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; padding: 1rem 1.375rem 1.375rem; }
-  .item { display: flex; gap: 0.875rem; padding: 0.875rem; border: 1px solid var(--line); border-radius: 10px; }
+  .item { display: flex; gap: 0.875rem; padding: 0.875rem; border: 1px solid var(--line); border-radius: 5px; }
   .item h3 { font-size: 1rem; line-height: 1.4; }
   .item p { font-size: 0.875rem; color: var(--ink2); }
   .item p.when { color: var(--ink3); }
   .item .btn { margin-top: 0.5rem; min-height: 2.25rem; padding: 0 0.875rem; }
   .item.taken { background: var(--page); }
-  .item .mine-tag { display: inline-block; margin-top: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--brand); }
+  .item .mine-tag { display: inline-block; margin-top: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--ink); }
 
   /* 公告和工具 */
   .list { padding: 0.5rem 1.375rem 1rem; }
@@ -197,14 +198,14 @@
   .list h3 { font-size: 0.9375rem; font-weight: 600; line-height: 1.45; }
   .list p { font-size: 0.875rem; color: var(--ink3); }
   .list .end { margin-left: auto; text-align: right; font-size: 0.875rem; white-space: nowrap; }
-  .tag { display: inline-block; padding: 0 0.5rem; border-radius: 6px; font-size: 0.8125rem; line-height: 1.6rem; white-space: nowrap; }
+  .tag { display: inline-block; padding: 0 0.5rem; border-radius: 3px; font-size: 0.8125rem; line-height: 1.6rem; white-space: nowrap; }
   .tag.ripe { background: var(--ripe-soft); color: var(--ripe); font-weight: 600; }
   .tag.calm { background: var(--page); color: var(--ink2); }
-  .date { flex: none; width: 3rem; text-align: center; border-radius: 9px; background: var(--brand-soft); color: #a3301f; padding: 0.25rem 0 0.3125rem; line-height: 1.2; }
+  .date { flex: none; width: 3rem; text-align: center; border-radius: 4px; background: var(--page); color: var(--ink); padding: 0.25rem 0 0.3125rem; line-height: 1.2; }
   .date b { display: block; font: 600 1.25rem var(--num); }
   .date small { font-size: 0.75rem; }
 
-  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; background: var(--ink); color: #fff; border-radius: 10px; z-index: 10; max-width: calc(100vw - 2rem); }
+  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; background: var(--ink); color: #fff; border-radius: 6px; z-index: 10; max-width: calc(100vw - 2rem); }
   .toast[hidden] { display: none; }
   .toast button { min-height: 2.25rem; padding: 0 0.875rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 7px; background: transparent; color: #fff; cursor: pointer; }
 
@@ -266,8 +267,8 @@
   <symbol id="i-plots" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5C9 8 6.5 11.2 6.5 14.3a5.5 5.5 0 0 0 11 0c0-3.1-2.5-6.3-5.5-10.8z"/><path d="M9.6 15a2.6 2.6 0 0 0 2 2.4"/></g></symbol>
   <symbol id="i-basket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-2 9H6zM8 10a4 4 0 0 1 8 0M9.5 13.5v2.5M14.5 13.5v2.5"/></g></symbol>
-  <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#c8402a"/><path d="M9 30h22" stroke="#f3c2b8" stroke-width="2.2" stroke-linecap="round"/><path d="M20 30V18.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M20 21c-1-4.6-4.6-7.4-9.2-7.4 0 4.6 3.7 7.4 9.2 7.4zM20 19c1-5.4 4.6-8.4 10-8.4 0 5.4-4.6 8.4-10 8.4z" fill="#fff"/></symbol>
-  <symbol id="sun" viewBox="0 0 24 24"><g fill="none" stroke="#b5780f" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M5.5 18.5l1.6-1.6M16.9 7.1l1.6-1.6"/></g></symbol>
+  <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="6" fill="#2f5d50"/><path d="M9 30h22" stroke="#9fc0b4" stroke-width="2.2" stroke-linecap="round"/><path d="M20 30V18.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M20 21c-1-4.6-4.6-7.4-9.2-7.4 0 4.6 3.7 7.4 9.2 7.4zM20 19c1-5.4 4.6-8.4 10-8.4 0 5.4-4.6 8.4-10 8.4z" fill="#fff"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><g fill="none" stroke="#5f656d" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M5.5 18.5l1.6-1.6M16.9 7.1l1.6-1.6"/></g></symbol>
 </svg>
 
 <div class="app">
@@ -287,7 +288,7 @@
   <main id="top">
     <div class="title">
       <h1>11 月 19 日 周四</h1>
-      <span class="weather"><svg aria-hidden="true"><use href="#sun"/></svg><b>晴，6 到 14 °C</b>明天小雨。今天浇透，能撑到周六。</span>
+      <span class="weather"><svg aria-hidden="true"><use href="#sun"/></svg><b>晴，6 到 14 °C</b>明天小雨，今日浇水后可维持到周六。</span>
     </div>
 
     <section class="mine" aria-label="我的">
@@ -300,24 +301,24 @@
     <div class="cols">
       <div class="stack">
         <section class="panel" id="field" aria-labelledby="h-field">
-          <div class="panel-head"><h2 id="h-field">地块</h2><span class="aside">从楼梯口看过去，A 排最近</span></div>
+          <div class="panel-head"><h2 id="h-field">地块</h2><span class="aside">A 排靠近楼梯口</span></div>
           <div class="field">
-            <p class="legend"><span><i class="w"></i>今天该浇（两天以上没浇）</span><span><i></i>浇过了</span><span><i class="e"></i>空着</span><span><i class="m"></i>我家的</span><span><i style="border:0;border-radius:50%;background:var(--ripe)"></i>有菜可以收</span></p>
+            <p class="legend"><span><i class="w"></i>需要浇水（超过 2 天未浇）</span><span><i></i>已浇水</span><span><i class="e"></i>空置</span><span><i class="m"></i>我的地块</span><span><i style="border:0;border-radius:50%;background:var(--ripe)"></i>可以采收</span></p>
             <div class="rows" id="rows"></div>
           </div>
         </section>
         <section class="panel" id="swap" aria-labelledby="h-swap">
-          <div class="panel-head"><h2 id="h-swap">换菜角</h2><span class="aside">吃不完的放这里，谁需要谁拿</span></div>
+          <div class="panel-head"><h2 id="h-swap">换菜角</h2><span class="aside">成员放出的多余收成，先到先得</span></div>
           <ul class="swap" id="swap-list"></ul>
         </section>
       </div>
       <div class="stack">
         <section class="panel" id="notices" aria-labelledby="h-notices">
-          <div class="panel-head"><h2 id="h-notices">公告</h2><span class="aside">菜园小组</span></div>
+          <div class="panel-head"><h2 id="h-notices">公告</h2><span class="aside">管理小组</span></div>
           <ul class="list" id="notice-list"></ul>
         </section>
         <section class="panel" id="tools" aria-labelledby="h-tools">
-          <div class="panel-head"><h2 id="h-tools">工具</h2><span class="aside">放在楼梯间的柜子里</span></div>
+          <div class="panel-head"><h2 id="h-tools">工具</h2><span class="aside">楼梯间工具柜</span></div>
           <ul class="list" id="tool-list"></ul>
         </section>
       </div>
@@ -344,20 +345,20 @@ const PLOTS = [
 ].map(([id, who, crops, watered, ripe]) => ({ id, who, crops, watered, ripe: ripe || '' }));
 const SWAP = [
   { id: 's1', crop: 'tomato', what: '小番茄一袋，约一斤', who: '褚家', plot: 'B-03', until: '今天 19:00 前', takenBy: '' },
-  { id: 's2', crop: 'pepper', what: '青椒五个，有两个带点虫眼', who: '孙家', plot: 'A-03', until: '明天中午前', takenBy: '' },
-  { id: 's3', crop: 'herbs', what: '薄荷一大把，泡水、做菜都行', who: '施家', plot: 'C-08', until: '周六前', takenBy: '' },
+  { id: 's2', crop: 'pepper', what: '青椒五个，两个有虫眼', who: '孙家', plot: 'A-03', until: '明天中午前', takenBy: '' },
+  { id: 's3', crop: 'herbs', what: '薄荷一把', who: '施家', plot: 'C-08', until: '周六前', takenBy: '' },
   { id: 's4', crop: 'bokchoy', what: '小白菜三棵', who: '尤家', plot: 'C-04', until: '今天 20:00 前', takenBy: '金家' },
 ];
 const TOOLS = [
-  { art: 't-can', name: '喷壶', note: '4 把，都在柜子里', state: 'in' },
-  { art: 't-hoe', name: '长柄锄', note: '2 把，1 把在柜子里', state: 'in' },
-  { art: 't-barrow', name: '小推车', note: '王家借走，今晚还', state: 'out' },
-  { art: 't-shears', name: '修枝剪', note: '郑家借走，昨天就该还', state: 'late' },
+  { art: 't-can', name: '喷壶', note: '4 把，全部在柜', state: 'in' },
+  { art: 't-hoe', name: '长柄锄', note: '2 把，1 把在柜', state: 'in' },
+  { art: 't-barrow', name: '小推车', note: '王家借用，今晚归还', state: 'out' },
+  { art: 't-shears', name: '修枝剪', note: '郑家借用，应于昨日归还', state: 'late' },
 ];
 const NOTICES = [
-  { d: '22', m: '周六', title: '10:00 翻堆肥箱，还差 2 个人', body: '戴手套，半小时。在群里接龙就行。' },
-  { d: '19', m: '今天', title: '入冬以后早上 9 点前浇水', body: '傍晚浇的水夜里会结冰，伤根。' },
-  { d: '16', m: '周一', title: '欢迎许家，C 排第 5 块', body: '刚搬来 5 栋，地还空着，种子可以去柜子第二层拿。' },
+  { d: '22', m: '周六', title: '10:00 堆肥箱翻堆，尚缺 2 人', body: '约 30 分钟，自备手套。在群内报名。' },
+  { d: '19', m: '今天', title: '入冬后请在 9:00 前浇水', body: '傍晚浇水夜间容易结冰，会伤根。' },
+  { d: '16', m: '周一', title: '新成员：许家，C-05', body: '5 栋住户，地块暂时空置。公共种子在工具柜第二层。' },
 ];
 const ROTA = [['一', '赵家'], ['二', '何家'], ['三', '王家'], ['四', '林家'], ['五', '陈家'], ['六', '周家'], ['日', '吴家']];
 
@@ -381,31 +382,31 @@ const needsWater = (p) => p.who && p.crops.length && (new Date(NOW.toDateString(
 
 function renderMine() {
   const p = PLOTS.find((x) => x.id === ME), need = needsWater(p);
-  const bed = p.crops.map((c) => `<figure class="${c === p.ripe ? 'ripe' : ''}"><svg aria-hidden="true"><use href="#v-${c}"/></svg><figcaption>${CROPS[c][0]}<small>${c === p.ripe ? '可以收了' : '长着'}</small></figcaption></figure>`).join('');
-  $('#my-plot').innerHTML = `<div class="bed" aria-hidden="true"><p class="size"><span>3 米宽，三条菜畦</span><span>北</span></p><div class="strips">${bed}</div></div>
-    <div class="plot-info"><p class="kicker">我家的地</p><h2><span class="num">${p.id}</span>B 排第 7 块</h2>
+  const bed = p.crops.map((c) => `<figure class="${c === p.ripe ? 'ripe' : ''}"><svg aria-hidden="true"><use href="#v-${c}"/></svg><figcaption>${CROPS[c][0]}<small>${c === p.ripe ? '可以采收' : '生长中'}</small></figcaption></figure>`).join('');
+  $('#my-plot').innerHTML = `<div class="bed" aria-hidden="true"><p class="size"><span>3 米 × 2 米，三条菜畦</span><span>北</span></p><div class="strips">${bed}</div></div>
+    <div class="plot-info"><p class="kicker">我的地块</p><h2><span class="num">${p.id}</span>B 排第 7 块</h2>
       <div class="facts">
-        <p class="fact ${need ? 'water' : 'ok'}"><span class="dot"></span>${need ? '今天该浇了' : '今天浇过了'}<span class="sub">上次 ${ago(lastWatered(p))}</span></p>
-        ${p.ripe ? `<p class="fact ripe"><span class="dot"></span>${CROPS[p.ripe][0]}可以收了<span class="sub">收不完可以放到换菜角</span></p>` : ''}
-        <p class="fact"><span class="dot"></span>种着 ${p.crops.map((c) => CROPS[c][0]).join('、')}</p>
+        <p class="fact ${need ? 'water' : 'ok'}"><span class="dot"></span>${need ? '今日需要浇水' : '今日已浇水'}<span class="sub">上次 ${ago(lastWatered(p))}</span></p>
+        ${p.ripe ? `<p class="fact ripe"><span class="dot"></span>${CROPS[p.ripe][0]}可以采收<span class="sub">多余的可放入换菜角</span></p>` : ''}
+        <p class="fact"><span class="dot"></span>在种：${p.crops.map((c) => CROPS[c][0]).join('、')}</p>
       </div>
-      <div class="acts">${need ? `<button class="btn primary" type="button" data-act="water"><svg aria-hidden="true"><use href="#i-drop"/></svg>记一次浇水</button>` : `<button class="btn" type="button" disabled>今天浇过了</button>`}<a class="btn" href="#swap">放到换菜角</a></div>
+      <div class="acts">${need ? `<button class="btn primary" type="button" data-act="water"><svg aria-hidden="true"><use href="#i-drop"/></svg>登记浇水</button>` : `<button class="btn" type="button" disabled>今日已浇水</button>`}<a class="btn" href="#swap">放入换菜角</a></div>
     </div>`;
   const todayIdx = 3, done = state.dutyDone;
-  $('#duty').innerHTML = `<p class="kicker"><svg width="18" height="18" aria-hidden="true"><use href="#i-drop"/></svg>今天轮到你</p>
-    <h2>公共区浇水</h2><p>香草角和育苗架，9 点前浇完。${done ? `<b>${done} 已经做完了。</b>` : '浇完点一下，后面的人就知道了。'}</p>
+  $('#duty').innerHTML = `<p class="kicker"><svg width="18" height="18" aria-hidden="true"><use href="#i-drop"/></svg>今日值班</p>
+    <h2>公共区浇水</h2><p>范围：香草角、育苗架。${done ? `<b>已于 ${done} 完成。</b>` : '请在 9:00 前完成并登记。'}</p>
     <ol class="week" aria-label="这一周的轮值">${ROTA.map(([d, who], i) => `<li class="${i === todayIdx ? 'today' : ''}${i < todayIdx || (i === todayIdx && done) ? ' done' : ''}"><b>${i === todayIdx ? '你' : who.replace('家', '')}</b>周${d}</li>`).join('')}</ol>
-    <div class="acts">${done ? '<button class="btn" type="button" disabled>今天的已做完</button>' : '<button class="btn primary" type="button" data-act="duty">做完了</button>'}<a class="btn" href="#notices">想换一天</a></div>`;
+    <div class="acts">${done ? '<button class="btn" type="button" disabled>今日已完成</button>' : '<button class="btn primary" type="button" data-act="duty">登记完成</button>'}<a class="btn" href="#notices">申请调换</a></div>`;
 }
 
 function renderStats() {
   const growing = PLOTS.filter((p) => p.who && p.crops.length).length, dry = PLOTS.filter(needsWater).length;
   const waiting = SWAP.filter((s) => !s.takenBy && !state.taken[s.id]).length, out = TOOLS.filter((t) => t.state !== 'in').length, late = TOOLS.filter((t) => t.state === 'late').length;
   $('#stats').innerHTML = [
-    ['#field', '', 'i-plots', '', `${growing}<small>/ 32 块</small>`, '在种的地，2 块空着'],
-    ['#field', 'water', 'i-drop', '--tint:var(--water-soft);--fg:var(--water)', `${dry}<small>块</small>`, '今天该浇的地'],
-    ['#swap', '', 'i-basket', '', `${waiting}<small>份</small>`, '换菜角里等人拿'],
-    ['#tools', late ? 'ripe' : '', 't-shears', late ? '--tint:var(--ripe-soft);--fg:var(--ripe)' : '', `${out}<small>件借出</small>`, late ? `${late} 件超期没还` : '都按时还了'],
+    ['#field', '', 'i-plots', '', `${growing}<small>/ 32 块</small>`, '在种地块，2 块空置'],
+    ['#field', 'water', 'i-drop', '--tint:var(--water-soft);--fg:var(--water)', `${dry}<small>块</small>`, '今日需要浇水'],
+    ['#swap', '', 'i-basket', '', `${waiting}<small>份</small>`, '换菜角待领取'],
+    ['#tools', late ? 'ripe' : '', 't-shears', late ? '--tint:var(--ripe-soft);--fg:var(--ripe)' : '', `${out}<small>件借出</small>`, late ? `${late} 件逾期未还` : '均已按时归还'],
   ].map(([href, cls, icon, style, big, label]) => `<a class="panel stat ${cls}" href="${href}">${art(icon, '', style)}<span><b>${big}</b><span>${label}</span></span></a>`).join('');
   $('#nav-water').textContent = dry;
 }
@@ -414,8 +415,8 @@ function renderField() {
   const rows = ['A', 'B', 'C', 'D'].map((r) => {
     const cells = PLOTS.filter((p) => p.id[0] === r).map((p) => {
       const cls = !p.who || !p.crops.length ? 'e' : needsWater(p) ? 'w' : '';
-      const label = `${p.id}，${p.who || '空着'}${p.crops.length ? '，种着' + p.crops.map((c) => CROPS[c][0]).join('、') : ''}${cls === 'w' ? '，今天该浇' : ''}${p.ripe ? '，' + CROPS[p.ripe][0] + '可以收了' : ''}`;
-      return `<div class="cell ${cls}${p.id === ME ? ' m' : ''}" title="${esc(label)}"><span class="sr">${esc(label)}</span><span aria-hidden="true"><span class="id">${p.id.slice(2)}</span><span class="who">${p.id === ME ? '我家' : esc(p.who || '空着')}</span>${p.ripe ? '<span class="ripe"></span>' : ''}</span></div>`;
+      const label = `${p.id}，${p.who || '空置'}${p.crops.length ? '，在种' + p.crops.map((c) => CROPS[c][0]).join('、') : ''}${cls === 'w' ? '，需要浇水' : ''}${p.ripe ? '，' + CROPS[p.ripe][0] + '可以采收' : ''}`;
+      return `<div class="cell ${cls}${p.id === ME ? ' m' : ''}" title="${esc(label)}"><span class="sr">${esc(label)}</span><span aria-hidden="true"><span class="id">${p.id.slice(2)}</span><span class="who">${p.id === ME ? '我的' : esc(p.who || '空置')}</span>${p.ripe ? '<span class="ripe"></span>' : ''}</span></div>`;
     }).join('');
     return `<div class="row"><b aria-hidden="true">${r}</b>${cells}</div>${r === 'B' ? '<div class="path" aria-hidden="true"></div>' : ''}`;
   });
@@ -425,14 +426,14 @@ function renderField() {
 function renderSwap() {
   $('#swap-list').innerHTML = SWAP.map((s) => {
     const mine = state.taken[s.id], other = s.takenBy;
-    return `<li class="item${mine || other ? ' taken' : ''}">${art('v-' + s.crop, 'sm')}<div><h3>${esc(s.what)}</h3><p>${esc(s.who)} · 在 ${s.plot} 的地头</p><p class="when">${s.until}</p>
-      ${mine ? `<span class="mine-tag">你要了，记得${s.until}去拿</span>` : other ? `<p class="when">${esc(other)}已经要了</p>` : `<button class="btn" type="button" data-act="take" data-id="${s.id}">我要了</button>`}</div></li>`;
+    return `<li class="item${mine || other ? ' taken' : ''}">${art('v-' + s.crop, 'sm')}<div><h3>${esc(s.what)}</h3><p>${esc(s.who)} · ${s.plot} 地头自取</p><p class="when">${s.until}</p>
+      ${mine ? `<span class="mine-tag">已领取，请于${s.until}取走</span>` : other ? `<p class="when">${esc(other)}已领取</p>` : `<button class="btn" type="button" data-act="take" data-id="${s.id}">领取</button>`}</div></li>`;
   }).join('');
 }
 
 function renderLists() {
   $('#notice-list').innerHTML = NOTICES.map((n) => `<li><span class="date"><b>${n.d}</b><small>${n.m}</small></span><div><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></li>`).join('');
-  $('#tool-list').innerHTML = TOOLS.map((t) => `<li>${art(t.art, 'sm')}<div><h3>${t.name}</h3><p>${esc(t.note)}</p></div><span class="end">${t.state === 'in' ? '<span class="tag calm">在柜子里</span>' : t.state === 'late' ? '<span class="tag ripe">超期 1 天</span>' : '<span class="tag calm">借出</span>'}</span></li>`).join('');
+  $('#tool-list').innerHTML = TOOLS.map((t) => `<li>${art(t.art, 'sm')}<div><h3>${t.name}</h3><p>${esc(t.note)}</p></div><span class="end">${t.state === 'in' ? '<span class="tag calm">在柜</span>' : t.state === 'late' ? '<span class="tag ripe">逾期 1 天</span>' : '<span class="tag calm">借出</span>'}</span></li>`).join('');
 }
 
 function render() { renderMine(); renderStats(); renderField(); renderSwap(); renderLists(); }
@@ -445,9 +446,9 @@ function act(label, fn, focusSel) {
 }
 document.addEventListener('click', (ev) => {
   const b = ev.target.closest('button[data-act]'); if (!b) return;
-  if (b.dataset.act === 'water') act(`记下了：B-07 今天 ${hm(NOW)} 浇过`, () => { state.watered[ME] = '2026-11-19T08:40'; });
-  if (b.dataset.act === 'duty') act('公共区浇水做完了', () => { state.dutyDone = hm(NOW); });
-  if (b.dataset.act === 'take') { const s = SWAP.find((x) => x.id === b.dataset.id); act(`${s.what.split('，')[0]}给你留着了`, () => { state.taken[s.id] = true; }); }
+  if (b.dataset.act === 'water') act(`已登记：B-07 于 ${hm(NOW)} 浇水`, () => { state.watered[ME] = '2026-11-19T08:40'; });
+  if (b.dataset.act === 'duty') act('已登记：公共区浇水完成', () => { state.dutyDone = hm(NOW); });
+  if (b.dataset.act === 'take') { const s = SWAP.find((x) => x.id === b.dataset.id); act(`已领取：${s.what.split('，')[0]}`, () => { state.taken[s.id] = true; }); }
 });
 $('#undo').addEventListener('click', () => { if (undoJson) { state = JSON.parse(undoJson); undoJson = null; save(); render(); $('#toast-text').textContent = '已撤销'; } });
 render();
