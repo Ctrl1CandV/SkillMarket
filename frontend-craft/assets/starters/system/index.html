@@ -1,0 +1,448 @@
+<!doctype html>
+<!--
+  起步样例：多人各自来用的系统首页（每个成员登录进来，先看自己的，再看大家的）
+  这是一页能直接打开、能操作的完整页面。做同类系统时复制它再改，不要从空白开始。
+  社团活动报名、共享仪器预约、课题组文献库、小区菜园、宿舍报修的“学生端”、内部资料平台，都是这一类。
+  一个人专门处理事情的那一页（审批、派单）不是这一类，用 queue 样例。
+
+  写代码前定下的三件事（换成你的题目时，先重写这三条，再动版式）：
+  1. 这是哪一类：小区屋顶菜园的成员首页。三十来户人家，每户一块地，早上下楼前、傍晚回家后各看一眼。
+     所以它要像一个做完的系统：有认得出来的标志和侧栏，有概览，有为菜园画的图。不要只剩文字和细线框。
+     也不要口号、欢迎横幅和中文界面里的英文装饰小标题，那些不告诉成员任何事。
+  2. 颜色和图形给谁：
+     - 番茄红是品牌色：标志、主要按钮、“我的”标记。
+     - 蓝色只表示“该浇水了”，琥珀色只表示“可以收了 / 超期了”。别的状态用黑字。
+     - 深褐色侧栏是这个系统的身份，像菜园里的土。页面底是中性浅灰，内容在白色面板上。
+     - 插图：每种菜、每件工具一张，同一个 64×64 画布、同一种画法（平涂、一层亮面、不描边），放在同一种浅色圆角底上。
+       插图里的颜色只在插图里出现，不拿来当界面颜色。
+  3. 内容的形状怎么决定版式：
+     - 成员每次来先问“我的地要不要浇、今天是不是轮到我”。所以第一屏左上是“我的地块”和“今天轮到我”，按钮就在里面。
+     - 三十二块地排成四排，大家说“B 排第 7 块”，不说地块编号的数字含义。所以地块画成和实地一样的四排格子，不做表格。
+     - 浇不浇要看天气：明天下雨，今天浇透就够到周六。所以天气写在页面标题旁边，和“今天该浇”的数字放在一起。
+     - 换菜角里的东西是一袋袋菜，大家按菜认，不按人认。所以每一份先画菜，再写谁家、什么时候来取。
+     - 概览只放会让人去做一件事的数字（该浇的地、等人拿的菜、借出没还的工具），每张卡点进去就是对应的一块。
+
+  量一量：
+  - 1440×900 的第一屏里能看到：我的地块（带“记一次浇水”按钮）、今天轮到我、四张概览卡、地块图的开头。
+  - 正文 14 到 15 px，最小的字 12 px；对比度全部过 4.5:1。
+  - 插图至少出现在三个地方（我的地块、换菜角、工具），全是同一套画法。
+
+  换成自己的内容时：
+  - 数据在页面底部的 PLOTS、SWAP、TOOLS、ROTA 里，规则在 needsWater()、render*() 几个函数。先换数据，看真实形状，再动版式。
+  - 配色、插图题材属于这个样例。换题材时照着“颜色和图形给谁”重新定：你的系统靠什么被认出来，为你的对象画一套同画法的图。
+  - 多页面系统（列表、详情、我的、后台）共用侧栏、这套字号和面板；后台里专门处理事情的那一页，换成 queue 样例的做法。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>首页 · 和园屋顶菜园</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f2f3f5; --surface: #fff; --ink: #1c1e21; --ink2: #43474d; --ink3: #5f656d;
+    --line: #e1e3e7; --line2: #c5c9cf;
+    --soil: #2b2420; --soil2: #3a312b; --soil-ink: #f3eee9; --soil-ink2: #bdb3aa;
+    --brand: #c8402a; --brand-soft: #fbeae6;
+    --water: #2160c4; --water-soft: #e6eefb;
+    --ripe: #935600; --ripe-soft: #fbf0dc;
+    --font: "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+    --num: Bahnschrift, "DIN Alternate", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    --r: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 400 0.9375rem/1.6 var(--font); }
+  h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .num { font-family: var(--num); font-variant-numeric: tabular-nums; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* 插图：同一种底、同一个画布 */
+  .art { flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: 14px; background: var(--tint, #eef0f2); }
+  .art svg { width: 78%; height: 78%; }
+  .art.sm { width: 3rem; height: 3rem; border-radius: 11px; }
+  .art.lg { width: 5.5rem; height: 5.5rem; border-radius: 18px; }
+
+  .app { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-height: 100vh; background: linear-gradient(90deg, var(--soil) 15.5rem, transparent 0); }
+
+  /* 侧栏：系统的身份 */
+  .side { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 1.75rem; padding: 1.5rem 1rem 1.25rem; background: var(--soil); color: var(--soil-ink); }
+  .logo { display: flex; align-items: center; gap: 0.75rem; padding: 0 0.5rem; text-decoration: none; }
+  .logo svg { width: 2.5rem; height: 2.5rem; flex: none; }
+  .logo b { display: block; font-size: 1.125rem; letter-spacing: 0.02em; }
+  .logo small { display: block; font-size: 0.8125rem; color: var(--soil-ink2); }
+  .nav { display: grid; gap: 0.25rem; }
+  .nav a { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 9px; text-decoration: none; color: var(--soil-ink2); }
+  .nav a svg { width: 1.25rem; height: 1.25rem; flex: none; }
+  .nav a:hover { background: var(--soil2); color: var(--soil-ink); }
+  .nav a[aria-current="page"] { background: var(--soil2); color: var(--soil-ink); font-weight: 600; box-shadow: inset 3px 0 0 var(--brand); }
+  .nav .badge { margin-left: auto; min-width: 1.5rem; padding: 0 0.375rem; border-radius: 99px; background: var(--water); color: #fff; font: 600 0.8125rem/1.5rem var(--num); text-align: center; }
+  .me { margin-top: auto; display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 0.5rem 0; border-top: 1px solid var(--soil2); }
+  .avatar { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 600; flex: none; }
+  .me b { display: block; font-size: 0.9375rem; }
+  .me small { display: block; font-size: 0.8125rem; color: var(--soil-ink2); }
+
+  main { min-width: 0; padding: 1.75rem clamp(1.25rem, 3vw, 2.5rem) 4rem; }
+  .title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; margin-bottom: 1.5rem; }
+  .title h1 { font-size: 1.75rem; line-height: 1.3; }
+  .weather { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ink2); }
+  .weather svg { width: 1.375rem; height: 1.375rem; }
+  .weather b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .weather { flex-wrap: wrap; }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+  .panel-head { display: flex; align-items: baseline; gap: 0.75rem; padding: 1.125rem 1.375rem 0; }
+  .panel-head h2 { font-size: 1.125rem; }
+  .panel-head .aside { margin-left: auto; font-size: 0.875rem; color: var(--ink3); }
+
+  /* 我的 */
+  .mine { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.25rem; }
+  .plot-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 1.5rem; padding: 1.375rem; border-top: 4px solid var(--brand); }
+  .bed { align-self: start; display: grid; grid-template-columns: repeat(3, 5.5rem); gap: 0.5rem; padding: 0.625rem; border-radius: 16px; background: #6b5443; box-shadow: inset 0 0 0 3px #574436; }
+  .bed .art { width: 5.5rem; height: 5.5rem; border-radius: 12px; }
+  .bed figure { margin: 0; text-align: center; }
+  .bed figcaption { margin-top: 0.25rem; font-size: 0.8125rem; color: #f3eee9; }
+  .plot-info .kicker { font-size: 0.875rem; color: var(--ink3); }
+  .plot-info h2 { font-size: 1.5rem; line-height: 1.3; margin: 0.125rem 0 0.75rem; }
+  .plot-info h2 .num { font-size: 1.75rem; margin-right: 0.375rem; }
+  .facts { display: grid; gap: 0.5rem; }
+  .fact { display: flex; align-items: center; gap: 0.625rem; }
+  .fact .dot { width: 0.625rem; height: 0.625rem; border-radius: 50%; flex: none; background: var(--line2); }
+  .fact.water { color: var(--water); font-weight: 600; } .fact.water .dot { background: var(--water); }
+  .fact.ripe { color: var(--ripe); font-weight: 600; } .fact.ripe .dot { background: var(--ripe); }
+  .fact.ok .dot { background: #5f8f4e; }
+  .fact span.sub { color: var(--ink3); font-weight: 400; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.625rem; margin-top: 1.125rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0 1.125rem; border: 1px solid var(--line2); border-radius: 9px; background: var(--surface); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .btn:hover { border-color: var(--ink2); }
+  .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+  .btn.primary:hover { background: #a93422; }
+  .btn svg { width: 1.125rem; height: 1.125rem; }
+  .btn[disabled] { cursor: default; opacity: 1; background: var(--page); border-color: var(--line); color: var(--ink3); font-weight: 400; }
+
+  .duty { display: flex; flex-direction: column; padding: 1.375rem; background: var(--water-soft); border-color: #c9d8f2; }
+  .duty .kicker { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--water); font-weight: 600; }
+  .duty h2 { font-size: 1.25rem; margin: 0.375rem 0 0.25rem; }
+  .duty p { color: var(--ink2); }
+  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.25rem; margin: 1rem 0 0; }
+  .week li { padding: 0.375rem 0 0.3125rem; border-radius: 8px; text-align: center; font-size: 0.8125rem; color: var(--ink3); background: rgb(255 255 255 / 0.6); }
+  .week li b { display: block; color: var(--ink); font-weight: 500; }
+  .week li.today { background: var(--water); color: #e6eefb; }
+  .week li.today b { color: #fff; }
+  .week li.done b::after { content: " ✓"; color: #3f7a35; }
+  .duty .acts { margin-top: auto; padding-top: 1rem; }
+
+  /* 概览 */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin: 1.25rem 0; }
+  .stat { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.125rem; text-decoration: none; }
+  .stat:hover { border-color: var(--line2); }
+  .stat .art { width: 3.25rem; height: 3.25rem; border-radius: 12px; }
+  .stat b { display: block; font: 600 1.75rem/1.1 var(--num); }
+  .stat b small { font: 400 0.875rem var(--font); color: var(--ink3); margin-left: 0.25rem; }
+  .stat span { font-size: 0.875rem; color: var(--ink2); }
+  .stat.water b { color: var(--water); }
+  .stat.ripe b { color: var(--ripe); }
+
+  .cols { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+  .stack { display: grid; gap: 1.25rem; }
+
+  /* 地块图：和实地一样四排 */
+  .field { padding: 1rem 1.375rem 1.375rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.375rem 1.25rem; font-size: 0.8125rem; color: var(--ink2); margin-bottom: 0.75rem; }
+  .legend i { display: inline-block; width: 0.875rem; height: 0.875rem; border-radius: 4px; margin-right: 0.375rem; vertical-align: -0.125rem; border: 1px solid var(--line2); background: var(--surface); }
+  .legend i.w { background: var(--water-soft); border-color: var(--water); }
+  .legend i.e { background: repeating-linear-gradient(135deg, #eceef1 0 4px, #f8f9fa 4px 8px); }
+  .legend i.m { border: 2px solid var(--brand); }
+  .rows { display: grid; gap: 0.5rem; }
+  .row { display: grid; grid-template-columns: 1.5rem repeat(8, minmax(0, 1fr)); gap: 0.375rem; align-items: stretch; }
+  .row > b { align-self: center; font: 600 0.9375rem var(--num); color: var(--ink3); }
+  .cell { position: relative; min-height: 3.75rem; padding: 0.375rem 0.5rem; border: 1px solid var(--line2); border-radius: 8px; background: var(--surface); line-height: 1.35; }
+  .cell .id { display: block; font: 600 0.8125rem var(--num); color: var(--ink2); }
+  .cell .who { display: block; font-size: 0.8125rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cell.w { background: var(--water-soft); border-color: var(--water); }
+  .cell.w .id { color: var(--water); }
+  .cell.e { background: repeating-linear-gradient(135deg, #eceef1 0 4px, #f8f9fa 4px 8px); border-style: dashed; }
+  .cell.e .who { color: var(--ink3); }
+  .cell.m { box-shadow: 0 0 0 2px var(--brand); border-color: var(--brand); }
+  .cell .ripe { position: absolute; top: 0.375rem; right: 0.375rem; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--ripe); }
+  .path { height: 0.875rem; margin-left: 1.875rem; border-radius: 4px; background: repeating-linear-gradient(90deg, #d9dce0 0 14px, transparent 14px 22px); opacity: 0.8; }
+
+  /* 换菜角 */
+  .swap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; padding: 1rem 1.375rem 1.375rem; }
+  .item { display: flex; gap: 0.875rem; padding: 0.875rem; border: 1px solid var(--line); border-radius: 10px; }
+  .item h3 { font-size: 1rem; line-height: 1.4; }
+  .item p { font-size: 0.875rem; color: var(--ink2); }
+  .item p.when { color: var(--ink3); }
+  .item .btn { margin-top: 0.5rem; min-height: 2.25rem; padding: 0 0.875rem; }
+  .item.taken { background: var(--page); }
+  .item .mine-tag { display: inline-block; margin-top: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--brand); }
+
+  /* 公告和工具 */
+  .list { padding: 0.5rem 1.375rem 1rem; }
+  .list > li { display: flex; gap: 0.875rem; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
+  .list > li:last-child { border-bottom: 0; }
+  .list h3 { font-size: 0.9375rem; font-weight: 600; line-height: 1.45; }
+  .list p { font-size: 0.875rem; color: var(--ink3); }
+  .list .end { margin-left: auto; text-align: right; font-size: 0.875rem; white-space: nowrap; }
+  .tag { display: inline-block; padding: 0 0.5rem; border-radius: 6px; font-size: 0.8125rem; line-height: 1.6rem; white-space: nowrap; }
+  .tag.ripe { background: var(--ripe-soft); color: var(--ripe); font-weight: 600; }
+  .tag.calm { background: var(--page); color: var(--ink2); }
+  .date { flex: none; width: 3rem; text-align: center; border-radius: 9px; background: var(--brand-soft); color: #a3301f; padding: 0.25rem 0 0.3125rem; line-height: 1.2; }
+  .date b { display: block; font: 600 1.25rem var(--num); }
+  .date small { font-size: 0.75rem; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; background: var(--ink); color: #fff; border-radius: 10px; z-index: 10; max-width: calc(100vw - 2rem); }
+  .toast[hidden] { display: none; }
+  .toast button { min-height: 2.25rem; padding: 0 0.875rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 7px; background: transparent; color: #fff; cursor: pointer; }
+
+  @media (max-width: 1280px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cols { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 1100px) {
+    .mine { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: minmax(0, 1fr); background: none; }
+    .side { position: static; height: auto; gap: 1rem; padding: 1rem 16px; }
+    .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+    .nav a { padding: 0 0.5rem; gap: 0.5rem; }
+    .me { display: none; }
+    main { padding: 1.25rem 16px 4rem; }
+  }
+  @media (max-width: 640px) {
+    .plot-card { grid-template-columns: minmax(0, 1fr); }
+    .bed { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .bed .art { width: 100%; height: auto; aspect-ratio: 1; }
+    .stats { gap: 0.75rem; }
+    .stat { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 0.875rem; }
+    .swap { grid-template-columns: minmax(0, 1fr); }
+    .row { grid-template-columns: 1.25rem repeat(4, minmax(0, 1fr)); }
+    .row > b { grid-row: span 2; }
+    .path { margin-left: 1.625rem; }
+    .btn { min-height: 2.75rem; }
+    .item .btn { min-height: 2.75rem; }
+    .title h1 { font-size: 1.5rem; }
+  }
+  @media (max-width: 380px) {
+    .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats { grid-template-columns: minmax(0, 1fr); }
+    .stat { flex-direction: row; align-items: center; }
+    .week li { font-size: 0.75rem; }
+  }
+  @media (forced-colors: active) {
+    .cell.w, .cell.m, .week li.today, .nav a[aria-current="page"] { outline: 2px solid CanvasText; }
+    .cell .ripe, .fact .dot { forced-color-adjust: none; }
+  }
+</style>
+</head>
+<body>
+<!-- 插图：每种菜、每件工具一张。同一个 64×64 画布，平涂加一层亮面，不描边。 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="v-tomato" viewBox="0 0 64 64"><circle cx="32" cy="37" r="19" fill="#df4a30"/><path d="M19.5 33a13 13 0 0 1 9-10" stroke="#f28a70" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M32 19.5l-5.5-4.5 1 6.5-6.5 1 6.5 2.5-2 6 6.5-4.5 6.5 4.5-2-6 6.5-2.5-6.5-1 1-6.5z" fill="#3d8a3a"/><path d="M32 18v-7" stroke="#2e6b2c" stroke-width="3" stroke-linecap="round"/></symbol>
+  <symbol id="v-lettuce" viewBox="0 0 64 64"><ellipse cx="32" cy="45" rx="23" ry="12" fill="#5a9c34"/><path d="M11 42c0-15 9-26 21-26s21 11 21 26c-6-4-13-6-21-6s-15 2-21 6z" fill="#85c24e"/><path d="M19 39c2-9 7-15 13-15s11 6 13 15c-4-2-8-3-13-3s-9 1-13 3z" fill="#b6dc79"/><path d="M32 25v14" stroke="#5a9c34" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="v-bokchoy" viewBox="0 0 64 64"><path d="M23 57c-4-10-4-21 2-29h14c6 8 6 19 2 29z" fill="#eef5df"/><path d="M28 56c-2-8-2-18 1-26M36 56c2-8 2-18-1-26" stroke="#c7dcae" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M21 33c-7-10-3-22 7-25 2 8 0 17-7 25z" fill="#3f8f3a"/><path d="M43 33c7-10 3-22-7-25-2 8 0 17 7 25z" fill="#4c9d41"/><path d="M32 31c-5-8-4-18 0-25 4 7 5 17 0 25z" fill="#62b04e"/></symbol>
+  <symbol id="v-carrot" viewBox="0 0 64 64"><path d="M21 25c7-3 16-1 21 3L27 58c-1 2-3 2-4 0z" fill="#ef8a26"/><path d="M27 33h6M26 41h5M25 49h3" stroke="#c4651b" stroke-width="2" stroke-linecap="round"/><path d="M31 25c-2-8-7-12-12-13 2 6 6 10 12 13zM33 24c0-9 4-15 8-16 0 7-3 12-8 16zM36 26c4-6 10-8 14-6-3 5-8 7-14 6z" fill="#4c9a3c"/></symbol>
+  <symbol id="v-eggplant" viewBox="0 0 64 64"><path d="M37 19c10 4 14 14 10 25S31 60 21 56 11 41 19 33s10-16 18-14z" fill="#6b3f9e"/><path d="M23 41c0-6 4-10 8-12" stroke="#9c76c8" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M35 14c4 0 8 3 9 8-4-1-8 0-11 2-1-4 0-8 2-10z" fill="#3d8a3a"/></symbol>
+  <symbol id="v-pepper" viewBox="0 0 64 64"><path d="M20 30c0-6 6-8 12-6 6-2 12 0 12 6 0 12-2 25-12 27-10-2-12-15-12-27z" fill="#3f9b3f"/><path d="M25 33c0 8 1 14 4 18" stroke="#7cc46c" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M32 24c0-6 3-9 7-10" stroke="#2c6b2c" stroke-width="3" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="v-herbs" viewBox="0 0 64 64"><path d="M32 58V16" stroke="#3e7d4a" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="24" cy="46" rx="9" ry="4.5" transform="rotate(-28 24 46)" fill="#58a868"/><ellipse cx="40" cy="40" rx="9" ry="4.5" transform="rotate(28 40 40)" fill="#4f9c5f"/><ellipse cx="25" cy="32" rx="8" ry="4" transform="rotate(-30 25 32)" fill="#6dbb7b"/><ellipse cx="39" cy="26" rx="8" ry="4" transform="rotate(30 39 26)" fill="#62b170"/><ellipse cx="32" cy="15" rx="4" ry="6.5" fill="#7cc78a"/></symbol>
+  <symbol id="t-can" viewBox="0 0 64 64"><path d="M20 30c0-8 4-12 8-12s8 4 8 12" stroke="#34588b" stroke-width="4" fill="none"/><path d="M12 30h28v20a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill="#4a78b8"/><path d="M16 34v14" stroke="#7aa0d6" stroke-width="3" stroke-linecap="round"/><path d="M40 37l13-12" stroke="#4a78b8" stroke-width="5" stroke-linecap="round"/><circle cx="54.5" cy="23.5" r="4.5" fill="#34588b"/></symbol>
+  <symbol id="t-barrow" viewBox="0 0 64 64"><path d="M44 27l12-6" stroke="#5b4a3f" stroke-width="3.5" stroke-linecap="round"/><path d="M8 26h38l-8 16H17z" fill="#d0452c"/><path d="M13 30h28" stroke="#ea7a62" stroke-width="3" stroke-linecap="round"/><path d="M38 42l5 10" stroke="#5b4a3f" stroke-width="3.5" stroke-linecap="round"/><circle cx="22" cy="48" r="7.5" fill="#33363b"/><circle cx="22" cy="48" r="2.5" fill="#d9dce0"/></symbol>
+  <symbol id="t-hoe" viewBox="0 0 64 64"><path d="M16 57L44 15" stroke="#9b7653" stroke-width="4.5" stroke-linecap="round"/><path d="M38 9h17l-3 11H41z" fill="#6b7280"/><path d="M42 12h9" stroke="#9aa1aa" stroke-width="2.5" stroke-linecap="round"/></symbol>
+  <symbol id="t-shears" viewBox="0 0 64 64"><path d="M30 34L45 11l4.5 3L35 37z" fill="#9aa1aa"/><path d="M34 34L19 11l-4.5 3L29 37z" fill="#c0c5cc"/><path d="M28 37l-8 18M36 37l8 18" stroke="#d0452c" stroke-width="6.5" stroke-linecap="round"/><circle cx="32" cy="35" r="3.2" fill="#33363b"/></symbol>
+  <symbol id="i-plots" viewBox="0 0 64 64"><rect x="10" y="12" width="20" height="18" rx="4" fill="#7a5d48"/><rect x="34" y="12" width="20" height="18" rx="4" fill="#5a9c34"/><rect x="10" y="34" width="20" height="18" rx="4" fill="#85c24e"/><rect x="34" y="34" width="20" height="18" rx="4" fill="#7a5d48"/><path d="M44 30v-7M44 25c-1-4-4-6-8-6 0 4 3 6 8 6z" stroke="#fff" stroke-width="0" fill="#b6dc79"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 64 64"><path d="M32 9C24 21 17 30 17 39a15 15 0 0 0 30 0c0-9-7-18-15-30z" fill="#2160c4"/><path d="M24 40a8 8 0 0 0 6 8" stroke="#8fb3ec" stroke-width="3.5" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 64 64"><circle cx="26" cy="27" r="9" fill="#df4a30"/><path d="M26 18.5v-4" stroke="#2e6b2c" stroke-width="2.5" stroke-linecap="round"/><path d="M33 29c0-8 5-13 12-14 0 8-5 13-12 14z" fill="#85c24e"/><path d="M18 31c0-10 6-16 14-16s14 6 14 16" stroke="#a8742f" stroke-width="3.5" fill="none"/><path d="M10 31h44l-6 22H16z" fill="#c98a3c"/><path d="M15 38h34M17 45h30" stroke="#a8742f" stroke-width="2.5"/></symbol>
+  <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#c8402a"/><path d="M8 30h24" stroke="#f6c9bf" stroke-width="2.5" stroke-linecap="round"/><path d="M20 30V18" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M20 20.5c-1-5-5-8-10-8 0 5 4 8 10 8z" fill="#fff"/><path d="M20 18.5c1-6 5-9 11-9 0 6-5 9-11 9z" fill="#fff"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="#e9a21b"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="#e9a21b" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side">
+    <a class="logo" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg><span><b>和园屋顶菜园</b><small>3 栋楼顶 · 32 块地</small></span></a>
+    <nav class="nav" aria-label="菜园">
+      <a href="#top" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5V20h-5.5v-5h-5v5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>首页</a>
+      <a href="#field"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>地块<span class="badge" id="nav-water" title="今天该浇的地"></span></a>
+      <a href="#duty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5C9 8 6.5 11.2 6.5 14.3a5.5 5.5 0 0 0 11 0c0-3.1-2.5-6.3-5.5-10.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>浇水轮值</a>
+      <a href="#swap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-2 9H6zM8 10a4 4 0 0 1 8 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>换菜角</a>
+      <a href="#tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20l9-9M14 11l2-6 4 4-6 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>工具</a>
+      <a href="#notices"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10zM16.5 9.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>公告</a>
+    </nav>
+    <div class="me"><span class="avatar" aria-hidden="true">林</span><span><b>林家 · 3 栋 302</b><small>B 排第 7 块</small></span></div>
+  </aside>
+
+  <main id="top">
+    <div class="title">
+      <h1>11 月 19 日 周四</h1>
+      <span class="weather"><svg aria-hidden="true"><use href="#sun"/></svg><b>晴，6 到 14 °C</b>明天小雨。今天浇透，能撑到周六。</span>
+    </div>
+
+    <section class="mine" aria-label="我的">
+      <article class="panel plot-card" id="my-plot"></article>
+      <article class="panel duty" id="duty"></article>
+    </section>
+
+    <section class="stats" aria-label="菜园现在的情况" id="stats"></section>
+
+    <div class="cols">
+      <div class="stack">
+        <section class="panel" id="field" aria-labelledby="h-field">
+          <div class="panel-head"><h2 id="h-field">地块</h2><span class="aside">从楼梯口看过去，A 排最近</span></div>
+          <div class="field">
+            <p class="legend"><span><i class="w"></i>今天该浇（两天以上没浇）</span><span><i></i>浇过了</span><span><i class="e"></i>空着</span><span><i class="m"></i>我家的</span><span><i style="border:0;border-radius:50%;background:var(--ripe)"></i>有菜可以收</span></p>
+            <div class="rows" id="rows"></div>
+          </div>
+        </section>
+        <section class="panel" id="swap" aria-labelledby="h-swap">
+          <div class="panel-head"><h2 id="h-swap">换菜角</h2><span class="aside">吃不完的放这里，谁需要谁拿</span></div>
+          <ul class="swap" id="swap-list"></ul>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="panel" id="notices" aria-labelledby="h-notices">
+          <div class="panel-head"><h2 id="h-notices">公告</h2><span class="aside">菜园小组</span></div>
+          <ul class="list" id="notice-list"></ul>
+        </section>
+        <section class="panel" id="tools" aria-labelledby="h-tools">
+          <div class="panel-head"><h2 id="h-tools">工具</h2><span class="aside">放在楼梯间的柜子里</span></div>
+          <ul class="list" id="tool-list"></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="undo">撤销</button></div>
+
+<script>
+// 示例数据：人家都是编的。“现在”固定在 2026-11-19 周四 08:40。
+const NOW = new Date('2026-11-19T08:40');
+const ME = 'B-07';
+const CROPS = { tomato: ['番茄', '#fbe9e4'], lettuce: ['生菜', '#ecf5e2'], bokchoy: ['小白菜', '#e9f3e5'], carrot: ['胡萝卜', '#fdefdf'], eggplant: ['茄子', '#f1eaf7'], pepper: ['青椒', '#e8f3e4'], herbs: ['薄荷', '#e7f2ec'] };
+// [地块, 人家, 种的菜, 上次浇水, 可以收的菜]
+const PLOTS = [
+  ['A-01', '赵家', ['bokchoy', 'carrot'], '2026-11-18T18:10'], ['A-02', '钱家', ['lettuce'], '2026-11-16T07:30'], ['A-03', '孙家', ['tomato', 'pepper'], '2026-11-18T19:00', 'pepper'], ['A-04', '', [], ''],
+  ['A-05', '周家', ['herbs'], '2026-11-17T08:00'], ['A-06', '吴家', ['carrot'], '2026-11-18T07:40'], ['A-07', '郑家', ['eggplant'], '2026-11-15T18:30'], ['A-08', '王家', ['bokchoy'], '2026-11-18T17:20'],
+  ['B-01', '冯家', ['lettuce', 'bokchoy'], '2026-11-18T08:10'], ['B-02', '陈家', ['tomato'], '2026-11-17T18:00'], ['B-03', '褚家', ['tomato', 'lettuce'], '2026-11-18T18:45', 'tomato'], ['B-04', '卫家', ['pepper'], '2026-11-18T07:15'],
+  ['B-05', '蒋家', ['carrot', 'herbs'], '2026-11-16T19:20'], ['B-06', '沈家', ['eggplant', 'pepper'], '2026-11-18T18:00'], ['B-07', '林家', ['tomato', 'lettuce', 'bokchoy'], '2026-11-17T18:20', 'lettuce'], ['B-08', '韩家', ['bokchoy'], '2026-11-18T08:30'],
+  ['C-01', '杨家', ['lettuce'], '2026-11-18T19:10'], ['C-02', '朱家', ['carrot'], '2026-11-18T07:50'], ['C-03', '秦家', ['tomato', 'herbs'], '2026-11-17T07:20'], ['C-04', '尤家', ['bokchoy', 'lettuce'], '2026-11-18T18:30', 'bokchoy'],
+  ['C-05', '许家', [], ''], ['C-06', '何家', ['pepper', 'eggplant'], '2026-11-18T08:00'], ['C-07', '吕家', ['carrot'], '2026-11-18T17:40'], ['C-08', '施家', ['herbs', 'lettuce'], '2026-11-16T08:10'],
+  ['D-01', '张家', ['tomato'], '2026-11-18T18:20'], ['D-02', '孔家', ['bokchoy'], '2026-11-18T07:30'], ['D-03', '曹家', ['eggplant'], '2026-11-18T19:30'], ['D-04', '', [], ''],
+  ['D-05', '严家', ['lettuce', 'carrot'], '2026-11-17T19:00'], ['D-06', '华家', ['pepper'], '2026-11-18T08:20', 'pepper'], ['D-07', '金家', ['tomato', 'bokchoy'], '2026-11-18T18:50'], ['D-08', '魏家', ['herbs'], '2026-11-18T07:10'],
+].map(([id, who, crops, watered, ripe]) => ({ id, who, crops, watered, ripe: ripe || '' }));
+const SWAP = [
+  { id: 's1', crop: 'tomato', what: '小番茄一袋，约一斤', who: '褚家', plot: 'B-03', until: '今天 19:00 前', takenBy: '' },
+  { id: 's2', crop: 'pepper', what: '青椒五个，有两个带点虫眼', who: '孙家', plot: 'A-03', until: '明天中午前', takenBy: '' },
+  { id: 's3', crop: 'herbs', what: '薄荷一大把，泡水、做菜都行', who: '施家', plot: 'C-08', until: '周六前', takenBy: '' },
+  { id: 's4', crop: 'bokchoy', what: '小白菜三棵', who: '尤家', plot: 'C-04', until: '今天 20:00 前', takenBy: '金家' },
+];
+const TOOLS = [
+  { art: 't-can', name: '喷壶', note: '4 把，都在柜子里', state: 'in' },
+  { art: 't-hoe', name: '长柄锄', note: '2 把，1 把在柜子里', state: 'in' },
+  { art: 't-barrow', name: '小推车', note: '王家借走，今晚还', state: 'out' },
+  { art: 't-shears', name: '修枝剪', note: '郑家借走，昨天就该还', state: 'late' },
+];
+const NOTICES = [
+  { d: '22', m: '周六', title: '10:00 翻堆肥箱，还差 2 个人', body: '戴手套，半小时。在群里接龙就行。' },
+  { d: '19', m: '今天', title: '入冬以后早上 9 点前浇水', body: '傍晚浇的水夜里会结冰，伤根。' },
+  { d: '16', m: '周一', title: '欢迎许家，C 排第 5 块', body: '刚搬来 5 栋，地还空着，种子可以去柜子第二层拿。' },
+];
+const ROTA = [['一', '赵家'], ['二', '何家'], ['三', '王家'], ['四', '林家'], ['五', '陈家'], ['六', '周家'], ['日', '吴家']];
+
+const KEY = 'starter-system-v1';
+let state;
+try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
+if (!state || typeof state !== 'object') state = { watered: {}, dutyDone: '', taken: {} };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* 存不了就只在这次打开期间有效 */ } };
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const art = (id, tint, cls = '') => `<span class="art ${cls}" style="--tint:${tint}"><svg aria-hidden="true"><use href="#${id}"/></svg></span>`;
+const hm = (d) => `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+const lastWatered = (p) => state.watered[p.id] || p.watered;
+function ago(iso) {
+  const d = new Date(iso), days = Math.floor((new Date(NOW.toDateString()) - new Date(d.toDateString())) / 864e5);
+  return days === 0 ? `今天 ${hm(d)}` : days === 1 ? `昨天 ${hm(d)}` : days === 2 ? `前天 ${hm(d)}` : `${days} 天前`;
+}
+// 两个日历日以上没浇（前天浇的也算），今天就该浇。空地不算。
+const needsWater = (p) => p.who && p.crops.length && (new Date(NOW.toDateString()) - new Date(new Date(lastWatered(p)).toDateString())) / 864e5 >= 2;
+
+function renderMine() {
+  const p = PLOTS.find((x) => x.id === ME), need = needsWater(p);
+  const bed = p.crops.map((c) => `<figure>${art('v-' + c, CROPS[c][1])}<figcaption>${CROPS[c][0]}</figcaption></figure>`).join('');
+  $('#my-plot').innerHTML = `<div class="bed" aria-hidden="true">${bed}</div>
+    <div class="plot-info"><p class="kicker">我家的地</p><h2><span class="num">${p.id}</span>B 排第 7 块</h2>
+      <div class="facts">
+        <p class="fact ${need ? 'water' : 'ok'}"><span class="dot"></span>${need ? '今天该浇了' : '今天浇过了'}<span class="sub">上次 ${ago(lastWatered(p))}</span></p>
+        ${p.ripe ? `<p class="fact ripe"><span class="dot"></span>${CROPS[p.ripe][0]}可以收了<span class="sub">收不完可以放到换菜角</span></p>` : ''}
+        <p class="fact"><span class="dot"></span>种着 ${p.crops.map((c) => CROPS[c][0]).join('、')}</p>
+      </div>
+      <div class="acts">${need ? `<button class="btn primary" type="button" data-act="water"><svg aria-hidden="true"><use href="#i-drop"/></svg>记一次浇水</button>` : `<button class="btn" type="button" disabled>今天浇过了</button>`}<a class="btn" href="#swap">放到换菜角</a></div>
+    </div>`;
+  const todayIdx = 3, done = state.dutyDone;
+  $('#duty').innerHTML = `<p class="kicker"><svg width="18" height="18" aria-hidden="true"><use href="#i-drop"/></svg>今天轮到你</p>
+    <h2>公共区浇水</h2><p>香草角和育苗架，9 点前浇完。${done ? `<b>${done} 已经做完了。</b>` : '浇完点一下，后面的人就知道了。'}</p>
+    <ol class="week" aria-label="这一周的轮值">${ROTA.map(([d, who], i) => `<li class="${i === todayIdx ? 'today' : ''}${i < todayIdx || (i === todayIdx && done) ? ' done' : ''}"><b>${i === todayIdx ? '你' : who.replace('家', '')}</b>周${d}</li>`).join('')}</ol>
+    <div class="acts">${done ? '<button class="btn" type="button" disabled>今天的已做完</button>' : '<button class="btn primary" type="button" data-act="duty">做完了</button>'}<a class="btn" href="#notices">想换一天</a></div>`;
+}
+
+function renderStats() {
+  const growing = PLOTS.filter((p) => p.who && p.crops.length).length, dry = PLOTS.filter(needsWater).length;
+  const waiting = SWAP.filter((s) => !s.takenBy && !state.taken[s.id]).length, out = TOOLS.filter((t) => t.state !== 'in').length, late = TOOLS.filter((t) => t.state === 'late').length;
+  $('#stats').innerHTML = [
+    ['#field', '', 'i-plots', '#f1ece6', `${growing}<small>/ 32 块</small>`, '在种的地，2 块空着'],
+    ['#field', 'water', 'i-drop', 'var(--water-soft)', `${dry}<small>块</small>`, '今天该浇的地'],
+    ['#swap', '', 'i-basket', '#fbf0e2', `${waiting}<small>份</small>`, '换菜角里等人拿'],
+    ['#tools', late ? 'ripe' : '', 't-shears', '#f1f2f4', `${out}<small>件借出</small>`, late ? `${late} 件超期没还` : '都按时还了'],
+  ].map(([href, cls, icon, tint, big, label]) => `<a class="panel stat ${cls}" href="${href}">${art(icon, tint)}<span><b>${big}</b><span>${label}</span></span></a>`).join('');
+  $('#nav-water').textContent = dry;
+}
+
+function renderField() {
+  const rows = ['A', 'B', 'C', 'D'].map((r) => {
+    const cells = PLOTS.filter((p) => p.id[0] === r).map((p) => {
+      const cls = !p.who || !p.crops.length ? 'e' : needsWater(p) ? 'w' : '';
+      const label = `${p.id}，${p.who || '空着'}${p.crops.length ? '，种着' + p.crops.map((c) => CROPS[c][0]).join('、') : ''}${cls === 'w' ? '，今天该浇' : ''}${p.ripe ? '，' + CROPS[p.ripe][0] + '可以收了' : ''}`;
+      return `<div class="cell ${cls}${p.id === ME ? ' m' : ''}" title="${esc(label)}"><span class="sr">${esc(label)}</span><span aria-hidden="true"><span class="id">${p.id.slice(2)}</span><span class="who">${p.id === ME ? '我家' : esc(p.who || '空着')}</span>${p.ripe ? '<span class="ripe"></span>' : ''}</span></div>`;
+    }).join('');
+    return `<div class="row"><b aria-hidden="true">${r}</b>${cells}</div>${r === 'B' ? '<div class="path" aria-hidden="true"></div>' : ''}`;
+  });
+  $('#rows').innerHTML = rows.join('');
+}
+
+function renderSwap() {
+  $('#swap-list').innerHTML = SWAP.map((s) => {
+    const mine = state.taken[s.id], other = s.takenBy;
+    return `<li class="item${mine || other ? ' taken' : ''}">${art('v-' + s.crop, CROPS[s.crop][1], 'sm')}<div><h3>${esc(s.what)}</h3><p>${esc(s.who)} · 在 ${s.plot} 的地头</p><p class="when">${s.until}</p>
+      ${mine ? `<span class="mine-tag">你要了，记得${s.until}去拿</span>` : other ? `<p class="when">${esc(other)}已经要了</p>` : `<button class="btn" type="button" data-act="take" data-id="${s.id}">我要了</button>`}</div></li>`;
+  }).join('');
+}
+
+function renderLists() {
+  $('#notice-list').innerHTML = NOTICES.map((n) => `<li><span class="date"><b>${n.d}</b><small>${n.m}</small></span><div><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></li>`).join('');
+  $('#tool-list').innerHTML = TOOLS.map((t) => `<li>${art(t.art, '#f1f2f4', 'sm')}<div><h3>${t.name}</h3><p>${esc(t.note)}</p></div><span class="end">${t.state === 'in' ? '<span class="tag calm">在柜子里</span>' : t.state === 'late' ? '<span class="tag ripe">超期 1 天</span>' : '<span class="tag calm">借出</span>'}</span></li>`).join('');
+}
+
+function render() { renderMine(); renderStats(); renderField(); renderSwap(); renderLists(); }
+
+let undoJson = null, timer;
+function act(label, fn, focusSel) {
+  undoJson = JSON.stringify(state); fn(); save(); render();
+  $('#toast-text').textContent = label; $('#toast').hidden = false; clearTimeout(timer); timer = setTimeout(() => { $('#toast').hidden = true; }, 8000);
+  const f = focusSel && document.querySelector(focusSel); (f || $('#undo')).focus();
+}
+document.addEventListener('click', (ev) => {
+  const b = ev.target.closest('button[data-act]'); if (!b) return;
+  if (b.dataset.act === 'water') act(`记下了：B-07 今天 ${hm(NOW)} 浇过`, () => { state.watered[ME] = '2026-11-19T08:40'; });
+  if (b.dataset.act === 'duty') act('公共区浇水做完了', () => { state.dutyDone = hm(NOW); });
+  if (b.dataset.act === 'take') { const s = SWAP.find((x) => x.id === b.dataset.id); act(`${s.what.split('，')[0]}给你留着了`, () => { state.taken[s.id] = true; }); }
+});
+$('#undo').addEventListener('click', () => { if (undoJson) { state = JSON.parse(undoJson); undoJson = null; save(); render(); $('#toast-text').textContent = '已撤销'; } });
+render();
+</script>
+</body>
+</html>

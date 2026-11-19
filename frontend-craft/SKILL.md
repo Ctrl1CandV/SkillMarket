@@ -28,7 +28,7 @@ metadata:
 | 这一页是 | 读它的人在做什么 | 最大的字 : 正文 | 颜色给谁 | 最常见的错 | 起步样例 |
 | --- | --- | --- | --- | --- | --- |
 | 一个人高频处理的队列、工作台 | 找到一条、处理一条，手和眼都很忙 | 约 2.5 倍（隔着距离看的视图可到 6 倍） | 容易出错、必须被看见的那一样 | 口号、横幅压在要处理的东西上面，第一屏看不到几条；成排的实心彩色按钮 | 一处现场操作：[workbench](assets/starters/workbench/index.html)；一个人把活分给几个人或几台机器：[queue](assets/starters/queue/index.html) |
-| 多人各自来用的系统：报名、预约、资料库、内部平台 | 进来找自己的东西，看看有什么新的，办一件事 | 约 3 倍 | 品牌色给框架和主要操作，状态另用一两种颜色 | 做得太素，像没做完：只有文字、细线框和白卡片，没有为这个题材画的图形，认不出是什么系统 | — |
+| 多人各自来用的系统：报名、预约、资料库、内部平台 | 进来找自己的东西，看看有什么新的，办一件事 | 约 3 倍 | 品牌色给框架和主要操作，状态另用一两种颜色 | 做得太素，像没做完：只有文字、细线框和白卡片，没有为这个题材画的图形，认不出是什么系统 | [system](assets/starters/system/index.html) |
 | 数据看板 | 自己分析，反复来看 | 约 2.5 倍 | 数据系列；基线用灰 | 替读者下结论或给建议；线贴着图框走；图整体缩小 | [dashboard](assets/starters/dashboard/index.html) |
 | 设置与表单 | 改几项，想知道改完会怎样 | 约 2 倍 | 当前选中和可操作的控件 | 一墙开关；看不出依赖；不知道保存没有 | [settings](assets/starters/settings/index.html) |
 | 图鉴、目录、检索 | 按样子或名字找东西 | 约 3 倍 | 藏品本身，界面不带颜色 | 筛选项全是术语；筛到 0 条才知道走错；搜不到俗名 | [catalog](assets/starters/catalog/index.html) |
@@ -129,7 +129,7 @@ metadata:
 | 需要一套可调整的实际样式起点 | [样式样张](references/style-samples.md) |
 | 配色选择不足、整套搭配及可复制模板 | [配色方向与模板](references/color-directions.md) |
 | 各类页面的展开说明 | [场景](references/scenarios.md) |
-| 同类页面的完整起点：工作台、分派队列、数据看板、设置、图鉴检索 | [起步样例](assets/starters/) |
+| 同类页面的完整起点：工作台、分派队列、系统首页、数据看板、设置、图鉴检索 | [起步样例](assets/starters/) |
 | 四种宽度截图并量出问题；给这一页写专门的检查 | `scripts/pagecheck.mjs`、`scripts/flow-template.mjs` |
 | 实现后观察、诊断和修订 | [看图与修订](references/review.md) |
 
