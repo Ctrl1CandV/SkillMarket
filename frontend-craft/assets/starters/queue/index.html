@@ -1,0 +1,259 @@
+<!doctype html>
+<!--
+  起步样例：分派工作队列（一个人坐班，把活分给几个人或几台机器）
+  这是一页能直接打开、能操作的完整页面。做同类页面时复制它再改，不要从空白开始。
+  报修派工、客服工单、打印店接单、仓库拣货、实验室排机，都是这一类。
+
+  写代码前定下的三件事（换成你的题目时，先重写这三条，再动版式）：
+  1. 这是哪一类：店员整天开着的工作队列，电话、顾客一来就要用。不是“管理后台”。
+     所以没有侧栏、欢迎语、口号、装饰用的英文小标题，也没有压在队列上面的一排指标卡。打开就是要处理的单。
+  2. 颜色给谁：只给时间压力（加急、快到取件时间、已经过了）。状态、类型、机器都用黑字。
+     整页只有一种强调色；同一屏里它出现得越少，越能说明“现在就要动手”。
+  3. 内容的形状怎么决定版式：
+     - 五种状态对店员只是三种处境：轮到我排（待排）、在机器上（已排、在印）、等人来取（印好）。所以分三组，不做五个标签页。
+     - 排机器时只需要知道一件事：哪台机器手上活少。所以把排队数写在按钮上，点机器名就排上去，可以撤销。
+     - 顾客报的是取件码，没人报订单号。所以取件码是每一行最大的字，订单号不显示。
+     - 黑白稿只能上黑白机，彩色稿只能上彩色机。所以每一行只出现能用的那几台机器。
+     - 店员是按机器去看进度的。所以右栏按机器分，不按订单分。
+
+  量一量（检查脚本会报第一屏的彩色色相数）：
+  - 1440×900 的第一屏里，要处理的单露出 10 条以上；第一条在 200 像素以内。
+  - 第一屏只有一种彩色色相。
+
+  换成自己的内容时：
+  - 数据在页面底部的 DATA 里，规则在 view()、fits() 两个函数。先换数据，看真实形状（几种状态、几个人、一单多长），再动版式。
+  - 配色属于这个样例（白底、黑字、细线、一种红）。换题材时按你写下的“颜色给谁”重新定，不要原样搬。
+  - 多页面系统（列表、详情、新建、统计）共用顶栏和这一套字号、线条、强调色；详情页把“下一步该做什么”单独放在一栏，只放当前状态能做的事。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>接单台 · 校园打印店</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f6f7f8; --surface: #fff; --ink: #14171a; --ink2: #434a51; --ink3: #626a73;
+    --line: #dde1e4; --line2: #b9c0c6; --hot: #c22e1a;
+    --font: "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+    --num: Bahnschrift, "DIN Alternate", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    --gutter: max(24px, calc((100vw - 1240px) / 2));
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 0.9375rem/1.55 var(--font); }
+  h1, h2, h3, p, ol { margin: 0; padding: 0; }
+  ol { list-style: none; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .num { font-family: var(--num); font-variant-numeric: tabular-nums; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 1.5rem; min-height: 3.5rem; padding: 0 var(--gutter); background: var(--surface); border-bottom: 1px solid var(--line); }
+  .brand { font-weight: 700; font-size: 1.0625rem; }
+  .brand small { margin-left: 0.5rem; font-weight: 400; font-size: 0.8125rem; color: var(--ink3); }
+  .switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 5px; overflow: hidden; }
+  .switch button { min-height: 2.25rem; padding: 0 1rem; border: 0; background: transparent; cursor: pointer; }
+  .switch button + button { border-left: 1px solid var(--ink); }
+  .switch button[aria-pressed="true"] { background: var(--ink); color: #fff; font-weight: 500; }
+  .top input { margin-left: auto; width: min(18rem, 40vw); min-height: 2.25rem; padding: 0 0.75rem; border: 1px solid var(--line2); border-radius: 5px; background: var(--surface); }
+  .top .now { color: var(--ink3); font-size: 0.875rem; white-space: nowrap; }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 3rem; align-items: start; padding: 1.5rem var(--gutter) 4rem; }
+  .group + .group { margin-top: 2.5rem; }
+  .head { display: flex; align-items: baseline; gap: 0.625rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--ink); }
+  .head h2 { font-size: 1.125rem; }
+  .head .count { font: 600 1.25rem var(--num); }
+  .head .hint { margin-left: auto; font-size: 0.8125rem; color: var(--ink3); }
+  .empty { padding: 1rem 0; color: var(--ink3); border-bottom: 1px solid var(--line); }
+
+  .row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) 7rem auto; gap: 0 1.25rem; align-items: center; min-height: 4.25rem; padding: 0.625rem 0; border-bottom: 1px solid var(--line); }
+  .code { font: 600 1.75rem/1 var(--num); letter-spacing: 0.02em; }
+  .what .main { font-size: 1rem; }
+  .what .meta { display: block; font-size: 0.8125rem; color: var(--ink3); }
+  .rush { display: inline-block; margin-right: 0.375rem; padding: 0 0.3125rem; border-radius: 3px; background: var(--hot); color: #fff; font-size: 0.75rem; font-weight: 600; vertical-align: 0.1em; }
+  .rush.quiet { background: transparent; color: var(--hot); box-shadow: inset 0 0 0 1px var(--hot); }
+  .due { text-align: right; line-height: 1.3; }
+  .due .t { font: 500 1rem var(--num); display: block; }
+  .due .sub { font-size: 0.8125rem; color: var(--ink3); }
+  .hot, .due .sub.hot { color: var(--hot); font-weight: 600; }
+  .acts { display: flex; gap: 0.375rem; justify-content: flex-end; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 0.375rem; min-height: 2.25rem; padding: 0 0.75rem; border: 1px solid var(--ink); border-radius: 5px; background: transparent; cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--ink); color: #fff; }
+  .btn i { font-style: normal; font-size: 0.8125rem; color: var(--ink3); }
+  .btn:hover i { color: inherit; opacity: 0.75; }
+
+  .machine { padding: 0.875rem 0 0.75rem; border-bottom: 1px solid var(--line); }
+  .machine h3 { font-size: 1rem; display: flex; align-items: baseline; gap: 0.5rem; }
+  .machine h3 span { font-weight: 400; font-size: 0.8125rem; color: var(--ink3); }
+  .job { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0 0.625rem; align-items: baseline; margin-top: 0.5rem; padding-left: 0.75rem; border-left: 2px solid var(--line2); }
+  .job.late { border-left-color: var(--hot); }
+  .job .c { font: 500 1rem var(--num); }
+  .job .d { font-size: 0.8125rem; color: var(--ink3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .job .s { font-size: 0.8125rem; color: var(--ink2); }
+  .job button { grid-column: 1 / -1; justify-self: start; margin-top: 0.25rem; min-height: 1.75rem; padding: 0; border: 0; background: none; color: var(--ink2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.8125rem; }
+  .free { margin-top: 0.375rem; font-size: 0.8125rem; color: var(--ink3); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 0.5rem 0.75rem 0.5rem 0; text-align: left; font-size: 0.8125rem; font-weight: 400; color: var(--ink3); border-bottom: 1px solid var(--line2); }
+  td { padding: 0.625rem 0.75rem 0.625rem 0; border-bottom: 1px solid var(--line); }
+  td.c { font: 500 1rem var(--num); }
+
+  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; background: var(--ink); color: #fff; border-radius: 6px; z-index: 10; max-width: calc(100vw - 2rem); }
+  .toast[hidden] { display: none; }
+  .toast button { min-height: 2rem; padding: 0 0.75rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 4px; background: transparent; color: #fff; cursor: pointer; }
+
+  @media (max-width: 1000px) { main { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 720px) {
+    :root { --gutter: 16px; }
+    .top { flex-wrap: wrap; gap: 0.5rem 1rem; padding-block: 0.5rem; }
+    .top .now { display: none; }
+    .top input { width: 100%; margin-left: 0; }
+    .row { grid-template-columns: 5.5rem minmax(0, 1fr); row-gap: 0.5rem; align-items: start; }
+    .due .sub { white-space: nowrap; }
+    .due { grid-column: 1; text-align: left; }
+    .acts { grid-column: 2; justify-content: flex-start; }
+    .btn, .switch button, .top input { min-height: 2.75rem; }
+    .job button { min-height: 2.75rem; min-width: 2.75rem; }
+    .head .hint { display: none; }
+    table thead { display: none; }
+    tr { display: grid; grid-template-columns: auto 1fr auto; gap: 0 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+    td { padding: 0; border: 0; }
+    td.what { grid-column: 1 / -1; }
+  }
+  @media (forced-colors: active) {
+    .rush, .switch button[aria-pressed="true"] { outline: 2px solid CanvasText; }
+    .job.late { border-left-style: double; border-left-width: 4px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand">接单台<small>校园打印店</small></span>
+  <div class="switch" role="group" aria-label="看哪些单">
+    <button type="button" data-view="todo" aria-pressed="true">待办 <b class="num" id="n-todo"></b></button>
+    <button type="button" data-view="all" aria-pressed="false">全部 <b class="num" id="n-all"></b></button>
+  </div>
+  <label class="sr" for="q">搜取件码、姓名或内容</label>
+  <input id="q" type="search" placeholder="搜取件码、姓名、内容" autocomplete="off">
+  <span class="now" id="now"></span>
+</header>
+<main id="view"></main>
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="undo">撤销</button></div>
+
+<script>
+// 示例数据：人名都是编的。“现在”固定在 2026-11-18 周三 14:10。
+const NOW = new Date('2026-11-18T14:10');
+const MACHINES = [
+  { id: 'm1', name: '黑白机 A', kind: '黑白' },
+  { id: 'm2', name: '黑白机 B', kind: '黑白' },
+  { id: 'm3', name: '彩色机', kind: '彩色' },
+];
+const DATA = [
+  { code: '3815', who: '林同学', what: '毕业论文 86 页，双面，胶装 3 本', kind: '黑白', due: '2026-11-18T14:30', rush: true, status: '待排', at: '2026-11-18T13:52' },
+  { code: '2207', who: '周老师', what: '期中试卷 4 页 × 120 份，单面', kind: '黑白', due: '2026-11-18T15:00', rush: false, status: '待排', at: '2026-11-18T12:40' },
+  { code: '5140', who: '社团招新', what: '海报 A3 彩色 30 张', kind: '彩色', due: '2026-11-18T13:30', rush: false, status: '待排', at: '2026-11-18T11:05' },
+  { code: '0962', who: '许同学', what: '课程报告 22 页，双面，骑马钉', kind: '黑白', due: '2026-11-18T17:00', rush: false, status: '待排', at: '2026-11-18T13:58' },
+  { code: '7731', who: '何同学', what: '简历 2 页彩色 × 10 份', kind: '彩色', due: '2026-11-18T16:00', rush: false, status: '待排', at: '2026-11-18T14:02' },
+  { code: '4418', who: '教务办', what: '通知 1 页 × 300 份', kind: '黑白', due: '2026-11-19T09:00', rush: false, status: '待排', at: '2026-11-18T14:05' },
+  { code: '6623', who: '唐同学', what: '讲义 48 页，双面', kind: '黑白', due: '2026-11-18T14:20', rush: false, status: '在印', machine: 'm1', at: '2026-11-18T13:10' },
+  { code: '1309', who: '梁同学', what: '实验报告 12 页 × 6 份', kind: '黑白', due: '2026-11-18T15:30', rush: false, status: '已排', machine: 'm1', at: '2026-11-18T13:40' },
+  { code: '8054', who: '学生会', what: '活动手册 16 页彩色 × 50 份', kind: '彩色', due: '2026-11-18T18:00', rush: false, status: '在印', machine: 'm3', at: '2026-11-18T10:30' },
+  { code: '3390', who: '曹同学', what: '论文初稿 64 页，单面', kind: '黑白', due: '2026-11-18T14:00', rush: false, status: '印好', at: '2026-11-18T12:15' },
+  { code: '5512', who: '冯老师', what: '答题卡 1 页 × 200 份', kind: '黑白', due: '2026-11-18T13:00', rush: false, status: '印好', at: '2026-11-18T09:20' },
+  { code: '2786', who: '陈同学', what: '照片 6 寸 × 12 张', kind: '彩色', due: '2026-11-18T16:30', rush: false, status: '印好', at: '2026-11-18T11:48' },
+  { code: '9045', who: '韩同学', what: '准考证 1 页', kind: '黑白', due: '2026-11-18T11:00', rush: true, status: '已取', at: '2026-11-18T10:41' },
+  { code: '1176', who: '谢同学', what: '读书笔记 8 页', kind: '黑白', due: '2026-11-18T12:00', rush: false, status: '已取', at: '2026-11-18T09:55' },
+];
+const KEY = 'starter-queue-v1';
+let orders, undoJson = null;
+try { orders = JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { orders = null; }
+if (!Array.isArray(orders)) orders = JSON.parse(JSON.stringify(DATA));
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(orders)); } catch (e) { /* 存不了就只在这次打开期间有效 */ } };
+
+const q = { view: 'todo', text: '' };
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const hm = (d) => `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+const mins = (a, b) => Math.round((b - a) / 60000);
+const dur = (m) => (m < 60 ? `${m} 分钟` : m < 1440 ? `${Math.round(m / 6) / 10} 小时`.replace('.0 ', ' ') : `${Math.round(m / 1440)} 天`);
+const when = (d) => (d.toDateString() === NOW.toDateString() ? hm(d) : `明天 ${hm(d)}`);
+
+// 每一单现在的处境：离取件时间还有多久，过没过
+function view(o) {
+  const due = new Date(o.due), left = mins(NOW, due);
+  const ours = o.status === '待排' || o.status === '已排' || o.status === '在印';   // 印好以后过了取件时间，是顾客没来，不是店里的压力
+  return { due, left, late: ours && left < 0, soon: ours && left >= 0 && left <= 30 };
+}
+const fits = (o) => MACHINES.filter((m) => m.kind === o.kind);
+const load = (id) => orders.filter((o) => o.machine === id && (o.status === '已排' || o.status === '在印')).length;
+const pressure = (a, b) => (b.rush - a.rush) || (view(b).late - view(a).late) || (view(a).due - view(b).due);
+const match = (o) => !q.text || [o.code, o.who, o.what].some((x) => x.includes(q.text.trim()));
+
+function dueCell(o) {
+  const v = view(o);
+  let sub = '取件时间', cls = '';
+  if (v.late) { sub = `过了 ${dur(-v.left)}`; cls = 'hot'; } else if (v.soon || (o.rush && v.left >= 0 && o.status !== '印好')) { sub = `还有 ${dur(v.left)}`; cls = 'hot'; } else if (o.status === '印好' && v.left < 0) sub = `该来取了`;
+  return `<span class="due"><span class="t">${when(v.due)}</span><span class="sub ${cls}">${sub}</span></span>`;
+}
+function rowTodo(o) {
+  const acts = fits(o).map((m) => `<button class="btn" type="button" data-act="put" data-code="${o.code}" data-m="${m.id}" aria-label="排到${m.name}，前面有 ${load(m.id)} 单">${m.name}<i>${load(m.id)} 单</i></button>`).join('');
+  return `<li class="row"><span class="code">${o.code}</span><span class="what"><span class="main">${o.rush ? '<span class="rush">急</span>' : ''}${esc(o.what)}</span><span class="meta">${esc(o.who)} · ${o.kind} · ${hm(new Date(o.at))} 下单</span></span>${dueCell(o)}<span class="acts">${acts}</span></li>`;
+}
+function rowReady(o) {
+  return `<li class="row"><span class="code">${o.code}</span><span class="what"><span class="main">${esc(o.what)}</span><span class="meta">${esc(o.who)}</span></span>${dueCell(o)}<span class="acts"><button class="btn" type="button" data-act="taken" data-code="${o.code}">已取走</button></span></li>`;
+}
+function machine(m, list) {
+  const jobs = list.filter((o) => o.machine === m.id).sort((a, b) => (a.status === '在印' ? -1 : 1) - (b.status === '在印' ? -1 : 1)).map((o) => {
+    const v = view(o);
+    return `<div class="job${v.late ? ' late' : ''}"><span class="c">${o.code}</span><span class="d">${o.rush ? '<span class="rush quiet">急</span>' : ''}${esc(o.what)}</span><span class="s">${v.late ? `<span class="hot">过了 ${dur(-v.left)}</span>` : o.status}</span>
+      <button type="button" data-act="${o.status === '在印' ? 'done' : 'start'}" data-code="${o.code}">${o.status === '在印' ? '印好了' : '开始印'}</button></div>`;
+  }).join('');
+  return `<div class="machine"><h3>${m.name}<span>${m.kind}</span></h3>${jobs || '<p class="free">空着</p>'}</div>`;
+}
+
+function render() {
+  const list = orders.filter(match);
+  const open = (o) => o.status !== '已取';
+  $('#n-todo').textContent = orders.filter(open).length; $('#n-all').textContent = orders.length;
+  document.querySelectorAll('.switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === q.view)));
+  if (q.view === 'all') {
+    $('#view').innerHTML = `<section style="grid-column:1/-1"><div class="head"><h2>全部</h2><span class="count">${list.length}</span><span class="hint">按取件时间</span></div>
+      <table><thead><tr><th>取件码</th><th>内容</th><th>状态</th><th>取件时间</th></tr></thead><tbody>${[...list].sort((a, b) => a.due.localeCompare(b.due)).map((o) => `<tr><td class="c">${o.code}</td><td class="what">${esc(o.what)}　<span style="color:var(--ink3)">${esc(o.who)}</span></td><td>${o.status}${o.machine ? ' · ' + MACHINES.find((m) => m.id === o.machine).name : ''}</td><td class="num">${when(new Date(o.due))}</td></tr>`).join('')}</tbody></table></section>`;
+    return;
+  }
+  const todo = list.filter((o) => o.status === '待排').sort(pressure);
+  const ready = list.filter((o) => o.status === '印好').sort((a, b) => a.due.localeCompare(b.due));
+  const onMachines = list.filter((o) => o.status === '已排' || o.status === '在印');
+  $('#view').innerHTML = `<div>
+      <section class="group" aria-labelledby="g1"><div class="head"><h2 id="g1">该排上机器了</h2><span class="count">${todo.length}</span><span class="hint">点机器名直接排上，后面是它前面排着几单</span></div>
+        ${todo.length ? `<ol>${todo.map(rowTodo).join('')}</ol>` : '<p class="empty">都排上了。</p>'}</section>
+      <section class="group" aria-labelledby="g2"><div class="head"><h2 id="g2">印好了，等人来取</h2><span class="count">${ready.length}</span></div>
+        ${ready.length ? `<ol>${ready.map(rowReady).join('')}</ol>` : '<p class="empty">没有等着取的。</p>'}</section>
+    </div>
+    <section class="group" aria-labelledby="g3"><div class="head"><h2 id="g3">机器上</h2><span class="count">${onMachines.length}</span></div>${MACHINES.map((m) => machine(m, onMachines)).join('')}</section>`;
+}
+
+let timer;
+function act(label, fn) {
+  undoJson = JSON.stringify(orders); fn(); save(); render();
+  $('#toast-text').textContent = label; $('#toast').hidden = false; clearTimeout(timer); timer = setTimeout(() => { $('#toast').hidden = true; }, 8000);
+}
+$('#view').addEventListener('click', (ev) => {
+  const b = ev.target.closest('button[data-act]'); if (!b) return;
+  const o = orders.find((x) => x.code === b.dataset.code), row = b.closest('.row'), next = row && (row.nextElementSibling || row.previousElementSibling);
+  const nextCode = next && next.querySelector('button[data-code]') && next.querySelector('button[data-code]').dataset.code;
+  if (b.dataset.act === 'put') { const m = MACHINES.find((x) => x.id === b.dataset.m); act(`${o.code} 排到了${m.name}`, () => { o.status = '已排'; o.machine = m.id; }); }
+  if (b.dataset.act === 'start') act(`${o.code} 开始印`, () => { o.status = '在印'; });
+  if (b.dataset.act === 'done') act(`${o.code} 印好了，等人来取`, () => { o.status = '印好'; o.machine = null; });
+  if (b.dataset.act === 'taken') act(`${o.code} 已取走`, () => { o.status = '已取'; });
+  const f = nextCode && document.querySelector(`button[data-code="${nextCode}"]`); (f || $('#undo')).focus();   // 处理完一单，焦点落到下一单
+});
+$('#undo').addEventListener('click', () => { if (undoJson) { orders = JSON.parse(undoJson); undoJson = null; save(); render(); $('#toast-text').textContent = '已撤销'; } });
+document.querySelector('.switch').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) { q.view = b.dataset.view; render(); } });
+$('#q').addEventListener('input', (ev) => { q.text = ev.target.value; render(); });
+$('#now').textContent = `11月18日 周三 ${hm(NOW)}`;
+render();
+</script>
+</body>
+</html>
