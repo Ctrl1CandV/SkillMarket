@@ -11,7 +11,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from run import pi_env, save
+from run import pi_env, pi_project_settings, save
 
 PROMPT = ("原服务连接曾中断。请在原会话里继续原委托，沿用已完成的创意、镜头和工程，完成渲染与交付。"
           "复查画面时可读缩小的联系表，避免重复传送大量原尺寸图造成连接中断。")
@@ -31,6 +31,9 @@ def main():
     shutil.copy2(logs / "session.jsonl", dest / "session-before.jsonl")
     env = pi_env()
     command = report["command"][:]
+    for flag in pi_project_settings(task, report["model"]):   # runs started before the compaction setting existed
+        if flag not in command:
+            command.insert(command.index("--skill"), flag)
     rpc = command[:command.index("--")]
     rpc.remove("--print")
     rpc[rpc.index("--mode") + 1] = "rpc"

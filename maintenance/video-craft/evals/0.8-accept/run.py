@@ -59,6 +59,22 @@ def save(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+# pi lists deepseek-flash with a 1M-token window, so it never compacts, while the API fails ("550, no body")
+# at about 256K. A per-run project setting makes pi compact at about 180K instead; --approve lets pi read it.
+COMPACT_AT = {"deepseek/deepseek-flash": 180_000}
+LISTED_WINDOW = {"deepseek/deepseek-flash": 1_000_000}
+
+
+def pi_project_settings(task, model):
+    """Write task/.pi/settings.json when the model needs an earlier compaction; return the extra pi flags."""
+    if model not in COMPACT_AT:
+        return []
+    settings = {"compaction": {"modelOverrides": {model: {"reserveTokens": LISTED_WINDOW[model] - COMPACT_AT[model]}}}}
+    (task / ".pi").mkdir(exist_ok=True)
+    save(task / ".pi/settings.json", settings)
+    return ["--approve"]
+
+
 def pi_env():
     env = dict(os.environ)
     env.update(VC_CHROME="C:/Program Files/Google/Chrome/Application/chrome.exe",
@@ -94,6 +110,7 @@ def main():
     command = launcher + ["--print", "--offline", "--mode", "json", "--session", str(logs / "session.jsonl"),
                           "--no-context-files", "--no-skills", "--no-extensions", "--no-mcp",
                           "--no-prompt-templates", "--tools", "read,bash,powershell,edit,write",
+                          *pi_project_settings(task, args.model),
                           "--skill", str(snapshot), "--model", args.model, "--",
                           "请阅读当前目录的 REQUEST.md 和 ENV.md，完成这次委托。"]
     env = pi_env()
