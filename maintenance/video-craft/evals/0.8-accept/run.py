@@ -2,6 +2,7 @@
 
     python run.py mv deepseek/deepseek-flash runs/mv-deepseek
     python run.py promo qwen-token-plan-cn/qwen3.8-flash runs/promo-qwen
+    python run.py toyland deepseek/deepseek-flash runs/081-toyland-deepseek
 
 Copies a snapshot of the skill next to the task, writes REQUEST.md and ENV.md, runs pi unattended and records
 the command, the snapshot hashes, the events and the exit status under <out>/log.
@@ -29,9 +30,19 @@ BRIEFS = {
               "提醒开窗；开窗后浓度回落，灯再变回暖白。没有 App，不用联网，USB-C 供电，售价 129 元。"
               "主要卖给在家办公、在宿舍学习的人。要有中文旁白和背景音乐。创意、画面、设计和剪辑由你决定。"
               "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
+    "toyland": ("请使用本次提供的 video-craft，为《Toyland》这段录音做一段 30–45 秒的 MV 片段：从录音里选一段完整的乐句"
+                "（可以是一段主歌接副歌，或整段副歌），起止落在乐句上，不变速。录音是当前目录的 song.mp3，"
+                "来源页面的原文（含歌词和作者说明）在 source.txt。片尾署名。创意、画面、设计和剪辑由你决定。"
+                "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
+    "umbrella": ("请使用本次提供的 video-craft，为一款产品做一支 20–30 秒的短宣传片，在社交平台投放。"
+                 "产品叫「带伞」，是挂在门把手上的一块小圆牌：每天早上自己取当地天气预报，当天要下雨就亮蓝色，"
+                 "提醒出门带伞；不下雨就不亮。不用 App，不连家里的网络，一节纽扣电池用一年，售价 69 元。"
+                 "主要卖给早上赶时间出门的上班族和学生。要有中文旁白和背景音乐。创意、画面、设计和剪辑由你决定。"
+                 "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
 }
 # The request is REQUEST.md, not BRIEF.md: on Windows the task sheet brief.md the skill asks for would overwrite it.
-INPUTS = {"mv": {"original.mp3": "inputs/song.mp3", "lyrics.txt": "inputs/lyrics.txt"}, "promo": {}}
+INPUTS = {"mv": {"original.mp3": "inputs/song.mp3", "lyrics.txt": "inputs/lyrics.txt"}, "promo": {},
+          "toyland": {"song.mp3": "inputs/toyland/song.mp3", "source.txt": "inputs/toyland/source.txt"}, "umbrella": {}}
 ENV_TEXT = ("当前目录是独立的工作区，上一层的 video-craft 是本次提供的技能。可在当前目录内制作、渲染与取帧，"
             "任务文件、检查结果与中间产物都放在当前目录。已有 Node、Python、FFmpeg 和 FFprobe；渲染用的浏览器和 "
             "Playwright 已由 VC_CHROME、VC_NODE_MODULES 指好。命令行里的 python 已装 NumPy、Pillow、faster-whisper "
