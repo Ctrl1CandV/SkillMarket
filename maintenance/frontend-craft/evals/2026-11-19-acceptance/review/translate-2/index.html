@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#244a3c">
+<title>译同 · 文档翻译协作</title>
+<link rel="stylesheet" href="styles.css">
+<script src="data/translate.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+<a href="#overview" class="brand"><span class="brand-mark">译<span>↗</span></span><span>译同<small>一起，让知识无界。</small></span></a>
+<div class="project"><span class="project-symbol">F<span>4</span></span><div><strong>Framework Docs</strong><small>v4 中文翻译计划 <i></i></small></div><span class="project-lock">⌄</span></div>
+<div class="nav-label">协作空间 <span>WORKSPACE</span></div>
+<nav id="main-nav">
+<a href="#overview" data-page="overview"><span class="nav-icon">▦</span>章节总览</a>
+<a href="#tasks" data-page="tasks"><span class="nav-icon">☷</span>我的任务 <b id="task-count"></b></a>
+<a href="#glossary" data-page="glossary"><span class="nav-icon">Aa</span>术语表 <span class="tiny-dot"></span></a>
+</nav>
+<div class="sidebar-section"><div class="nav-label">文档目录 <span>9 PARTS</span></div><div id="part-nav"></div></div>
+<div class="sidebar-bottom"><div class="local-note"><span class="local-dot"></span> 本地协作空间 <button class="icon-btn" data-action="storage-info" aria-label="本地存储说明">ⓘ</button></div><div class="profile"><div class="avatar me">贾</div><div><strong>贾浩宇</strong><small>翻译志愿者 · 审校者</small></div><span class="online"></span></div></div>
+</aside>
+<div class="workspace"><header class="topbar"><button class="icon-btn menu-button" data-action="menu" aria-label="展开导航">☰</button><div class="breadcrumbs">协作空间 <span>/</span> <strong id="breadcrumb">章节总览</strong></div><div class="header-right"><span class="date-label">2026 年 11 月 19 日 <span>周四</span></span><span class="header-divider"></span><span class="live-dot"></span><span>本地已保存</span></div></header><main id="app"></main><footer><span>译同 · 每一份翻译，都让知识更近一步。</span><span>Framework v4 <span class="footer-dot">·</span> 中文文档协作计划</span></footer></div>
+<div id="toast" role="status"></div><dialog id="modal"></dialog>
+</body></html>

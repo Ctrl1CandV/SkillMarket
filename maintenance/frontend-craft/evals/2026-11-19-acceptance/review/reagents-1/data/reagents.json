@@ -1,0 +1,2166 @@
+{
+ "now": "2026-11-19T10:00",
+ "me": "何雨桐",
+ "admin": "周老师",
+ "members": [
+  "周老师",
+  "何雨桐",
+  "陈思远",
+  "林晨曦",
+  "赵子墨",
+  "孙佳怡",
+  "吴浩宇",
+  "郑可馨"
+ ],
+ "places": [
+  "4℃ 冰箱 A 上层",
+  "4℃ 冰箱 A 下层",
+  "-20℃ 冰箱 B",
+  "-80℃ 冰箱 第 2 架",
+  "试剂柜 1（常温）",
+  "试剂柜 2（常温）",
+  "易燃品柜",
+  "酸碱柜",
+  "耗材架 左",
+  "耗材架 右"
+ ],
+ "reagents": [
+  {
+   "id": "R001",
+   "name": "无水乙醇",
+   "category": "溶剂",
+   "unit": "mL",
+   "place": "易燃品柜",
+   "hazard": "易燃",
+   "supplier": "麦克林",
+   "cas": "727-74-9",
+   "reorder_at": 338,
+   "batches": [
+    {
+     "lot": "F93809",
+     "opened": null,
+     "qty": 1953,
+     "left": 1953,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "N76497",
+     "opened": null,
+     "qty": 1859,
+     "left": 1859,
+     "expires": "2028-10-19"
+    },
+    {
+     "lot": "A43804",
+     "opened": "2026-07-14T10:00",
+     "qty": 1264,
+     "left": 632,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 4444
+  },
+  {
+   "id": "R002",
+   "name": "甲醇（色谱纯）",
+   "category": "溶剂",
+   "unit": "mL",
+   "place": "易燃品柜",
+   "hazard": "易燃 有毒",
+   "supplier": "生工",
+   "cas": "1154-70-0",
+   "reorder_at": 339,
+   "batches": [
+    {
+     "lot": "L11686",
+     "opened": null,
+     "qty": 552,
+     "left": 552,
+     "expires": "2027-06-07"
+    },
+    {
+     "lot": "F14344",
+     "opened": "2026-07-04T10:00",
+     "qty": 2843,
+     "left": 852,
+     "expires": "2027-02-17"
+    }
+   ],
+   "in_stock": 1404
+  },
+  {
+   "id": "R003",
+   "name": "乙腈（色谱纯）",
+   "category": "溶剂",
+   "unit": "mL",
+   "place": "易燃品柜",
+   "hazard": "易燃 有毒",
+   "supplier": "国药",
+   "cas": "5324-71-9",
+   "reorder_at": 474,
+   "batches": [
+    {
+     "lot": "G39497",
+     "opened": null,
+     "qty": 1565,
+     "left": 1565,
+     "expires": "2027-06-07"
+    },
+    {
+     "lot": "C66560",
+     "opened": "2026-10-08T10:00",
+     "qty": 3183,
+     "left": 1591,
+     "expires": "2028-10-19"
+    }
+   ],
+   "in_stock": 3156
+  },
+  {
+   "id": "R004",
+   "name": "丙酮",
+   "category": "溶剂",
+   "unit": "mL",
+   "place": "易燃品柜",
+   "hazard": "易燃",
+   "supplier": "耗材供应商甲",
+   "cas": "3220-93-5",
+   "reorder_at": 267,
+   "batches": [
+    {
+     "lot": "E64828",
+     "opened": null,
+     "qty": 1055,
+     "left": 1055,
+     "expires": "2027-01-03"
+    },
+    {
+     "lot": "M60224",
+     "opened": null,
+     "qty": 1032,
+     "left": 1032,
+     "expires": "2027-12-24"
+    },
+    {
+     "lot": "E66289",
+     "opened": "2026-08-31T10:00",
+     "qty": 1922,
+     "left": 1345,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 3432
+  },
+  {
+   "id": "R005",
+   "name": "二甲基亚砜 DMSO",
+   "category": "溶剂",
+   "unit": "mL",
+   "place": "试剂柜 1（常温）",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "7979-95-5",
+   "reorder_at": 92,
+   "batches": [
+    {
+     "lot": "K65144",
+     "opened": null,
+     "qty": 462,
+     "left": 462,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 462
+  },
+  {
+   "id": "R006",
+   "name": "浓盐酸 37%",
+   "category": "酸碱",
+   "unit": "mL",
+   "place": "酸碱柜",
+   "hazard": "腐蚀",
+   "supplier": "麦克林",
+   "cas": "9176-95-0",
+   "reorder_at": 197,
+   "batches": [
+    {
+     "lot": "E60248",
+     "opened": "2026-08-29T10:00",
+     "qty": 988,
+     "left": 494,
+     "expires": "2028-10-19"
+    }
+   ],
+   "in_stock": 494
+  },
+  {
+   "id": "R007",
+   "name": "氢氧化钠",
+   "category": "酸碱",
+   "unit": "g",
+   "place": "酸碱柜",
+   "hazard": "腐蚀",
+   "supplier": "国药",
+   "cas": "4888-51-5",
+   "reorder_at": 25,
+   "batches": [
+    {
+     "lot": "H55510",
+     "opened": "2026-07-16T10:00",
+     "qty": 127,
+     "left": 63,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 63
+  },
+  {
+   "id": "R008",
+   "name": "冰醋酸",
+   "category": "酸碱",
+   "unit": "mL",
+   "place": "酸碱柜",
+   "hazard": "腐蚀 易燃",
+   "supplier": "耗材供应商甲",
+   "cas": "8842-89-4",
+   "reorder_at": 85,
+   "batches": [
+    {
+     "lot": "K65292",
+     "opened": "2026-07-27T10:00",
+     "qty": 425,
+     "left": 127,
+     "expires": "2026-10-30"
+    }
+   ],
+   "in_stock": 127
+  },
+  {
+   "id": "R009",
+   "name": "Tris 碱",
+   "category": "缓冲液",
+   "unit": "g",
+   "place": "试剂柜 1（常温）",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "6532-19-2",
+   "reorder_at": 51,
+   "batches": [
+    {
+     "lot": "G53567",
+     "opened": null,
+     "qty": 206,
+     "left": 206,
+     "expires": "2027-12-24"
+    },
+    {
+     "lot": "E90699",
+     "opened": "2026-06-25T10:00",
+     "qty": 310,
+     "left": 155,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 361
+  },
+  {
+   "id": "R010",
+   "name": "PBS 缓冲液 10×",
+   "category": "缓冲液",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 下层",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "9464-71-1",
+   "reorder_at": 106,
+   "batches": [
+    {
+     "lot": "E89364",
+     "opened": "2026-06-22T10:00",
+     "qty": 532,
+     "left": 372,
+     "expires": "2026-10-30"
+    }
+   ],
+   "in_stock": 372
+  },
+  {
+   "id": "R011",
+   "name": "HEPES",
+   "category": "缓冲液",
+   "unit": "g",
+   "place": "试剂柜 1（常温）",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "4334-84-1",
+   "reorder_at": 9,
+   "batches": [
+    {
+     "lot": "N28786",
+     "opened": "2026-08-10T10:00",
+     "qty": 49,
+     "left": 3,
+     "expires": "2027-01-03"
+    }
+   ],
+   "in_stock": 3
+  },
+  {
+   "id": "R012",
+   "name": "EDTA 二钠",
+   "category": "缓冲液",
+   "unit": "g",
+   "place": "试剂柜 1（常温）",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "8883-68-7",
+   "reorder_at": 26,
+   "batches": [
+    {
+     "lot": "L81362",
+     "opened": "2026-08-15T10:00",
+     "qty": 130,
+     "left": 91,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 91
+  },
+  {
+   "id": "R013",
+   "name": "胎牛血清 FBS",
+   "category": "细胞培养",
+   "unit": "mL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "",
+   "reorder_at": 53,
+   "batches": [
+    {
+     "lot": "D28737",
+     "opened": "2026-06-19T10:00",
+     "qty": 269,
+     "left": 21,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 21
+  },
+  {
+   "id": "R014",
+   "name": "DMEM 高糖培养基",
+   "category": "细胞培养",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 上层",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "",
+   "reorder_at": 100,
+   "batches": [
+    {
+     "lot": "B76346",
+     "opened": null,
+     "qty": 500,
+     "left": 500,
+     "expires": "2027-02-17"
+    },
+    {
+     "lot": "G50057",
+     "opened": "2026-10-02T10:00",
+     "qty": 500,
+     "left": 450,
+     "expires": "2026-12-09"
+    }
+   ],
+   "in_stock": 950
+  },
+  {
+   "id": "R015",
+   "name": "胰蛋白酶 0.25%",
+   "category": "细胞培养",
+   "unit": "mL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 20,
+   "batches": [
+    {
+     "lot": "F51944",
+     "opened": "2026-05-16T10:00",
+     "qty": 100,
+     "left": 50,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 50
+  },
+  {
+   "id": "R016",
+   "name": "青霉素-链霉素 100×",
+   "category": "细胞培养",
+   "unit": "mL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "",
+   "reorder_at": 20,
+   "batches": [
+    {
+     "lot": "D39231",
+     "opened": "2026-11-01T10:00",
+     "qty": 100,
+     "left": 70,
+     "expires": "2028-10-19"
+    }
+   ],
+   "in_stock": 70
+  },
+  {
+   "id": "R017",
+   "name": "Taq DNA 聚合酶",
+   "category": "分子生物学",
+   "unit": "U",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "阿拉丁",
+   "cas": "",
+   "reorder_at": 116,
+   "batches": [
+    {
+     "lot": "A98192",
+     "opened": null,
+     "qty": 594,
+     "left": 594,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "N63291",
+     "opened": "2026-07-02T10:00",
+     "qty": 573,
+     "left": 85,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 679
+  },
+  {
+   "id": "R018",
+   "name": "dNTP 混合液",
+   "category": "分子生物学",
+   "unit": "μL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "碧云天",
+   "cas": "",
+   "reorder_at": 61,
+   "batches": [
+    {
+     "lot": "K73678",
+     "opened": null,
+     "qty": 335,
+     "left": 335,
+     "expires": "2027-02-17"
+    },
+    {
+     "lot": "B92718",
+     "opened": null,
+     "qty": 340,
+     "left": 340,
+     "expires": "2027-06-07"
+    },
+    {
+     "lot": "F72659",
+     "opened": "2026-11-13T10:00",
+     "qty": 244,
+     "left": 219,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 894
+  },
+  {
+   "id": "R019",
+   "name": "琼脂糖",
+   "category": "分子生物学",
+   "unit": "g",
+   "place": "试剂柜 2（常温）",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "",
+   "reorder_at": 21,
+   "batches": [
+    {
+     "lot": "K20009",
+     "opened": null,
+     "qty": 64,
+     "left": 64,
+     "expires": "2027-06-07"
+    },
+    {
+     "lot": "G78482",
+     "opened": null,
+     "qty": 156,
+     "left": 156,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "D42551",
+     "opened": null,
+     "qty": 95,
+     "left": 95,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 315
+  },
+  {
+   "id": "R020",
+   "name": "核酸染料（替代 EB）",
+   "category": "分子生物学",
+   "unit": "μL",
+   "place": "4℃ 冰箱 A 上层",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 100,
+   "batches": [
+    {
+     "lot": "N57066",
+     "opened": null,
+     "qty": 500,
+     "left": 500,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "D45562",
+     "opened": "2026-06-27T10:00",
+     "qty": 500,
+     "left": 10,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 510
+  },
+  {
+   "id": "R021",
+   "name": "DNA Marker 2000",
+   "category": "分子生物学",
+   "unit": "μL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "",
+   "reorder_at": 99,
+   "batches": [
+    {
+     "lot": "H13652",
+     "opened": "2026-05-24T10:00",
+     "qty": 495,
+     "left": 346,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 346
+  },
+  {
+   "id": "R022",
+   "name": "逆转录试剂盒",
+   "category": "分子生物学",
+   "unit": "次",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "Sigma",
+   "cas": "",
+   "reorder_at": 15,
+   "batches": [
+    {
+     "lot": "H93077",
+     "opened": null,
+     "qty": 74,
+     "left": 74,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "F35508",
+     "opened": "2026-07-08T10:00",
+     "qty": 81,
+     "left": 12,
+     "expires": "2026-10-30"
+    }
+   ],
+   "in_stock": 86
+  },
+  {
+   "id": "R023",
+   "name": "质粒小提试剂盒",
+   "category": "分子生物学",
+   "unit": "次",
+   "place": "试剂柜 2（常温）",
+   "hazard": "",
+   "supplier": "Thermo",
+   "cas": "",
+   "reorder_at": 25,
+   "batches": [
+    {
+     "lot": "F62837",
+     "opened": null,
+     "qty": 151,
+     "left": 151,
+     "expires": "2027-06-07"
+    },
+    {
+     "lot": "F91480",
+     "opened": null,
+     "qty": 172,
+     "left": 172,
+     "expires": "2027-02-17"
+    },
+    {
+     "lot": "B73781",
+     "opened": "2026-08-04T10:00",
+     "qty": 60,
+     "left": 4,
+     "expires": "2026-12-09"
+    }
+   ],
+   "in_stock": 327
+  },
+  {
+   "id": "R024",
+   "name": "BCA 蛋白定量试剂盒",
+   "category": "蛋白",
+   "unit": "次",
+   "place": "4℃ 冰箱 A 下层",
+   "hazard": "",
+   "supplier": "Sigma",
+   "cas": "5108-73-8",
+   "reorder_at": 47,
+   "batches": [
+    {
+     "lot": "N91258",
+     "opened": null,
+     "qty": 118,
+     "left": 118,
+     "expires": "2026-10-30"
+    },
+    {
+     "lot": "A97922",
+     "opened": "2026-06-28T10:00",
+     "qty": 354,
+     "left": 318,
+     "expires": "2027-02-17"
+    }
+   ],
+   "in_stock": 436
+  },
+  {
+   "id": "R025",
+   "name": "RIPA 裂解液",
+   "category": "蛋白",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 下层",
+   "hazard": "",
+   "supplier": "Sigma",
+   "cas": "9851-80-4",
+   "reorder_at": 20,
+   "batches": [
+    {
+     "lot": "C19067",
+     "opened": "2026-10-03T10:00",
+     "qty": 100,
+     "left": 8,
+     "expires": "2027-01-03"
+    }
+   ],
+   "in_stock": 8
+  },
+  {
+   "id": "R026",
+   "name": "蛋白酶抑制剂",
+   "category": "蛋白",
+   "unit": "片",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "9249-52-2",
+   "reorder_at": 4,
+   "batches": [
+    {
+     "lot": "E33243",
+     "opened": null,
+     "qty": 20,
+     "left": 20,
+     "expires": "2026-12-09"
+    },
+    {
+     "lot": "N29971",
+     "opened": "2026-08-02T10:00",
+     "qty": 20,
+     "left": 6,
+     "expires": "2026-10-30"
+    }
+   ],
+   "in_stock": 26
+  },
+  {
+   "id": "R027",
+   "name": "SDS",
+   "category": "蛋白",
+   "unit": "g",
+   "place": "试剂柜 2（常温）",
+   "hazard": "有害",
+   "supplier": "Sigma",
+   "cas": "7604-28-6",
+   "reorder_at": 93,
+   "batches": [
+    {
+     "lot": "M53282",
+     "opened": "2026-07-02T10:00",
+     "qty": 466,
+     "left": 419,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 419
+  },
+  {
+   "id": "R028",
+   "name": "丙烯酰胺溶液 30%",
+   "category": "蛋白",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 下层",
+   "hazard": "有毒",
+   "supplier": "耗材供应商甲",
+   "cas": "9837-94-7",
+   "reorder_at": 100,
+   "batches": [
+    {
+     "lot": "C19288",
+     "opened": "2026-05-20T10:00",
+     "qty": 500,
+     "left": 10,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 10
+  },
+  {
+   "id": "R029",
+   "name": "TEMED",
+   "category": "蛋白",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 下层",
+   "hazard": "易燃 腐蚀",
+   "supplier": "耗材供应商甲",
+   "cas": "9146-82-3",
+   "reorder_at": 6,
+   "batches": [
+    {
+     "lot": "N49232",
+     "opened": "2026-09-02T10:00",
+     "qty": 33,
+     "left": 4,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 4
+  },
+  {
+   "id": "R030",
+   "name": "过硫酸铵",
+   "category": "蛋白",
+   "unit": "g",
+   "place": "试剂柜 2（常温）",
+   "hazard": "氧化",
+   "supplier": "Thermo",
+   "cas": "1367-45-8",
+   "reorder_at": 10,
+   "batches": [
+    {
+     "lot": "C20507",
+     "opened": null,
+     "qty": 38,
+     "left": 38,
+     "expires": "2028-10-19"
+    },
+    {
+     "lot": "A10407",
+     "opened": null,
+     "qty": 58,
+     "left": 58,
+     "expires": "2027-02-17"
+    },
+    {
+     "lot": "F64515",
+     "opened": null,
+     "qty": 63,
+     "left": 63,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 159
+  },
+  {
+   "id": "R031",
+   "name": "脱脂奶粉",
+   "category": "蛋白",
+   "unit": "g",
+   "place": "试剂柜 2（常温）",
+   "hazard": "",
+   "supplier": "生工",
+   "cas": "4248-82-7",
+   "reorder_at": 69,
+   "batches": [
+    {
+     "lot": "C75851",
+     "opened": "2026-05-06T10:00",
+     "qty": 349,
+     "left": 52,
+     "expires": "2028-10-19"
+    }
+   ],
+   "in_stock": 52
+  },
+  {
+   "id": "R032",
+   "name": "ECL 发光液",
+   "category": "蛋白",
+   "unit": "mL",
+   "place": "4℃ 冰箱 A 上层",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "9618-10-5",
+   "reorder_at": 28,
+   "batches": [
+    {
+     "lot": "H92693",
+     "opened": "2026-09-14T10:00",
+     "qty": 142,
+     "left": 21,
+     "expires": "2027-01-03"
+    }
+   ],
+   "in_stock": 21
+  },
+  {
+   "id": "R033",
+   "name": "一抗 β-actin",
+   "category": "抗体",
+   "unit": "μL",
+   "place": "-80℃ 冰箱 第 2 架",
+   "hazard": "",
+   "supplier": "生工",
+   "cas": "",
+   "reorder_at": 26,
+   "batches": [
+    {
+     "lot": "L92888",
+     "opened": "2026-10-26T10:00",
+     "qty": 131,
+     "left": 117,
+     "expires": "2027-06-07"
+    }
+   ],
+   "in_stock": 117
+  },
+  {
+   "id": "R034",
+   "name": "二抗 羊抗兔 HRP",
+   "category": "抗体",
+   "unit": "μL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "Thermo",
+   "cas": "",
+   "reorder_at": 30,
+   "batches": [
+    {
+     "lot": "K78534",
+     "opened": null,
+     "qty": 150,
+     "left": 150,
+     "expires": "2027-12-24"
+    },
+    {
+     "lot": "H81767",
+     "opened": null,
+     "qty": 194,
+     "left": 194,
+     "expires": "2026-11-27"
+    },
+    {
+     "lot": "F76570",
+     "opened": "2026-06-25T10:00",
+     "qty": 111,
+     "left": 99,
+     "expires": "2027-12-24"
+    }
+   ],
+   "in_stock": 443
+  },
+  {
+   "id": "R035",
+   "name": "二抗 羊抗鼠 HRP",
+   "category": "抗体",
+   "unit": "μL",
+   "place": "-20℃ 冰箱 B",
+   "hazard": "",
+   "supplier": "麦克林",
+   "cas": "",
+   "reorder_at": 34,
+   "batches": [
+    {
+     "lot": "L42054",
+     "opened": "2026-05-09T10:00",
+     "qty": 171,
+     "left": 3,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 3
+  },
+  {
+   "id": "R036",
+   "name": "DAPI 染液",
+   "category": "抗体",
+   "unit": "μL",
+   "place": "4℃ 冰箱 A 上层",
+   "hazard": "有害",
+   "supplier": "阿拉丁",
+   "cas": "",
+   "reorder_at": 177,
+   "batches": [
+    {
+     "lot": "E31032",
+     "opened": null,
+     "qty": 837,
+     "left": 837,
+     "expires": "2027-12-24"
+    },
+    {
+     "lot": "G86994",
+     "opened": "2026-05-06T10:00",
+     "qty": 940,
+     "left": 470,
+     "expires": "2026-11-27"
+    }
+   ],
+   "in_stock": 1307
+  },
+  {
+   "id": "R037",
+   "name": "1.5 mL 离心管",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "碧云天",
+   "cas": "",
+   "reorder_at": 301,
+   "batches": [
+    {
+     "lot": "H83796",
+     "opened": "2026-09-20T10:00",
+     "qty": 1509,
+     "left": 226,
+     "expires": null
+    }
+   ],
+   "in_stock": 226
+  },
+  {
+   "id": "R038",
+   "name": "PCR 八连管",
+   "category": "耗材",
+   "unit": "条",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "碧云天",
+   "cas": "",
+   "reorder_at": 72,
+   "batches": [
+    {
+     "lot": "A91709",
+     "opened": null,
+     "qty": 360,
+     "left": 360,
+     "expires": null
+    }
+   ],
+   "in_stock": 360
+  },
+  {
+   "id": "R039",
+   "name": "10 μL 枪头（盒装）",
+   "category": "耗材",
+   "unit": "盒",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "生工",
+   "cas": "",
+   "reorder_at": 2,
+   "batches": [
+    {
+     "lot": "K53239",
+     "opened": "2026-05-11T10:00",
+     "qty": 11,
+     "left": 0,
+     "expires": null
+    }
+   ],
+   "in_stock": 0
+  },
+  {
+   "id": "R040",
+   "name": "200 μL 枪头（盒装）",
+   "category": "耗材",
+   "unit": "盒",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "Thermo",
+   "cas": "",
+   "reorder_at": 6,
+   "batches": [
+    {
+     "lot": "G22907",
+     "opened": "2026-05-03T10:00",
+     "qty": 31,
+     "left": 27,
+     "expires": null
+    }
+   ],
+   "in_stock": 27
+  },
+  {
+   "id": "R041",
+   "name": "1 mL 枪头（盒装）",
+   "category": "耗材",
+   "unit": "盒",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 2,
+   "batches": [
+    {
+     "lot": "K14306",
+     "opened": "2026-07-17T10:00",
+     "qty": 11,
+     "left": 5,
+     "expires": null
+    }
+   ],
+   "in_stock": 5
+  },
+  {
+   "id": "R042",
+   "name": "15 mL 离心管",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 84,
+   "batches": [
+    {
+     "lot": "N79969",
+     "opened": "2026-07-02T10:00",
+     "qty": 424,
+     "left": 33,
+     "expires": null
+    }
+   ],
+   "in_stock": 33
+  },
+  {
+   "id": "R043",
+   "name": "50 mL 离心管",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "",
+   "reorder_at": 59,
+   "batches": [
+    {
+     "lot": "E97913",
+     "opened": "2026-05-12T10:00",
+     "qty": 295,
+     "left": 206,
+     "expires": null
+    }
+   ],
+   "in_stock": 206
+  },
+  {
+   "id": "R044",
+   "name": "细胞培养皿 10 cm",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "",
+   "reorder_at": 23,
+   "batches": [
+    {
+     "lot": "N78486",
+     "opened": "2026-10-12T10:00",
+     "qty": 115,
+     "left": 34,
+     "expires": null
+    }
+   ],
+   "in_stock": 34
+  },
+  {
+   "id": "R045",
+   "name": "六孔板",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 8,
+   "batches": [
+    {
+     "lot": "K26591",
+     "opened": "2026-05-23T10:00",
+     "qty": 40,
+     "left": 36,
+     "expires": null
+    }
+   ],
+   "in_stock": 36
+  },
+  {
+   "id": "R046",
+   "name": "0.22 μm 滤器",
+   "category": "耗材",
+   "unit": "个",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "耗材供应商甲",
+   "cas": "",
+   "reorder_at": 18,
+   "batches": [
+    {
+     "lot": "D97901",
+     "opened": "2026-10-09T10:00",
+     "qty": 93,
+     "left": 1,
+     "expires": null
+    }
+   ],
+   "in_stock": 1
+  },
+  {
+   "id": "R047",
+   "name": "丁腈手套 M",
+   "category": "耗材",
+   "unit": "盒",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "碧云天",
+   "cas": "",
+   "reorder_at": 3,
+   "batches": [
+    {
+     "lot": "N62176",
+     "opened": null,
+     "qty": 15,
+     "left": 15,
+     "expires": null
+    }
+   ],
+   "in_stock": 15
+  },
+  {
+   "id": "R048",
+   "name": "丁腈手套 S",
+   "category": "耗材",
+   "unit": "盒",
+   "place": "耗材架 右",
+   "hazard": "",
+   "supplier": "Thermo",
+   "cas": "",
+   "reorder_at": 2,
+   "batches": [
+    {
+     "lot": "N70591",
+     "opened": "2026-11-06T10:00",
+     "qty": 11,
+     "left": 5,
+     "expires": null
+    }
+   ],
+   "in_stock": 5
+  },
+  {
+   "id": "R049",
+   "name": "称量纸",
+   "category": "耗材",
+   "unit": "包",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "Thermo",
+   "cas": "",
+   "reorder_at": 1,
+   "batches": [
+    {
+     "lot": "N78534",
+     "opened": "2026-11-12T10:00",
+     "qty": 6,
+     "left": 4,
+     "expires": null
+    }
+   ],
+   "in_stock": 4
+  },
+  {
+   "id": "R050",
+   "name": "封口膜",
+   "category": "耗材",
+   "unit": "卷",
+   "place": "耗材架 左",
+   "hazard": "",
+   "supplier": "国药",
+   "cas": "",
+   "reorder_at": 1,
+   "batches": [
+    {
+     "lot": "C31544",
+     "opened": "2026-08-14T10:00",
+     "qty": 4,
+     "left": 2,
+     "expires": null
+    }
+   ],
+   "in_stock": 2
+  }
+ ],
+ "usage": [
+  {
+   "reagent": "R008",
+   "who": "吴浩宇",
+   "amount": 36,
+   "at": "2026-11-19T03:47",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R022",
+   "who": "陈思远",
+   "amount": 6,
+   "at": "2026-11-19T01:56",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R031",
+   "who": "赵子墨",
+   "amount": 29,
+   "at": "2026-11-19T00:12",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R009",
+   "who": "陈思远",
+   "amount": 30,
+   "at": "2026-11-18T06:58",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R036",
+   "who": "孙佳怡",
+   "amount": 42,
+   "at": "2026-11-18T03:00",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R030",
+   "who": "孙佳怡",
+   "amount": 1,
+   "at": "2026-11-17T01:59",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R039",
+   "who": "郑可馨",
+   "amount": 1,
+   "at": "2026-11-17T01:28",
+   "purpose": ""
+  },
+  {
+   "reagent": "R009",
+   "who": "郑可馨",
+   "amount": 37,
+   "at": "2026-11-17T01:14",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R038",
+   "who": "陈思远",
+   "amount": 28,
+   "at": "2026-11-16T07:46",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R008",
+   "who": "吴浩宇",
+   "amount": 47,
+   "at": "2026-11-16T03:20",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R019",
+   "who": "林晨曦",
+   "amount": 3,
+   "at": "2026-11-16T00:47",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R013",
+   "who": "林晨曦",
+   "amount": 29,
+   "at": "2026-11-15T05:43",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R035",
+   "who": "吴浩宇",
+   "amount": 20,
+   "at": "2026-11-15T00:20",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R031",
+   "who": "陈思远",
+   "amount": 37,
+   "at": "2026-11-14T05:58",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R033",
+   "who": "林晨曦",
+   "amount": 7,
+   "at": "2026-11-14T05:08",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R034",
+   "who": "郑可馨",
+   "amount": 17,
+   "at": "2026-11-14T01:48",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R023",
+   "who": "何雨桐",
+   "amount": 12,
+   "at": "2026-11-14T00:21",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R011",
+   "who": "林晨曦",
+   "amount": 5,
+   "at": "2026-11-13T08:01",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R010",
+   "who": "何雨桐",
+   "amount": 69,
+   "at": "2026-11-13T07:55",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R012",
+   "who": "陈思远",
+   "amount": 17,
+   "at": "2026-11-13T05:16",
+   "purpose": ""
+  },
+  {
+   "reagent": "R019",
+   "who": "何雨桐",
+   "amount": 4,
+   "at": "2026-11-12T06:22",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R036",
+   "who": "吴浩宇",
+   "amount": 62,
+   "at": "2026-11-12T05:10",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R004",
+   "who": "孙佳怡",
+   "amount": 212,
+   "at": "2026-11-12T00:43",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R047",
+   "who": "林晨曦",
+   "amount": 1,
+   "at": "2026-11-12T00:39",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R047",
+   "who": "赵子墨",
+   "amount": 1,
+   "at": "2026-11-11T07:03",
+   "purpose": ""
+  },
+  {
+   "reagent": "R039",
+   "who": "赵子墨",
+   "amount": 1,
+   "at": "2026-11-11T07:01",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R025",
+   "who": "林晨曦",
+   "amount": 3,
+   "at": "2026-11-11T04:39",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R024",
+   "who": "陈思远",
+   "amount": 35,
+   "at": "2026-11-11T04:22",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R013",
+   "who": "何雨桐",
+   "amount": 13,
+   "at": "2026-11-11T04:16",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R031",
+   "who": "何雨桐",
+   "amount": 25,
+   "at": "2026-11-11T02:21",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R029",
+   "who": "郑可馨",
+   "amount": 4,
+   "at": "2026-11-11T01:18",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R016",
+   "who": "何雨桐",
+   "amount": 10,
+   "at": "2026-11-10T08:41",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R006",
+   "who": "陈思远",
+   "amount": 138,
+   "at": "2026-11-10T03:54",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R008",
+   "who": "陈思远",
+   "amount": 19,
+   "at": "2026-11-10T02:22",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R024",
+   "who": "赵子墨",
+   "amount": 28,
+   "at": "2026-11-09T09:52",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R036",
+   "who": "何雨桐",
+   "amount": 75,
+   "at": "2026-11-09T06:43",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R005",
+   "who": "郑可馨",
+   "amount": 41,
+   "at": "2026-11-09T04:37",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R012",
+   "who": "郑可馨",
+   "amount": 16,
+   "at": "2026-11-09T04:12",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R027",
+   "who": "吴浩宇",
+   "amount": 36,
+   "at": "2026-11-09T03:03",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R050",
+   "who": "陈思远",
+   "amount": 1,
+   "at": "2026-11-09T02:26",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R020",
+   "who": "吴浩宇",
+   "amount": 43,
+   "at": "2026-11-09T02:01",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R022",
+   "who": "林晨曦",
+   "amount": 9,
+   "at": "2026-11-09T00:08",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R044",
+   "who": "孙佳怡",
+   "amount": 6,
+   "at": "2026-11-08T00:23",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R016",
+   "who": "郑可馨",
+   "amount": 2,
+   "at": "2026-11-07T09:54",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R017",
+   "who": "郑可馨",
+   "amount": 73,
+   "at": "2026-11-07T06:37",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R012",
+   "who": "赵子墨",
+   "amount": 17,
+   "at": "2026-11-07T05:53",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R034",
+   "who": "何雨桐",
+   "amount": 23,
+   "at": "2026-11-06T03:42",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R036",
+   "who": "赵子墨",
+   "amount": 94,
+   "at": "2026-11-06T03:26",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R031",
+   "who": "林晨曦",
+   "amount": 34,
+   "at": "2026-11-06T01:14",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R038",
+   "who": "郑可馨",
+   "amount": 46,
+   "at": "2026-11-05T08:50",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R005",
+   "who": "陈思远",
+   "amount": 46,
+   "at": "2026-11-05T05:19",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R023",
+   "who": "何雨桐",
+   "amount": 19,
+   "at": "2026-11-05T03:15",
+   "purpose": ""
+  },
+  {
+   "reagent": "R029",
+   "who": "何雨桐",
+   "amount": 1,
+   "at": "2026-11-05T00:57",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R017",
+   "who": "郑可馨",
+   "amount": 44,
+   "at": "2026-11-05T00:38",
+   "purpose": ""
+  },
+  {
+   "reagent": "R028",
+   "who": "陈思远",
+   "amount": 66,
+   "at": "2026-11-05T00:20",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R022",
+   "who": "何雨桐",
+   "amount": 3,
+   "at": "2026-11-04T00:59",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R004",
+   "who": "孙佳怡",
+   "amount": 78,
+   "at": "2026-11-03T09:33",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R026",
+   "who": "吴浩宇",
+   "amount": 1,
+   "at": "2026-11-03T09:02",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R024",
+   "who": "陈思远",
+   "amount": 21,
+   "at": "2026-11-03T08:56",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R039",
+   "who": "赵子墨",
+   "amount": 1,
+   "at": "2026-11-03T06:52",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R035",
+   "who": "林晨曦",
+   "amount": 26,
+   "at": "2026-11-03T04:00",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R027",
+   "who": "林晨曦",
+   "amount": 43,
+   "at": "2026-11-03T03:50",
+   "purpose": ""
+  },
+  {
+   "reagent": "R011",
+   "who": "林晨曦",
+   "amount": 3,
+   "at": "2026-11-03T01:43",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R003",
+   "who": "孙佳怡",
+   "amount": 375,
+   "at": "2026-11-02T07:51",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R027",
+   "who": "林晨曦",
+   "amount": 41,
+   "at": "2026-11-02T06:01",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R003",
+   "who": "郑可馨",
+   "amount": 199,
+   "at": "2026-11-02T04:16",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R033",
+   "who": "赵子墨",
+   "amount": 5,
+   "at": "2026-11-02T03:14",
+   "purpose": ""
+  },
+  {
+   "reagent": "R017",
+   "who": "郑可馨",
+   "amount": 34,
+   "at": "2026-11-02T00:21",
+   "purpose": ""
+  },
+  {
+   "reagent": "R021",
+   "who": "孙佳怡",
+   "amount": 35,
+   "at": "2026-11-01T09:33",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R013",
+   "who": "何雨桐",
+   "amount": 28,
+   "at": "2026-11-01T09:07",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R016",
+   "who": "郑可馨",
+   "amount": 9,
+   "at": "2026-11-01T07:04",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R050",
+   "who": "孙佳怡",
+   "amount": 1,
+   "at": "2026-11-01T04:29",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R016",
+   "who": "赵子墨",
+   "amount": 15,
+   "at": "2026-11-01T03:20",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R018",
+   "who": "林晨曦",
+   "amount": 12,
+   "at": "2026-10-31T02:21",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R026",
+   "who": "赵子墨",
+   "amount": 2,
+   "at": "2026-10-30T07:16",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R044",
+   "who": "陈思远",
+   "amount": 15,
+   "at": "2026-10-30T06:04",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R012",
+   "who": "何雨桐",
+   "amount": 11,
+   "at": "2026-10-30T03:30",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R046",
+   "who": "吴浩宇",
+   "amount": 10,
+   "at": "2026-10-30T01:37",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R038",
+   "who": "孙佳怡",
+   "amount": 20,
+   "at": "2026-10-29T06:20",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R028",
+   "who": "吴浩宇",
+   "amount": 49,
+   "at": "2026-10-29T04:49",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R048",
+   "who": "陈思远",
+   "amount": 1,
+   "at": "2026-10-29T01:00",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R014",
+   "who": "陈思远",
+   "amount": 70,
+   "at": "2026-10-28T08:57",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R009",
+   "who": "林晨曦",
+   "amount": 16,
+   "at": "2026-10-28T07:24",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R043",
+   "who": "赵子墨",
+   "amount": 7,
+   "at": "2026-10-28T06:06",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R020",
+   "who": "吴浩宇",
+   "amount": 63,
+   "at": "2026-10-28T04:22",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R003",
+   "who": "郑可馨",
+   "amount": 213,
+   "at": "2026-10-28T01:37",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R001",
+   "who": "孙佳怡",
+   "amount": 230,
+   "at": "2026-10-28T00:31",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R013",
+   "who": "吴浩宇",
+   "amount": 35,
+   "at": "2026-10-27T08:23",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R017",
+   "who": "郑可馨",
+   "amount": 88,
+   "at": "2026-10-27T05:33",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R018",
+   "who": "陈思远",
+   "amount": 41,
+   "at": "2026-10-27T02:12",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R029",
+   "who": "孙佳怡",
+   "amount": 2,
+   "at": "2026-10-27T01:36",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R027",
+   "who": "孙佳怡",
+   "amount": 34,
+   "at": "2026-10-27T01:27",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R012",
+   "who": "陈思远",
+   "amount": 6,
+   "at": "2026-10-27T01:11",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R030",
+   "who": "林晨曦",
+   "amount": 1,
+   "at": "2026-10-27T00:14",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R034",
+   "who": "陈思远",
+   "amount": 3,
+   "at": "2026-10-26T06:11",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R046",
+   "who": "陈思远",
+   "amount": 8,
+   "at": "2026-10-26T05:02",
+   "purpose": ""
+  },
+  {
+   "reagent": "R015",
+   "who": "林晨曦",
+   "amount": 12,
+   "at": "2026-10-25T09:15",
+   "purpose": ""
+  },
+  {
+   "reagent": "R050",
+   "who": "赵子墨",
+   "amount": 1,
+   "at": "2026-10-25T08:43",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R048",
+   "who": "郑可馨",
+   "amount": 1,
+   "at": "2026-10-25T07:47",
+   "purpose": ""
+  },
+  {
+   "reagent": "R038",
+   "who": "陈思远",
+   "amount": 51,
+   "at": "2026-10-25T07:37",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R047",
+   "who": "孙佳怡",
+   "amount": 2,
+   "at": "2026-10-25T05:34",
+   "purpose": "PCR"
+  },
+  {
+   "reagent": "R001",
+   "who": "陈思远",
+   "amount": 72,
+   "at": "2026-10-25T04:22",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R008",
+   "who": "郑可馨",
+   "amount": 46,
+   "at": "2026-10-24T09:43",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R005",
+   "who": "孙佳怡",
+   "amount": 21,
+   "at": "2026-10-24T00:55",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R034",
+   "who": "陈思远",
+   "amount": 23,
+   "at": "2026-10-23T06:06",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R004",
+   "who": "吴浩宇",
+   "amount": 53,
+   "at": "2026-10-23T03:13",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R015",
+   "who": "赵子墨",
+   "amount": 9,
+   "at": "2026-10-22T09:57",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R033",
+   "who": "陈思远",
+   "amount": 3,
+   "at": "2026-10-22T07:20",
+   "purpose": ""
+  },
+  {
+   "reagent": "R022",
+   "who": "何雨桐",
+   "amount": 4,
+   "at": "2026-10-22T04:39",
+   "purpose": "预实验"
+  },
+  {
+   "reagent": "R031",
+   "who": "陈思远",
+   "amount": 50,
+   "at": "2026-10-22T02:29",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R033",
+   "who": "陈思远",
+   "amount": 11,
+   "at": "2026-10-22T00:09",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R049",
+   "who": "何雨桐",
+   "amount": 1,
+   "at": "2026-10-21T05:32",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R049",
+   "who": "林晨曦",
+   "amount": 1,
+   "at": "2026-10-21T05:16",
+   "purpose": "细胞传代"
+  },
+  {
+   "reagent": "R028",
+   "who": "赵子墨",
+   "amount": 61,
+   "at": "2026-10-21T04:46",
+   "purpose": ""
+  },
+  {
+   "reagent": "R030",
+   "who": "何雨桐",
+   "amount": 1,
+   "at": "2026-10-21T02:31",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R030",
+   "who": "何雨桐",
+   "amount": 5,
+   "at": "2026-10-21T02:05",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R024",
+   "who": "吴浩宇",
+   "amount": 14,
+   "at": "2026-10-21T01:53",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R009",
+   "who": "吴浩宇",
+   "amount": 8,
+   "at": "2026-10-20T07:27",
+   "purpose": "清洗"
+  },
+  {
+   "reagent": "R011",
+   "who": "赵子墨",
+   "amount": 5,
+   "at": "2026-10-20T07:01",
+   "purpose": "课题 A"
+  },
+  {
+   "reagent": "R024",
+   "who": "赵子墨",
+   "amount": 13,
+   "at": "2026-10-20T06:39",
+   "purpose": "课题 B"
+  },
+  {
+   "reagent": "R047",
+   "who": "林晨曦",
+   "amount": 1,
+   "at": "2026-10-20T02:20",
+   "purpose": "Western"
+  },
+  {
+   "reagent": "R018",
+   "who": "陈思远",
+   "amount": 26,
+   "at": "2026-10-20T01:27",
+   "purpose": "配缓冲液"
+  },
+  {
+   "reagent": "R009",
+   "who": "陈思远",
+   "amount": 8,
+   "at": "2026-10-20T01:14",
+   "purpose": "清洗"
+  }
+ ],
+ "requests": [
+  {
+   "id": "Q01",
+   "reagent": "R013",
+   "by": "林晨曦",
+   "at": "2026-11-17T10:00",
+   "qty": "500 mL × 2",
+   "status": "待采购",
+   "note": "下周要扩增细胞"
+  },
+  {
+   "id": "Q02",
+   "reagent": "R039",
+   "by": "赵子墨",
+   "at": "2026-11-14T10:00",
+   "qty": "20 盒",
+   "status": "已下单",
+   "note": ""
+  },
+  {
+   "id": "Q03",
+   "reagent": "R033",
+   "by": "陈思远",
+   "at": "2026-11-18T10:00",
+   "qty": "200 μL",
+   "status": "待采购",
+   "note": "旧批次过期了"
+  },
+  {
+   "id": "Q04",
+   "reagent": "R047",
+   "by": "孙佳怡",
+   "at": "2026-11-10T10:00",
+   "qty": "10 盒",
+   "status": "已到货",
+   "note": ""
+  },
+  {
+   "id": "Q05",
+   "reagent": "R002",
+   "by": "何雨桐",
+   "at": "2026-11-18T14:00",
+   "qty": "4 L",
+   "status": "待采购",
+   "note": "HPLC 流动相"
+  },
+  {
+   "id": "Q06",
+   "reagent": "R022",
+   "by": "吴浩宇",
+   "at": "2026-11-16T10:00",
+   "qty": "2 盒",
+   "status": "已下单",
+   "note": ""
+  }
+ ]
+}

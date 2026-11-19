@@ -1,0 +1,30 @@
+<!doctype html>
+<!--
+类别与参考：答辩安排、详情、我的答辩是成员系统，从 system 样例的 navy 方向起步；秘书台采用 workbench 的队列密度与共享表头，不用宣传横幅。
+身份与颜色：书页/学位帽线描标志、深蓝导航选中态和主操作建立学院事务系统身份；琥珀色只给待核验，红色只给超线，绿色给达标。日历与五个席位为真实排期示意。
+内容决定版式：因为六场分布在五天，所以按日期分组而不是铺满月历；因为每场最多五人，所以五个席位和编号姓名始终同时可见；因为已有排场全部有未齐条件，所以保留安排并标注“待核验”，不假装已批准；因为手机学生最关心时间与材料，所以个人安排先给日期、顺位、约时，再给逐项材料动作；因为秘书需比较28人三类门槛，所以使用共享表头、问题明细和批量选择，排场目标与剩余席位紧邻。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>答辩安排 · 研究生答辩服务</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+<aside class="side">
+<a class="brand" href="#schedule"><span class="brand-mark"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m3 10 13-6 13 6-13 6-13-6Zm5 3v9c5 4 11 4 16 0v-9M29 10v12M5 27h22"/></svg></span><span>研答<span class="brand-sub">研究生答辩服务</span></span></a>
+<div class="term">2026 · 秋季答辩</div>
+<nav class="nav" aria-label="主导航">
+<a href="#schedule" data-nav="schedule"><span data-icon="calendar"></span>答辩安排</a>
+<a href="#mine" data-nav="mine"><span data-icon="user"></span>我的答辩<span class="nav-dot" aria-label="有待办"></span></a>
+<div class="nav-label">事务管理</div>
+<a href="#secretary" data-nav="secretary"><span data-icon="desk"></span>秘书台</a>
+</nav>
+<div class="side-bottom"><div class="local"><i></i>离线工作空间</div><p>修改保存在本机浏览器<br>示例数据 · 不与学院系统同步</p><div class="profile"><span class="avatar" id="avatar">郑</span><span><b id="profile-name">郑子涵</b><small id="profile-role">硕士研究生</small></span></div></div>
+</aside>
+<div class="workspace"><header class="topbar"><span>研究生事务 <span class="slash">/</span> <span id="crumb">答辩安排</span></span><span class="today">2026 年 11 月 19 日 · 周四 <b>15:00</b></span></header><main id="main" tabindex="-1"></main><footer>研究生答辩服务 <span>·</span> 2026 秋季 <span>·</span> 示例数据，时间以秘书最终通知为准</footer></div>
+<dialog id="dialog"></dialog>
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button id="undo" type="button">撤销</button><button id="dismiss" type="button" aria-label="关闭提示">×</button></div>
+<script src="data/defense.js"></script><script src="app.js"></script>
+</body></html>

@@ -1,0 +1,15 @@
+<!doctype html>
+<!--
+设计依据（从 frontend-craft system 样例的侧栏框架起步，重写为实验室系统）：
+1. 库存为成员目录/检索页，详情为精确领用表单，我的为个人记录，采购为老师的处理队列。
+   成员在实验台查物品，不要欢迎横幅；采购默认待处理，避免让已完成记录淹没待办。
+2. 深青侧栏、烧瓶标志与同线宽图标建立身份；青色给主要操作，琥珀给临期/低库存，红给过期/缺货。
+   不使用虚构照片或危险品图标冒充正式 GHS 标识，危险性用明确文字。
+3. 因为有50种物品、10个位置，所以桌面用可比较的表格与位置筛选，手机改成带操作的物品行。
+   因为一物多批且要先用临期，所以详情同时显示批次和自动分配预览，过期批次禁止扣减。
+   因为库存单位不同，所以不相加全库库存量，概览只计物品数/批次数。
+   因为采购包括报缺和自动低库存，所以按物品合并需求，保留申请人与理由，状态与入库分开。
+   因为数量/日期需要精确核对，所以数字用等宽数字，领用和入库在提交前展示单位和结果。
+-->
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>课题组试剂与耗材库</title><link rel="stylesheet" href="styles.css"></head>
+<body><aside class="sidebar"><a class="brand" href="#inventory"><span class="brandmark" id="brandmark"></span><span>试剂与耗材库<small>课题组共享工作空间</small></span></a><div class="navlabel">工作空间</div><nav id="nav"></nav><div class="side-note"><span class="live-dot"></span> 离线工作空间<p>数据保存在当前浏览器<br>无需联网即可查找与登记</p></div><div class="profile"><span class="avatar" id="avatar">何</span><div><strong id="user">何雨桐</strong><small id="role">课题组成员</small></div><span class="profile-dot"></span></div></aside><div class="workspace"><header class="topbar"><div id="breadcrumb">工作空间 <span>/</span> 库存</div><div class="top-right"><span class="local-status">● 本地保存</span><time>2026 年 11 月 19 日 <span>周四</span></time></div></header><main id="main"></main><footer>课题组试剂与耗材库 <span>示例数据 · 基准时间 2026-11-19 10:00</span></footer></div><dialog id="modal"></dialog><div class="toast" id="toast" role="status" hidden></div><script src="data/reagents.js"></script><script src="app.js"></script></body></html>

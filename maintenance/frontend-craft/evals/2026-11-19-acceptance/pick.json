@@ -1,0 +1,3 @@
+{"reagents": {"N": ["01-home", "06-detail", "04-nav-我的领用", "05-nav-采购清单3"], "S10": ["01-home", "06-detail", "04-nav-我的领用", "05-nav-采购清单15"]},
+ "defense": {"N": ["01-home", "06-detail", "04-nav-▤我的答辩", "05-nav-▣秘书台"], "S10": ["01-home", "07-detail", "04-nav-我的答辩", "05-nav-秘书台"]},
+ "translate": {"N": ["01-home", "10-detail", "04-nav-☷我的任务4", "05-nav-Aa术语表"], "S10": ["01-home", "10-detail", "04-nav-☑我的任务4", "05-nav-文术语表"]}}
