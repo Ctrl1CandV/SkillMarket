@@ -170,7 +170,26 @@ function pageLevel() {
   for (const sheet of document.styleSheets) { try { walk(sheet.cssRules); } catch { /* another site's stylesheet: not the author's to fix */ } }
   for (const el of document.querySelectorAll('[style*="font-size"]')) if (/px$/.test(el.style.fontSize)) px.push(el.tagName.toLowerCase() + '[style]');
   const meta = document.querySelector('meta[name="color-scheme"]');
-  return { px_font_rules: px.length, px_font_examples: px.slice(0, 8), color_scheme: getComputedStyle(document.documentElement).colorScheme, color_scheme_meta: meta ? meta.content : null };
+  // In a Chinese page: short all-caps English labels set as decoration (CAMPUS LIFE, INSTRUMENT / 01). They tell a Chinese reader nothing.
+  // Content in English stays quiet: titles in normal case, model numbers and venues (SU8010, ICML 2025), code, anything marked lang="en".
+  const all = document.body.innerText || '', cjk = (all.match(/[\u4e00-\u9fff]/g) || []).length;
+  const eyebrows = [];
+  if (/^zh/i.test(document.documentElement.lang) || cjk > all.length * 0.2) {
+    const seen = new Set(), tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n; (n = tw.nextNode());) {
+      const el = n.parentElement, raw = n.textContent.replace(/\s+/g, ' ').trim();
+      // "WORKSPACE / 研究空间": an English label glued to its Chinese translation counts as the English part
+      const glued = raw.match(/^([A-Za-z][A-Za-z .&'-]{3,}?)\s*[/·|]\s*[\u4e00-\u9fff]/), s = glued ? glued[1].trim() : raw;
+      if (!el || !s || s.length > 48 || /[^\x20-\x7e·•—–]/.test(s) || el.closest('code, pre, kbd, samp, script, style, svg, [lang^="en"]')) continue;
+      const r = el.getBoundingClientRect(), cs = getComputedStyle(el); if (r.width < 1 || r.height < 1 || cs.visibility === 'hidden') continue;
+      const caps = cs.textTransform === 'uppercase' ? s.toUpperCase() : s, words = caps.match(/[A-Za-z]{2,}/g) || [];
+      if (caps !== caps.toUpperCase() || !words.some((w) => w.length >= 4)) continue;
+      const spaced = parseFloat(cs.letterSpacing) >= 0.05 * parseFloat(cs.fontSize);
+      if (!(words.length >= 2 || (spaced && words.length >= 1))) continue;
+      if (!seen.has(caps)) { seen.add(caps); eyebrows.push(caps.slice(0, 32)); }
+    }
+  }
+  return { px_font_rules: px.length, px_font_examples: px.slice(0, 8), color_scheme: getComputedStyle(document.documentElement).colorScheme, color_scheme_meta: meta ? meta.content : null, english_eyebrows: eyebrows.slice(0, 12), english_eyebrows_count: eyebrows.length };
 }
 const SPACING = '* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }';
 
@@ -225,6 +244,7 @@ for (const v of report.views) {
 }
 const pl = report.page_level, pageLines = [];
 if (pl.px_font_rules) pageLines.push(`font sizes set in px: ${pl.px_font_rules} rule(s) — ${pl.px_font_examples.slice(0, 3).join('; ')}: use rem so the reader's own font-size setting applies`);
+if (pl.english_eyebrows_count) pageLines.push(`decorative English labels in a Chinese page: ${pl.english_eyebrows_count} — ${pl.english_eyebrows.slice(0, 4).map((s) => `"${s}"`).join(', ')}: they read as a template and tell the reader nothing; write the label in Chinese, drop it, or say why it stays`);
 if (pl.color_scheme === 'normal') pageLines.push('no color-scheme declared: form controls and scrollbars will not follow the page; declare color-scheme (light, or light dark with light-dark() colors) on :root and in a <meta>');
 if (pageLines.length) { console.log('== whole page =='); for (const line of pageLines) console.log('  ! ' + line); kinds += pageLines.length; }
 console.log(`Also look at: ${report.extra_screenshots.join(', ')} (forced colors${report.extra_screenshots.length > 1 ? ', dark' : ''}).`);

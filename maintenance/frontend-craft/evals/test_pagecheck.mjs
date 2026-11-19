@@ -24,6 +24,7 @@ ok(d.low_contrast.some(s => s.text.includes('oklab')), 'low contrast in an oklab
 ok(d.spacing_spill.some(s => s.text.includes('写死高度')), 'fixed-height text spills when text spacing is widened');
 ok(bad.text.includes('font sizes set in px'), 'px font sizes reported');
 ok(bad.text.includes('no color-scheme declared'), 'missing color-scheme reported');
+ok(/decorative English labels in a Chinese page: 3/.test(bad.text) && bad.text.includes('CAMPUS LIFE') && bad.text.includes('INSTRUMENT / 01') && bad.text.includes('WORKSPACE'), 'decorative English labels reported');
 ok(/-forced\.png/.test(bad.text), 'forced-colors screenshot offered');
 ok(/finding\(s\)/.test(bad.text) && /Open them/.test(bad.text), 'summary tells the reader to open the screenshots');
 
