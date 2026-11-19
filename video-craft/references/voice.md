@@ -1,0 +1,106 @@
+# 人声：自然、好听、全片一个声音
+
+## 用哪条路
+
+| 情况 | 用什么 |
+|---|---|
+| MV，已有歌曲录音 | 直接用原唱录音排镜和合片，见 [MV](music-video.md)。想让副歌更有力，改镜头和切点，不动原唱 |
+| 旁白（默认） | 本地 VoxCPM1.5 克隆一张声音卡：`narrate.py --voice teacher`。全片一个人，像人在说话，不联网，显存约 2 GB。盲听时和 5 GB 的 VoxCPM2 几乎听不出区别 |
+| 想要一个用文字描述的新声音 | VoxCPM2（约 5 GB）的声音设计：`--design "…"`。更好的做法是用它做一张新声音卡，以后都用小模型克隆这张卡 |
+| 用户自己的录音 | 每句一个 WAV，交给 [worked-lesson/build_voice.py](../examples/worked-lesson/build_voice.py) 的 `--recordings`，或在 `audio.mjs` 里用 `--vo` |
+| 英文旁白 | 同样用 VoxCPM1.5，但要一张英文声音卡（见下文[英文](#英文旁白)） |
+| 没有显卡或装不上 VoxCPM | `--engine edge`：微软在线声音，会把台词发给微软。比本地模型平，交付时说明。默认中文用 `zh-CN-XiaoxiaoNeural`、英文用 `en-US-AriaNeural`，换人用 `--voice <名字>Neural` |
+| 原创演唱 | 见下文[原创演唱](#原创演唱) |
+
+## 安装 VoxCPM
+
+```text
+pip install voxcpm                      # 先装好与显卡匹配的 PyTorch（CUDA 版）
+pip install faster-whisper              # 可选：--takes 时用转写挑出最好的一条
+```
+
+模型首次使用时从 Hugging Face 自动下载 `openbmb/VoxCPM1.5`。下载慢时可以改从 ModelScope 下载，再用 `VC_VOXCPM` 指向它：
+
+```text
+python -c "from modelscope import snapshot_download; print(snapshot_download('OpenBMB/VoxCPM1.5'))"
+set VC_VOXCPM=<上面打印的目录>            # PowerShell: $env:VC_VOXCPM = '…'
+```
+
+在 Windows 上，faster-whisper 和 PyTorch 不能放在同一个进程里，否则会崩溃。`narrate.py` 已经把转写放到单独的进程里运行。
+
+## 写给耳朵听的台词
+
+- **一条一个完整的意思。** 一两句话，不要半句。模型按一次调用安排整条的语调，半句话会读成句尾。
+- **写成说出来的样子。** “十五分钟”而不是“15 分钟”，“七点一刻”而不是“19:15”，“百分之三十”而不是“30%”。英文名写成希望读出来的样子。
+- **标点就是气口。** 逗号处换气，句号处收住，问句用问号。
+- **短句，口语。** 删掉书面腔。给说话的人一个对象：讲题的老师在对一个学生说，广告在对一个正着急的人说。
+- 屏幕上显示的文字（时间、型号、代码）可以和台词不同，分开写。
+
+## 生成
+
+```text
+python <kit>/narrate.py cues.json vo/ --voice teacher --takes 3
+```
+
+`cues.json` 的格式是 `{"intro": "九枚硬币里，有一枚轻一些。", "limit": "…"}`。每条输出一个 `vo/<id>.wav`。
+
+- `--voice` 可以填 `kit/voices/` 里的 `teacher`（女，温暖从容）、`promo`（年轻男声，明亮）、`story`（中年男声，低沉缓慢），也可以填你自己的 WAV 路径（旁边放同名 `.txt`，写清录音里说的话）。
+- `--takes 3` 每条生成三遍，留下最好的一条：转写和台词一致，中间没有异常长的停顿，长度接近其他几遍。终端会列出每一遍的长度、最长停顿和转写误差。
+- 换模型用 `--model <目录或 id>`，或设 `VC_VOXCPM`。
+
+生成后用 `vo.mjs vo/ vo/vo.js` 量出每条的长度，镜头时间按这些长度来排。不要拉伸人声去凑画面，要改的是画面。
+
+## 做一张新声音卡
+
+1. 用 VoxCPM2 按描述生成同一句话三到五遍：
+
+   ```text
+   python <kit>/narrate.py card.json cards/s1/ --model openbmb/VoxCPM2 --design "一位四十岁的男性纪录片解说，声音沉稳，语速中等" --takes 1 --seed 1
+   ```
+
+   每个 seed 输出到自己的目录（`cards/s2/`、`cards/s3/`……），否则下一次会覆盖上一次。`card.json` 里只放一句 5–10 秒、语气自然的话。
+2. **核对性别、音高和语速。** 声音设计并不总是听话：描述写“年轻男性”，也可能生成女声。逐个听，挑出最合适的一遍。
+3. 把选中的那条 WAV 和写着原句的 `.txt` 放进项目，或放进 `kit/voices/`，以后用 `--voice <路径或名字>` 克隆它。
+
+只用你有权使用的声音。不要克隆真人的声音，除非本人同意。
+
+## 英文旁白
+
+`narrate.py` 按台词猜语言（`--language en` 可以指定），英文台词的数字不会被改成汉字，转写核对也按英文单词算。
+
+`kit/voices/` 里的三张卡都是普通话。用它们读英文，口音会跟着卡走。正式的英文片先做一张英文卡：按上一节的步骤，`--design` 写英文描述，卡的原句也用英文，例如：
+
+```text
+{"card": "Most of what we call luck is preparation that nobody saw."}
+python <kit>/narrate.py card.json cards/s1/ --model openbmb/VoxCPM2 --design "a calm British male documentary narrator in his forties, warm, unhurried" --takes 1 --seed 1
+```
+
+中英混读的台词（中文旁白里夹一个英文产品名）用中文卡即可，英文词写成希望读出来的样子。
+
+## 听：先找是哪一层出了问题
+
+| 听见什么 | 在哪里查，先改什么 |
+|---|---|
+| 字都对，但整句僵硬 | 连听前后两句。删掉书面腔，给说话的人一个对象，把一个完整的意思放进一条重新生成，或换一张声音卡 |
+| 爆一下、缺一个字、韵尾突然没了 | 分别听原始人声、工作混音和导出的 MP4 里的同一句。原始人声就有问题：用 `--takes` 多生成几遍。只在接缝处出现：找回被剪掉的辅音，在接近静音的位置下刀。只在最终文件出现：核对码率、重复的有损转码和结尾截断 |
+| 底噪、电流声、抽吸声 | 单独听干声和句间空隙，再加伴奏。干声就有问题时，重新生成或换声音卡（卡本身的底噪会被克隆） |
+| 单听清楚，放进视频就听不清 | 把音乐和人声分开听，在有问题的几个字附近压低伴奏或改配器，见[声音](sound.md) |
+| 前后几句像两个人 | 每条都要克隆同一张卡。不要混用 `--design` 和卡，也不要混用不同模型 |
+
+比较两个版本，从成片里取同一句：
+
+```text
+python <kit>/listen_pair.py old.mp4 4.1 7.2 new.mp4 3.8 6.6 compare.wav
+```
+
+脚本把两段的响度调到可比，先放旧版，停 0.8 秒，再放新版。先听像不像人在对人说话，再听背景和接缝，最后合着画面听一遍。转写、响度、频谱各自只回答一个技术问题。没有亲耳听过，就如实告诉用户。
+
+## 原创演唱
+
+先给歌手或歌声模型一整个乐句：歌词、音高、每个音的起止、连音和气口。从干声听清楚以后再叠伴奏。
+
+- 连续的元音听起来像断了电：看相邻的音是不是在中间被切断。
+- 句尾像被撕开：单独听最后一个韵母和尾辅音。
+- 持续音要有平稳的中段和自然的收尾。
+
+单字逐个朗读、拉长再拼接，会把每个字拼成一块独立的声响。[《纸鸟》的歌词和音符](../examples/sung-mv/brief.md)可以直接对着改，附原片母带。

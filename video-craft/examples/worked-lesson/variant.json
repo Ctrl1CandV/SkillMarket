@@ -1,0 +1,6 @@
+{
+  "example": ["左盘高", "右盘高"],
+  "practice": ["右盘高", "两盘平"],
+  "thinkingSeconds": 5,
+  "ask": "第二称，{q_test}。你会留下哪枚？"
+}

@@ -5,23 +5,25 @@
 //   node render.mjs <page.html> strip <out.jpg> --at t1,t2 [--offsets -10,-4,-1,0,1,4,10] [--w 200]
 //   node render.mjs <page.html> video <out.webm|out.mp4> [--from a] [--to b] [--crf n] [--audio track.webm] [--mux out-av.webm]
 import { spawn } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
-import { launch, FFMPEG } from './env.mjs';
+import { launch, FFMPEG, fileUrl } from './env.mjs';
+import { checkAudioStart } from './media.mjs';
 
 const argv = process.argv.slice(2);
 const [pagePath, mode, target, ...rest] = argv;
 const opt = (k, d) => { const i = rest.indexOf('--' + k); return i >= 0 ? rest[i + 1] : d; };
 const positional = rest.filter((x, i) => !x.startsWith('--') && !(i > 0 && rest[i - 1].startsWith('--')));
 
+if (mode === 'video' && opt('audio')) checkAudioStart(FFMPEG, opt('audio'), Number(opt('from', '0')));
 const browser = await launch();
 
 async function openPage() {
   const page = await browser.newPage({ viewport: { width: 400, height: 400 } });
   page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.error('[page]', m.text()); });
   page.on('pageerror', (e) => console.error('[pageerror]', e.message));
-  await page.goto('file://' + resolve(pagePath));
+  await page.goto(fileUrl(pagePath));
   await page.waitForFunction(() => window.__video, null, { timeout: 60000 });
   const v = await page.evaluate(() => window.__video);
   await page.setViewportSize({ width: v.width, height: v.height });
@@ -154,8 +156,16 @@ if (mode === 'stills') {
   console.log('video', n, 'frames →', target, ((Date.now() - t0) / 1000).toFixed(0) + 's');
   if (opt('audio')) {
     const muxed = opt('mux', target.replace(/\.(webm|mp4)$/, '-av.$1'));
-    const acodec = muxed.endsWith('.mp4') ? ['-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart'] : ['-c', 'copy'];
-    await new Promise((r, j) => spawn(FFMPEG, ['-y', '-loglevel', 'error', '-i', target, '-i', opt('audio'), '-map', '0:v', '-map', '1:a', ...acodec, '-shortest', muxed], { stdio: 'inherit' }).on('close', (c) => (c === 0 ? r() : j(new Error('mux ' + c)))));
+    mkdirSync(dirname(resolve(muxed)), { recursive: true });
+    const audio = opt('audio');
+    const acodec = muxed.endsWith('.mp4')
+      ? ['-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart']
+      : from === 0 && /\.(webm|opus)$/i.test(audio) ? ['-c:a', 'copy'] : ['-c:a', 'libopus'];
+    // A soundtrack shares the scene's timeline, including when previewing a later shot.
+    const seekAudio = from > 0 ? ['-ss', String(from)] : [];
+    await new Promise((r, j) => spawn(FFMPEG, ['-y', '-loglevel', 'error', '-i', target, ...seekAudio, '-i', audio,
+      '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', ...acodec, '-t', String(n / v.fps), muxed],
+    { stdio: 'inherit' }).on('close', (c) => (c === 0 ? r() : j(new Error('mux ' + c)))));
     console.log('muxed →', muxed);
   }
 }

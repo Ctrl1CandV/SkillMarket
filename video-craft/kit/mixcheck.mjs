@@ -1,19 +1,19 @@
 // mixcheck.mjs — plot momentary loudness of the music stem, the effects stem and the mix, with scene events.
 // Reading it: effects should rise clearly above the music at their events; the mix should have no holes or walls.
 // usage: node mixcheck.mjs <scene.html> <score.html> <out.png> [--from 0] [--to dur] [--vo voice-clip-folder]
-import { resolve, join } from 'node:path';
+import { join } from 'node:path';
 import { readFileSync, readdirSync } from 'node:fs';
-import { launch, FFMPEG } from './env.mjs';
+import { launch, fileUrl } from './env.mjs';
 const [scene, score, out, ...rest] = process.argv.slice(2);
 const opt = (k, d) => { const i = rest.indexOf('--' + k); return i >= 0 ? rest[i + 1] : d; };
 const voDir = opt('vo');
 const vo = voDir ? Object.fromEntries(readdirSync(voDir).filter((f) => /\.(wav|mp3|ogg|opus|webm|m4a|flac)$/i.test(f)).map((f) => [f.replace(/\.[^.]+$/, ''), readFileSync(join(voDir, f)).toString('base64')])) : {};
 const b = await launch();
-const p1 = await b.newPage(); await p1.goto('file://' + resolve(scene)); await p1.waitForFunction(() => window.__video);
+const p1 = await b.newPage(); await p1.goto(fileUrl(scene)); await p1.waitForFunction(() => window.__video);
 const { duration, meta } = await p1.evaluate(() => window.__video);
 const p2 = await b.newPage({ viewport: { width: 1840, height: 560 } });
 p2.on('pageerror', (e) => console.error('[score]', e.message));
-await p2.goto('file://' + resolve(score)); await p2.waitForFunction(() => window.__mixcheck);
+await p2.goto(fileUrl(score)); await p2.waitForFunction(() => window.__mixcheck);
 const curves = await p2.evaluate(([ev, d, vo]) => window.__mixcheck(ev, d, { vo }), [meta.events || [], duration, vo]);
 const from = +opt('from', '0'), to = +opt('to', String(duration));
 await p2.evaluate(([c, events, from, to]) => {

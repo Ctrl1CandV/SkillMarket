@@ -1,0 +1,21 @@
+{
+  "example": 5,
+  "practice": 9,
+  "thinkingSeconds": 4.5,
+  "cues": [
+    ["intro", "九枚硬币里，有一枚轻一些，其余八枚一样重。"],
+    ["limit", "只有一架天平。怎样只称两次，就找出那枚轻币？"],
+    ["split", "先把硬币分成三堆，每堆三枚。"],
+    ["load", "一到三号放左盘，四到六号放右盘。留下一堆。"],
+    ["weigh", "{e_first}。"],
+    ["reason", "{e_reason}"],
+    ["second", "从剩下的三枚里，取{e_a}号和{e_b}号，各放一盘。"],
+    ["found", "{e_second}，所以轻币是{e_answer}号。"],
+    ["reset", "换个藏法。这一次，第一称{q_first_short}。"],
+    ["group", "你可以把范围缩小到{q_candidates}这三枚。"],
+    ["ask", "第二称，{q_test}。你选哪一枚？"],
+    ["think", ""],
+    ["solve", "{q_answer}号。{q_proof}"],
+    ["rule", "同样多的硬币放上两盘。哪边高就查哪边，两盘平就查留下的一堆。"]
+  ]
+}

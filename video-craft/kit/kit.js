@@ -106,8 +106,45 @@ export const FONT_STACK = {
   serif: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif',
 };
 
+// ---- following a recording (data from kit/songmap.py; load the JSON with an import or inline it)
+// value of a sampled curve at t, linear between samples: envAt(map.env.rms, map.env.fps, t)
+export function envAt(curve, fps, t) {
+  const x = clamp(t * fps, 0, curve.length - 1), i = Math.floor(x), f = x - i;
+  return lerp(curve[i], curve[Math.min(i + 1, curve.length - 1)], f);
+}
+// 1 at the most recent hit, decaying to 0 over `decay` seconds; hits = [t, …] or [[t, strength], …]
+export function pulse(hits, t, decay = 0.25, minStrength = 0) {
+  let lo = 0, hi = hits.length - 1, last = -1;
+  const at = (k) => (Array.isArray(hits[k]) ? hits[k][0] : hits[k]);
+  while (lo <= hi) { const m = (lo + hi) >> 1; if (at(m) <= t) { last = m; lo = m + 1; } else hi = m - 1; }
+  while (last >= 0 && Array.isArray(hits[last]) && hits[last][1] < minStrength) last--;
+  if (last < 0) return 0;
+  const s = Array.isArray(hits[last]) ? hits[last][1] : 1;
+  return s * Math.exp(-(t - at(last)) / Math.max(1e-3, decay) * 3);
+}
+// where t sits in the song: beat and bar counts with 0–1 phases, the section, smoothed energies
+export function songAt(map, t) {
+  const idx = (arr) => { let lo = 0, hi = arr.length - 1, k = -1; while (lo <= hi) { const m = (lo + hi) >> 1; if (arr[m] <= t) { k = m; lo = m + 1; } else hi = m - 1; } return k; };
+  const phase = (arr, k) => (k < 0 || k >= arr.length - 1 ? 0 : clamp((t - arr[k]) / (arr[k + 1] - arr[k])));
+  const b = idx(map.beats), d = idx(map.downbeats);
+  const section = map.sections.find((s) => t >= s.t0 && t < s.t1) || map.sections[map.sections.length - 1];
+  const e = map.env;
+  return {
+    beat: b, beatPhase: phase(map.beats, b), bar: d, barPhase: phase(map.downbeats, d),
+    section, sectionPhase: clamp((t - section.t0) / (section.t1 - section.t0)),
+    energy: envAt(e.rms, e.fps, t), low: envAt(e.low, e.fps, t), high: envAt(e.high, e.fps, t),
+    // accents: about one strong hit a bar (songmap keeps the strongest per beat, top 15 % of their neighbourhood)
+    kick: map.accents ? pulse(map.accents.low, t, 0.22) : pulse(map.hits.low, t, 0.22, 0.6),
+    snap: map.accents ? pulse(map.accents.high, t, 0.12) : pulse(map.hits.high, t, 0.12, 0.6),
+    line: map.lyrics ? map.lyrics.lines.find((l) => t >= l.t0 && t < l.t1) || null : null,
+  };
+}
+
 // register the seek entry point used by the renderer
 export function register({ duration, fps = 30, width, height, seek, meta = {} }) {
   window.__video = { duration, fps, width, height, meta };
-  window.__seek = (t) => { seek(t); return true; };
+  window.__seek = (t) => {
+    const frame = seek(t);
+    return frame && typeof frame.then === 'function' ? frame.then(() => true) : true;
+  };
 }

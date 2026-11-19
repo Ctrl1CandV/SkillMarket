@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有声参考片 · Video craft</title>
+<style>
+  :root { color-scheme: light; font-family: "Source Sans 3", "Microsoft YaHei", sans-serif; background: #f6f3ec; color: #232a26; }
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; padding: clamp(1rem,4vw,4rem); max-width: 84rem; }
+  header { padding-bottom: 1rem; }
+  header, section { border-bottom: 1px solid #b7bcb1; }
+  h1, h2 { font-family: "STIX Two Text", "Noto Serif CJK SC", SimSun, serif; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(2.15rem,5vw,4.2rem); }
+  h2 { font-size: clamp(1.5rem,2.5vw,2.6rem); line-height: 1.3; }
+  nav, .links { display: flex; flex-wrap: wrap; gap: .55rem 1.2rem; align-items: baseline; }
+  nav { margin: .9rem 0 .35rem; }
+  a { color: #24594f; text-decoration-thickness: .07em; text-underline-offset: .23em; }
+  a:focus-visible { outline: 3px solid #a34d25; outline-offset: 4px; }
+  section { padding: clamp(1.15rem,3vw,2.9rem) 0; display: grid; align-items: start; grid-template-columns: minmax(0,1.6fr) minmax(17rem,1fr); gap: clamp(1rem,3vw,3.4rem); scroll-margin-top: 1rem; }
+  video { width: 100%; height: auto; aspect-ratio: 16/9; display: block; background: #161a19; }
+  .type { margin: 0 0 .55rem; color: #635d50; font-size: .9rem; }
+  p { line-height: 1.6; }
+  ol { list-style: none; padding: 0; margin: 1.1rem 0; }
+  li+li { border-top: 1px solid #dedfd5; }
+  li a { display: grid; grid-template-columns: 3.4rem 1fr; font-size: .98rem; line-height: 1.5; padding: .4rem .15rem; text-decoration: none; }
+  li a:hover { text-decoration: underline; }
+  time { font-family: "IBM Plex Mono", Consolas, monospace; font-variant-numeric: tabular-nums; }
+  @media (max-width: 47rem) { section { grid-template-columns: 1fr; } }
+</style>
+<header>
+  <h1>有声参考片</h1>
+  <nav aria-label="按片型跳转"><a href="#lesson">教学讲解</a><a href="#song">歌曲 MV</a><a href="#spot">产品宣传</a></nav>
+</header>
+<main>
+  <section id="lesson" aria-labelledby="lesson-title">
+    <video aria-label="九枚硬币，只称两次" controls preload="metadata" playsinline poster="worked-lesson/poster.jpg" src="worked-lesson/preview.mp4"></video>
+    <div><p class="type">教学讲解 · 普通话旁白</p><h2 id="lesson-title">九枚硬币，只称两次</h2>
+    <p>跟着天平做一题，再用同样的办法独立找出另一枚轻币。</p>
+    <ol>
+      <li><a href="worked-lesson/preview.mp4#t=19.208"><time>00:19</time>看哪一端升高，再排除六枚</a></li>
+      <li><a href="worked-lesson/preview.mp4#t=45.958"><time>00:46</time>听第二称，先选出你认为的轻币</a></li>
+      <li><a href="worked-lesson/preview.mp4#t=55.625"><time>00:56</time>核对答案和推理</a></li>
+    </ol><div class="links"><a href="worked-lesson/brief.md">拆镜与改题</a><a href="worked-lesson/frames.jpg">看分镜图</a></div></div>
+  </section>
+  <section id="song" aria-labelledby="song-title">
+    <video style="aspect-ratio: 8/5" aria-label="纸鸟" controls preload="metadata" playsinline poster="sung-mv/poster.jpg" src="sung-mv/preview.mp4"></video>
+    <div><p class="type">歌曲 MV · 绮萱 / DiffSinger / AI 合成演唱</p><h2 id="song-title">纸鸟</h2>
+    <p>一封信折出双翼，两次唱到“飞呀”，纸鸟离寄信的人越来越远。</p>
+    <ol>
+      <li><a href="sung-mv/preview.mp4#t=2.4"><time>00:02</time>第一句进来，一封信折成鸟</a></li>
+      <li><a href="sung-mv/preview.mp4#t=12"><time>00:12</time>对照两次“飞呀”的画面</a></li>
+      <li><a href="sung-mv/preview.mp4#t=16.8"><time>00:17</time>最后一句把鸟带到掌心</a></li>
+    </ol><div class="links"><a href="sung-mv/brief.md">拆镜与换歌</a><a href="sung-mv/frames.jpg">看分镜图</a></div></div>
+  </section>
+  <section id="spot" aria-labelledby="spot-title">
+    <video aria-label="开场，提前十五分" controls preload="metadata" playsinline poster="product-spot/poster.jpg" src="product-spot/preview.mp4"></video>
+    <div><p class="type">软件产品宣传 · 倒场</p><h2 id="spot-title">开场，提前十五分</h2>
+    <p>开演提前，灯光师几点到？看一次重算怎样变成剧组能拿去执行的台本。</p>
+    <ol>
+      <li><a href="product-spot/preview.mp4#t=1.75"><time>00:02</time>开场时间变了，原台本作废</a></li>
+      <li><a href="product-spot/preview.mp4#t=9"><time>00:09</time>从改时间跟到音响联调的新时刻</a></li>
+      <li><a href="product-spot/preview.mp4#t=16.95"><time>00:17</time>看下载的执行单，再回到舞台</a></li>
+    </ol><div class="links"><a href="product-spot/brief.md">拆镜与换产品</a><a href="product-spot/frames.jpg">看分镜图</a><a href="product-spot/product.html">试用倒场</a></div></div>
+  </section>
+</main>
+<script>
+  for (const section of document.querySelectorAll("section")) {
+    const video = section.querySelector("video");
+    video.addEventListener("play", () => {
+      for (const other of document.querySelectorAll("video")) if (other !== video) other.pause();
+    });
+    for (const cue of section.querySelectorAll("li a")) {
+      cue.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (!video.readyState || video.error) return;
+        event.preventDefault();
+        video.currentTime = Number(cue.hash.slice(3));
+        video.play().catch(() => video.focus());
+      });
+    }
+  }
+</script>
+</html>
