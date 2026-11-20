@@ -1,8 +1,9 @@
-"""Acceptance run for video-craft 0.8: one task, one model, in a fresh pi workspace. Python stdlib.
+"""Acceptance run for video-craft 0.8 and later: one task, one model, in a fresh pi workspace. Python stdlib.
 
     python run.py mv deepseek/deepseek-flash runs/mv-deepseek
     python run.py promo qwen-token-plan-cn/qwen3.8-flash runs/promo-qwen
     python run.py toyland deepseek/deepseek-flash runs/081-toyland-deepseek
+    python run.py opener qwen-token-plan-cn/qwen3.8-flash runs/09-opener-qwen
 
 Copies a snapshot of the skill next to the task, writes REQUEST.md and ENV.md, runs pi unattended and records
 the command, the snapshot hashes, the events and the exit status under <out>/log.
@@ -39,10 +40,16 @@ BRIEFS = {
                  "提醒出门带伞；不下雨就不亮。不用 App，不连家里的网络，一节纽扣电池用一年，售价 69 元。"
                  "主要卖给早上赶时间出门的上班族和学生。要有中文旁白和背景音乐。创意、画面、设计和剪辑由你决定。"
                  "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
+    "compound": ("请使用本次提供的 video-craft，做一支 20–30 秒的横屏科普短片，在社交平台投放：每天进步 1%，一年后是原来的多少倍；"
+                 "每天退步 1%，一年后还剩多少。不需要旁白，要背景音乐和音效，画面上的字要读得完。创意、画面、设计和剪辑由你决定。"
+                 "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
+    "opener": ("请使用本次提供的 video-craft，为一档播客做一段 10–15 秒的横屏片头。播客叫「慢车」，每期请一位嘉宾讲一段坐慢火车的旅程，"
+               "主持人只有一位。要有片头音乐。创意、画面、设计和剪辑由你决定。"
+               "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
 }
 # The request is REQUEST.md, not BRIEF.md: on Windows the task sheet brief.md the skill asks for would overwrite it.
 INPUTS = {"mv": {"original.mp3": "inputs/song.mp3", "lyrics.txt": "inputs/lyrics.txt"}, "promo": {},
-          "toyland": {"song.mp3": "inputs/toyland/song.mp3", "source.txt": "inputs/toyland/source.txt"}, "umbrella": {}}
+          "toyland": {"song.mp3": "inputs/toyland/song.mp3", "source.txt": "inputs/toyland/source.txt"}, "umbrella": {}, "compound": {}, "opener": {}}
 ENV_TEXT = ("当前目录是独立的工作区，上一层的 video-craft 是本次提供的技能。可在当前目录内制作、渲染与取帧，"
             "任务文件、检查结果与中间产物都放在当前目录。已有 Node、Python、FFmpeg 和 FFprobe；渲染用的浏览器和 "
             "Playwright 已由 VC_CHROME、VC_NODE_MODULES 指好。命令行里的 python 已装 NumPy、Pillow、faster-whisper "
