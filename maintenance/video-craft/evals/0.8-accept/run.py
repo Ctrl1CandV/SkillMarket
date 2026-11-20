@@ -46,10 +46,14 @@ BRIEFS = {
     "opener": ("请使用本次提供的 video-craft，为一档播客做一段 10–15 秒的横屏片头。播客叫「慢车」，每期请一位嘉宾讲一段坐慢火车的旅程，"
                "主持人只有一位。要有片头音乐。创意、画面、设计和剪辑由你决定。"
                "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
+    "bayes": ("请使用本次提供的 video-craft，为《概率论与数理统计》课程做一段 60–90 秒的例题讲解视频，给正在学这门课的大学生看。"
+              "题目：某种疾病的患病率是 1%。一种检测对患者呈阳性的概率是 99%，对没有患病的人误报阳性的概率是 5%。"
+              "一个人检测结果为阳性，他真正患病的概率是多少？要讲清思路和结果，有中文旁白和背景音乐。创意、画面、设计和剪辑由你决定。"
+              "交付可播放的 output/final.mp4 和可继续编辑的工程，并简要说明你实际验证过的内容。"),
 }
 # The request is REQUEST.md, not BRIEF.md: on Windows the task sheet brief.md the skill asks for would overwrite it.
 INPUTS = {"mv": {"original.mp3": "inputs/song.mp3", "lyrics.txt": "inputs/lyrics.txt"}, "promo": {},
-          "toyland": {"song.mp3": "inputs/toyland/song.mp3", "source.txt": "inputs/toyland/source.txt"}, "umbrella": {}, "compound": {}, "opener": {}}
+          "toyland": {"song.mp3": "inputs/toyland/song.mp3", "source.txt": "inputs/toyland/source.txt"}, "umbrella": {}, "compound": {}, "opener": {}, "bayes": {}}
 ENV_TEXT = ("当前目录是独立的工作区，上一层的 video-craft 是本次提供的技能。可在当前目录内制作、渲染与取帧，"
             "任务文件、检查结果与中间产物都放在当前目录。已有 Node、Python、FFmpeg 和 FFprobe；渲染用的浏览器和 "
             "Playwright 已由 VC_CHROME、VC_NODE_MODULES 指好。命令行里的 python 已装 NumPy、Pillow、faster-whisper "
