@@ -5,6 +5,7 @@
 - **浏览器里用的模块**：
   - `kit.js`：缓动、弹簧、随机数、颜色、字体、注册函数，以及跟随录音的 `songAt`、`envAt`、`pulse`。
   - `draw.js`：分层、噪声、光晕与 bloom、山脊剪影、视差相机、逐渐画出的线、暗角和颗粒。
+  - `graphic.js`：版面式动态设计的零件：纸面、网格、色条、角标、逐字解出的标签、大字进场、卡片、刻度圆环、波形、平面着色的 3D 形体，以及三种遮罩转场。
   - `shader.js`：把一段 GLSL 片元着色器变成一张可叠加的画布，画星云、极光、烟和液态光。
   - `sound.js`：合成音乐、音效和配音，测响度，编 Opus/WebM。
 - **Python 工具**：`songmap.py` 给歌曲做地图，`shotlist.py` 给成片列镜头表并标出可疑剪辑，`narrate.py` 生成旁白。需要 Python 3.9+、NumPy 和 FFmpeg。
@@ -93,6 +94,14 @@ seek(0);
 | `strokeTo(ctx, pts, k)` | 按长度画出折线的前 k（0–1），返回笔尖位置 |
 | `finish(ctx, frame, {vignette, grain})` | 收尾的暗角与逐帧颗粒 |
 | `mix(a, b, k)`、`css(c, a)` | `[r,g,b]` 颜色混合与转成 CSS |
+
+## graphic.js
+
+零件表、可试时长和用法见[版面式动态设计](graphic.md)，完整用法见[地铁图示例](../examples/transit-map/scene.js)。约定：
+
+- 画出来的零件（`grid`、`rule`、`ring`、`ruler`……）收 `k`，0–1 的线性进度，零件自己缓动；有自己节奏的零件（`label`、`headline`、`card`）收 `s`，开始后经过的秒数，负数时不画，可选 `exit` 是开始退场后的秒数。
+- 转场 `wipe`、`iris`、`halftone` 收线性的 `k` 和一个画下一镜的函数 `(ctx) => …`：先画上一镜，再调用转场。
+- `MONO`、`SANS` 是等宽和中文黑体的字体栈。颜色写成 `#rrggbb`。收尾的 `finish` 在 draw.js 里。
 
 ## shader.js
 
