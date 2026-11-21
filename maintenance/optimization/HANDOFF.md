@@ -48,6 +48,8 @@
 | 技能 | 任务与脚本 | 记录 |
 |---|---|---|
 | readable-reply | `maintenance/readable-reply/evals/`（6 个问题 × 4 组） | `results-2026-11-11.md` |
+| de-ai-flavor | `maintenance/de-ai-flavor/evals/2026-11-21-pi/`（4 个问题 × 3 组） | `REPORT.md` |
+| write-with-judgment | `maintenance/write-with-judgment/evals/2026-11-21-pi/`（4 个问题 × 3 组） | `REPORT.md` |
 | presentation-craft | `maintenance/presentation-craft/evals/progress-task/` | `evals/pi-run-2026-11-12/README.md` |
 | imagecraft | `maintenance/imagecraft/pi-tasks/` | `eval-pi-routing-2026-11-12.md`、`eval-local-2026-11-12.md`、`eval-cloud-2026-11-12.md` |
 | video-craft | `maintenance/video-craft/evals/2026-11-12-caffeine/` | 同目录 `README.md` |
@@ -66,6 +68,8 @@
 | 技能 | 版本 | 做了什么 | 没验证的 |
 |---|---|---|---|
 | readable-reply | 2.0.0 | 重写为“先给答案”的简洁规则，附可粘进全局指令的短版 | 只测了一个模型、每题一次；用户还没盲评原始回复；按需加载的技能在普通问答里 6 次都没被触发，实际起作用的是全局指令短版 |
+| de-ai-flavor | 3.0.0 | 2026-11-21：围绕虚词名词化包裹、欧化长定语、显性连接词拐杖、总分总与段尾升华、四字格对仗、说教与制作痕迹六类高频 AI 习气重写；把“有样稿时先提炼四项声线与口语颗粒度”提为第一节；取消逐条“保留的情况”对冲（否定对冲词间隔从 123 字提至 1453 字）；新增 `references/exemplars.md`。pi + deepseek-flash 跑 4 题 × 3 组（无技能 / 2.1.0 / 3.0.0），自然触发 4/4，按首轮产物补强样稿口语颗粒度与无备注默认交付后复测通过 | 只测了 deepseek-flash；待用户盲评 `raw/` 样本 |
+| write-with-judgment | 1.0.0 | 2026-11-21：摒弃 0.2.1 的审稿理论腔与正反同肯对冲（否定对冲词间隔从 95 字提至 1943 字），重写为切口进场、展开材料内部关系、按问题推进详略与操作时机、留白与事实分寸四个正向动作；新增 `references/exemplars.md`（四类文体 7 组完整对照）与 `references/revision-and-diagnosis.md`。pi + deepseek-flash 跑 4 题 × 3 组（无技能 / 0.2.1 / 1.0.0），按首轮产物补强通知篇幅相称、description 触发面与默认纯正文交付后，自然触发 4/4，数据推演、情感留白、操作防踩坑与四步诊断均显著优于无技能和 0.2.1 | 只测了 deepseek-flash；待用户盲评 `raw/` 样本 |
 | git-governance | 1.1.0 | 提交前的文件去向清单、提交标题怎么定 | 没做模型实测；用户是否有固定的“私人文件夹”约定未知 |
 | skill-search | 0.3.0 | 区分“直接使用”和“借鉴参考” | 借鉴用途没在真实检索里试过 |
 | presentation-craft | 0.4.1 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
@@ -91,6 +95,8 @@
 各技能的自测（都不调用模型）：
 
 ```text
+python maintenance/de-ai-flavor/evals/check.py                             # 静态结构与对冲词间隔
+python maintenance/write-with-judgment/evals/check.py                      # 静态结构与对冲词间隔
 python maintenance/presentation-craft/evals/check.py                      # 17 项
 python -B -m unittest discover -s maintenance/imagecraft/tests            # 99 项
 python -B -m unittest discover -s maintenance/docvision/evals -p "test_*.py"   # 276 项，Windows 上跳过 1 项
