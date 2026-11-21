@@ -1,0 +1,5 @@
+date: 2026-11-21T10:30:02+08:00
+model: deepseek/deepseek-flash
+pi: 1.6.0
+old_skill: C:/Users/11487/AppData/Local/Temp/tmp.LqJXPtqIJe/old_skill_wrap/de-ai-flavor (2.1.0)
+new_skill: D:/Program Project/SkillMarket/de-ai-flavor (3.0.0)

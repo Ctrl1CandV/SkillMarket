@@ -1,0 +1,3 @@
+read C:\Users\11487\AppData\Local\Temp\tmp.Um1zpEn2IL\old_skill_wrap\de-ai-flavor\SKILL.md
+read C:\Users\11487\AppData\Local\Temp\tmp.Um1zpEn2IL\old_skill_wrap\de-ai-flavor\references\genres.md
+read C:\Users\11487\AppData\Local\Temp\tmp.Um1zpEn2IL\old_skill_wrap\de-ai-flavor\references\patterns.md
