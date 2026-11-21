@@ -1,0 +1,5 @@
+date: 2026-11-21T10:32:11+08:00
+model: deepseek/deepseek-flash
+pi: 1.6.0
+old_skill: C:/Users/11487/AppData/Local/Temp/tmp.OjFseXQvcM/old_skill_wrap/write-with-judgment (0.2.1)
+new_skill: D:/Program Project/SkillMarket/write-with-judgment (1.0.0)
