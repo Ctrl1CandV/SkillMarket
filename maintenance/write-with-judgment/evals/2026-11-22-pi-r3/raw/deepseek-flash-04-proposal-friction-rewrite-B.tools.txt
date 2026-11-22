@@ -1,0 +1,3 @@
+read C:\Users\11487\AppData\Local\Temp\tmp.5XiUSwNKxO\old_skill_wrap\write-with-judgment\SKILL.md
+read C:\Users\11487\AppData\Local\Temp\tmp.5XiUSwNKxO\old_skill_wrap\write-with-judgment\references\revision-and-diagnosis.md
+read C:\Users\11487\AppData\Local\Temp\tmp.5XiUSwNKxO\old_skill_wrap\write-with-judgment\references\exemplars.md

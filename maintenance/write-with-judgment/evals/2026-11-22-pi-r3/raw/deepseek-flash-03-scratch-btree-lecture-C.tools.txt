@@ -1,0 +1,2 @@
+read D:\Program Project\SkillMarket\write-with-judgment\SKILL.md
+read D:\Program Project\SkillMarket\write-with-judgment\references\exemplars.md

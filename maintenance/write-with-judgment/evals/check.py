@@ -1,4 +1,4 @@
-"""Static check for write-with-judgment 1.1.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
+"""Static check for write-with-judgment 1.2.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
 from pathlib import Path
 import re
 
@@ -7,6 +7,7 @@ PACKAGE = ROOT / "write-with-judgment"
 ARCHIVE_010 = ROOT / "maintenance/write-with-judgment/archive/0.1.0"
 ARCHIVE_021 = ROOT / "maintenance/write-with-judgment/archive/0.2.1"
 ARCHIVE_100 = ROOT / "maintenance/write-with-judgment/archive/1.0.0"
+ARCHIVE_110 = ROOT / "maintenance/write-with-judgment/archive/1.1.0"
 
 HEDGES = re.compile(r"不能|不必|不要|无须|无需|不等于|不代表|不证明|未必|也可能|可能")
 
@@ -41,7 +42,7 @@ assert entry.startswith("---"), "Missing frontmatter"
 frontmatter = entry.split("---", 2)[1]
 assert "name: write-with-judgment" in frontmatter
 assert re.search(r"^description: .+", frontmatter, re.M)
-assert 'version: "1.1.0"' in frontmatter
+assert 'version: "1.2.0"' in frontmatter
 
 entry_body = re.sub(r"^---\r?\n.*?\r?\n---\r?\n", "", entry, flags=re.S)
 entry_chars = len(re.findall(r"[^\s]", entry_body))
@@ -55,6 +56,9 @@ assert {p.relative_to(ARCHIVE_021).as_posix() for p in ARCHIVE_021.rglob("*") if
     "SKILL.md", "references/choices.md", "references/emotion-and-voice.md", "references/revision.md"
 }
 assert {p.relative_to(ARCHIVE_100).as_posix() for p in ARCHIVE_100.rglob("*") if p.is_file()} == {
+    "SKILL.md", "references/exemplars.md", "references/revision-and-diagnosis.md"
+}
+assert {p.relative_to(ARCHIVE_110).as_posix() for p in ARCHIVE_110.rglob("*") if p.is_file()} == {
     "SKILL.md", "references/exemplars.md", "references/revision-and-diagnosis.md"
 }
 
