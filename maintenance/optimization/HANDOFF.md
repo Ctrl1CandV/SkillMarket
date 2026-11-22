@@ -48,8 +48,8 @@
 | 技能 | 任务与脚本 | 记录 |
 |---|---|---|
 | readable-reply | `maintenance/readable-reply/evals/`（6 个问题 × 4 组） | `results-2026-11-11.md` |
-| de-ai-flavor | `maintenance/de-ai-flavor/evals/2026-11-21-pi/`（4 个问题 × 3 组） | `REPORT.md` |
-| write-with-judgment | `maintenance/write-with-judgment/evals/2026-11-21-pi/`（4 个问题 × 3 组） | `REPORT.md` |
+| de-ai-flavor | `maintenance/de-ai-flavor/evals/2026-11-21-pi/`、`2026-11-22-pi/`（5 题 × 3 组） | `REPORT.md` |
+| write-with-judgment | `maintenance/write-with-judgment/evals/2026-11-21-pi/`、`2026-11-22-pi/`（5 题 × 3 组） | `REPORT.md` |
 | presentation-craft | `maintenance/presentation-craft/evals/progress-task/` | `evals/pi-run-2026-11-12/README.md` |
 | imagecraft | `maintenance/imagecraft/pi-tasks/` | `eval-pi-routing-2026-11-12.md`、`eval-local-2026-11-12.md`、`eval-cloud-2026-11-12.md` |
 | video-craft | `maintenance/video-craft/evals/2026-11-12-caffeine/` | 同目录 `README.md` |
@@ -68,8 +68,8 @@
 | 技能 | 版本 | 做了什么 | 没验证的 |
 |---|---|---|---|
 | readable-reply | 2.0.0 | 重写为“先给答案”的简洁规则，附可粘进全局指令的短版 | 只测了一个模型、每题一次；用户还没盲评原始回复；按需加载的技能在普通问答里 6 次都没被触发，实际起作用的是全局指令短版 |
-| de-ai-flavor | 3.0.0 | 2026-11-21：围绕虚词名词化包裹、欧化长定语、显性连接词拐杖、总分总与段尾升华、四字格对仗、说教与制作痕迹六类高频 AI 习气重写；把“有样稿时先提炼四项声线与口语颗粒度”提为第一节；取消逐条“保留的情况”对冲（否定对冲词间隔从 123 字提至 1453 字）；新增 `references/exemplars.md`。pi + deepseek-flash 跑 4 题 × 3 组（无技能 / 2.1.0 / 3.0.0），自然触发 4/4，按首轮产物补强样稿口语颗粒度与无备注默认交付后复测通过 | 只测了 deepseek-flash；待用户盲评 `raw/` 样本 |
-| write-with-judgment | 1.0.0 | 2026-11-21：摒弃 0.2.1 的审稿理论腔与正反同肯对冲（否定对冲词间隔从 95 字提至 1943 字），重写为切口进场、展开材料内部关系、按问题推进详略与操作时机、留白与事实分寸四个正向动作；新增 `references/exemplars.md`（四类文体 7 组完整对照）与 `references/revision-and-diagnosis.md`。pi + deepseek-flash 跑 4 题 × 3 组（无技能 / 0.2.1 / 1.0.0），按首轮产物补强通知篇幅相称、description 触发面与默认纯正文交付后，自然触发 4/4，数据推演、情感留白、操作防踩坑与四步诊断均显著优于无技能和 0.2.1 | 只测了 deepseek-flash；待用户盲评 `raw/` 样本 |
+| de-ai-flavor | 3.1.0 | 2026-11-22 第二轮：清零 3.0.0 范例中的示范性幻觉，修复 `genres.md` 尾注冲突，靶子扩至 8 类现代隐性 AI 味（含假二分、破折号、加粗卡片、节拍器句长、播音员设问与“先给结论：/先看……：/压成一句话：”报幕起手），前移参考路由并平衡“守事实、放手改表达”（否定对冲间隔 4,813 字/处）。pi + deepseek-flash 跑 5 题 × 3 组（无技能 / 3.0.0 / 3.1.0），自然触发 5/5、参考读取 3/5；用户盲评确认长评论（02）3.1.0 胜出，随后按盲评反馈清除报幕起手并复测 03 口播讲稿（隐性 AI 命中降为 0） | 仅测了 deepseek-flash（GPT 当日额度用完）；下一轮拟针对“冷 AI 味 / 金句中毒 / 伪具体”与零剧透极简口令长文深化设计 |
+| write-with-judgment | 1.1.0 | 2026-11-22 第二轮：清零 1.0.0 范例 4/5/6 中的越界细节并隔离虚构示范，补齐数据分母验算、时态进度守恒、非虚构禁补感官细节、零规则台词与去报幕起手式，禁用自然文体中的加粗卡片碎片，前移参考路由（否定对冲间隔 1,629 字/处）。pi + deepseek-flash 跑 5 题 × 3 组（无技能 / 1.0.0 / 1.1.0），自然触发 5/5（1.0.0 为 4/5），用户盲评确认架构评审（04）1.1.0 胜出，随后按盲评反馈清除“先给结论：”报幕起手并复测 01、04 两题 | 仅测了 deepseek-flash；下一轮拟针对“笔力能量落差（防冷白描流水账）”与“方案真实摩擦”做机理级设计与零剧透长文验收 |
 | git-governance | 1.1.0 | 提交前的文件去向清单、提交标题怎么定 | 没做模型实测；用户是否有固定的“私人文件夹”约定未知 |
 | skill-search | 0.3.0 | 区分“直接使用”和“借鉴参考” | 借鉴用途没在真实检索里试过 |
 | presentation-craft | 0.4.1 | 真实渲染补验（PowerPoint）；审查报中文未标语言、标题不到正文 2 倍；渲染脚本报断行；样张标题 36 pt 并标中文 | 新字号建议没完整跑过；论文组会场景没测；动画放映没测；非文字问题（边框、箭头）仍只靠看图 |
