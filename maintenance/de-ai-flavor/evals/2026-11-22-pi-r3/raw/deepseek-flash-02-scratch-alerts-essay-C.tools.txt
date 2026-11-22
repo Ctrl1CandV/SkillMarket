@@ -1,0 +1,3 @@
+read D:\Program Project\SkillMarket\de-ai-flavor\SKILL.md
+read D:\Program Project\SkillMarket\de-ai-flavor\references\genres.md
+read D:\Program Project\SkillMarket\de-ai-flavor\references\exemplars.md

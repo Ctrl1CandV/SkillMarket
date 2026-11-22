@@ -1,4 +1,4 @@
-"""Static check for de-ai-flavor 3.1.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
+"""Static check for de-ai-flavor 3.2.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
 from pathlib import Path
 import hashlib
 import re
@@ -8,6 +8,7 @@ PACKAGE = ROOT / "de-ai-flavor"
 ARCHIVE_202 = ROOT / "maintenance/de-ai-flavor/archive/before-generalization-2026-10-03"
 ARCHIVE_210 = ROOT / "maintenance/de-ai-flavor/archive/2.1.0"
 ARCHIVE_300 = ROOT / "maintenance/de-ai-flavor/archive/3.0.0"
+ARCHIVE_310 = ROOT / "maintenance/de-ai-flavor/archive/3.1.0"
 
 EXPECTED_202 = {
     "SKILL.md": "738530b7be9cd791da55fb7c4fba278d6f4a24f1820d99d5c3eb23126d3e27af",
@@ -50,7 +51,7 @@ assert entry.startswith("---"), "Missing frontmatter"
 frontmatter = entry.split("---", 2)[1]
 assert "name: de-ai-flavor" in frontmatter
 assert re.search(r"^description: .+", frontmatter, re.M)
-assert 'version: "3.1.0"' in frontmatter
+assert 'version: "3.2.0"' in frontmatter
 
 entry_body = re.sub(r"^---\r?\n.*?\r?\n---\r?\n", "", entry, flags=re.S)
 entry_chars = len(re.findall(r"[^\s]", entry_body))
@@ -66,6 +67,9 @@ assert {p.relative_to(ARCHIVE_210).as_posix() for p in ARCHIVE_210.rglob("*") if
     "SKILL.md", "references/genres.md", "references/patterns.md"
 }
 assert {p.relative_to(ARCHIVE_300).as_posix() for p in ARCHIVE_300.rglob("*") if p.is_file()} == {
+    "SKILL.md", "references/exemplars.md", "references/genres.md"
+}
+assert {p.relative_to(ARCHIVE_310).as_posix() for p in ARCHIVE_310.rglob("*") if p.is_file()} == {
     "SKILL.md", "references/exemplars.md", "references/genres.md"
 }
 
