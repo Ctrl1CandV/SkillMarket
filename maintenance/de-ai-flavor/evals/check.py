@@ -1,4 +1,4 @@
-"""Static check for de-ai-flavor 3.0.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
+"""Static check for de-ai-flavor 3.1.0: files, links, frontmatter, archive integrity, and negation/hedge density."""
 from pathlib import Path
 import hashlib
 import re
@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 PACKAGE = ROOT / "de-ai-flavor"
 ARCHIVE_202 = ROOT / "maintenance/de-ai-flavor/archive/before-generalization-2026-10-03"
 ARCHIVE_210 = ROOT / "maintenance/de-ai-flavor/archive/2.1.0"
+ARCHIVE_300 = ROOT / "maintenance/de-ai-flavor/archive/3.0.0"
 
 EXPECTED_202 = {
     "SKILL.md": "738530b7be9cd791da55fb7c4fba278d6f4a24f1820d99d5c3eb23126d3e27af",
@@ -49,7 +50,7 @@ assert entry.startswith("---"), "Missing frontmatter"
 frontmatter = entry.split("---", 2)[1]
 assert "name: de-ai-flavor" in frontmatter
 assert re.search(r"^description: .+", frontmatter, re.M)
-assert 'version: "3.0.0"' in frontmatter
+assert 'version: "3.1.0"' in frontmatter
 
 entry_body = re.sub(r"^---\r?\n.*?\r?\n---\r?\n", "", entry, flags=re.S)
 entry_chars = len(re.findall(r"[^\s]", entry_body))
@@ -63,6 +64,9 @@ for name, expected in EXPECTED_202.items():
 
 assert {p.relative_to(ARCHIVE_210).as_posix() for p in ARCHIVE_210.rglob("*") if p.is_file()} == {
     "SKILL.md", "references/genres.md", "references/patterns.md"
+}
+assert {p.relative_to(ARCHIVE_300).as_posix() for p in ARCHIVE_300.rglob("*") if p.is_file()} == {
+    "SKILL.md", "references/exemplars.md", "references/genres.md"
 }
 
 print(f"PASS: 3 runtime files, {links} local links, SKILL.md={entry_chars} chars, hedge interval={interval:.1f} chars/hedge (>=200), archives intact")

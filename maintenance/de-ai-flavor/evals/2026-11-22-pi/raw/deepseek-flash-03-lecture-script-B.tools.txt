@@ -1,0 +1,3 @@
+read C:\Users\11487\AppData\Local\Temp\tmp.tETZfRbC3v\old_skill_wrap\de-ai-flavor\SKILL.md
+read C:\Users\11487\AppData\Local\Temp\tmp.tETZfRbC3v\old_skill_wrap\de-ai-flavor\references\genres.md
+read C:\Users\11487\AppData\Local\Temp\tmp.tETZfRbC3v\old_skill_wrap\de-ai-flavor\references\exemplars.md
