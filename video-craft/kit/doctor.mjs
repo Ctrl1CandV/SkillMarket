@@ -25,13 +25,18 @@ if (ff.status === 0) { const has = (n) => new RegExp('\\s' + n + '\\s').test(ff.
 else out.ffmpeg = false;
 // Python side: songmap.py / shotlist.py need NumPy; narrate.py prefers local VoxCPM; --lyrics and --takes use faster-whisper
 const PY = process.env.VC_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
-const probe = `import importlib.util as u, json, sys
+const probe = `import importlib.util as u, json, os, shutil, sys
+sys.path.insert(0, sys.argv[1])
 r = {"python": sys.version.split()[0]}
 for m in ["numpy", "PIL", "voxcpm", "faster_whisper", "edge_tts"]: r[m] = u.find_spec(m) is not None
+if not r["edge_tts"] and shutil.which("edge-tts"): r["edge_tts"] = "cli"
 try:
     import torch; r["cuda"] = torch.cuda.get_device_name(0) if torch.cuda.is_available() else False
 except Exception: r["cuda"] = None
-import glob, os
+try:
+    import gpu; r["gpu"] = gpu.probe_gpu()
+except Exception as e: r["gpu"] = {"available": False, "state": "probe_error", "detail": str(e)}
+import glob
 r["broken_scripts"] = []
 for f in sorted(glob.glob(os.path.join(sys.argv[1], "*.py"))):
     try: compile(open(f, encoding="utf-8").read(), f, "exec")
@@ -40,19 +45,25 @@ print(json.dumps(r))`;
 const KIT = new URL('.', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const py = spawnSync(PY, ['-c', probe, decodeURIComponent(KIT)], { encoding: 'utf8' });
 out.python = py.status === 0 ? JSON.parse(py.stdout.trim().split(/\r?\n/).pop()) : false;
+if (out.python?.gpu) { out.gpu = out.python.gpu; delete out.python.gpu; }
 console.log(JSON.stringify(out, null, 2));
 const tips = [];
 if (out.browserError) tips.push('Browser did not start: install one with `npx playwright install chromium`, or point VC_CHROME at chrome-headless-shell.');
 if (out.ffmpeg === false) tips.push('No ffmpeg: frames can still be reviewed, but videos cannot be encoded. Set VC_FFMPEG or install ffmpeg.');
 else if (!out.ffmpeg.h264) tips.push('ffmpeg has no libx264: deliver WebM (VP9 + Opus); convert to MP4 elsewhere.');
+if (out.gpu?.state === 'present_but_inaccessible') {
+  tips.push('GPU tools are present, but device query failed (likely sandbox isolation). Ask the user to check `nvidia-smi` in a normal terminal; do not report this as "no GPU".');
+} else if (out.gpu?.available && !out.gpu.voxcpm15_safe) {
+  tips.push(`GPU resource guard: ${out.gpu.guard_note}. In interactive mode, inform the user and ask before running local GPU models (offer --engine edge + CPU word-alignment, --draft preview, or waiting).`);
+}
 if (!out.python) tips.push(`No Python (${PY}): songmap.py, shotlist.py and narrate.py need Python 3.9+ with NumPy. Set VC_PYTHON.`);
 else {
   if (!out.python.numpy) tips.push('Python has no NumPy: pip install numpy (songmap.py, shotlist.py).');
   if (!out.python.voxcpm) tips.push(out.python.edge_tts
-    ? 'No VoxCPM: narrate.py will fall back to Edge online voices (flatter). For natural narration: pip install voxcpm (see references/voice.md).'
+    ? 'No VoxCPM: narrate.py will fall back to Edge online voices (flatter, supports word-level sync). For local neural narration: pip install voxcpm (see references/voice.md).'
     : 'No narration engine: pip install voxcpm (local, natural) or edge-tts (online), or record the lines.');
-  else if (!out.python.cuda) tips.push('VoxCPM is installed but no CUDA GPU: narration works on CPU, several times slower than real time.');
+  else if (!out.python.cuda) tips.push('VoxCPM is installed but PyTorch has no CUDA: narration works on CPU, several times slower than real time.');
   if (out.python.broken_scripts?.length) tips.push(`Kit scripts that do not compile: ${out.python.broken_scripts.join(', ')}. Fix them before use.`);
-  if (!out.python.faster_whisper) tips.push('No faster-whisper: songmap.py --lyrics and narrate.py --takes transcript checks are unavailable (pip install faster-whisper).');
+  if (!out.python.faster_whisper) tips.push('No faster-whisper: songmap.py --lyrics and VoxCPM word-timestamp checks are unavailable (Edge TTS still exports word boundaries natively).');
 }
 if (tips.length) console.log('\n' + tips.join('\n'));

@@ -233,18 +233,39 @@ def label_sections(spans, ssm):
     return labels
 
 
-def transcribe(path, language):
+def transcribe(path, language, device_pref="auto"):
     try:
         from faster_whisper import WhisperModel
     except ImportError:
         print("--lyrics needs faster-whisper (pip install faster-whisper); continuing without words", file=sys.stderr)
         return None
-    model_ref = os.getenv("VC_WHISPER", "large-v3-turbo")
-    try:                                   # ask CTranslate2, not torch: both in one process can crash on Windows
-        import ctranslate2
-        cuda = ctranslate2.get_cuda_device_count() > 0
-    except Exception:
-        cuda = False
+    model_ref = os.getenv("VC_WHISPER")
+    if not model_ref:
+        try:
+            from gpu import resolve_cached_model
+            model_ref = resolve_cached_model([
+                "models--mobiuslabsgmbh--faster-whisper-large-v3-turbo",
+                "models--Systran--faster-whisper-large-v3",
+            ])
+        except Exception:
+            model_ref = None
+    model_ref = model_ref or "large-v3-turbo"
+    cuda = False
+    if device_pref != "cpu":
+        try:                               # ask CTranslate2, not torch: both in one process can crash on Windows
+            import ctranslate2
+            cuda = ctranslate2.get_cuda_device_count() > 0
+        except Exception:
+            cuda = False
+        if cuda and device_pref == "auto":
+            try:
+                from gpu import probe_gpu
+                g = probe_gpu(samples=2, interval=0.25)
+                if g.get("available") and not g.get("whisper_gpu_safe", True):
+                    print(f"GPU busy or low free VRAM ({g.get('guard_note')}); transcribing lyrics on CPU int8 to avoid contention.", file=sys.stderr)
+                    cuda = False
+            except Exception:
+                pass
     if cuda and os.name == "nt":           # cuBLAS often ships only inside torch: let CTranslate2 find it there
         import importlib.util
         spec = importlib.util.find_spec("torch")
@@ -383,6 +404,7 @@ def main():
     ap.add_argument("out", type=Path)
     ap.add_argument("--lyrics", action="store_true", help="transcribe sung lines with faster-whisper")
     ap.add_argument("--language", default=None, help="language code for --lyrics, e.g. zh or en")
+    ap.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto", help="device for --lyrics transcription")
     ap.add_argument("--bpm", type=float, default=None, help="override the tempo estimate")
     ap.add_argument("--meter", type=int, default=4, help="beats per bar")
     ap.add_argument("--fps", type=float, default=30, help="sample rate of the energy curves in the JSON")
@@ -473,7 +495,7 @@ def main():
             for k, e in band_onsets.items()}
     bar_len = 60 / bpm * args.meter
     accent = {k: accents(hits[k], 60 / bpm, 8 * bar_len) for k in ("low", "high")}
-    lyrics = transcribe(args.audio, args.language) if args.lyrics else None
+    lyrics = transcribe(args.audio, args.language, args.device) if args.lyrics else None
 
     args.out.mkdir(parents=True, exist_ok=True)
     data = {

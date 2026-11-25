@@ -1,22 +1,16 @@
-"""Render narration, one WAV per cue, in one consistent voice.
+"""Render narration, one WAV per cue, in one consistent voice — with GPU safety guard and word-level timestamps.
 
-    python narrate.py cues.json voice/ [--voice teacher] [--takes 3] [--engine voxcpm|edge]
+    python narrate.py cues.json voice/ [--voice teacher] [--takes 3] [--engine voxcpm|edge] [--device auto|cuda|cpu]
 
 cues.json is {"id": "spoken line", ...} or a spot.json with a "voice" list of {"id", "words"}.
+Outputs <id>.wav plus vo.js (clip durations) and words.json / words.js (word-level [t0, t1] timestamps).
 
 Engines
   voxcpm  local VoxCPM (pip install voxcpm; GPU recommended). Every cue clones the same voice card, so the
-          whole film has one speaker. --voice names a card in kit/voices/ (teacher, promo, story) or points
-          to your own WAV with a .txt transcript beside it. With VoxCPM2 you can instead describe a voice:
-          --design "一位三十岁左右的女性，声音温暖，语速从容". Model: --model or VC_VOXCPM (a local folder or
-          a Hugging Face id); default openbmb/VoxCPM1.5.
-  edge    Microsoft's online voices through edge-tts (sends the lines to Microsoft). Flatter, used as a
-          fallback when VoxCPM is not installed. --voice zh-CN-XiaoxiaoNeural etc.
-
---takes N renders N versions of each line and keeps the best: the one whose transcript matches the script
-(needs faster-whisper; VC_WHISPER may point to a local model) with no long gap inside and a length close
-to the others. Without faster-whisper it keeps the take with the fewest long gaps.
-Write lines the way they are said: "十五分钟" not "15 分钟", "七点一刻" not "19:15".
+          whole film has one speaker. Checks GPU utilization and free VRAM before allocating CUDA; if the GPU
+          is busy (>=75% util) or low on free VRAM (<4 GiB for 1.5, <7 GiB for 2), exits with code 3 unless
+          --force-gpu or --device cpu is given.
+  edge    Microsoft's online voices through edge-tts (zero GPU; captures native WordBoundary timestamps).
 """
 import argparse
 from array import array
@@ -28,11 +22,54 @@ import re
 import shutil
 import subprocess
 import sys
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+from contextlib import contextmanager
+from tempfile import NamedTemporaryFile, TemporaryDirectory, gettempdir
+import time
 import wave
+
+from gpu import VOXCPM15_SAFE_MIB, VOXCPM2_SAFE_MIB, probe_gpu, resolve_cached_model
 
 FFMPEG = os.getenv("VC_FFMPEG", "ffmpeg")
 VOICES = Path(__file__).resolve().parent / "voices"
+
+
+@contextmanager
+def gpu_narrate_lock(timeout_sec=300):
+    """Serialize local GPU TTS across concurrent narrate.py processes so parallel builds never OOM each other."""
+    lock_path = Path(gettempdir()) / "video-craft-gpu.lock"
+    fh = open(lock_path, "a+b")
+    deadline = time.monotonic() + timeout_sec
+    locked = False
+    try:
+        while True:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    fh.seek(0)
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                locked = True
+                break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    break
+                time.sleep(1.5)
+        yield
+    finally:
+        if locked:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    fh.seek(0)
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+            except OSError:
+                pass
+        fh.close()
 
 
 def read_cues(path):
@@ -65,9 +102,7 @@ def pcm16(samples):
 
 
 def trim(raw, rate, below_peak_db=40, floor_db=-60):
-    """Trim the outer edges only, keeping every pause inside the line. "Silence" is anything 40 dB under the
-    loudest 10 ms of the take (generated takes often start with a soft breath or hiss that a fixed floor keeps,
-    which makes captions lead the voice). Returns (pcm bytes, longest inner gap in seconds)."""
+    """Trim the outer edges only, keeping every pause inside the line. Returns (pcm bytes, longest inner gap, start_sec)."""
     s = array("h")
     s.frombytes(raw)
     if sys.byteorder == "big":
@@ -82,7 +117,7 @@ def trim(raw, rate, below_peak_db=40, floor_db=-60):
         raise ValueError("silent take")
     gaps = [(b - a) / rate for a, b in zip(active, active[1:])]
     start, end = max(0, active[0] - 6 * width), min(len(s), active[-1] + 17 * width)
-    return raw[start * 2:end * 2], max(gaps, default=0)
+    return raw[start * 2:end * 2], max(gaps, default=0), start / rate
 
 
 def write_wav(path, pcm, rate):
@@ -91,9 +126,18 @@ def write_wav(path, pcm, rate):
         w.writeframes(pcm)
 
 
-# ---------------------------------------------------------------- choosing among takes
+def atomic_write_text(target: Path, content: str):
+    with NamedTemporaryFile("w", encoding="utf-8", newline="\n", dir=target.parent, delete=False) as sibling:
+        sibling.write(content)
+        staged = Path(sibling.name)
+    try:
+        staged.replace(target)
+    finally:
+        staged.unlink(missing_ok=True)
+
+
+# ---------------------------------------------------------------- choosing among takes & word alignment
 def guess_language(texts):
-    """zh when the script is mostly Chinese characters, else en (override with --language)."""
     joined = "".join(texts)
     han = len(re.findall(r"[一-鿿]", joined))
     letters = len(re.findall(r"[A-Za-z]", joined))
@@ -103,7 +147,6 @@ def guess_language(texts):
 def plain(s, language):
     s = s.lower()
     if language == "zh":
-        # recognisers write numbers as digits; compare them as Chinese numerals so "5号" matches "五号"
         s = s.translate(str.maketrans("0123456789", "零一二三四五六七八九"))
     return re.sub(r"[^\w]", "", s)
 
@@ -119,42 +162,69 @@ def char_errors(ref, hyp, language):
 
 
 def transcribe_all(job):
-    """Runs in its own process: faster-whisper and torch in one process crash on Windows (two CUDA/OpenMP runtimes)."""
+    """Runs in its own CPU int8 process: avoids Windows torch+CTranslate2 OpenMP clash and zero GPU contention."""
     from faster_whisper import WhisperModel
     data = json.loads(Path(job).read_text(encoding="utf-8"))
-    model = WhisperModel(os.getenv("VC_WHISPER", "large-v3-turbo"), device="cpu", compute_type="int8")
+    w_ref = os.getenv("VC_WHISPER") or resolve_cached_model([
+        "models--mobiuslabsgmbh--faster-whisper-large-v3-turbo",
+        "models--Systran--faster-whisper-large-v3",
+    ]) or "large-v3-turbo"
+    model = WhisperModel(w_ref, device="cpu", compute_type="int8")
     out = {}
     for item in data["takes"]:
-        segs, _ = model.transcribe(item["path"], language=data["language"], beam_size=5, vad_filter=False,
-                                   initial_prompt="以下是普通话的句子。" if data["language"] == "zh" else None)
-        out[item["path"]] = "".join(x.text for x in segs)
+        segs, _ = model.transcribe(
+            item["path"],
+            language=data["language"],
+            beam_size=5,
+            vad_filter=False,
+            word_timestamps=True,
+            initial_prompt="以下是普通话的句子。" if data["language"] == "zh" else None,
+        )
+        segs = list(segs)
+        words = [
+            {"w": w.word.strip(), "t0": round(float(w.start), 3), "t1": round(float(w.end), 3)}
+            for seg in segs for w in (seg.words or []) if w.word and w.word.strip()
+        ]
+        out[item["path"]] = {"text": "".join(x.text for x in segs), "words": words}
     Path(job).write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
 
 
 def heard(rendered, temp, language):
-    """{take path: transcript} or {} when faster-whisper is unavailable"""
+    """{take path: {"text": str, "words": list}} or {} when faster-whisper is unavailable."""
+    takes_to_check = [{"path": str(t[0])} for _, _, takes, _ in rendered for t in takes]
+    if not takes_to_check:
+        return {}
     job = temp / "transcribe.json"
-    job.write_text(json.dumps({"language": language, "takes": [
-        {"path": str(path)} for _, _, takes, _ in rendered for path, _, _ in takes]}), encoding="utf-8")
+    job.write_text(json.dumps({"language": language, "takes": takes_to_check}), encoding="utf-8")
     run = subprocess.run([sys.executable, __file__, "--transcribe", str(job)], capture_output=True, text=True)
     if run.returncode:
         last = (run.stderr.strip().splitlines() or ["unknown error"])[-1]
-        print(f"(no transcript check: {last}; choosing takes by pauses and length)", flush=True)
+        print(f"(no faster-whisper check: {last})", flush=True)
         return {}
     return json.loads(job.read_text(encoding="utf-8"))
 
 
+def transcript_text(entry):
+    if isinstance(entry, dict):
+        return entry.get("text", "")
+    return entry or ""
+
+
+def transcript_words(entry):
+    if isinstance(entry, dict):
+        return entry.get("words") or []
+    return []
+
+
 def pick(takes, text, transcripts, language):
-    """takes: [(path, seconds, longest_gap)] → index of the best: right words first, then no odd pause,
-    then (with three or more takes) a length close to the typical one — an unusually long or short take
-    is often a stumble or a rushed read."""
     if len(takes) == 1:
         return 0
     lens = sorted(t[1] for t in takes)
     median = lens[len(lens) // 2]
     scores = []
-    for path, secs, gap in takes:
-        err = char_errors(text, transcripts[str(path)], language) if str(path) in transcripts else 0.0
+    for t in takes:
+        path, secs, gap = t[0], t[1], t[2]
+        err = char_errors(text, transcript_text(transcripts.get(str(path))), language) if str(path) in transcripts else 0.0
         typical = abs(secs - median) / median if len(takes) >= 3 else 0.0
         scores.append(err * 4 + max(0.0, gap - 0.7) + typical)
         note = f", transcript error {err:.0%}" if transcripts else ""
@@ -175,65 +245,155 @@ def find_card(voice):
 
 
 def voxcpm_takes(cues, temp, args):
-    try:
-        import torch
-        from voxcpm import VoxCPM
-    except ImportError:
-        raise SystemExit("VoxCPM is not installed here (pip install voxcpm). Use --engine edge, or supply recorded takes.")
-    model_id = args.model or os.getenv("VC_VOXCPM") or "openbmb/VoxCPM1.5"
-    model = VoxCPM.from_pretrained(model_id, load_denoiser=False, optimize=False)
-    rate = model.tts_model.sample_rate
-    if args.design and type(model.tts_model).__name__ != "VoxCPM2Model":
-        raise SystemExit("--design needs a VoxCPM2 model (--model openbmb/VoxCPM2); VoxCPM1.5 would read the description aloud.")
-    if args.design:
-        prompt = {}
-        prefix = f"({args.design.strip('()（）')})"
-    else:
-        card, card_text = find_card(args.voice or "teacher")
-        prompt = {"prompt_wav_path": str(card), "prompt_text": card_text}
-        prefix = ""
-    for key, line in cues.items():
-        out = []
-        for k in range(args.takes):
-            torch.manual_seed(args.seed + k)
-            wav = model.generate(text=prefix + line, cfg_value=args.cfg, inference_timesteps=args.steps,
-                                 normalize=False, denoise=False, retry_badcase=True, **prompt)
-            pcm, gap = trim(pcm16(wav.tolist()), rate)
-            path = temp / f"{key}.take{k}.wav"
-            write_wav(path, pcm, rate)
-            out.append((path, len(pcm) / (2 * rate), gap))
-        yield key, line, out, rate
+    if args.device == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    model_id = args.model or os.getenv("VC_VOXCPM")
+    if not model_id:
+        model_id = resolve_cached_model(["OpenBMB--VoxCPM2", os.path.join("OpenBMB", "VoxCPM2"), "models--openbmb--VoxCPM2"]) if args.design else (
+            resolve_cached_model(["OpenBMB--VoxCPM1.5", os.path.join("OpenBMB", "VoxCPM1.5"), "models--openbmb--VoxCPM1.5"]) or "openbmb/VoxCPM1.5"
+        )
+    need_mib = VOXCPM2_SAFE_MIB if (args.design or "voxcpm2" in str(model_id).lower()) else VOXCPM15_SAFE_MIB
+
+    with gpu_narrate_lock():
+        if args.device != "cpu" and not args.force_gpu:
+            g = probe_gpu(samples=3, interval=0.35)
+            for _ in range(3):
+                if not (g.get("available") and (g.get("busy") or g.get("memory_free_mib", 0) < need_mib)):
+                    break
+                time.sleep(12.0)
+                g = probe_gpu(samples=3, interval=0.35)
+            if g.get("available"):
+                if g.get("busy") or g.get("memory_free_mib", 0) < need_mib:
+                    sys.stderr.write(
+                        f"GPU resource guard triggered on {g.get('name')}: "
+                        f"utilization {g.get('utilization_percent')}%, free VRAM {g.get('memory_free_mib')} MiB "
+                        f"(need >= {need_mib} MiB and < 75% util).\n"
+                        f"Action: in an interactive session, inform the user and ask whether to wait, switch to "
+                        f"`--engine edge` (zero GPU, exports word timestamps), run `--device cpu`, or pass `--force-gpu`.\n"
+                    )
+                    raise SystemExit(3)
+            elif args.device == "cuda":
+                raise SystemExit(f"CUDA requested, but GPU probe reported state={g.get('state')}: {g.get('note', '')}")
+
+        try:
+            import torch
+            from voxcpm import VoxCPM
+        except ImportError:
+            raise SystemExit("VoxCPM is not installed here (pip install voxcpm). Use --engine edge, or supply recorded takes.")
+
+        model = VoxCPM.from_pretrained(model_id, load_denoiser=False, optimize=False)
+        rate = model.tts_model.sample_rate
+        if args.design and type(model.tts_model).__name__ != "VoxCPM2Model":
+            raise SystemExit("--design needs a VoxCPM2 model (--model openbmb/VoxCPM2); VoxCPM1.5 would read the description aloud.")
+        if args.design:
+            prompt = {}
+            prefix = f"({args.design.strip('()（）')})"
+        else:
+            card, card_text = find_card(args.voice or "teacher")
+            prompt = {"prompt_wav_path": str(card), "prompt_text": card_text}
+            prefix = ""
+        for key, line in cues.items():
+            out = []
+            for k in range(args.takes):
+                torch.manual_seed(args.seed + k)
+                wav = model.generate(text=prefix + line, cfg_value=args.cfg, inference_timesteps=args.steps,
+                                     normalize=False, denoise=False, retry_badcase=True, **prompt)
+                pcm, gap, _ = trim(pcm16(wav.tolist()), rate)
+                path = temp / f"{key}.take{k}.wav"
+                write_wav(path, pcm, rate)
+                out.append((path, len(pcm) / (2 * rate), gap, None))
+            yield key, line, out, rate
+
+
+def _parse_vtt_words(vtt_path: Path):
+    if not vtt_path.is_file():
+        return []
+    ts_re = re.compile(r"(\d+):(\d+):(\d+[.,]\d+)\s*-->\s*(\d+):(\d+):(\d+[.,]\d+)")
+    def sec(h, m, s):
+        return int(h) * 3600 + int(m) * 60 + float(s.replace(",", "."))
+    out = []
+    lines = vtt_path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    i = 0
+    while i < len(lines):
+        m = ts_re.search(lines[i])
+        if m:
+            t0 = sec(m.group(1), m.group(2), m.group(3))
+            t1 = sec(m.group(4), m.group(5), m.group(6))
+            i += 1
+            txt = []
+            while i < len(lines) and lines[i].strip():
+                txt.append(lines[i].strip())
+                i += 1
+            joined = " ".join(txt).strip()
+            if joined:
+                out.append({"w": joined, "t0": t0, "t1": t1})
+        i += 1
+    return out
 
 
 def edge_takes(cues, temp, args):
-    try:
-        import edge_tts
-    except ImportError:
-        raise SystemExit("Install edge-tts in this Python environment, or supply recorded takes.")
     rate = 24000
-    # a card name (teacher, promo…) means nothing to Edge: fall back to a default voice in the script's language
     fallback = "en-US-AriaNeural" if (args.language or guess_language(cues.values())) == "en" else "zh-CN-XiaoxiaoNeural"
     voice = args.voice if args.voice and "Neural" in args.voice else fallback
+    try:
+        import edge_tts
+        has_mod = True
+    except ImportError:
+        edge_tts = None
+        has_mod = False
+        edge_cli = shutil.which("edge-tts")
+        if not edge_cli:
+            raise SystemExit("Install edge-tts in this Python environment or on PATH, or supply recorded takes.")
 
     async def one(line, mp3):
         for attempt in range(3):
             try:
-                await edge_tts.Communicate(line, voice, rate=args.rate).save(str(mp3))
-                return
+                audio_bytes = bytearray()
+                boundaries = []
+                try:
+                    comm = edge_tts.Communicate(line, voice, rate=args.rate, boundary="WordBoundary")
+                except TypeError:
+                    comm = edge_tts.Communicate(line, voice, rate=args.rate)
+                async for chunk in comm.stream():
+                    ctype = chunk.get("type")
+                    if ctype == "audio":
+                        audio_bytes.extend(chunk["data"])
+                    elif ctype in ("WordBoundary", "SentenceBoundary") and chunk.get("text", "").strip():
+                        t0 = chunk["offset"] / 1e7
+                        t1 = (chunk["offset"] + chunk["duration"]) / 1e7
+                        boundaries.append({"w": chunk["text"].strip(), "t0": t0, "t1": t1})
+                mp3.write_bytes(bytes(audio_bytes))
+                return boundaries
             except (OSError, RuntimeError, edge_tts.exceptions.EdgeTTSException) as error:
                 if attempt == 2:
                     raise RuntimeError(f"Voice request failed: {error}") from error
                 await asyncio.sleep(1.5 * (attempt + 1))
+        return []
 
     for key, line in cues.items():
-        mp3 = temp / "received.mp3"
-        asyncio.run(one(line, mp3))
+        mp3 = temp / f"{key}.received.mp3"
+        if has_mod:
+            raw_words = asyncio.run(one(line, mp3))
+        else:
+            vtt = temp / f"{key}.received.vtt"
+            subprocess.run([edge_cli, f"--voice={voice}", f"--rate={args.rate}", "--text", line,
+                            f"--write-media={mp3}", f"--write-subtitles={vtt}"], check=True)
+            raw_words = _parse_vtt_words(vtt)
         raw = subprocess.check_output([FFMPEG, "-nostdin", "-v", "error", "-i", str(mp3),
                                        "-ac", "1", "-ar", str(rate), "-f", "s16le", "-"])
-        pcm, gap = trim(raw, rate)
+        pcm, gap, start_sec = trim(raw, rate)
+        dur = len(pcm) / (2 * rate)
         path = temp / f"{key}.take0.wav"
         write_wav(path, pcm, rate)
-        yield key, line, [(path, len(pcm) / (2 * rate), gap)], rate
+        words = [
+            {
+                "w": w["w"],
+                "t0": round(max(0.0, w["t0"] - start_sec), 3),
+                "t1": round(min(dur, max(0.02, w["t1"] - start_sec)), 3),
+            }
+            for w in raw_words
+        ] if raw_words else None
+        yield key, line, [(path, dur, gap, words)], rate
 
 
 def main():
@@ -245,6 +405,8 @@ def main():
     ap.add_argument("script", type=Path)
     ap.add_argument("output", type=Path)
     ap.add_argument("--engine", choices=["voxcpm", "edge"], help="default: voxcpm when installed, else edge")
+    ap.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto", help="compute device for voxcpm")
+    ap.add_argument("--force-gpu", action="store_true", help="bypass GPU busy / free-VRAM safety guard")
     ap.add_argument("--voice", help="voxcpm: card name in kit/voices or a WAV path; edge: voice name")
     ap.add_argument("--design", help="VoxCPM2 only: describe the voice instead of cloning a card")
     ap.add_argument("--model", help="VoxCPM model folder or Hugging Face id (or set VC_VOXCPM)")
@@ -255,6 +417,7 @@ def main():
     ap.add_argument("--language", help="zh or en for the transcript check; default: guessed from the script")
     ap.add_argument("--rate", default="+0%", help="edge only, e.g. --rate=-5%%")
     ap.add_argument("--format", choices=["wav", "mp3"], default="wav")
+    ap.add_argument("--no-words", action="store_true", help="skip word-level timestamp extraction")
     args = ap.parse_args()
 
     engine = args.engine
@@ -274,11 +437,23 @@ def main():
         rendered = list(source(cues, temp, args))
         language = args.language or guess_language(cues.values())
         transcripts = heard(rendered, temp, language) if args.takes > 1 else {}
+
+        chosen = []
         for key, line, takes, rate in rendered:
             if len(takes) > 1:
                 print(f"{key}:", flush=True)
             best = pick(takes, line, transcripts, language)
-            path, secs, gap = takes[best]
+            chosen.append((key, line, takes[best], rate, len(takes), best))
+
+        if not args.no_words and args.takes == 1:
+            need_whisper = [(key, line, [take], rate) for key, line, take, rate, _, _ in chosen if not take[3]]
+            if need_whisper:
+                transcripts.update(heard(need_whisper, temp, language))
+
+        durs_out = {}
+        words_out = {}
+        for key, line, take, rate, total_takes, best in chosen:
+            path, secs, gap, native_words = take
             name = f"{key}.{args.format}"
             final = temp / name
             if args.format == "wav":
@@ -287,9 +462,13 @@ def main():
                 subprocess.run([FFMPEG, "-nostdin", "-v", "error", "-y", "-i", str(path),
                                 "-c:a", "libmp3lame", "-b:a", "160k", str(final)], check=True)
             ready.append(name)
+            durs_out[key] = round(secs, 3)
+            wlist = native_words if native_words is not None else transcript_words(transcripts.get(str(path)))
+            words_out[key] = {"duration": round(secs, 3), "text": line, "words": wlist}
             flag = f"  ⚠ {gap:.1f} s pause inside — listen" if gap > 1.0 else ""
-            print(f"{key}: {secs:.2f} s{f' (take {best + 1} of {len(takes)})' if len(takes) > 1 else ''}{flag}", flush=True)
-        # Commit only after every line rendered. Copy beside the user's media so the file gets normal permissions.
+            wtag = f", {len(wlist)} word cues" if wlist else ""
+            print(f"{key}: {secs:.2f} s{f' (take {best + 1} of {total_takes})' if total_takes > 1 else ''}{wtag}{flag}", flush=True)
+
         for name in ready:
             with NamedTemporaryFile(dir=args.output, delete=False) as sibling:
                 staged = Path(sibling.name)
@@ -298,6 +477,18 @@ def main():
                 staged.replace(args.output / name)
             finally:
                 staged.unlink(missing_ok=True)
+
+        atomic_write_text(
+            args.output / "vo.js",
+            f"// voice-over clip lengths in seconds, measured by narrate.py\nexport default {json.dumps(durs_out, indent=2)};\n",
+        )
+        if not args.no_words:
+            blob = json.dumps(words_out, ensure_ascii=False, indent=2)
+            atomic_write_text(args.output / "words.json", blob + "\n")
+            atomic_write_text(
+                args.output / "words.js",
+                f"// cue durations and word-level timestamps in seconds, exported by narrate.py\nexport default {blob};\n",
+            )
 
 
 if __name__ == "__main__":
