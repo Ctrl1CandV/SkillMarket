@@ -23,7 +23,7 @@
 | [skill-search](skill-search/) | 技能搜索方法的设计审查、触发条件与范围优化记录、待办；0.3.0 增加借鉴用途，尚未在真实检索里试过 |
 | [presentation-craft](presentation-craft/) | 免费原生 PPTX 与基本动画方案审查、六种风格方向、脚本回归及示例源稿、待办；0.3.0 的[模型实测记录](presentation-craft/evals/pi-run-2026-11-12/README.md)与两份待补做真实渲染的成品 |
 | [git-governance](git-governance/) | Git 官方来源核验、隔离仓库中的 9 项操作语义检查与场景复核记录；1.1.0 增加文件去向清单与提交标题规则，未做模型实测 |
-| [video-craft](video-craft/) | [人声升级与原声 MV 独立考核](video-craft/README.md)，含普通话神经旁白、原创整句演唱、教学与真实产品操作样片。 |
+| [video-craft](video-craft/) | [1.0.0 双轨重构与硬核讲题三方盲评](video-craft/README.md)：承载力双闸门、离线 MathJax SVG 公式变形与无框空间涌现引擎 `lesson.js`、词级时间戳同步、`boardcheck.mjs` 版面体检，以及 `gpt-6.1-sol` / `deepseek-flash` 双模型异题盲评报告；含 `0.9.0` 存档与前期人声/MV 考核记录。 |
 | [imagecraft](imagecraft/) | [第二轮交接](imagecraft/review-2026-11-02.md)：56 张 Z/FLUX 配对、五次显存预留探针、26 张提示词对照；官方订阅脚本无字素材及中文界面已分别授权实测，中文 130 处指定可见内容匹配，额外刻度和尺寸偏离另记，不称完整契约通过。88 项回归与静态复核；历史评测、逐图脱敏记录和运行入口见 [README](imagecraft/README.md)。0.3.1 在没有出图通道的环境里做了[模型行为实测](imagecraft/eval-pi-routing-2026-11-12.md)，修正显卡检测；真正的出图这轮没有验证 |
 
 页面样例 `evening-radio.html`、`field-notes.html` 位于 [frontend-craft/evals/](frontend-craft/evals/)，由 frontend-craft v0.2.0 生成。

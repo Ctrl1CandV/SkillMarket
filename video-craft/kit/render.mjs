@@ -1,9 +1,9 @@
 // render.mjs — drive a seekable page in headless Chromium.
 // usage:
-//   node render.mjs <page.html> stills <outdir> <t1> <t2> ...         full-res PNG per time
+//   node render.mjs <page.html> stills <outdir> <t1> <t2> ... [--scale s]  full-res (or scaled) PNG per time
 //   node render.mjs <page.html> sheet <out.jpg> [--every 1] [--cols 8] [--w 220] [--from a] [--to b] [--times a,b,c] [--still 2]
 //   node render.mjs <page.html> strip <out.jpg> --at t1,t2 [--offsets -10,-4,-1,0,1,4,10] [--w 200]
-//   node render.mjs <page.html> video <out.webm|out.mp4> [--from a] [--to b] [--crf n] [--audio track.webm] [--mux out-av.webm]
+//   node render.mjs <page.html> video <out.webm|out.mp4> [--from a] [--to b] [--fps n] [--scale s] [--draft] [--crf n] [--audio track.webm] [--srt subs.srt] [--mux out-av.mp4]
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -13,14 +13,19 @@ import { checkAudioStart } from './media.mjs';
 
 const argv = process.argv.slice(2);
 const [pagePath, mode, target, ...rest] = argv;
+const hasFlag = (k) => rest.includes('--' + k);
 const opt = (k, d) => { const i = rest.indexOf('--' + k); return i >= 0 ? rest[i + 1] : d; };
-const positional = rest.filter((x, i) => !x.startsWith('--') && !(i > 0 && rest[i - 1].startsWith('--')));
+const FLAG_ONLY = new Set(['draft']);
+const positional = rest.filter((x, i) => !x.startsWith('--') && !(i > 0 && rest[i - 1].startsWith('--') && !FLAG_ONLY.has(rest[i - 1].slice(2))));
+const isDraft = hasFlag('draft');
+const scale = parseFloat(opt('scale', isDraft ? '0.5' : '1'));
 
 if (mode === 'video' && opt('audio')) checkAudioStart(FFMPEG, opt('audio'), Number(opt('from', '0')));
 const browser = await launch();
 
 async function openPage() {
-  const page = await browser.newPage({ viewport: { width: 400, height: 400 } });
+  const ctx = await browser.newContext({ viewport: { width: 400, height: 400 }, deviceScaleFactor: scale });
+  const page = await ctx.newPage();
   page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.error('[page]', m.text()); });
   page.on('pageerror', (e) => console.error('[pageerror]', e.message));
   await page.goto(fileUrl(pagePath));
@@ -136,35 +141,42 @@ if (mode === 'stills') {
   await sheet(imgs, labels, target, { cols: offs.length, w: +opt('w', aspect > 1 ? 220 : 150), aspect, title: 'cut strips' });
   console.log('strip', imgs.length, '→', target);
 } else if (mode === 'video') {
+  const fps = parseFloat(opt('fps', isDraft ? '15' : String(v.duration > 0 ? v.fps : 30)));
   const from = parseFloat(opt('from', '0')), to = parseFloat(opt('to', String(v.duration)));
-  const n = Math.round((to - from) * v.fps);
+  const n = Math.round((to - from) * fps);
   mkdirSync(dirname(resolve(target)), { recursive: true });
+  const outW = Math.round(v.width * scale), outH = Math.round(v.height * scale);
+  const evenPad = (outW % 2 || outH % 2) ? ['-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2'] : [];
   // .webm → VP9 (works with minimal ffmpeg builds); .mp4 → H.264 (needs libx264)
   const codec = target.endsWith('.mp4')
-    ? ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', opt('crf', '18'), '-preset', 'medium', '-movflags', '+faststart']
-    : ['-c:v', 'libvpx-vp9', '-pix_fmt', 'yuv420p', '-b:v', '0', '-crf', opt('crf', '30'), '-row-mt', '1', '-deadline', 'good', '-cpu-used', '4', '-g', '60'];
-  const ff = spawn(FFMPEG, ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-framerate', String(v.fps), '-i', 'pipe:0', ...codec, target], { stdio: ['pipe', 'inherit', 'inherit'] });
+    ? ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', opt('crf', isDraft ? '24' : '18'), '-preset', isDraft ? 'ultrafast' : 'medium', '-movflags', '+faststart']
+    : ['-c:v', 'libvpx-vp9', '-pix_fmt', 'yuv420p', '-b:v', '0', '-crf', opt('crf', isDraft ? '35' : '30'), '-row-mt', '1', '-deadline', 'good', '-cpu-used', isDraft ? '6' : '4', '-g', '60'];
+  const ff = spawn(FFMPEG, ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-framerate', String(fps), '-i', 'pipe:0', ...evenPad, ...codec, target], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((r, j) => ff.on('close', (c) => (c === 0 ? r() : j(new Error('ffmpeg ' + c)))));
   const t0 = Date.now();
+  const jpegQ = isDraft ? 84 : 94;
   for (let i = 0; i < n; i++) {
-    const buf = await shot(page, from + i / v.fps, 'jpeg', 94);
+    const buf = await shot(page, from + i / fps, 'jpeg', jpegQ);
     if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
-    if (i % 150 === 0) process.stderr.write(`frame ${i}/${n} ${((Date.now() - t0) / 1000).toFixed(0)}s\n`);
+    if (i % 150 === 0) process.stderr.write(`frame ${i}/${n} (${outW}x${outH}@${fps}fps) ${((Date.now() - t0) / 1000).toFixed(0)}s\n`);
   }
   ff.stdin.end();
   await done;
-  console.log('video', n, 'frames →', target, ((Date.now() - t0) / 1000).toFixed(0) + 's');
+  console.log('video', n, `frames (${outW}x${outH}@${fps}fps) →`, target, ((Date.now() - t0) / 1000).toFixed(0) + 's');
   if (opt('audio')) {
     const muxed = opt('mux', target.replace(/\.(webm|mp4)$/, '-av.$1'));
     mkdirSync(dirname(resolve(muxed)), { recursive: true });
-    const audio = opt('audio');
+    const audio = opt('audio'), srt = opt('srt');
     const acodec = muxed.endsWith('.mp4')
       ? ['-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart']
       : from === 0 && /\.(webm|opus)$/i.test(audio) ? ['-c:a', 'copy'] : ['-c:a', 'libopus'];
-    // A soundtrack shares the scene's timeline, including when previewing a later shot.
     const seekAudio = from > 0 ? ['-ss', String(from)] : [];
-    await new Promise((r, j) => spawn(FFMPEG, ['-y', '-loglevel', 'error', '-i', target, ...seekAudio, '-i', audio,
-      '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', ...acodec, '-t', String(n / v.fps), muxed],
+    const subIn = srt ? [...seekAudio, '-i', srt] : [];
+    const subMap = srt
+      ? ['-map', '2:s:0', '-c:s', muxed.endsWith('.mp4') ? 'mov_text' : 'webvtt', '-metadata:s:s:0', 'language=zho']
+      : [];
+    await new Promise((r, j) => spawn(FFMPEG, ['-y', '-loglevel', 'error', '-i', target, ...seekAudio, '-i', audio, ...subIn,
+      '-map', '0:v:0', '-map', '1:a:0', ...subMap, '-c:v', 'copy', ...acodec, '-t', String(n / fps), muxed],
     { stdio: 'inherit' }).on('close', (c) => (c === 0 ? r() : j(new Error('mux ' + c)))));
     console.log('muxed →', muxed);
   }

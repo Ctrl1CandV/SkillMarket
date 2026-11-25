@@ -4,6 +4,7 @@
 
 | 工程 | 看什么 | 从哪里改 |
 |---|---|---|
+| [斜拉极值与摩擦角](stem-lesson/brief.md) · 36 秒理工讲题 | 无框深空舞台上滑块匀速运动与热摩擦光晕、极坐标轨迹扇相切涌现、MathJax 公式跨步变形，以及三力从物块剥离飞入空中闭合成直角三角形 | 换 `data.js` 的物理/数学函数、`cues.json` 的口语讲稿与 `scene.js` 的 `\id{key}{...}` 公式及矢量坐标；做法见[课程与讲题制作指南](../references/course-and-stem.md) |
 | [九枚硬币，只称两次](worked-lesson/brief.md) · 70 秒教学 | 观察天平，排除六枚，用另一组称量结果自行解题 | 改 [四字段变体卡](worked-lesson/variant.json) 的称量结果、问句或思考时间，即可重算旁白与画面 |
 | [纸鸟](sung-mv/brief.md) · 23 秒歌曲 MV | 听两句“飞呀”的音高和时值，观察同一只鸟在两次呼唤时占多大画面 | 从[命名镜头剪辑](sung-mv/excerpt.mjs)选“第二次飞呀”到“落在掌心”，或用自己的母带替换[逐字旋律](sung-mv/song.mjs) |
 | [开场，提前十五分](product-spot/brief.md) · 26 秒软件广告 | 一个临时变更如何影响后台全组；真实下载的台本兑现片尾承诺 | 只把原时刻和提前量交给[改期工具](product-spot/retime.mjs)，再打开[实际软件](product-spot/product.html)核对重排结果 |

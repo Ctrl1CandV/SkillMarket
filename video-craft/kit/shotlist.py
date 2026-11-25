@@ -87,6 +87,8 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("film", type=Path)
+    ap.add_argument("--mode", choices=["general", "lesson"], default="general",
+                    help="'lesson' checks localized board/diagram motion and allows natural formula reading holds")
     ap.add_argument("--song", type=Path, help="songmap.json of the recording used in the film")
     ap.add_argument("--offset", type=float, default=0.0,
                     help="song seconds at film 0, when the film uses an excerpt (the T0 of the scene)")
@@ -152,12 +154,19 @@ def main():
         flags.append(f"{mm(t0)}–{mm(t1)}: white for {t1 - t0:.1f} s")
     black_total = float((luma < 0.035).sum() / fps)
     # Stillness: compare each frame with the one a second earlier (grain and drifting dust average out),
-    # never across a cut. Under 7 % of the picture changing in a second reads as a held frame.
+    # never across a cut. In 'lesson' mode, localized vector/formula motion in any 8×4 tile counts as active,
+    # and up to 4.5 s of steady reading hold is normal while the narrator finishes a step.
     lag = max(1, int(round(fps)))
     changed = np.ones(len(v), dtype=bool)
     if len(v) > lag:
-        share = (np.abs(v[lag:] - v[:-lag]) > 4 / 255).mean(axis=(1, 2))
-        changed[lag:] = share >= 0.07
+        delta = np.abs(v[lag:] - v[:-lag]) > 4 / 255
+        share = delta.mean(axis=(1, 2))
+        if args.mode == "lesson":
+            # W=128 (8×16), H=72 (4×18): max active pixel share in any localized board region
+            tiles = delta.reshape(-1, 4, 18, 8, 16).mean(axis=(2, 4)).max(axis=(1, 2))
+            changed[lag:] = (share >= 0.03) | (tiles >= 0.08)
+        else:
+            changed[lag:] = share >= 0.07
         for c in cuts:
             changed[c:c + lag] = True
     still = ~changed & (luma >= 0.035)
@@ -168,8 +177,9 @@ def main():
             merged[-1][1] = max(merged[-1][1], t1)
         else:
             merged.append([t0, t1])
+    min_hold = 4.5 if args.mode == "lesson" else 2.0
     for t0, t1 in merged:
-        if t1 - t0 >= 2.0:
+        if t1 - t0 >= min_hold:
             flags.append(f"{mm(t0)}–{mm(t1)}: little changes for {t1 - t0:.1f} s. A held look, or did the shot "
                          f"stop after its last move? Give the camera, light or subject something to do, or cut sooner.")
 

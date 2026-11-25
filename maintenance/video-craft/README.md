@@ -1,5 +1,34 @@
 # video-craft 维护记录
 
+## 1.0.0 · 承载力双闸门、课程与视听双轨隔离、无框理工讲题引擎
+
+用户指出此前版本做出的视频“不够满意”，核心场景第一优先级是**硬核课程与考研讲题**（重在内容深度、推导逻辑与纯净声音），其次才是产品宣传与 MV（重在视听氛围），并提出三项要求：① 两类轨道应当分割开，互不串味；② 保持轻量架构，但允许引入真正轻量好用的库，并支持按设备条件分层；③ AI 开工前必须预判本机显卡占用与代码表达边界，做不到就如实告知，不硬凑充数。
+
+### 调研与两轮亲手样片实验
+
+1. **外部技术拆解**（见 [2026-11-25-phase1-research.md](reports/2026-11-25-phase1-research.md)）：对比 Manim `TransformMatchingTex`/`MovingCameraScene`、Motion Canvas 时间锚点、Typst WASM 与 MathJax v3 `tex-svg-full.js` `\cssId` 子项寻址，确认无需安装数 GB 的 TeXLive/Manim 重依赖，仅凭内置 2.2 MB 离线 MathJax v3 SVG + 纯函数 SVG 原语即可实现出版级公式子项弧线变形与 `1920×1080 @ 30fps` 近 1:1 实时渲染。
+2. **第一版真题样片 `v1`（`lab/mechanics-extremum/`，125 秒斜拉力学极值与自锁）**：验证了 MathJax 子项变色变形、本地离线 `VoxCPM1.5` 467 个词级时间戳同步与 `.srt` 软字幕轨。但用户观看后评价“讲解很清楚，但中规中矩，没有很惊艳”。
+3. **诊断与第二版破局样片 `v2`（`lab/mechanics-cinematic-v2/`，36 秒无框空间涌现版）**：定位出“中规中矩”源于顶栏黑条 + 左右圆角卡片框的“网页后台看板感”以及静态物块。在 `kit/lesson.js` 补齐 `#vc-glow` 光学辉光、滚动剖面地面（`svgSurface` `scroll`）、底面热摩擦动态光晕、极坐标扫描相切轨迹扇（`svgLocusFan`）与力矢量脱离物块升空闭合成直角三角形（`svgMorphArrow`）后，用户确认“打破了中规中矩的感觉，已经来到了一个很惊艳的讲解视频的地步”。
+
+### 改了什么
+
+| 文件 | 内容 |
+|---|---|
+| `kit/gpu.py`（新）、`doctor.mjs`、`env.mjs` | 多次采样 `nvidia-smi` 区分正常、高负载（利用率 ≥75% 或空闲显存不足）与沙箱遮挡（`present_but_inaccessible`），离线自动解析本机 ModelScope/HF 模型缓存，自动回退可用浏览器与 `VC_SOFTWARE_GL=1` |
+| `kit/narrate.py`、`songmap.py`、`audio.mjs`、`render.mjs` | `narrate.py` 加跨进程 GPU 互斥锁、显存护栏（退出码 `3`）、`VoxCPM` CPU `int8` 词级对齐与 `edge-tts` 原生词边界导出（写出 `vo/words.js`）；`audio.mjs` 支持传 `'-'` 直出 `-16 LUFS` 纯净人声轨与 `--srt`；`render.mjs` 加 `--draft`（`960×540@15fps` 6–8 倍速快渲预览，严禁用于最终交付）与 `--srt` MP4 软字幕封装 |
+| `kit/lesson.js`（新）+ `kit/vendor/mathjax/` | 离线 MathJax v3 `tex-svg-full.js`（Apache-2.0）、`\id{key}{expr}` 子项编译、弧线平滑变形 `morphFormula`、信号框 `highlightPart`、词级时间线 `buildTimeline`（支持同句第 `n` 次出现）、2D 焦点相机与 3D 透视相机、光学辉光舞台、滚动表面/刚体/弹簧/`svgMorphArrow` 矢量剥离/`svgLocusFan` 极坐标轨迹扇/坐标系曲线/算法数组与节点图 |
+| `kit/boardcheck.mjs`（新）、`shotlist.py` | 自动逐帧检查文字与公式重叠、安全边距裁切、过小字号及几何实线穿字（`line_crosses_label`）；`shotlist.py --mode lesson` 改用 `8×4` 局部网格运动检测与 4.5 秒阅读阈值，消除逼讲题片硬切的全屏 7% 变化误报 |
+| `SKILL.md`、`references/course-and-stem.md`（新）、`examples/stem-lesson/`（新） | 入口前置硬件与表达边界双闸门，按「课程与讲题轨」与「宣传与视听轨」隔离分流；固化去看板化无框舞台、防三遍复读与标准模板 |
+| `maintenance/video-craft/archive-0.9.0/` | 完整归档 `0.9.0` 入口与 15 份参考文档 |
+
+### 跨模型异题三方盲评（2026-11-26）
+
+使用 `openai/gpt-6.1-sol`（高数/物理：费马最短时间推导折射定律）与 `deepseek/deepseek-flash`（408 计网：TCP 拥塞窗口 AIMD 与快重传 vs 超时）各跑「无技能 vs `0.9.0` vs `1.0.0`」共 6 支 1080p 有声成片，先盲审排序再拆签（完整数据见 [`evals/2026-11-26-stem-blind/REPORT.md`](evals/2026-11-26-stem-blind/REPORT.md)）：
+
+- **盲审排名**：两道题在未拆盲签前排出的第 1 名均断层命中 **`1.0.0`**（第 2 名均为 `0.9.0`，第 3 名均为无技能）。
+- **双轨路由与成本**：两模型在 `1.0.0` 下均 100% 精准只读 `course-and-stem.md`、0 次误读 MV/写景文档；相比 `0.9.0`，`gpt-6.1-sol` 花费下降 **35.6%**（`$0.664 → $0.427`），`deepseek-flash` 花费下降 **47.6%**（`$0.621+ → $0.326`）且在 50 分钟内唯一一次跑通交付（`0.9.0` 因连读 21 张原尺寸 PNG 触发 550 重试超时，且出现 `graphic.js` 大字横截断与读数滞后）。
+- **实测反哺**：根据盲审中观察到的 `snell-v100` 光线擦过点标签、`spotlight` 传像素坐标与同句重复词定位，收尾加固了 `boardcheck.mjs`（新增 `line_crosses_label`）与 `lesson.js`。第二阶段（宣传片与 MV 视听升级）留待后续按需推进。
+
 ## 0.9.0 · 版面式动态设计
 
 用户看了同学用 Remotion、HyperFrames 等工具做的三支片，觉得画面能补齐我们的短板，同时要求技能不能变复杂，工具要轻、简单、效果好，太重的不考虑。

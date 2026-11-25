@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #stage { width: 1920px; height: 1080px; overflow: hidden; background: #0C1220; }
+  svg { display: block; width: 1920px; height: 1080px; }
+</style>
+</head>
+<body>
+<div id="stage"><svg id="svg" viewBox="0 0 1920 1080"></svg></div>
+<script type="module">
+import { register, loadFonts } from '../../../../video-craft/kit/kit.js';
+import {
+  THEMES, svgEl, clearEl, loadMath, compileFormula, drawFormula, morphFormula, highlightPart,
+  drawStageBackground, drawProblemHeader, svgSurface, svgBlock, svgArrow, svgAngleArc, cameraAt, applyCamera,
+} from '../../../../video-craft/kit/lesson.js';
+
+const T = THEMES.slate;
+const svg = document.getElementById('svg');
+const measureHost = svgEl('g', { visibility: 'hidden' }, svg);
+await loadFonts([]);
+await loadMath();
+
+const eq1 = compileFormula(measureHost, String.raw`\id{F}{F}\id{cos}{\cos\alpha} - \id{mu}{\mu}\big(\id{mg}{mg} - \id{F2}{F}\id{sin}{\sin\alpha}\big) = 0`, { size: 46, color: T.ink });
+const eq2 = compileFormula(measureHost, String.raw`\id{F}{F}\big(\id{cos}{\cos\alpha} + \id{mu}{\mu}\id{sin}{\sin\alpha}\big) = \id{mu}{\mu}\id{mg}{mg}`, { size: 46, color: T.ink });
+const eq3 = compileFormula(measureHost, String.raw`\id{F}{F(\alpha)} = \frac{\id{mu}{\mu}\id{mg}{mg}}{\id{denom}{\sqrt{1+\mu^2}\sin(\alpha + \varphi)}}`, { size: 50, color: T.ink });
+const fLabel = compileFormula(measureHost, String.raw`\vec{F}`, { size: 36, color: T.amber });
+const fnLabel = compileFormula(measureHost, String.raw`\vec{F}_N`, { size: 36, color: T.cyan });
+
+function seek(t) {
+  clearEl(svg);
+  drawStageBackground(svg, T);
+  const world = svgEl('g', {}, svg);
+  const cam = cameraAt(t, [[0, { cx: 960, cy: 540, w: 1920 }], [4.5, { cx: 960, cy: 540, w: 1920 }], [5.6, { cx: 1320, cy: 520, w: 1180 }]]);
+  applyCamera(world, cam);
+
+  svgSurface(world, [140, 740], [760, 740], 1, { color: T.muted });
+  svgBlock(world, 440, 680, 150, 114, { stroke: T.ink, fill: '#17253B', label: 'm' });
+  svgArrow(world, [440, 680], [660, 553], t / 0.8, { color: T.amber, formula: fLabel, labelOffset: [14, -8] });
+  svgArrow(world, [440, 680], [440, 480], (t - 0.5) / 0.8, { color: T.cyan, formula: fnLabel, labelOffset: [16, 0] });
+  svgAngleArc(world, [440, 680], -30, 0, 78, (t - 0.3) / 0.7, { color: T.violet, label: 'α' });
+
+  const colors = { F: T.amber, F2: T.amber, mu: T.coral, denom: T.cyan };
+  let laid;
+  if (t < 2.2) {
+    laid = morphFormula(world, eq1, [940, 440], eq2, [940, 440], (t - 1.0) / 0.9, { partColorsA: colors, partColorsB: colors });
+  } else {
+    drawFormula(world, eq1, 940, 310, { alpha: 0.35, scale: 0.82, partColors: colors });
+    laid = morphFormula(world, eq2, [940, 440], eq3, [940, 520], (t - 2.4) / 1.0, { partColorsA: colors, partColorsB: colors });
+    if (t > 3.6 && laid?.parts?.denom) {
+      highlightPart(world, laid.parts.denom, (t - 3.6) / 0.5, { color: T.cyan, label: '分母取最大 ⟹ 拉力 F 最小' });
+    }
+  }
+  drawProblemHeader(svg, { tag: '组件试验台', title: 'MathJax SVG 子项寻址 · FLIP 变形 · 焦点相机', stepLabel: `t = ${t.toFixed(1)}s`, progress: t / 6, theme: T });
+}
+
+register({ duration: 6, fps: 30, width: 1920, height: 1080, seek });
+seek(0);
+</script>
+</body>
+</html>

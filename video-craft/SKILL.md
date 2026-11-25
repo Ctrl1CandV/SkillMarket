@@ -1,184 +1,90 @@
 ---
 name: video-craft
-description: 用代码做出能直接发布的视频：教学讲解、科普与数据故事、软件演示与产品宣传、歌曲 MV、电影感短片与视觉奇观、片头、竖屏短视频及混合形式。题材和创意可以由 AI 自己定。技能负责从构思到成片：找核心画面，定美术和光，按旁白或歌曲的实际时间排镜头，用可逐帧定位的 HTML/Canvas/WebGL 页面实现，配上自然的人声、音乐和音效，渲染后看帧、查镜头表、听声音，修到达标再交付。自带工具：逐帧渲染，版面动效零件，歌曲分析（拍点、段落、歌词时间），成片镜头检查，本地神经旁白，声音合成与混音检查，以及多个可改的完整示例。用户说“做个视频/动画/MV/宣传片/讲解视频/短视频”，或“AI 做的视频像 PPT、不好看”时使用。不用于给 Sora、可灵等视频生成模型写提示词，也不用于实拍素材的精剪调色或纯音频制作。
+description: 用代码做出能直接发布的视频：硬核课程与考研讲题（专业公式变形、工程物理与力学分析、计算机算法与系统机制）、科普与数据故事、软件演示与产品宣传、歌曲 MV、电影感短片与片头。入口先做环境与显卡承载力预判，再按「课程与讲题轨」和「宣传与视听轨」双轨隔离分流，互不串味。自带工具：离线 MathJax SVG 子项公式变形与理工图解引擎、版面动效与场景分层绘制、本地神经旁白与逐词时间戳同步、歌曲拍点歌词地图、快渲预览、版面碰撞与镜头节奏检查，以及十三个可改的完整示例。用户说“做个视频/讲题视频/动画/MV/宣传片/讲解视频/短视频”，或“AI 做的视频像 PPT、不好看”时使用。不用于给 Sora、可灵等视频生成模型写提示词，也不用于实拍素材的精剪调色或纯音频制作。
 metadata:
-  version: "0.9.0"
+  version: "1.0.0"
 ---
 
 # Video craft
 
-用户把题目交给你时，内容、风格和形式由你决定；用户已有脚本、歌曲、产品或开工确认单（`docs/briefs/`）时，沿用其中的设定；只要分镜、一段效果或一处修改时，只交付那一部分。
+用户把题目交给你时，内容、风格和形式由你决定；用户已有脚本、题目、歌曲、产品或开工确认单（`docs/briefs/`）时，沿用其中的设定；只要分镜、一段效果或一处修改时，只交付那一部分。
 
-## 好的成片是什么样
+## 第 0 步：环境探测与承载力双重闸门（开工必做）
 
-交付前，成片要做到下面七条。做不到的，交付时写明原因。
+动手前先跑 `node <kit>/doctor.mjs`（`<kit>` 指本技能的 `kit/` 目录，完整参数见[工具包](references/kit.md)），同时完成下面两项判断。**做不到或拿不准的地方，在线对话先如实告诉用户并给出替代方案，绝不硬凑充数。**
 
-- **对准一群人，说中他们的事。** 每条片子都有它的观众，内容要放在对他们最要紧的地方：
-  - MV 的听众常常就在歌里的处境中，片子把时间留给让他们认出自己的那些时刻；
-  - 产品片的观众带着一个具体的麻烦，先让他们看见这个麻烦，再看见它被真实地解决；
-  - 教学片的观众卡在某一步，片子把那一步讲开。
+1. **硬件与显卡避让闸门**（看 `doctor.mjs` 输出的 `gpu`、`ffmpeg`、`browser` 字段）：
+   - `gpu.state === "present_but_inaccessible"`：驱动在，但当前沙箱挡住了显卡设备。请用户在普通终端跑一次 `nvidia-smi` 确认，**不要谎报“这台机器没有显卡”**。
+   - `gpu.busy === true`（核心利用率 ≥75%）或 `!gpu.voxcpm15_safe`（空闲显存 `< 4096 MiB`）：本机显卡正被其他重任务占用。**在线对话必须先停下汇报当前显存/占用率**，请用户选择：① 改走 `--engine edge` 零显存配音（同样导出词级时间戳）；② 等显卡空闲再用本地 `VoxCPM1.5`；③ 用户明确允许共用时再加 `--force-gpu`。仅在无人值守批处理时，才自动切换 `--engine edge` 并在交付首行说明。
+   - 渲染帧速与分档：改稿与对同步阶段统一用 `render.mjs ... --draft`（`960×540 @ 15fps` 快渲预览）；**最终交付无论有无显卡，一律渲染 `1920×1080 @ 30fps` 高清母带**（无 `libx264` 时交付 WebM 并说明），绝不把 `--draft` 预览当作成片交付。
+2. **表达边界闸门**（评估任务里有没有代码画不好的东西）：
+   - 代码擅长：出版级数学/物理公式变形、几何与力学矢量、函数曲线、算法与系统状态流转、光影山谷/星空粒子、版面式大字与网格动效。
+   - 代码不擅长：写实人脸与手部表情、复杂人体动作、动物、三维连续介质复杂形变、没有真实界面的软件操作。
+   - 遇到不擅长的内容：**绝不拿 Canvas 硬画火柴人或简笔画积木**。讲题与工程分析改用标准二维剖面、刚体物块与矢量图；叙事与宣传改用剪影、物件隐喻、请用户补充真实录屏/素材，或在本机 `imagecraft` 可用时按需生成静态底图。拿不准用户能否接受抽象替代时，先问一句再画。
 
-  和这群人无关的内容，画面再好也是多余的。
-- **画面自己讲。** 关掉声音，观众仍能看出发生了什么：
-  - 科普的数字和现象由代码算出、模拟出来；
-  - 软件演示用真实界面和真实结果；
-  - MV 演的是歌里那个人的处境和心情，不是把歌词逐字画出来；高潮和结尾说的是歌手的态度：遗憾的歌不拍成团圆。
-  
-  不要在幻灯片上贴一句结论。
-- **每一帧都像一幅完成的画。** 画出来的场景有主光，有远近层次，有质感（光晕、雾、颗粒、暗角），颜色从题材里来。讲概念、数据和产品时也可以靠版面完成：网格、悬殊的字号、一个强调色、编号和刻度这层细节、纸纹或颗粒，见[版面式动态设计](references/graphic.md)；版面里仍要有一张会动、讲清这件事的核心图形，盖住大字，画面仍在讲。纯色底加居中图标加标题，就是幻灯片。
-- **镜头在发展。** 每个镜头里都有变化：相机、主体或光。镜头长度由内容、乐句或台词决定，不按固定秒数切。切到近景要有新细节；转场本身也在讲故事，比如穿过窗户，或者形状相接。
-- **声画一张时间表。**
-  - 有旁白的片子，按配音实测长度排镜头；
-  - MV 按歌曲实际的拍点、段落和歌词排镜头；
-  - 画面里的事件都有对应的声音；
-  - 音乐的起伏跟着叙事走。
-- **人声自然。** 全片一个声音，像人在对人说话，没有爆音、断字和底噪。
-- **看过、听过。** 每一轮都看渲染出来的帧和镜头表，听成片，不靠读代码判断效果。
+---
 
-## 按类型找起点
+## 按轨道分流（只读所属轨道的参考文档，禁止跨轨混读）
 
-| 要做的 | 先读 | 可改的示例 |
-|---|---|---|
-| 教学、科普、数据故事：讲清一个机制，让人能照做或做出判断 | [讲解与演示](references/explain-and-demo.md)、[核心画面](references/pictures.md) | [九枚硬币](examples/worked-lesson/brief.md)（带旁白的例题与练习）、[sky](examples/sky/brief.md)（跨尺度的连续镜头）、[图上挨着的两站](examples/transit-map/brief.md)（版面式：纸面、网格、大字，线路被拉直） |
-| 软件演示、产品宣传：让人看清操作，相信产品能做到 | [讲解与演示](references/explain-and-demo.md)，先拿到真实输入、操作和结果 | [开场提前十五分](examples/product-spot/brief.md)（真实可试的产品）、[promo](examples/promo/brief.md)（推进穿过手机屏幕） |
-| 歌曲 MV：让歌里那种处境的人认出自己 | [MV](references/music-video.md)，先跑 `songmap.py` | [最后一盏灯](examples/last-light/brief.md)（只看歌曲地图和切点怎么用；内容设计看 MV 参考第 2 步的例子）、[纸鸟](examples/sung-mv/brief.md)（原创演唱）、[回潮](examples/music-film/brief.md)（器乐） |
-| 电影感短片、视觉奇观：用空间、光、动作和声音讲一个场面 | [电影镜头与场面调度](references/cinematography.md)、[用代码画出完成的画面](references/drawing.md) | [雾夜灯塔](examples/short-film/brief.md)、[layers](examples/layers/brief.md)（光与层次）、[虹彩鳞翅](examples/iridescence/brief.md)（WebGL 材质） |
-| 片头、竖屏短视频、混合形式 | 按每一段的主要任务分别借用上面各行；片头和发布会式的宣传可以整片用[版面式动态设计](references/graphic.md) | [starter](examples/starter/)（旁白驱动的起步模板） |
+本技能内部隔离为两条创作范式截然不同的轨道，**进入其中一条后不要加载另一条的参考文档**，以免规则串味和稀释注意力：
 
-有声参考片：[examples/screening.html](examples/screening.html)。另有[三位创作者的拆法](references/watch-notes.md)。
+| 轨道 | 适用任务 | 必读指南（只读这一组） | 起步示例 |
+|---|---|---|---|
+| **轨道 A · 课程、讲题与硬核科普** | 考研/大学课程例题精讲、专业数学公式推演、工程物理与力学分析、计算机算法/系统指导、定量机制科普 | **[课程与讲题制作指南](references/course-and-stem.md)**、[工具包](references/kit.md) | [斜拉极值与摩擦角](examples/stem-lesson/brief.md)（`lesson.js` 标准模板：MathJax SVG 子项变形 + 力学矢量 + 词级同步）、[sky](examples/sky/brief.md)（连续跨尺度物理模拟） |
+| **轨道 B1 · 软件演示与产品宣传** | 真实软件操作教程、产品痛点广告、发布会风格短片 | [讲解与演示](references/explain-and-demo.md)、[版面式动态设计](references/graphic.md)、[声音](references/sound.md)、[审查](references/review.md) | [开场提前十五分](examples/product-spot/brief.md)（真实可交互界面）、[promo](examples/promo/brief.md)（穿屏转场）、[地铁图](examples/transit-map/brief.md)（`graphic.js` 版面） |
+| **轨道 B2 · 歌曲 MV** | 现成录音或原创演唱的音乐视频 | 先跑 `songmap.py`，再读 **[MV](references/music-video.md)**、[用代码画出完成的画面](references/drawing.md)、[审查](references/review.md) | [最后一盏灯](examples/last-light/brief.md)（拍点与小节切镜）、[纸鸟](examples/sung-mv/brief.md)、[回潮](examples/music-film/brief.md) |
+| **轨道 B3 · 电影感短片与片头** | 氛围叙事、视觉奇观、播客/栏目片头 | [电影镜头与场面调度](references/cinematography.md)、[用代码画出完成的画面](references/drawing.md)、[版面式动态设计](references/graphic.md)、[声音](references/sound.md)、[审查](references/review.md) | [雾夜灯塔](examples/short-film/brief.md)、[layers](examples/layers/brief.md)、[虹彩鳞翅](examples/iridescence/brief.md) |
 
-## 画面从哪里来
+另有：[人声生成与声音卡](references/voice.md)、[外部素材剪辑单](references/editing.md)、[已有 SRT 字幕导入](references/timed-text.md)、[画面质感参数](references/look.md)、[运动与缓动曲线](references/motion.md)、[核心画面构思](references/pictures.md)、[离线有声参考片](examples/screening.html)。
 
-1. **代码画（默认）。** Canvas、WebGL、SVG、DOM。先读[用代码画出完成的画面](references/drawing.md)。代码擅长：
-   - 光、大量粒子、线、剪影和纵深；
-   - 天空和水、几何、模拟、界面和图表。
+---
 
-   核心画面是图形、数字、界面或图标，而不是一个地方或天色时，可以用 `kit/graphic.js` 的版面零件把它排成完成的版面：纸面、网格、大字进场、等宽标签、卡片、刻度圆环、遮罩转场，见[版面式动态设计](references/graphic.md)。零件只是陪衬，不能代替核心画面。
+## 两条轨道各自的执行闭环
 
-   代码不擅长写实的人脸、人体、动物和真实地点。遇到这些，改用剪影、背影、手的轮廓、物件或星座来表现，不要硬画一个僵硬的小人。人不出现时，处境和关键动作照样要演出来（见[用代码画出完成的画面](references/drawing.md)）。
-2. **真实软件或产品**：操作并录下真实界面，见[讲解与演示](references/explain-and-demo.md)。
-3. **生成图（可选加强）**：本机有 imagecraft 技能（本地 FLUX）时，可以生成代码画不好的底版，比如一个真实的地方或一位人物。生成图只当底版，运动、光和节奏仍由代码完成，不做成逐张放大的幻灯片。做法见 drawing.md 末节。
-4. **用户给的素材**：录屏、照片、实拍、音乐，用[剪辑单](references/editing.md)剪入。
+### 走「轨道 A · 课程与讲题轨」时（详见 [course-and-stem.md](references/course-and-stem.md)）
 
-## 工作顺序
+1. **任务单与单一数据源（`brief.md` + `data.js`）**：写明目标受众容易踩的直觉误区、三段式结构（破题钩子 15% → **单画布连续推演占 50%+** → 边界易错坑与通法 15%），并把题中所有物理/数学关系写进同一个 `data.js`。用户未声明“直接做完”时，先把解题切口与分段列在回复里请用户确认一次；无人值守或要求直接交付时写进 `brief.md` 继续执行。
+2. **口语讲稿与词级时间戳配音**：台词写成老师对学生说话的口语短句（数字写汉字读法）。运行 `narrate.py` 生成同音色干声并自动导出 `vo/words.js`（逐词起止秒数）。
+3. **基于 `kit/lesson.js` 实现纯函数 `seek(t)`**：
+   - 用 `loadMath()` + `compileFormula(..., '\id{key}{...}')` 渲染出版级矢量公式，用 `morphFormula` 实现跨步弧线平滑变形，用 `highlightPart` 做信号框引导；
+   - 用 `TL.word(cueId, '关键词')` 让受力箭头、曲线、状态格与公式子项精准卡在读出该词的瞬间；
+   - **严格声画分工**：口播讲推理因果，画布只放题干条件、公式/图形与极短批注；**禁止铺持续合成器音乐**（用 `audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt` 出纯净人声与独立软字幕），**禁止“配音+大标题+底字幕”三遍同义复读**。
+4. **快渲调优 → 版面与原尺寸精查 → 1080p 母带交付**：
+   - 先用 `--draft` 快渲检查动画衔接；
+   - 跑 `node <kit>/boardcheck.mjs index.html` 清零文字与公式重叠、越界及过小字，并用 `stills` 打开 `1920×1080` 原尺寸关键帧检查标签是否压线或穿曲线；
+   - 渲染 `1920×1080 @ 30fps` 母带（`--srt` 内封软字幕），跑 `shotlist.py output/final.mp4 --mode lesson` 与 `ffmpeg` 解码抽帧核验后交付。
 
-每一步都产出一件能看或能听的东西。
+### 走「轨道 B · 宣传、MV 与视听短片轨」时
 
-0. **查环境**：`node <kit>/doctor.mjs`。它报告浏览器、WebGL、编码器、FFmpeg 和语音是否可用。缺什么，见[工具包](references/kit.md)。
-1. **任务单 `brief.md`。** 写下：
-   - 观众、用途、平台、画幅、时长；
-   - 看完要记住的一句话，或要感受到的变化；
-   - 片中出现的事实和数字及其来源（数字由代码从同一份数据算出）；
-   - 用什么人声、什么音乐；
-   - 画面来源；
-   - 用了别人的歌、录音或素材：照来源原文抄下每人的角色和许可。
+1. **任务单与内容设计（`brief.md`）**：MV 先跑 `songmap.py song.m4a out/song --lyrics`。写清具体观众与处境、看完要记住的一句话、温度与克制边界，每条取舍写成“因为观众……，所以拍……，不拍……”。用了他人歌曲或素材时，照来源原文逐人抄下角色与许可。
+2. **核心画面与美术样帧**：定下贯穿全片且每次出现都有变化的视觉主体，选场景分层绘制（`kit/draw.js` + `shader.js`）或版面式设计（`kit/graphic.js`，版面里仍须有占 40%–60% 且持续讲清此事的核心动态图形），先出 2–4 张 `1080p` 静帧满意后再铺开。
+3. **声画时间表与纯函数 `seek(t)`**：旁白按 `narrate.py` 实测时长排镜；MV 严格取 `songmap` 的 `downbeats`/`beats` 切镜并配校对后的双语/原文歌词字幕（`captions.mjs`）；配乐与音效在 `score.js` 中按场景 `meta.events` 同步驱动。先做最难的 8–12 秒试片，成立后铺满全片。
+4. **审片修订与交付**：按 [review.md](references/review.md) 跑 `shotlist.py`（检查网格等长切、放大式切、黑场、超过 2 秒死水段及偏拍）、联系表、切点帧条、`textcheck.mjs`、`mixcheck.mjs` 与成片解码抽帧，修到全部达标后交付 `1080p` 成片。
 
-   缺的信息用默认值补，交付时说明。默认值：横屏 1920×1080，30 fps，中文；科普 45–90 秒，宣传 20–40 秒，MV 按歌曲长度。
-   - **MV 先跑** `python <kit>/songmap.py song.m4a out/song --lyrics`，读 `songmap.md` 和歌词，再做内容设计。
-2. **内容设计：给谁看，说中他们什么。** 先于任何画面，写进任务单：
-   - **观众和他们的处境**：谁会看，此刻处在什么境况里，为什么会点开。写一个具体的人，不写“广大用户”。
-   - **他们看完要得到什么**：写成这一支片子自己的一句话，例如“看完知道周五那三十个文件一分钟就能改完”，或“听这首歌的人觉得自己那几个睡不着的晚上被说中了”。
-   - **内容放在哪里**：列出对这群人最要紧的时刻或问题，MV 不少于段落数，其他片子大约每 15–30 秒一个。片子的段落从这里来，每一段是不同的一刻；时刻太少，就只好拿几个固定镜位来回切。
-   - **分量和温度**：这件事在他们心里有多重，是淡淡的还是激烈的。它决定节奏、景别和颜色，也决定哪些手法不用：淡淡的痛不用奇观。
-   - 每个取舍写成“因为观众……，所以拍……，不拍……”，审片时逐条核对。
-
-   各类型的写法：MV 见 [MV](references/music-video.md) 第 2 步，产品、演示和教学见[讲解与演示](references/explain-and-demo.md)第一节。用户交代任务时没说直接做完，就在动手画之前把内容设计列在回复里，请用户看一眼，只停这一次；用户说了直接做完，或者没人能回复（批量、定时、评测任务），就写进任务单接着做，交付时一并列出。
-3. **概念与核心画面。** 从内容设计里的时刻出发，写 3–5 个“不看字也能懂”的画面，一样贯穿全片、每次出现都有变化的东西，以及每一段观众新看到什么。MV 的视觉世界和段落表见 [MV](references/music-video.md) 第 3 步。
-4. **美术与样帧。** 先定画面靠什么完成：画出来的场景，还是版面（[版面式动态设计](references/graphic.md)），一条片子里也可以交替。再定 4–6 个颜色、主光（版面式定网格和字号）和字体。按最终分辨率画出 2–4 张最关键的静帧（`render.mjs page.html stills out/ t1 t2 …`），用上面七条衡量，改到满意再往下走。见[画面质感](references/look.md)、[用代码画出完成的画面](references/drawing.md)。
-5. **声音和时间表。**
-   - 旁白：用 `narrate.py` 生成（见[人声](references/voice.md)），再用 `vo.mjs` 量出每句长度，镜头时间由这些长度算出。
-   - 歌曲：所有时间取自 `songmap` 的拍点和小节线。
-   - 配乐和音效：用 `sound.js` 写在 `score.js` 里，见[声音](references/sound.md)。
-6. **分镜表。** 每行一个镜头，写明：
-   - 起止时间；
-   - 镜头里的变化；
-   - 相机运动；
-   - 怎样接到下一镜；
-   - 声音，和这时说的话、画面上的字。
-
-   时间写成常量，从配音长度或拍点算出。镜头长度要有长有短。见[运动与剪辑](references/motion.md)、[电影镜头](references/cinematography.md)。
-7. **实现。** 从最接近的示例复制改起，不从空白页开始。`seek(t)` 必须是纯函数：
-   - 同一个 t 永远画出同一帧；
-   - 不用 CSS 动画、`Date` 或无种子的 `Math.random`。
-
-   先做最难的 8–12 秒，带声音渲染出来看。成立以后再铺满全片。
-8. **看帧、查表、听声，修订。** 按[审查](references/review.md)的顺序：
-   1. 按段落中点逐格对照内容设计；
-   2. `shotlist.py` 镜头表；
-   3. 联系表；
-   4. 关键帧原尺寸；
-   5. 切点帧条；
-   6. 字幕；
-   7. 从成片解码抽帧；
-   8. 带声完整播放。
-
-   改完再看受影响的镜头。一条片子通常要修 4–6 轮。
-9. **交付。** 交付带最终混音的 MP4（没有 libx264 时交付 WebM），并告诉用户：
-   - 文件路径；
-   - 规格：分辨率、时长、编码、响度；
-   - 做过哪些检查；
-   - 没能做或没能验证的地方，例如“我听不到声音，只看了响度曲线”。
+---
 
 ## 命令速查
 
-`<kit>` 指本技能的 `kit/` 目录。网页工具需要 Node 18+、playwright-core、Chromium 和 FFmpeg；Python 工具需要 Python 3.9+、NumPy、FFmpeg。完整参数见[工具包](references/kit.md)。
-
 | 目的 | 命令 |
 |---|---|
-| 环境探测 | `node <kit>/doctor.mjs` |
-| 歌曲地图（拍点、段落、歌词） | `python <kit>/songmap.py song.m4a out/song --lyrics`（同时写出歌词字幕草稿 `lyrics.draft.srt`） |
-| 生成旁白（本地 VoxCPM，同一声音） | `python <kit>/narrate.py cues.json vo/ --voice teacher --takes 3` |
-| 配音计时 | `node <kit>/vo.mjs vo/ vo/vo.js` |
-| 原尺寸静帧 | `node <kit>/render.mjs page.html stills out/ 2.5 10 31` |
-| 联系表 | `node <kit>/render.mjs page.html sheet out/sheet.jpg --every 1`（或 `--times a,b,c`） |
-| 切点帧条 | `node <kit>/render.mjs page.html strip out/strip.jpg --at 9.85,18.2` |
-| 成片 | `node <kit>/render.mjs page.html video out/picture.mp4 --audio track.wav --mux out/final.mp4` |
-| 成片镜头表与剪辑检查 | `python <kit>/shotlist.py out/final.mp4 [--song out/song/songmap.json]` |
-| 合入整首原声 | `python <kit>/mux_original.py out/picture.mp4 song.m4a out/film.mp4` |
-| 合成配乐、看响度 | `node <kit>/audio.mjs page.html score.html out/audio.webm --vo vo/`、`node <kit>/mixcheck.mjs page.html score.html out/mix.png` |
-| 素材剪辑单 | `node <kit>/cut.mjs edit.json out/cut.mp4` · [格式](references/editing.md) |
-| 字幕与已有 SRT | `node <kit>/textcheck.mjs page.html`、`node <kit>/captions.mjs song.srt cues.js` |
-| 成片声音频谱 | `node <kit>/audiocheck.mjs out/final.mp4 page.html out/check.png` |
+| 环境与显卡负载探测 | `node <kit>/doctor.mjs` |
+| 生成旁白 + 逐词时间戳 | `python <kit>/narrate.py cues.json vo/ --voice teacher --takes 2`（零显卡轻量：`--engine edge`） |
+| 讲题纯净音轨 + 软字幕 | `node <kit>/audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt` |
+| 配乐合成与响度检查 | `node <kit>/audio.mjs index.html score.html out/audio.webm --vo vo/`、`node <kit>/mixcheck.mjs index.html score.html out/mix.png` |
+| 草稿快渲预览（540p@15fps） | `node <kit>/render.mjs index.html video out/pic.mp4 --draft --audio out/audio.webm --mux out/preview.mp4` |
+| 1080p 正式母带（可封软字幕） | `node <kit>/render.mjs index.html video out/pic.mp4 --audio out/audio.webm [--srt output/captions.srt] --mux output/final.mp4` |
+| 原尺寸静帧 / 联系表 / 切点条 | `node <kit>/render.mjs index.html stills out/ 5 18 42` · `sheet out/sheet.jpg --every 2` · `strip out/strip.jpg --at 9.8,18.2` |
+| 版面碰撞与越界体检 | `node <kit>/boardcheck.mjs index.html [--every 3]` |
+| 成片镜头表检查 | `python <kit>/shotlist.py output/final.mp4 [--mode lesson]` · MV 加 `--song out/song/songmap.json` |
+| 歌曲地图 / 原声无损合片 | `python <kit>/songmap.py song.m4a out/song --lyrics` · `python <kit>/mux_original.py out/pic.mp4 song.m4a output/final.mp4` |
+| 字幕检查 / 素材粗剪 | `node <kit>/textcheck.mjs index.html` · `node <kit>/cut.mjs edit.json out/cut.mp4` |
 
-## 交付前核对
+---
 
-- [ ] 内容：任务单写了观众和他们的处境；每一段对应内容设计里的一个时刻；拿掉任何一段，观众都会少知道或少感受到一件事。
-- [ ] 话和画对得上：旁白和画面上的字说到的时间、天气和动作，那一镜里看得见（说清晨，天是亮的；说关灯，灯就灭了）。画不出来就改自己写的词；词是用户给的，交付时说明。
-- [ ] 第一帧就是完整的构图，不是黑屏或纯色。
-- [ ] 画面里没有制作时用的读数：渲染时间码、帧号、“30.0 / 89.7 s”这类成片播放进度、调试网格和坐标。故事里的计时、日期和天数是内容，照留。
-- [ ] 每个镜头都有主光和远近层次；或者是完成的版面：网格、字号对比、一个强调色、细节层，加上一张会动、讲清这件事的核心图形（盖住大字，画面仍在讲）。没有“纯色底加图标加标题”的画面。
-- [ ] `shotlist.py` 的每条标记都已改掉，或在任务单里写了理由：
-  - 连续同长的镜头；
-  - 只放大上一镜的切；
-  - 黑场；
-  - 超过 2 秒不动的段落；
-  - 偏离拍点的切点。
-- [ ] MV：
-  - 高潮和结尾的画面和唱的人对这件事的态度一致（遗憾的歌没有被拍成团圆）；
-  - 戳人的歌词句都有对应的画面，标题里的比喻没有被造成道具；
-  - 每一段是故事里不同的一刻，相同的段落（副歌）回来时故事往前走了；
-  - 有歌词字幕，文字对过正确歌词，外语歌带译文；
-  - 切点取自实际拍点。
-- [ ] 每个数字都能在任务单里找到出处；示意图注明“未按比例”。
-- [ ] 用了别人的歌、录音或素材时，署名照来源原文逐人写角色（作词、作曲、演唱、录音……）和许可；来源没写的不推断，几个人不并成一行“词曲”。全是自己做的就不编署名。
-- [ ] 字幕：
-  - 上一句完全退出后下一句再进；
-  - 画面上写旁白原话时，说到才出，不提前亮出还没说的句子；标题、标签、数字不受此限；
-  - 最小字号不小于画面高的 1/30；
-  - 都在安全边距内（`textcheck`）。
-- [ ] 换场没有残留：上一镜的图和字退完，下一镜再进。
-- [ ] 结尾停在有意义的状态上；结尾卡读得完。
-- [ ] 声音：
-  - 自己混的音轨响度约 −16 LUFS，采样峰值不高于 −1.5 dBFS（`audio.mjs` 的默认值）；整首原声合片保留母带原样，不再归一；
-  - 关键音效在事件处听得见；
-  - 音乐不压人声；
-  - 旁白全片一个声音，没有断字和爆音。
-- [ ] 从编码后的成片解码抽帧看过：文字边缘、渐变色带、暗部。
+## 交付前硬核对清单
 
-## 时间参考
-
-实测：
-
-- 59 秒的 WebGL 科普，软件 GL 渲染约 5 分钟；
-- 28 秒的 DOM 宣传片约 1.5 分钟；
-- VoxCPM1.5 在 RTX 4070 Ti SUPER 上生成 6 秒的句子约 4.5 秒；70 秒的教学旁白每句生成三遍再挑，连同加载模型和转写核对共约 6.5 分钟。
+- [ ] **承载力诚实披露**：显卡受限降档、未亲耳试听（仅凭响度 `-16 LUFS` 与频谱核对）、或抽象化替代之处，已在回复中如实写明。
+- [ ] **无制作读数与首帧完整**：第一帧就是完整构图（非黑屏）；画面内无帧号、`00.0 / 89.7 s` 播放计时或调试辅助线。
+- [ ] **话画一致且无冗余复读**：说到的时间、天气、物理量或动作在画面中真实可见；讲题轨做到了口播、板书与软字幕分工，没有“配音+大标题+硬字幕”同句复读三遍。
+- [ ] **数据同源与署名准确**：所有计算数字同出一份数据代码；引用他人录音/素材时严格按原文逐人署名角色与许可，原创内容不编造署名。
+- [ ] **自动化检查与解码抽帧全过**：`boardcheck.mjs` 无文字/公式碰撞与边缘裁切；`shotlist.py`（讲题用 `--mode lesson`）标记项已修正或有明确设计依据；最终交付文件确为 `1920×1080 @ 30fps` 并经 `ffmpeg` 解码抽帧核验清晰度。
