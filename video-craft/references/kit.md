@@ -4,7 +4,7 @@
 
 - **浏览器里用的模块**：
   - `kit.js`：缓动、弹簧、随机数、颜色、字体、注册函数，以及跟随录音的 `songAt`、`envAt`、`pulse`。
-  - `lesson.js`：课程、讲题与硬核科普专用 SVG 引擎：支持深青光学 `THEMES.slate` 与暖纸纹 `THEMES.paper`、分幕清场序列器 `actAt`、章节顶栏 `drawChapterTitle`、带角标参数牌 `svgCard`、双介质动态波纹实验槽 `svgMediaTank`、离散积木阶梯图 `svgStepColumns`、工程标尺 `svgRuler`、离线同步 MathJax v3 公式编译（`\id{key}{expr}` 子项寻址）、跨步弧线平滑变形 `morphFormula`、子项信号框 `highlightPart`、词级旁白时间线 `buildTimeline`、焦点相机、力矢量剥离闭合 `svgMorphArrow`、极坐标轨迹扇 `svgLocusFan`、坐标系曲线及算法数组框图。详见[课程与讲题制作指南](course-and-stem.md)。
+  - `lesson.js`：课程、讲题与硬核科普 SVG 引擎：支持五套开放起手色板（`ivory`/`paper`/`blueprint`/`chalk`/`slate`）与任意自定义语义主题 `resolveTheme`、离线同步 MathJax v3 公式编译（`\id{key}{expr}` 子项寻址、`role: 'label'` 图内短标豁免）、跨步弧线平滑变形 `morphFormula`、子项信号框 `highlightPart`、词级旁白时间线 `buildTimeline`、无重影分幕序列器 `actAt`、2D/3D 焦点相机、坐标系与函数曲线、工程标尺 `svgRuler`、力矢量剥离闭合 `svgMorphArrow`、极坐标轨迹扇 `svgLocusFan` 及可选具象参考模具（`svgMediaTank`/`svgStepColumns`/`svgCard`/`svgNodeBox`/`svgArray`）。详见[课程与讲题制作指南](course-and-stem.md)。
   - `draw.js`：分层、噪声、光晕与 bloom、山脊剪影、视差相机、逐渐画出的线、暗角和颗粒。
   - `graphic.js`：版面式动态设计的零件：纸面、网格、色条、角标、逐字解出的标签、大字进场、卡片、刻度圆环、波形、平面着色的 3D 形体，以及三种遮罩转场。
   - `shader.js`：把一段 GLSL 片元着色器变成一张可叠加的画布，画星云、极光、烟和液态光。
@@ -141,7 +141,7 @@ seek(0);
 | `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n] [--device auto\|cuda\|cpu]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；显卡繁忙时自动切 CPU `int8` 转写 |
 | `shotlist.py` | `film.mp4 [--mode default\|lesson] [--song songmap.json [--offset T0]] [--json out.json]` | 成片镜头表：`--mode lesson` 采用局部 `8×4` 网格动态感知与 4.5 秒阅读静止阈值，适配单画布连续推演 |
 | `narrate.py` | `cues.json voice-dir [--voice teacher] [--style auto\|lesson\|free] [--takes 2] [--engine voxcpm\|edge] [--device auto\|cuda\|cpu] [--force-gpu]` | 逐句旁白 WAV + `vo.js` + 逐词时间戳 `words.json`/`words.js`；内置讲稿口语流畅度门禁（拦截三四字蹦词腔、分号排比、顿号报数与 AI 报幕套话，退出码 `2`）与显卡负载护栏（占用 ≥75% 或空闲显存 <4GB 时退出码 `3`，可改传 `--device cpu` 或 `--engine edge`），见[人声](voice.md) |
-| `boardcheck.mjs` | `page [--every 3] [--times a,b] [--margin 48] [--min-px 18] [--max-formulas 3]` | 自动逐帧检测同屏公式过多堆积（`formula_crowding`）、实线穿字（`line_crosses_label`）、文字与公式重叠、安全边距越界及过小字号 |
+| `boardcheck.mjs` | `page [--every 3] [--times a,b] [--margin 48] [--min-px 18] [--max-formulas 3] [--min-active 0.008]` | 版式无偏置的几何与视觉密度体检：检测同屏展示公式堆积（`formula_crowding`）、文字公式重叠、无底衬实线穿字（`line_crosses_label`，自动豁免带底色遮罩的标尺标签）、边距越界、过小字及过空帧，并对多框碎片化（`card_soup`）与稀疏草图（`low_visual_substance`）给出预警 |
 | `gpu.py` | `[--json]` | 多次采样 `nvidia-smi` 探测显卡状态、利用率、空闲显存与 VoxCPM 安全阈值 |
 | `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |
 | `mux_original.py` | `picture.mp4 song.m4a final.mp4` | 从完整母带生成 MV，检查时长；兼容的音频格式直接复制，需 FFmpeg 与 FFprobe |

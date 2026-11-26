@@ -12,21 +12,6 @@ import { clamp, lerp, ease, FONT_STACK } from './kit.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export const THEMES = {
-  slate: {
-    bg: '#0C1220',
-    bgGlow: '#162238',
-    panel: '#131C2E',
-    panelStroke: 'rgba(148, 163, 184, 0.20)',
-    grid: 'rgba(148, 163, 184, 0.08)',
-    ink: '#F1F5F9',
-    muted: '#94A3B8',
-    faint: '#475569',
-    amber: '#F59E0B',   // primary focus / applied force / key extremum
-    cyan: '#38BDF8',    // normal force / primary function / geometry
-    coral: '#FB7185',   // friction / error trap / opposing term
-    emerald: '#34D399', // resultant / verified conclusion
-    violet: '#A78BFA',  // auxiliary angle / substitution variable
-  },
   ivory: {
     bg: '#F6F4EE',
     bgGlow: '#FFFFFF',
@@ -36,6 +21,11 @@ export const THEMES = {
     ink: '#18181B',
     muted: '#52525B',
     faint: '#A1A1AA',
+    accent: '#D97706',
+    primary: '#0284C7',
+    danger: '#E11D48',
+    success: '#059669',
+    secondary: '#7C3AED',
     amber: '#D97706',
     cyan: '#0284C7',
     coral: '#E11D48',
@@ -46,18 +36,121 @@ export const THEMES = {
     bg: '#ECE7DC',
     bgGlow: '#F6F2E8',
     panel: '#F6F2E8',
-    panelStroke: 'rgba(23, 26, 31, 0.24)',
-    grid: 'rgba(23, 26, 31, 0.075)',
+    panelStroke: 'rgba(23, 26, 31, 0.22)',
+    grid: 'rgba(23, 26, 31, 0.07)',
     ink: '#171A1F',
     muted: '#5C6672',
     faint: '#949EA8',
+    accent: '#C07A1E',
+    primary: '#0C7468',
+    danger: '#D2402B',
+    success: '#15803D',
+    secondary: '#5B4B8A',
     amber: '#C07A1E',
     cyan: '#0C7468',
     coral: '#D2402B',
     emerald: '#15803D',
     violet: '#5B4B8A',
   },
+  blueprint: {
+    bg: '#EEF4FA',
+    bgGlow: '#F8FBFF',
+    panel: '#E3EDF7',
+    panelStroke: 'rgba(29, 78, 216, 0.22)',
+    grid: 'rgba(29, 78, 216, 0.08)',
+    ink: '#0F172A',
+    muted: '#475569',
+    faint: '#94A3B8',
+    accent: '#B45309',
+    primary: '#1D4ED8',
+    danger: '#DC2626',
+    success: '#047857',
+    secondary: '#6D28D9',
+    amber: '#B45309',
+    cyan: '#1D4ED8',
+    coral: '#DC2626',
+    emerald: '#047857',
+    violet: '#6D28D9',
+  },
+  chalk: {
+    bg: '#1B2A22',
+    bgGlow: '#24382E',
+    panel: '#213329',
+    panelStroke: 'rgba(244, 241, 234, 0.20)',
+    grid: 'rgba(244, 241, 234, 0.065)',
+    ink: '#F4F1EA',
+    muted: '#B7C4BC',
+    faint: '#6E8276',
+    accent: '#EAB308',
+    primary: '#67E8F9',
+    danger: '#FDA4AF',
+    success: '#86EFAC',
+    secondary: '#C4B5FD',
+    amber: '#EAB308',
+    cyan: '#67E8F9',
+    coral: '#FDA4AF',
+    emerald: '#86EFAC',
+    violet: '#C4B5FD',
+  },
+  slate: {
+    bg: '#0C1220',
+    bgGlow: '#162238',
+    panel: '#131C2E',
+    panelStroke: 'rgba(148, 163, 184, 0.20)',
+    grid: 'rgba(148, 163, 184, 0.08)',
+    ink: '#F1F5F9',
+    muted: '#94A3B8',
+    faint: '#475569',
+    accent: '#F59E0B',
+    primary: '#38BDF8',
+    danger: '#FB7185',
+    success: '#34D399',
+    secondary: '#A78BFA',
+    amber: '#F59E0B',
+    cyan: '#38BDF8',
+    coral: '#FB7185',
+    emerald: '#34D399',
+    violet: '#A78BFA',
+  },
 };
+
+export function isLightColor(hexStr = '#F6F4EE') {
+  const m = String(hexStr).trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return true;
+  const h = m[1].length === 3 ? m[1].split('').map((c) => c + c).join('') : m[1];
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) >= 140;
+}
+
+/**
+ * Normalize any custom or partial theme object so authors can invent bespoke palettes using semantic keys
+ * (`{ bg, ink, accent, primary, danger, success }`) without worrying about missing legacy color keys.
+ */
+export function resolveTheme(theme = THEMES.ivory) {
+  const light = isLightColor(theme?.bg || '#F6F4EE');
+  const base = light ? THEMES.ivory : THEMES.slate;
+  const accent = theme?.accent || theme?.amber || base.accent;
+  const primary = theme?.primary || theme?.cyan || base.primary;
+  const danger = theme?.danger || theme?.coral || base.danger;
+  const success = theme?.success || theme?.emerald || base.success;
+  const secondary = theme?.secondary || theme?.violet || base.secondary;
+  return {
+    ...base,
+    ...theme,
+    light,
+    bgGlow: theme?.bgGlow || theme?.bg || base.bgGlow,
+    accent,
+    primary,
+    danger,
+    success,
+    secondary,
+    amber: theme?.amber || accent,
+    cyan: theme?.cyan || primary,
+    coral: theme?.coral || danger,
+    emerald: theme?.emerald || success,
+    violet: theme?.violet || secondary,
+  };
+}
 
 export function svgEl(tag, attrs = {}, parent = null) {
   const el = document.createElementNS(SVG_NS, tag);
@@ -135,9 +228,10 @@ let formulaSeq = 0;
  */
 const texCache = new Map();
 
-export function compileFormula(measureHost, tex, { size = 42, color = '#F1F5F9', display = true, idPrefix } = {}) {
+export function compileFormula(measureHost, tex, { size = 42, color = null, theme = null, role = null, display = true, idPrefix } = {}) {
+  const resolvedCol = color || (theme ? resolveTheme(theme).ink : 'currentColor');
   const uid = idPrefix || `fm${++formulaSeq}`;
-  const key = `${uid}::${size}::${display}::${tex}`;
+  const key = `${uid}::${size}::${display}::${resolvedCol}::${role || ''}::${tex}`;
   if (texCache.has(key)) return texCache.get(key);
   if (!window.MathJax?.tex2svg) throw new Error('Call `await loadMath()` before compiling formulas.');
 
@@ -157,7 +251,9 @@ export function compileFormula(measureHost, tex, { size = 42, color = '#F1F5F9',
 
   // Measure inside hidden SVG group in scene pixel space so getBBox() is exact and synchronous.
   // Note: MathJax SVG uses `fill="currentColor"`, which inherits from CSS `color`! Always set `color` alongside `fill`.
-  const root = svgEl('g', { 'data-formula': uid, color, fill: color, stroke: color });
+  const rootAttrs = { 'data-formula': uid, color: resolvedCol, fill: resolvedCol, stroke: resolvedCol };
+  if (role) rootAttrs['data-formula-role'] = role;
+  const root = svgEl('g', rootAttrs);
   const inner = svgEl('g', { transform: `scale(${sx}, ${sy}) translate(${-vb[0]}, ${-vb[1]})` }, root);
   for (const child of [...rawSvg.childNodes]) inner.appendChild(child.cloneNode(true));
 
@@ -529,7 +625,13 @@ export function applyCamera(worldGroup, cam, { width = 1920, height = 1080 } = {
 
 // ---- 4. STEM, Mechanics & Geometry SVG Primitives ----------------------------------------------------------
 
-export function drawStageBackground(svg, theme = THEMES.slate, { gridStep = 60, width = 1920, height = 1080, glow = true, spotlight = [0.52, 0.46], vignette = 0.42 } = {}) {
+export function drawStageBackground(svg, rawTheme = THEMES.ivory, { gridStep = 60, width = 1920, height = 1080, glow = true, spotlight = [0.52, 0.46], vignette = null } = {}) {
+  const theme = resolveTheme(rawTheme);
+  if (svg?.style) {
+    svg.style.color = theme.ink;
+    svg.style.background = theme.bg;
+  }
+  const vig = vignette == null ? (theme.light ? 0.05 : 0.38) : vignette;
   const defs = svgEl('defs', {}, svg);
   const spX = spotlight[0] > 1.5 ? spotlight[0] / width : spotlight[0];
   const spY = spotlight[1] > 1.5 ? spotlight[1] / height : spotlight[1];
@@ -567,10 +669,10 @@ export function drawStageBackground(svg, theme = THEMES.slate, { gridStep = 60, 
     for (let y = gridStep; y < height; y += gridStep) svgEl('line', { x1: 0, y1: y, x2: width, y2: y }, g);
   }
 
-  if (vignette > 0) {
+  if (vig > 0) {
     const vg = svgEl('radialGradient', { id: 'vc-vignette', cx: '50%', cy: '50%', r: '72%' }, defs);
     svgEl('stop', { offset: '55%', 'stop-color': '#000000', 'stop-opacity': '0' }, vg);
-    svgEl('stop', { offset: '100%', 'stop-color': '#000000', 'stop-opacity': String(vignette) }, vg);
+    svgEl('stop', { offset: '100%', 'stop-color': '#000000', 'stop-opacity': String(vig) }, vg);
     svgEl('rect', { x: 0, y: 0, width, height, fill: 'url(#vc-vignette)', 'pointer-events': 'none' }, svg);
   }
 }
@@ -580,25 +682,26 @@ export function drawProblemHeader(parent, {
   title = '',
   stepLabel = '',
   progress = 0,
-  theme = THEMES.slate,
+  theme: rawTheme = THEMES.ivory,
   width = 1920,
 } = {}) {
+  const theme = resolveTheme(rawTheme);
   const g = svgEl('g', { 'data-role': 'header' }, parent);
   svgEl('rect', { x: 0, y: 0, width, height: 78, fill: theme.panel, 'fill-opacity': '0.88' }, g);
   svgEl('line', { x1: 0, y1: 78, x2: width, y2: 78, stroke: theme.panelStroke, 'stroke-width': 1.5 }, g);
   if (progress > 0) {
-    svgEl('line', { x1: 0, y1: 78, x2: width * clamp(progress), y2: 78, stroke: theme.amber, 'stroke-width': 3 }, g);
+    svgEl('line', { x1: 0, y1: 78, x2: width * clamp(progress), y2: 78, stroke: theme.accent, 'stroke-width': 3 }, g);
   }
   // Tag pill
-  svgEl('rect', { x: 56, y: 20, width: 124, height: 38, rx: 8, fill: theme.amber, 'fill-opacity': '0.16', stroke: theme.amber, 'stroke-width': 1.5 }, g);
-  const tTag = svgEl('text', { x: 118, y: 46, fill: theme.amber, 'font-family': FONT_STACK.sans, 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle' }, g);
+  svgEl('rect', { x: 56, y: 20, width: 124, height: 38, rx: 8, fill: theme.accent, 'fill-opacity': '0.16', stroke: theme.accent, 'stroke-width': 1.5 }, g);
+  const tTag = svgEl('text', { x: 118, y: 46, fill: theme.accent, 'font-family': FONT_STACK.sans, 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle' }, g);
   tTag.textContent = tag;
 
   const tTitle = svgEl('text', { x: 202, y: 48, fill: theme.ink, 'font-family': FONT_STACK.sans, 'font-size': 27, 'font-weight': 700 }, g);
   tTitle.textContent = title;
 
   if (stepLabel) {
-    const tStep = svgEl('text', { x: width - 56, y: 47, fill: theme.cyan, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700, 'text-anchor': 'end' }, g);
+    const tStep = svgEl('text', { x: width - 56, y: 47, fill: theme.primary, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700, 'text-anchor': 'end' }, g);
     tStep.textContent = stepLabel;
   }
   return g;
@@ -670,15 +773,19 @@ export function svgArrow(parent, p0, p1, k = 1, {
  * Engineering ground / wall / inclined-plane surface line with standard 45° hatch ticks on the solid side.
  */
 export function svgSurface(parent, p0, p1, k = 1, {
-  color = '#94A3B8',
-  hatchColor = 'rgba(148, 163, 184, 0.38)',
+  color = null,
+  hatchColor = null,
   width = 3.5,
   hatchLen = 16,
   spacing = 22,
   side = 1, // 1 = below/right of directed segment p0->p1, -1 = above/left
   scroll = 0, // pixel phase offset along surface (e.g. -t * 95 for rightward block motion)
   alpha = 1,
+  theme = null,
 } = {}) {
+  const t = theme ? resolveTheme(theme) : null;
+  const strokeCol = color || (t ? t.muted : '#64748B');
+  const hCol = hatchColor || (t ? t.panelStroke : 'rgba(100, 116, 139, 0.36)');
   const p = ease.out(clamp(k));
   if (p <= 0.005 || alpha <= 0.005) return;
   const dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy) || 1;
@@ -688,7 +795,7 @@ export function svgSurface(parent, p0, p1, k = 1, {
   const g = svgEl('g', { opacity: clamp(alpha).toFixed(3) }, parent);
   svgEl('line', {
     x1: p0[0], y1: p0[1], x2: p0[0] + dx * p, y2: p0[1] + dy * p,
-    stroke: color, 'stroke-width': width, 'stroke-linecap': 'round',
+    stroke: strokeCol, 'stroke-width': width, 'stroke-linecap': 'round',
   }, g);
   const phase = ((scroll % spacing) + spacing) % spacing;
   for (let d = phase; d <= visLen - 4; d += spacing) {
@@ -698,7 +805,7 @@ export function svgSurface(parent, p0, p1, k = 1, {
     const ex = sx - ux * hatchLen * 0.65 + nx * hatchLen, ey = sy - uy * hatchLen * 0.65 + ny * hatchLen;
     svgEl('line', {
       x1: sx, y1: sy, x2: ex, y2: ey,
-      stroke: hatchColor, 'stroke-width': 2, opacity: edgeFade.toFixed(2),
+      stroke: hCol, 'stroke-width': 2, opacity: edgeFade.toFixed(2),
     }, g);
   }
 }
@@ -708,22 +815,26 @@ export function svgSurface(parent, p0, p1, k = 1, {
  */
 export function svgBlock(parent, cx, cy, w, h, {
   angleDeg = 0,
-  fill = '#162338',
-  stroke = '#E2E8F0',
+  fill = null,
+  stroke = null,
   strokeWidth = 2.8,
   bevel = true,
   alpha = 1,
   formula = null,
   label = '',
+  theme = null,
 } = {}) {
   if (alpha <= 0.005) return null;
+  const th = theme ? resolveTheme(theme) : null;
+  const fillCol = fill || (th ? th.panel : '#162338');
+  const strokeCol = stroke || (th ? th.ink : '#E2E8F0');
   const g = svgEl('g', {
     transform: `translate(${cx.toFixed(2)}, ${cy.toFixed(2)}) rotate(${angleDeg.toFixed(2)})`,
     opacity: String(clamp(alpha)),
   }, parent);
   svgEl('rect', {
     x: -w / 2, y: -h / 2, width: w, height: h, rx: 9,
-    fill, stroke, 'stroke-width': strokeWidth,
+    fill: fillCol, stroke: strokeCol, 'stroke-width': strokeWidth,
   }, g);
   if (bevel) {
     svgEl('line', {
@@ -732,14 +843,14 @@ export function svgBlock(parent, cx, cy, w, h, {
     }, g);
   }
   // Subtle center-of-mass dot
-  svgEl('circle', { cx: 0, cy: 0, r: 4.5, fill: stroke }, g);
+  svgEl('circle', { cx: 0, cy: 0, r: 4.5, fill: strokeCol }, g);
   if (formula) {
     const fg = svgEl('g', { transform: `rotate(${(-angleDeg).toFixed(2)})` }, g);
-    drawFormula(fg, formula, 0, -26, { anchor: 'center', vAnchor: 'middle', color: stroke });
+    drawFormula(fg, formula, 0, -26, { anchor: 'center', vAnchor: 'middle', color: strokeCol });
   } else if (label) {
     // Place block mass label in upper-left quadrant so vertical force vectors from (0,0) never cross it
     const t = svgEl('text', {
-      x: -w * 0.30, y: -h * 0.18, fill: stroke, 'font-family': FONT_STACK.sans, 'font-size': 23, 'font-weight': 700,
+      x: -w * 0.30, y: -h * 0.18, fill: strokeCol, 'font-family': FONT_STACK.sans, 'font-size': 23, 'font-weight': 700,
       'text-anchor': 'middle', transform: `rotate(${(-angleDeg).toFixed(2)})`,
     }, g);
     t.textContent = label;
@@ -829,10 +940,14 @@ export function svgAxes(parent, box, {
   yTicks = [],
   xLabel = '',
   yLabel = '',
-  color = '#94A3B8',
-  gridColor = 'rgba(148, 163, 184, 0.12)',
+  color = null,
+  gridColor = null,
+  theme = null,
   k = 1,
 } = {}) {
+  const th = theme ? resolveTheme(theme) : null;
+  const axCol = color || (th ? th.muted : '#64748B');
+  const gCol = gridColor || (th ? th.grid : 'rgba(100, 116, 139, 0.16)');
   const p = ease.out(clamp(k));
   const mapX = (v) => box.x + ((v - xDomain[0]) / (xDomain[1] - xDomain[0])) * box.w;
   const mapY = (v) => box.y + box.h - ((v - yDomain[0]) / (yDomain[1] - yDomain[0])) * box.h;
@@ -842,24 +957,24 @@ export function svgAxes(parent, box, {
     const g = svgEl('g', { opacity: p.toFixed(3) }, parent);
     for (const [tv] of xTicks) {
       const px = mapX(tv);
-      svgEl('line', { x1: px, y1: box.y, x2: px, y2: box.y + box.h, stroke: gridColor, 'stroke-width': 1, 'stroke-dasharray': '5 5' }, g);
-      svgEl('line', { x1: px, y1: box.y + box.h, x2: px, y2: box.y + box.h + 7, stroke: color, 'stroke-width': 2 }, g);
+      svgEl('line', { x1: px, y1: box.y, x2: px, y2: box.y + box.h, stroke: gCol, 'stroke-width': 1, 'stroke-dasharray': '5 5' }, g);
+      svgEl('line', { x1: px, y1: box.y + box.h, x2: px, y2: box.y + box.h + 7, stroke: axCol, 'stroke-width': 2 }, g);
     }
     for (const [tv] of yTicks) {
       const py = mapY(tv);
-      svgEl('line', { x1: box.x, y1: py, x2: box.x + box.w, y2: py, stroke: gridColor, 'stroke-width': 1, 'stroke-dasharray': '5 5' }, g);
-      svgEl('line', { x1: box.x - 7, y1: py, x2: box.x, y2: py, stroke: color, 'stroke-width': 2 }, g);
+      svgEl('line', { x1: box.x, y1: py, x2: box.x + box.w, y2: py, stroke: gCol, 'stroke-width': 1, 'stroke-dasharray': '5 5' }, g);
+      svgEl('line', { x1: box.x - 7, y1: py, x2: box.x, y2: py, stroke: axCol, 'stroke-width': 2 }, g);
     }
     // Axes arrows
-    svgArrow(g, [box.x, box.y + box.h], [box.x + box.w + 22, box.y + box.h], p, { color, width: 2.8, headLen: 13, headWidth: 9, label: xLabel, labelOffset: [8, 6] });
-    svgArrow(g, [box.x, box.y + box.h], [box.x, box.y - 22], p, { color, width: 2.8, headLen: 13, headWidth: 9, label: yLabel, labelOffset: [-8, -16], labelAnchor: 'center' });
+    svgArrow(g, [box.x, box.y + box.h], [box.x + box.w + 22, box.y + box.h], p, { color: axCol, width: 2.8, headLen: 13, headWidth: 9, label: xLabel, labelOffset: [8, 6] });
+    svgArrow(g, [box.x, box.y + box.h], [box.x, box.y - 22], p, { color: axCol, width: 2.8, headLen: 13, headWidth: 9, label: yLabel, labelOffset: [-8, -16], labelAnchor: 'center' });
 
     for (const [tv, lab] of xTicks) {
-      const t = svgEl('text', { x: mapX(tv), y: box.y + box.h + 30, fill: color, 'font-family': FONT_STACK.sans, 'font-size': 20, 'text-anchor': 'middle' }, g);
+      const t = svgEl('text', { x: mapX(tv), y: box.y + box.h + 30, fill: axCol, 'font-family': FONT_STACK.sans, 'font-size': 20, 'text-anchor': 'middle' }, g);
       t.textContent = lab ?? String(tv);
     }
     for (const [tv, lab] of yTicks) {
-      const t = svgEl('text', { x: box.x - 14, y: mapY(tv) + 7, fill: color, 'font-family': FONT_STACK.sans, 'font-size': 20, 'text-anchor': 'end' }, g);
+      const t = svgEl('text', { x: box.x - 14, y: mapY(tv) + 7, fill: axCol, 'font-family': FONT_STACK.sans, 'font-size': 20, 'text-anchor': 'end' }, g);
       t.textContent = lab ?? String(tv);
     }
   }
@@ -916,37 +1031,43 @@ export function svgNodeBox(parent, cx, cy, w, h, {
   sub = '',
   badge = '',
   formula = null,
-  fill = '#162236',
-  stroke = '#38BDF8',
-  textColor = '#F1F5F9',
-  subColor = '#94A3B8',
+  fill = null,
+  stroke = null,
+  textColor = null,
+  subColor = null,
+  theme = null,
   rx = 12,
   alpha = 1,
   highlight = false,
 } = {}) {
   if (alpha <= 0.005) return null;
+  const th = theme ? resolveTheme(theme) : null;
+  const fillCol = fill || (th ? th.panel : '#162236');
+  const strokeCol = stroke || (th ? th.primary : '#38BDF8');
+  const txtCol = textColor || (th ? th.ink : '#F1F5F9');
+  const sbCol = subColor || (th ? th.muted : '#94A3B8');
   const x = cx - w / 2, y = cy - h / 2;
   const g = svgEl('g', { opacity: clamp(alpha).toFixed(3) }, parent);
   if (highlight) {
-    svgEl('rect', { x: x - 5, y: y - 5, width: w + 10, height: h + 10, rx: rx + 4, fill: stroke, 'fill-opacity': '0.16' }, g);
+    svgEl('rect', { x: x - 5, y: y - 5, width: w + 10, height: h + 10, rx: rx + 4, fill: strokeCol, 'fill-opacity': '0.16' }, g);
   }
-  svgEl('rect', { x, y, width: w, height: h, rx, fill, stroke, 'stroke-width': highlight ? 3 : 2 }, g);
+  svgEl('rect', { x, y, width: w, height: h, rx, fill: fillCol, stroke: strokeCol, 'stroke-width': highlight ? 3 : 2 }, g);
   if (badge) {
-    const bt = svgEl('text', { x: x + 14, y: y - 8, fill: stroke, 'font-family': FONT_STACK.sans, 'font-size': 18, 'font-weight': 700 }, g);
+    const bt = svgEl('text', { x: x + 14, y: y - 8, fill: strokeCol, 'font-family': FONT_STACK.sans, 'font-size': 18, 'font-weight': 700 }, g);
     bt.textContent = badge;
   }
   if (formula) {
-    drawFormula(g, formula, cx, sub ? cy - 10 : cy, { anchor: 'center', vAnchor: 'middle', color: textColor });
+    drawFormula(g, formula, cx, sub ? cy - 10 : cy, { anchor: 'center', vAnchor: 'middle', color: txtCol });
   } else if (title) {
     const t = svgEl('text', {
-      x: cx, y: sub ? cy - 4 : cy + 8, fill: textColor,
+      x: cx, y: sub ? cy - 4 : cy + 8, fill: txtCol,
       'font-family': FONT_STACK.sans, 'font-size': 24, 'font-weight': 700, 'text-anchor': 'middle',
     }, g);
     t.textContent = title;
   }
   if (sub) {
     const st = svgEl('text', {
-      x: cx, y: cy + 24, fill: subColor,
+      x: cx, y: cy + 24, fill: sbCol,
       'font-family': FONT_STACK.sans, 'font-size': 19, 'font-weight': 400, 'text-anchor': 'middle',
     }, g);
     st.textContent = sub;
@@ -967,33 +1088,39 @@ export function svgArray(parent, x, y, values, {
   cellW = 84,
   cellH = 68,
   gap = 4,
-  fill = '#131C2E',
-  stroke = 'rgba(148, 163, 184, 0.35)',
-  textColor = '#F1F5F9',
-  indexColor = '#64748B',
+  fill = null,
+  stroke = null,
+  textColor = null,
+  indexColor = null,
+  theme = null,
   showIndex = true,
   activeColors = {},
   pointers = [],
   alpha = 1,
 } = {}) {
   if (alpha <= 0.005) return { cells: [] };
+  const th = theme ? resolveTheme(theme) : null;
+  const fillCol = fill || (th ? th.panel : '#131C2E');
+  const strokeCol = stroke || (th ? th.panelStroke : 'rgba(148, 163, 184, 0.35)');
+  const txtCol = textColor || (th ? th.ink : '#F1F5F9');
+  const idxCol = indexColor || (th ? th.muted : '#64748B');
   const g = svgEl('g', { opacity: clamp(alpha).toFixed(3) }, parent);
   const cells = values.map((val, i) => {
     const cx = x + i * (cellW + gap) + cellW / 2, cy = y + cellH / 2;
     const col = activeColors[i];
     svgEl('rect', {
       x: cx - cellW / 2, y, width: cellW, height: cellH, rx: 8,
-      fill: col ? col : fill, 'fill-opacity': col ? '0.20' : '0.90',
-      stroke: col || stroke, 'stroke-width': col ? 2.8 : 1.8,
+      fill: col ? col : fillCol, 'fill-opacity': col ? '0.20' : '0.90',
+      stroke: col || strokeCol, 'stroke-width': col ? 2.8 : 1.8,
     }, g);
     const t = svgEl('text', {
-      x: cx, y: cy + 9, fill: col || textColor,
+      x: cx, y: cy + 9, fill: col || txtCol,
       'font-family': FONT_STACK.sans, 'font-size': 25, 'font-weight': 700, 'text-anchor': 'middle',
     }, g);
     t.textContent = String(val);
     if (showIndex) {
       const idx = svgEl('text', {
-        x: cx, y: y + cellH + 24, fill: indexColor,
+        x: cx, y: y + cellH + 24, fill: idxCol,
         'font-family': FONT_STACK.sans, 'font-size': 18, 'text-anchor': 'middle',
       }, g);
       idx.textContent = String(i);
@@ -1004,7 +1131,7 @@ export function svgArray(parent, x, y, values, {
   for (const ptr of pointers) {
     const c = cells[ptr.index];
     if (!c) continue;
-    const pCol = ptr.color || '#F59E0B';
+    const pCol = ptr.color || (th ? th.accent : '#F59E0B');
     if (ptr.side === 'bottom') {
       const base = y + cellH + (showIndex ? 62 : 42);
       svgArrow(g, [c.cx, base], [c.cx, y + cellH + (showIndex ? 30 : 6)], 1, {
@@ -1162,7 +1289,7 @@ export function makeCamera3D({ cx = 960, cy = 560, scale = 180, yaw = -0.65, pit
 // ---- 7. v1.1 Editorial Layout, Multi-Act Sequencer & Rich Physical Scene Parts -----------------------------
 
 /**
- * Clean non-overlapping chapter/act sequencer (`主图常驻，右区按幕清场`).
+ * Clean non-overlapping chapter/act temporal sequencer.
  * `acts`: `[{ id: 'a1', t0: 0 }, { id: 'a2', t0: 12.5 }, ...]`.
  * Returns `{ id, index, t0, t1, localT, alpha }` where outgoing act fades out BEFORE incoming act fades in (zero ghosting!).
  */
@@ -1194,13 +1321,14 @@ export function drawChapterTitle(parent, {
   width = 1752,
   rule = true,
   alpha = 1,
-  theme = THEMES.slate,
+  theme: rawTheme = THEMES.ivory,
 } = {}) {
   if (alpha <= 0.01) return null;
+  const theme = resolveTheme(rawTheme);
   const g = svgEl('g', { opacity: clamp(alpha).toFixed(3) }, parent);
   if (kicker) {
     const kt = svgEl('text', {
-      x, y: y + 18, fill: theme.amber,
+      x, y: y + 18, fill: theme.accent,
       'font-family': FONT_STACK.sans, 'font-size': 19, 'font-weight': 700, 'letter-spacing': '1.2',
     }, g);
     kt.textContent = kicker;
@@ -1240,18 +1368,19 @@ export function svgCard(parent, x, y, w, h, k = 1, {
   title = '',
   badge = '',
   accent = null,
-  corners = true,
+  corners = false,
   shadow = true,
   fill = null,
   alpha = 1,
   rx = 6,
-  theme = THEMES.slate,
+  theme: rawTheme = THEMES.ivory,
 } = {}) {
   const p = ease.out(clamp(k));
   if (p <= 0.005 || alpha <= 0.005) return null;
-  const g = svgEl('g', { opacity: (clamp(alpha) * p).toFixed(3) }, parent);
+  const theme = resolveTheme(rawTheme);
+  const g = svgEl('g', { opacity: (clamp(alpha) * p).toFixed(3), 'data-role': 'card' }, parent);
   if (shadow) {
-    svgEl('rect', { x: x + 8, y: y + 8, width: w, height: h, rx, fill: '#000000', 'fill-opacity': '0.16' }, g);
+    svgEl('rect', { x: x + 8, y: y + 8, width: w, height: h, rx, fill: '#000000', 'fill-opacity': theme.light ? '0.07' : '0.16' }, g);
   }
   svgEl('rect', {
     x, y, width: w, height: h, rx,
@@ -1299,15 +1428,17 @@ export function svgRuler(parent, p0, p1, k = 1, {
   majorLen = 12,
   side = 1, // 1 = below/right, -1 = above/left
   unit = '',
-  color = '#94A3B8',
+  color = null,
+  theme = null,
   fontSize = 20,
 } = {}) {
   const p = ease.out(clamp(k));
   if (p <= 0.01) return null;
+  const rCol = color || (theme ? resolveTheme(theme).muted : '#64748B');
   const dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy) || 1;
   const ux = dx / len, uy = dy / len, nx = -uy * side, ny = ux * side;
   const g = svgEl('g', { opacity: p.toFixed(3) }, parent);
-  svgEl('line', { x1: p0[0], y1: p0[1], x2: p0[0] + dx * p, y2: p0[1] + dy * p, stroke: color, 'stroke-width': 1.6 }, g);
+  svgEl('line', { x1: p0[0], y1: p0[1], x2: p0[0] + dx * p, y2: p0[1] + dy * p, stroke: rCol, 'stroke-width': 1.6 }, g);
 
   const [d0, d1] = domain;
   const span = d1 - d0 || 1;
@@ -1317,11 +1448,11 @@ export function svgRuler(parent, p0, p1, k = 1, {
     const isMajor = Math.abs(((v - d0) / majorStep) - Math.round((v - d0) / majorStep)) < 1e-3;
     const tl = isMajor ? majorLen : tickLen;
     const sx = p0[0] + dx * u, sy = p0[1] + dy * u;
-    svgEl('line', { x1: sx, y1: sy, x2: sx + nx * tl, y2: sy + ny * tl, stroke: color, 'stroke-width': isMajor ? 1.8 : 1.2 }, g);
+    svgEl('line', { x1: sx, y1: sy, x2: sx + nx * tl, y2: sy + ny * tl, stroke: rCol, 'stroke-width': isMajor ? 1.8 : 1.2 }, g);
     if (isMajor) {
       const tx = sx + nx * (tl + 18), ty = sy + ny * (tl + 18) + 6;
       const lb = svgEl('text', {
-        x: tx.toFixed(1), y: ty.toFixed(1), fill: color,
+        x: tx.toFixed(1), y: ty.toFixed(1), fill: rCol,
         'font-family': FONT_STACK.mono, 'font-size': fontSize, 'text-anchor': 'middle',
       }, g);
       lb.textContent = Number.isInteger(v) ? String(v) : v.toFixed(1);
@@ -1329,7 +1460,7 @@ export function svgRuler(parent, p0, p1, k = 1, {
   }
   if (unit && p > 0.8) {
     const ut = svgEl('text', {
-      x: (p1[0] + ux * 28).toFixed(1), y: (p1[1] + uy * 28 + 6).toFixed(1), fill: color,
+      x: (p1[0] + ux * 28).toFixed(1), y: (p1[1] + uy * 28 + 6).toFixed(1), fill: rCol,
       'font-family': FONT_STACK.mono, 'font-size': fontSize, 'text-anchor': 'start',
     }, g);
     ut.textContent = unit;
@@ -1339,38 +1470,45 @@ export function svgRuler(parent, p0, p1, k = 1, {
 
 let tankSeq = 0;
 /**
- * Rich two-medium physical viewport (optics air/water refraction, acoustics, fluid layers, field boundaries).
- * Provides deep gradient media, animated internal wave lines, glowing meniscus interface, subtle coordinate grid, and optional bottom ruler!
+ * Optional two-medium layered physical viewport (refraction, acoustics, stratified fluids, field boundaries).
+ * Automatically adapts gradient media & grid contrast to light or dark `theme`.
  */
 export function svgMediaTank(parent, box, {
   splitRatio = 0.54,
   topLabel = '',
   bottomLabel = '',
   interfaceLabel = '',
-  topColors = ['#0E1E32', '#132B44'],
-  bottomColors = ['#0F4858', '#082636'],
-  topLabelColor = '#F59E0B',
-  bottomLabelColor = '#38BDF8',
-  interfaceColor = '#5CE0DA',
+  topColors = null,
+  bottomColors = null,
+  topLabelColor = null,
+  bottomLabelColor = null,
+  interfaceColor = null,
   waves = 7,
   t = 0,
   rulerDomain = null,
   rulerUnit = '',
   padX = 64,
-  theme = THEMES.slate,
+  theme: rawTheme = THEMES.ivory,
 } = {}) {
+  const theme = resolveTheme(rawTheme);
+  const tCols = topColors || (theme.light ? ['#F4F8FC', '#E3EEF8'] : ['#0E1E32', '#132B44']);
+  const bCols = bottomColors || (theme.light ? ['#C5E2EE', '#9AC9DE'] : ['#0F4858', '#082636']);
+  const tLabCol = topLabelColor || theme.accent;
+  const bLabCol = bottomLabelColor || theme.primary;
+  const ifCol = interfaceColor || (theme.light ? theme.primary : '#5CE0DA');
+  const gridStroke = theme.light ? '#0F172A' : '#FFFFFF';
   const uid = `vc-tank-${++tankSeq}`;
   const surfY = box.y + box.h * splitRatio;
   const g = svgEl('g', {}, parent);
   const defs = svgEl('defs', {}, g);
 
   const gTop = svgEl('linearGradient', { id: `${uid}-top`, x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, defs);
-  svgEl('stop', { offset: '0%', 'stop-color': topColors[0] }, gTop);
-  svgEl('stop', { offset: '100%', 'stop-color': topColors[1] }, gTop);
+  svgEl('stop', { offset: '0%', 'stop-color': tCols[0] }, gTop);
+  svgEl('stop', { offset: '100%', 'stop-color': tCols[1] }, gTop);
 
   const gBot = svgEl('linearGradient', { id: `${uid}-bot`, x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, defs);
-  svgEl('stop', { offset: '0%', 'stop-color': bottomColors[0] }, gBot);
-  svgEl('stop', { offset: '100%', 'stop-color': bottomColors[1] }, gBot);
+  svgEl('stop', { offset: '0%', 'stop-color': bCols[0] }, gBot);
+  svgEl('stop', { offset: '100%', 'stop-color': bCols[1] }, gBot);
 
   const clip = svgEl('clipPath', { id: `${uid}-clip` }, defs);
   svgEl('rect', { x: box.x, y: box.y, width: box.w, height: box.h, rx: 10 }, clip);
@@ -1381,10 +1519,10 @@ export function svgMediaTank(parent, box, {
 
   // Subtle architectural grid inside tank
   for (let x = box.x + 64; x < box.x + box.w; x += 64) {
-    svgEl('line', { x1: x, y1: box.y, x2: x, y2: box.y + box.h, stroke: '#FFFFFF', 'stroke-opacity': '0.045', 'stroke-width': 1 }, inner);
+    svgEl('line', { x1: x, y1: box.y, x2: x, y2: box.y + box.h, stroke: gridStroke, 'stroke-opacity': '0.055', 'stroke-width': 1 }, inner);
   }
   for (let y = box.y + 64; y < box.y + box.h; y += 64) {
-    svgEl('line', { x1: box.x, y1: y, x2: box.x + box.w, y2: y, stroke: '#FFFFFF', 'stroke-opacity': '0.045', 'stroke-width': 1 }, inner);
+    svgEl('line', { x1: box.x, y1: y, x2: box.x + box.w, y2: y, stroke: gridStroke, 'stroke-opacity': '0.055', 'stroke-width': 1 }, inner);
   }
 
   // Animated sinusoidal internal wave caustics in the denser lower medium
@@ -1397,13 +1535,13 @@ export function svgMediaTank(parent, box, {
       const yy = wy + 3.2 * Math.sin(xx * 0.016 + t * 0.9 + j * 1.1);
       pts.push(`${k ? 'L' : 'M'} ${xx.toFixed(1)} ${yy.toFixed(1)}`);
     }
-    svgEl('path', { d: pts.join(' '), fill: 'none', stroke: interfaceColor, 'stroke-opacity': '0.10', 'stroke-width': 1.6 }, inner);
+    svgEl('path', { d: pts.join(' '), fill: 'none', stroke: ifCol, 'stroke-opacity': theme.light ? '0.18' : '0.10', 'stroke-width': 1.6 }, inner);
   }
 
-  // Glowing interface meniscus line
+  // Interface meniscus line
   svgEl('line', {
     x1: box.x, y1: surfY, x2: box.x + box.w, y2: surfY,
-    stroke: interfaceColor, 'stroke-width': 2.6, 'stroke-opacity': '0.88',
+    stroke: ifCol, 'stroke-width': 2.6, 'stroke-opacity': '0.88',
   }, inner);
 
   // Outer frame border
@@ -1413,11 +1551,11 @@ export function svgMediaTank(parent, box, {
   }, g);
 
   if (topLabel) {
-    const tl = svgEl('text', { x: box.x + 24, y: box.y + 38, fill: topLabelColor, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
+    const tl = svgEl('text', { x: box.x + 24, y: box.y + 38, fill: tLabCol, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
     tl.textContent = topLabel;
   }
   if (bottomLabel) {
-    const bl = svgEl('text', { x: box.x + 24, y: box.y + box.h - 24, fill: bottomLabelColor, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
+    const bl = svgEl('text', { x: box.x + 24, y: box.y + box.h - 24, fill: bLabCol, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
     bl.textContent = bottomLabel;
   }
   if (interfaceLabel) {
@@ -1443,20 +1581,22 @@ export function svgMediaTank(parent, box, {
 }
 
 /**
- * Tactile discrete brick/column staircase chart (ideal for TCP `cwnd` MSS stacks, queue depths, DP tables, histograms).
- * `columns`: `[{ label: '0', value: 1, t0: 1.5, color: '#0C7468', dropFrom: null, dropBadge: '' }, ...]`.
- * `thresholds`: `[[colStart, colEnd, value, t0?], ...]` draws stepped dashed threshold lines (e.g. `ssthresh`).
+ * Optional discrete unit/column chart (histograms, discrete rounds, DP states, queue depths).
+ * `columns`: `[{ label: '0', value: 1, t0: 1.5, color, dropFrom: null, dropBadge: '' }, ...]`.
+ * `thresholds`: `[[colStart, colEnd, value, t0?], ...]` draws stepped dashed reference lines.
  */
 export function svgStepColumns(parent, box, columns, t, {
   maxVal = 14,
   yStep = 2,
   thresholds = [],
-  thresholdColor = '#64798A',
+  thresholdColor = null,
   xLabel = '',
   yLabel = '',
   unitBlocks = true,
-  theme = THEMES.slate,
+  theme: rawTheme = THEMES.ivory,
 } = {}) {
+  const theme = resolveTheme(rawTheme);
+  const thCol = thresholdColor || theme.muted;
   const N = Math.max(1, columns.length);
   const dx = box.w / N;
   const colW = Math.min(62, dx * 0.64);
@@ -1488,16 +1628,16 @@ export function svgStepColumns(parent, box, columns, t, {
     xl.textContent = xLabel;
   }
 
-  // Stepped dashed threshold line (e.g. ssthresh 8 -> 6 -> 4)
+  // Stepped dashed reference lines
   for (let k = 0; k < thresholds.length; k++) {
     const [c0, c1, val, thT0 = 0] = thresholds[k];
     if (t < thT0) continue;
     const p = ease.out(clamp((t - thT0) / 0.45));
     const sx0 = box.x + c0 * dx, sx1 = lerp(sx0, box.x + c1 * dx, p), sy = yOf(val);
-    svgEl('line', { x1: sx0, y1: sy, x2: sx1, y2: sy, stroke: thresholdColor, 'stroke-width': 2.5, 'stroke-dasharray': '9 7' }, g);
+    svgEl('line', { x1: sx0, y1: sy, x2: sx1, y2: sy, stroke: thCol, 'stroke-width': 2.5, 'stroke-dasharray': '9 7' }, g);
     if (k > 0) {
       const prevVal = thresholds[k - 1][2];
-      svgEl('line', { x1: sx0, y1: yOf(prevVal), x2: sx0, y2: sy, stroke: thresholdColor, 'stroke-width': 2.2, 'stroke-dasharray': '6 5' }, g);
+      svgEl('line', { x1: sx0, y1: yOf(prevVal), x2: sx0, y2: sy, stroke: thCol, 'stroke-width': 2.2, 'stroke-dasharray': '6 5' }, g);
     }
   }
 
@@ -1509,7 +1649,7 @@ export function svgStepColumns(parent, box, columns, t, {
 
     if (t < col.t0) return;
     const age = t - col.t0;
-    const cCol = col.color || theme.cyan;
+    const cCol = col.color || theme.primary;
 
     if (unitBlocks) {
       for (let b = 0; b < col.value; b++) {
@@ -1544,10 +1684,10 @@ export function svgStepColumns(parent, box, columns, t, {
       const dp = ease.out(clamp(age / 0.35));
       const dropX = box.x + i * dx;
       svgArrow(g, [dropX, yOf(col.dropFrom)], [dropX, yOf(col.value)], dp, {
-        color: theme.coral, width: 3.2, headLen: 13, headWidth: 10,
+        color: theme.danger, width: 3.2, headLen: 13, headWidth: 10,
       });
       if (col.dropBadge && dp > 0.4) {
-        svgEl('rect', { x: dropX + 8, y: (yOf(col.dropFrom) + yOf(col.value)) / 2 - 16, width: 56, height: 30, rx: 5, fill: theme.coral }, g);
+        svgEl('rect', { x: dropX + 8, y: (yOf(col.dropFrom) + yOf(col.value)) / 2 - 16, width: 56, height: 30, rx: 5, fill: theme.danger }, g);
         const bt = svgEl('text', {
           x: dropX + 36, y: (yOf(col.dropFrom) + yOf(col.value)) / 2 + 6, fill: '#FFFFFF',
           'font-family': FONT_STACK.mono, 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle',

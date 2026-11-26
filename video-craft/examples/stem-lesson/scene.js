@@ -1,5 +1,8 @@
-// scene.js — 斜拉极值与空间矢量闭合（课程与讲题轨无框空间涌现模板）
-// 演示：滚动剖面地面 + 接触热摩擦光晕 + 极坐标轨迹扇相切涌现 + MathJax 跨步变形 + 矢量空中剥离闭合三角形。
+// scene.js — 斜拉极值与空间矢量闭合（lesson.js 示例工程：矢量剥离与公式变形）
+// 本片的设计决定（换成你的题目时，先重写这三条决定，切勿原样照搬本片的 #060A12 深空底色与左右坐标）：
+//   1. 核心视觉隐喻：因为本题要打通“代数辅助角”与“全反力矢量三角形垂线段最短”，所以滑块底面画出随正压力变化的摩擦热光晕，并在第 2 幕让三根力矢量直接脱离物块升空闭合成直角三角形。
+//   2. 空间组织：第 1 幕左物块轨迹扇 + 右公式变形与曲线联动；第 2 幕右侧旧式与曲线全部清场，把中右舞台让给全反力恒定方向线与闭合矢量三角形。
+//   3. 色调与语义色：因需表现摩擦发光与极坐标扫掠辉光而采用深色光学底；若换作常规数学推导、算法或统计讲题，可改用 THEMES.ivory / paper / blueprint 或自定义明快配色。
 
 import { clamp, lerp, ease, seg, register, FONT_STACK } from '../../kit/kit.js';
 import {
@@ -12,12 +15,14 @@ import {
 } from './data.js';
 
 const W = 1920, H = 1080, FPS = 30;
+// 配色属于本题题材；新题可直接选用 THEMES.ivory / paper / blueprint / chalk 或传入自定义 { bg, ink, accent, primary, danger, success }
 const T = {
   ...THEMES.slate,
   bg: '#060A12',
   bgGlow: '#12223D',
   grid: 'rgba(148, 163, 184, 0.055)',
 };
+document.body.style.background = T.bg;
 
 const svg = document.getElementById('svg');
 const measureHost = svgEl('g', { visibility: 'hidden' }, svg);

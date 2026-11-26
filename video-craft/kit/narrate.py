@@ -100,17 +100,23 @@ _CONNECTORS = {
 }
 
 _AI_CLICHE_PATTERNS = [
-    (re.compile(r"凭什么[？?]?|差在哪(?:里|儿)?[？?]?|到底怎么回事[？?]?|为什么这么说[？?]?"),
-     "AI 反问噱头腔（如“凭什么？”“差在哪？”），请改成自然完整的设问句（如“这两种反应为什么会差这么多呢？”）"),
-    (re.compile(r"(?:一|两|二|三|四)个(?:坑|关键|重点|核心|要点|细节|误区)"),
-     "提纲报幕起手（如“两个坑”“三个关键”），请融进自然口语过渡（如“考场上最容易算错的地方主要有两个，第一是……”）"),
-    (re.compile(r"一句话总结|总结一下[：:]|口诀[：:]|记住[：:]|划重点|核心在于|归根结底|换句话说|不难发现|值得注意的是"),
-     "AI 总结套话或冒号喊口号（如“口诀：”“记住：”“核心在于”），请直接用平实自然的老师口吻把道理说清"),
-    (re.compile(r"\b(?:cwnd|ssthresh|dupACK|ack|rtt)\b"),
-     "夹杂未转译的代码/协议缩写（TTS 会生硬拼读字母），画面写符号即可，口播请说中文全称（如“拥塞窗口”“慢启动阈值”“重复确认”“往返时间”）"),
+    (re.compile(r"凭什么[？?]|差在哪(?:里|儿)?[？?]|到底怎么回事[？?]"),
+     "AI 反问噱头腔（如“凭什么？”“差在哪？”），请改成自然完整的设问句"),
+    (re.compile(r"(?:一|两|二|三|四)个(?:坑|关键|重点|核心|要点|误区)\s*[：:]"),
+     "冒号提纲报幕起手（如“两个坑：”“三个要点：”），请融进自然口语过渡（如“最容易算错的主要有两处，第一是……”）"),
+    (re.compile(r"一句话总结[：:]?|总结一下[：:]|口诀[：:]|记住[：:]|划重点[：:]?|归根结底|不难发现|值得注意的是"),
+     "AI 总结套话或冒号喊口号（如“口诀：”“记住：”“不难发现”），请直接用平实自然的口吻把道理说清"),
+    (re.compile(r"(?<![A-Za-z])[a-z]+_[a-z0-9_]+(?![A-Za-z])|(?<![A-Za-z])[a-z]{2,}[A-Z][A-Za-z0-9]*(?![A-Za-z])"),
+     "夹杂代码变量标识符（TTS 会生硬拼读字母），画面写代码符号即可，口播请说中文含义"),
 ]
 
-_NUM_ROLLCALL_RE = re.compile(r"[零一二三四五六七八九十百千万两\d]+(?:、[零一二三四五六七八九十百千万两\d]+){2,}")
+# 4+ bare numbers in a roll-call chain ("一、二、四、八") or colon + 3-number roll-call ("：七、八、九")
+_NUM_ROLLCALL_RE = re.compile(
+    r"[零一二三四五六七八九十百千万两\d]+(?:、[零一二三四五六七八九十百千万两\d]+){3,}"
+    r"|[：:]\s*[零一二三四五六七八九十百千万两\d]+(?:、[零一二三四五六七八九十百千万两\d]+){2,}"
+)
+# Decimals, ratios, fractions, or operator expressions in Arabic digits that TTS misreads (allows years like 1931 or tags like 3D/408)
+_RAW_MATH_DIGIT_RE = re.compile(r"\d+\.\d+|\d+\s*[:/÷×=<>~→-]\s*\d+")
 
 
 def _han_count(s: str) -> int:
@@ -118,16 +124,14 @@ def _han_count(s: str) -> int:
 
 
 def lint_cues(cues: dict, is_spot: bool, args) -> list[str]:
-    """Check Chinese lecture narration for choppy, telegraphic, or AI-flavored prose before TTS synthesis."""
+    """Check Chinese spoken narration for staccato telegraphy or outline-reading copy while preserving pacing freedom."""
     style = getattr(args, "style", "auto")
     if getattr(args, "allow_terse", False) or style == "free":
         return []
     lang = args.language or guess_language(cues.values())
     if lang != "zh":
         return []
-    voice_str = str(args.voice or "teacher")
-    is_teacher = (args.voice is None or voice_str == "teacher" or "Yunxi" in voice_str) and not args.design
-    if style == "auto" and (is_spot or not is_teacher):
+    if style == "auto" and (is_spot or args.design or args.voice in ("promo", "story")):
         return []
 
     issues = []
@@ -141,20 +145,21 @@ def lint_cues(cues: dict, is_spot: bool, args) -> list[str]:
         cue_lengths.append((key, hlen, line))
         total_colons += line.count("：") + line.count(":")
 
-        if "；" in line or ";" in line:
+        semi_parts = [p.strip() for p in re.split(r"[；;]+", line) if p.strip()]
+        if len(semi_parts) >= 3 or (len(semi_parts) == 2 and min(_han_count(p) for p in semi_parts) < 9):
             issues.append(
-                f"  - [{key}] 含分号“；”（书面并列排比腔，配音会生硬断气）：{line!r}\n"
-                f"    → 改法：拆成两句有自然因果/转折连词（“因为……”“可一旦……”“而另一边……”）的完整口语整句。"
+                f"  - [{key}] 含短促分号排比“；”（书面提纲对仗腔，配音会生硬断气）：{line!r}\n"
+                f"    → 改法：改用自然因果或转折连词拆成顺畅的口语整句。"
             )
         if _NUM_ROLLCALL_RE.search(line):
             issues.append(
-                f"  - [{key}] 含顿号报数串（如“一、二、四、八”，TTS 会像点名一样机械蹦字）：{line!r}\n"
-                f"    → 改法：把数字融进动作描述里（如“从一翻倍到二和四，三个往返就推到了阈值八”或“从八一路稳步加一涨到十二”）。"
+                f"  - [{key}] 含顿号点名报数串（TTS 会机械蹦字）：{line!r}\n"
+                f"    → 改法：把数字融进动作描述里（如“从一翻倍到二和四，一路涨到八”）。"
             )
-        if re.search(r"\d", line):
+        if _RAW_MATH_DIGIT_RE.search(line):
             issues.append(
-                f"  - [{key}] 含阿拉伯数字（易导致小数/比值误读）：{line!r}\n"
-                f"    → 改法：口播台词一律写成准确中文读法（如“四点五”“十二”“四比三”）。"
+                f"  - [{key}] 含未转中文的小数/比值/算式数字（易误读）：{line!r}\n"
+                f"    → 改法：口播里的小数与比值请写成中文读法（如“四点五”“四比三”“二分之九”）。"
             )
         for pat, hint in _AI_CLICHE_PATTERNS:
             m = pat.search(line)
@@ -168,31 +173,32 @@ def lint_cues(cues: dict, is_spot: bool, args) -> list[str]:
         if len(clauses) >= 4 and len(cue_short4) >= 3:
             issues.append(
                 f"  - [{key}] 四字以内碎短句过多（{cue_short4}），听感破碎像念电报：{line!r}\n"
-                f"    → 改法：补全主语、谓语和自然连接词，合并成舒展连贯的讲台长句。"
+                f"    → 改法：补全主语、谓语和自然连接词，合并成舒展连贯的口语整句。"
             )
 
-    if len(cues) >= 4:
+    if len(cues) >= 4 and (style == "lesson" or style == "auto"):
         sorted_lens = sorted(x[1] for x in cue_lengths)
         median_len = sorted_lens[len(sorted_lens) // 2]
-        too_short = [(k, n) for k, n, _ in cue_lengths if n < 26]
-        under_32 = [(k, n) for k, n, _ in cue_lengths if n < 32]
-        if median_len < 36 or too_short or len(under_32) > 1:
-            short_desc = ", ".join(f"{k}({n}字)" for k, n in under_32) or "无"
+        mean_len = sum(sorted_lens) / len(sorted_lens)
+        very_short = [(k, n) for k, n, _ in cue_lengths if n < 24]
+        # Allow crisp opening hooks & closing punchlines when body cues carry substance; reject when the script as a whole is choppy!
+        if median_len < 26 or (median_len < 32 and mean_len < 30 and len(very_short) >= len(cues) * 0.5):
+            short_desc = ", ".join(f"{k}({n}字)" for k, n in very_short) or "无"
             issues.append(
-                f"  - [整稿过短过碎] 当前每条 cue 中位字数仅 {median_len} 字（偏短条目：{short_desc}）。\n"
-                f"    → 改法：讲题配音切忌拆成十几二十字的口号短促句！请合并/扩写为每条 42–75 个汉字（2–3 句完整、舒展、像真老师在讲台上娓娓道来的整话，全片约 6–8 条）。"
+                f"  - [整稿过碎] 当前每条 cue 中位字数仅 {median_len} 字、均值 {mean_len:.0f} 字（<24 字短碎条目占 {len(very_short)}/{len(cues)}：{short_desc}）。\n"
+                f"    → 改法：保留必要的短设问钩子即可，主体讲解句请写成 35–75 字、2–3 句舒展连贯的整话（需要做短促广告/散文留白时传 --style free）。"
             )
-        if total_colons > 2:
+        if total_colons > max(2, len(cues) // 3):
             issues.append(
-                f"  - [冒号报幕腔] 全稿使用了 {total_colons} 处冒号“：”（上限 2 处）。口播不是念 PPT 提纲，请把“XX：……”改成自然衔接的句子。"
+                f"  - [冒号报幕腔] 全稿使用了 {total_colons} 处冒号“：”。口播不是念提纲，请把“XX：……”改成自然衔接的句子。"
             )
         if all_clauses:
             mean_clause = sum(_han_count(c) for c in all_clauses) / len(all_clauses)
             short4_ratio = short4_non_conn / len(all_clauses)
-            if mean_clause < 7.0 or short4_ratio > 0.20:
+            if mean_clause < 6.8 or short4_ratio > 0.22:
                 issues.append(
-                    f"  - [节奏蹦词感] 平均分句长度仅 {mean_clause:.1f} 字，≤4 字碎词占比 {short4_ratio:.0%}（要求平均分句 ≥7.0 字且碎词占比 ≤20%）。\n"
-                    f"    → 改法：少打碎逗号，删掉“阈值八，到八碰线，只是轻堵，减半够用”这类四字缩略语，用完整自然的现代汉语口语把因果讲透。"
+                    f"  - [节奏蹦词感] 平均分句长度仅 {mean_clause:.1f} 字，≤4 字碎词占比 {short4_ratio:.0%}（要求平均分句 ≥6.8 字且碎词占比 ≤22%）。\n"
+                    f"    → 改法：少打碎逗号，删掉四字缩略电报词，用完整自然的现代汉语口语把逻辑讲顺。"
                 )
 
     return issues
@@ -439,8 +445,8 @@ def _parse_vtt_words(vtt_path: Path):
 def edge_takes(cues, temp, args):
     rate = 24000
     is_en = (args.language or guess_language(cues.values())) == "en"
-    voice_map = {"teacher": "zh-CN-YunxiNeural", "story": "zh-CN-XiaoxiaoNeural", "promo": "zh-CN-YunjianNeural"}
-    fallback = "en-US-AriaNeural" if is_en else voice_map.get(args.voice or "", "zh-CN-YunxiNeural")
+    voice_map = {"teacher": "zh-CN-XiaoxiaoNeural", "promo": "zh-CN-YunxiNeural", "story": "zh-CN-YunjianNeural"}
+    fallback = "en-US-AriaNeural" if is_en else voice_map.get(args.voice or "", "zh-CN-XiaoxiaoNeural")
     voice = args.voice if args.voice and "Neural" in args.voice else fallback
     try:
         import edge_tts
