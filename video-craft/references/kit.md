@@ -4,7 +4,7 @@
 
 - **浏览器里用的模块**：
   - `kit.js`：缓动、弹簧、随机数、颜色、字体、注册函数，以及跟随录音的 `songAt`、`envAt`、`pulse`。
-  - `lesson.js`：课程、讲题与硬核科普专用 SVG 引擎：离线同步 MathJax v3 公式编译（`\id{key}{expr}` 子项寻址，自带 `kit/vendor/mathjax/tex-svg-full.js`）、跨步弧线平滑变形 `morphFormula`、子项信号框 `highlightPart`、词级旁白时间线 `buildTimeline`、世界坐标焦点相机与轻量 3D 透视投影、光学辉光舞台、滚动地面/刚体/力矢量剥离闭合 `svgMorphArrow`/极坐标轨迹扇 `svgLocusFan`/坐标系曲线/算法数组与节点框图。详见[课程与讲题制作指南](course-and-stem.md)。
+  - `lesson.js`：课程、讲题与硬核科普专用 SVG 引擎：支持深青光学 `THEMES.slate` 与暖纸纹 `THEMES.paper`、分幕清场序列器 `actAt`、章节顶栏 `drawChapterTitle`、带角标参数牌 `svgCard`、双介质动态波纹实验槽 `svgMediaTank`、离散积木阶梯图 `svgStepColumns`、工程标尺 `svgRuler`、离线同步 MathJax v3 公式编译（`\id{key}{expr}` 子项寻址）、跨步弧线平滑变形 `morphFormula`、子项信号框 `highlightPart`、词级旁白时间线 `buildTimeline`、焦点相机、力矢量剥离闭合 `svgMorphArrow`、极坐标轨迹扇 `svgLocusFan`、坐标系曲线及算法数组框图。详见[课程与讲题制作指南](course-and-stem.md)。
   - `draw.js`：分层、噪声、光晕与 bloom、山脊剪影、视差相机、逐渐画出的线、暗角和颗粒。
   - `graphic.js`：版面式动态设计的零件：纸面、网格、色条、角标、逐字解出的标签、大字进场、卡片、刻度圆环、波形、平面着色的 3D 形体，以及三种遮罩转场。
   - `shader.js`：把一段 GLSL 片元着色器变成一张可叠加的画布，画星云、极光、烟和液态光。
@@ -134,14 +134,14 @@ seek(0);
 | `cut.mjs` | `edit.json final.mp4` | 静帧、已有镜头和可选成品音轨，按剪辑单出 MP4 |
 | `captions.mjs` | `source.srt cues.js [--from a --to b]` | 把已有录音的定时字幕转为场景可直接导入的秒数，见[字幕示例](timed-text.md) |
 | `render.mjs` | `page stills <dir> t…` / `sheet <jpg> [--every s] [--times a,b] [--cols n] [--w px] [--still s]` / `strip <jpg> --at t… [--offsets f…]` / `video <out.webm\|.mp4> [--draft] [--scale 0.5] [--fps n] [--crf n] [--from a --to b] [--audio track] [--srt subs.srt] [--mux out]` | `--draft` 以 `960×540@15fps` 快渲预览（保持 `1920×1080` 场景坐标不变，严禁用于最终交付）；`--srt` 在合入 MP4 时封装 `mov_text` 可开关软字幕轨 |
-| `audio.mjs` | `page score\|- out.webm [--vo dir] [--srt out.srt] [--stems] [--target -16] [--wav out.wav]` | `score` 传 `'-'` 时无需乐谱页，直接按场景 `meta.cues` 与可选 `meta.chimes` 输出 `-16 LUFS` 纯净人声轨；`--srt` 导出对齐字幕文件 |
+| `audio.mjs` | `page score\|- out.webm [--vo dir] [--srt out.srt] [--stems] [--target -16] [--wav out.wav]` | `score` 传 `'-'` 时无需乐谱页，直接按场景 `meta.cues` 干声与 `meta.sfx`（支持 `tick`/`pop`/`pluck`/`chime`/`thud`/`whoosh`/`glide`）合成 `-16 LUFS` 音轨；`--srt` 导出对齐字幕文件 |
 | `mixcheck.mjs` | `page score out.png [--vo dir] [--from a --to b]` | 各轨瞬时响度曲线 + 事件线 |
 | `audiocheck.mjs` | `media page out.png [--from a --to b] [--scene-offset s]` | 从成片解码，画频谱、包络和事件线 |
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
 | `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n] [--device auto\|cuda\|cpu]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；显卡繁忙时自动切 CPU `int8` 转写 |
 | `shotlist.py` | `film.mp4 [--mode default\|lesson] [--song songmap.json [--offset T0]] [--json out.json]` | 成片镜头表：`--mode lesson` 采用局部 `8×4` 网格动态感知与 4.5 秒阅读静止阈值，适配单画布连续推演 |
 | `narrate.py` | `cues.json voice-dir [--voice teacher] [--takes 2] [--engine voxcpm\|edge] [--device auto\|cuda\|cpu] [--force-gpu]` | 逐句旁白 WAV + `vo.js` + 逐词时间戳 `words.json`/`words.js`；自动执行显卡负载安全护栏（占用 ≥75% 或空闲显存 <4GB 时退出码 `3` 提示避让），见[人声](voice.md) |
-| `boardcheck.mjs` | `page [--every 3] [--times a,b] [--margin 48] [--min-px 18]` | 自动逐帧检测 SVG/DOM 文字与公式包围盒重叠、越出安全边距、过小字号及画面空间占比 |
+| `boardcheck.mjs` | `page [--every 3] [--times a,b] [--margin 48] [--min-px 18] [--max-formulas 3]` | 自动逐帧检测同屏公式过多堆积（`formula_crowding`）、实线穿字（`line_crosses_label`）、文字与公式重叠、安全边距越界及过小字号 |
 | `gpu.py` | `[--json]` | 多次采样 `nvidia-smi` 探测显卡状态、利用率、空闲显存与 VoxCPM 安全阈值 |
 | `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |
 | `mux_original.py` | `picture.mp4 song.m4a final.mp4` | 从完整母带生成 MV，检查时长；兼容的音频格式直接复制，需 FFmpeg 与 FFprobe |

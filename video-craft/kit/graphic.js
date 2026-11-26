@@ -160,11 +160,15 @@ export function headline(ctx, lines, x, y, s, { size = 120, lead = 1.15, weight 
   if (mode === 'rise') {
     drawRows(ctx, (c, r, i, j, ch, cx) => {
       const p = ease.out(clamp((s - i * lineGap - j * stagger) / dur));
-      let dy = (1 - p) * r.sz * 1.1;
-      if (exit != null && exitMode === 'up') dy -= ease.in(clamp((out - i * 0.05 - j * 0.02) / 0.45)) * r.sz * 1.15;
-      if (p <= 0) return;
-      c.save(); c.beginPath(); c.rect(cx - r.sz * 0.2, r.base - r.sz * 0.98, r.ws[j] + r.sz * 0.4, r.sz * 1.28); c.clip();
-      c.fillText(ch, cx, r.base + dy); c.restore();
+      const outP = (exit != null && exit > 0 && exitMode === 'up') ? ease.in(clamp((out - i * 0.05 - j * 0.02) / 0.42)) : 0;
+      const alpha = clamp(p * 1.85) * (1 - outP);
+      if (alpha <= 0.01) return;
+      const dy = (1 - p) * r.sz * 0.52 - outP * r.sz * 0.65;
+      c.save();
+      c.globalAlpha *= alpha;
+      c.beginPath(); c.rect(cx - r.sz * 0.25, r.base - r.sz * 1.08, r.ws[j] + r.sz * 0.5, r.sz * 1.48); c.clip();
+      c.fillText(ch, cx, r.base + dy);
+      c.restore();
     });
   } else if (mode === 'track') {
     const p = ease.outSoft(clamp(s / 0.9));

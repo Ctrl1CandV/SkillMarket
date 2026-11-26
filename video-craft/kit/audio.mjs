@@ -44,13 +44,26 @@ if (score === '-') {
   const soundUrl = fileUrl(join(here, 'sound.js'));
   await p2.goto(fileUrl(scene));
   await p2.setContent(`<script type="module">
-    import { install, voice, chime } from ${JSON.stringify(soundUrl)};
+    import { install, voice, NOTE, chime, tick, pop, pluck, thud, whoosh, glide } from ${JSON.stringify(soundUrl)};
+    const freqOf = (x, fallback = 660) => typeof x === 'string' ? NOTE(x) : (Number.isFinite(x) ? x : fallback);
     install((m, events, dur) => {
       const cues = ${JSON.stringify(meta?.cues || [])};
       const chimes = ${JSON.stringify(meta?.chimes || [])};
+      const sfxList = [...(${JSON.stringify(meta?.sfx || [])}), ...(${JSON.stringify(meta?.events || [])})];
       for (const c of cues) if (c && c.id != null && Number.isFinite(c.t0)) voice(m, c.t0, c.id);
-      for (const ch of chimes) if (ch && Number.isFinite(ch.t)) chime(m, m.sfx, ch.t, ch.freq || 660, { gain: ch.gain ?? 0.035, dur: ch.dur ?? 0.9 });
-    }, { reverb: 0.04, irSec: 0.9 });
+      for (const ch of chimes) if (ch && Number.isFinite(ch.t)) chime(m, m.sfx, ch.t, freqOf(ch.note ?? ch.freq, 660), { gain: ch.gain ?? 0.035, dur: ch.dur ?? 0.9, pan: ch.pan ?? 0 });
+      for (const e of sfxList) {
+        if (!e || !Number.isFinite(e.t) || e.t < 0 || e.t >= dur) continue;
+        const k = e.kind || e.type;
+        if (k === 'tick') tick(m, m.sfx, e.t, { freq: e.freq ?? 2100, gain: e.gain ?? 0.024, dur: e.dur ?? 0.032, pan: e.pan ?? 0 });
+        else if (k === 'pop') pop(m, m.sfx, e.t, { f0: e.f0 ?? 340, f1: e.f1 ?? 920, gain: e.gain ?? 0.045, dur: e.dur ?? 0.08, pan: e.pan ?? 0 });
+        else if (k === 'pluck') pluck(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 659.25), { gain: e.gain ?? 0.045, dur: e.dur ?? 0.55, pan: e.pan ?? 0 });
+        else if (k === 'chime') chime(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 783.99), { gain: e.gain ?? 0.038, dur: e.dur ?? 1.1, pan: e.pan ?? 0 });
+        else if (k === 'thud') thud(m, m.sfx, e.t, { freq: e.freq ?? 92, gain: e.gain ?? 0.14, dur: e.dur ?? 0.24, pan: e.pan ?? 0 });
+        else if (k === 'whoosh') whoosh(m, m.sfx, e.t, { dur: e.dur ?? 0.62, f0: e.f0 ?? 360, f1: e.f1 ?? 1600, gain: e.gain ?? 0.042, pan0: e.pan0 ?? 0, pan1: e.pan1 ?? 0 });
+        else if (k === 'glide') glide(m, m.sfx, e.t, e.f0 ?? 280, e.f1 ?? 85, { dur: e.dur ?? 0.65, gain: e.gain ?? 0.042 });
+      }
+    }, { reverb: 0.06, irSec: 1.0 });
   </script>`);
 } else {
   await p2.goto(fileUrl(score));

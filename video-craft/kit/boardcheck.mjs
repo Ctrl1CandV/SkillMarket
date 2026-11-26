@@ -19,6 +19,7 @@ await page.setViewportSize({ width: v.width, height: v.height });
 
 const margin = +opt('margin', String(Math.round(v.height * 0.03)));
 const baseMinPx = +opt('min-px', '18');
+const maxFormulas = +opt('max-formulas', '3');
 const every = +opt('every', '3');
 const times = opt('times')
   ? opt('times').split(',').map(Number)
@@ -29,7 +30,7 @@ const stats = [];
 
 for (const t of times) {
   await page.evaluate((time) => window.__seek(time), t);
-  const domCheck = await page.evaluate(({ W, H, M, BASE_MIN_PX }) => {
+  const domCheck = await page.evaluate(({ W, H, M, BASE_MIN_PX, MAX_FM }) => {
     const vis = (el) => {
       for (let cur = el; cur && cur !== document.documentElement; cur = cur.parentElement) {
         const st = getComputedStyle(cur);
@@ -117,6 +118,18 @@ for (const t of times) {
       }
     }
 
+    // Guard against stacking a wall of full display equations simultaneously (short diagram vector labels <210px excluded)
+    const visFormulas = onScreen.filter((it) => it.kind === 'formula' && it.w >= 210);
+    const rightFormulas = visFormulas.filter((it) => it.x + it.w / 2 > W * 0.45);
+    if (visFormulas.length > MAX_FM || rightFormulas.length > Math.max(2, MAX_FM - 1)) {
+      frameIssues.push({
+        type: 'formula_crowding',
+        formulasOnScreen: visFormulas.length,
+        rightHalfFormulas: rightFormulas.length,
+        hint: 'Too many display formulas stacked simultaneously. Keep <= 2 active main formulas per act: morph in-place or fade out completed intermediate steps.',
+      });
+    }
+
     // Pairwise collision check among distinct visible on-screen items
     for (let i = 0; i < onScreen.length; i++) {
       for (let j = i + 1; j < onScreen.length; j++) {
@@ -132,7 +145,7 @@ for (const t of times) {
       }
     }
     return { count: items.length, frameIssues };
-  }, { W: v.width, H: v.height, M: margin, BASE_MIN_PX: baseMinPx });
+  }, { W: v.width, H: v.height, M: margin, BASE_MIN_PX: baseMinPx, MAX_FM: maxFormulas });
 
   // Pixel occupancy & left/right balance check on a small thumbnail
   const shotBuf = await page.screenshot({ type: 'jpeg', quality: 75 });

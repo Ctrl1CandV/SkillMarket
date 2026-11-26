@@ -4,7 +4,7 @@
 import { clamp, lerp, ease, seg, register, FONT_STACK } from '../../kit/kit.js';
 import {
   THEMES, svgEl, clearEl, loadMath, compileFormula, drawFormula, morphFormula, highlightPart,
-  buildTimeline, cameraAt, applyCamera, drawStageBackground,
+  buildTimeline, actAt, drawChapterTitle, svgCard, cameraAt, applyCamera, drawStageBackground,
   svgSurface, svgBlock, svgArrow, svgMorphArrow, svgLocusFan, svgAngleArc, svgAxes, svgPlot,
 } from '../../kit/lesson.js';
 import {
@@ -324,7 +324,7 @@ function drawAct1FloatingMath(world, t, alphaDeg) {
   if (out <= 0.01) return;
   const g = svgEl('g', { opacity: out.toFixed(3), transform: `translate(0, ${(-22 * (1 - out)).toFixed(1)})` }, world);
 
-  const eqPos = [1405, 224];
+  const eqPos = [1405, 242];
   const hg = svgEl('radialGradient', { id: 'vc-eq-halo', cx: '50%', cy: '50%', r: '50%' }, g);
   svgEl('stop', { offset: '0%', 'stop-color': '#1E3A5F', 'stop-opacity': '0.36' }, hg);
   svgEl('stop', { offset: '100%', 'stop-color': '#1E3A5F', 'stop-opacity': '0' }, hg);
@@ -378,7 +378,7 @@ function drawAct2FloatingMath(world, t) {
   const kTop = seg(t, W_T.totalR, 0.6) * (1 - seg(t, W_T.threeForce, 0.65) * 0.35);
   if (kTop > 0.01) {
     const shift = seg(t, W_T.threeForce, 1.1, ease.inOut);
-    drawFormula(world, FM.geoR, lerp(1360, 1430, shift), lerp(240, 148, shift), {
+    drawFormula(world, FM.geoR, lerp(1360, 1430, shift), lerp(248, 178, shift), {
       anchor: 'center', alpha: kTop, scale: lerp(1, 0.86, shift),
     });
   }
@@ -386,26 +386,37 @@ function drawAct2FloatingMath(world, t) {
   if (kBot > 0.01) drawFormula(world, FM.geoTri, 1320, 918, { anchor: 'center', alpha: kBot, scale: 0.94 });
 }
 
-function drawMinimalHud(t, alphaDeg) {
-  const inAct2 = t >= C.c08.t0;
+const ACTS = [
+  { id: 'act1', t0: 0 },
+  { id: 'act2', t0: C.c08.t0 },
+];
+
+function drawEditorialHud(t, alphaDeg) {
+  const act = actAt(t, ACTS, { duration: TL.duration });
+  const inAct2 = act.id === 'act2';
   const dotCol = inAct2 ? T.emerald : T.amber;
-  svgEl('circle', { cx: 76, cy: 62, r: 5.5, fill: dotCol, filter: 'url(#vc-glow-soft)' }, svg);
-  text(svg, inAct2 ? '04 · 全反力恒定方向与矢量空间闭合' : '03 · 辅助角极值与空间轨迹涌现', 96, 70, {
-    size: 21, weight: 700, fill: T.muted, alpha: 0.86,
+  drawChapterTitle(svg, {
+    kicker: inAct2 ? '02 / 02  ·  几何证法' : '01 / 02  ·  代数极值',
+    title: inAct2 ? '全反力恒定方向与矢量空间闭合' : '辅助角极值与力空间轨迹涌现',
+    x: 76, y: 26, width: W - 152, theme: T,
   });
+
   const opt = Math.abs(alphaDeg - PHI_DEG) < 1.5;
-  text(svg, `α = ${alphaDeg.toFixed(0).padStart(2, ' ')}°   ·   F = ${pullRatio(alphaDeg).toFixed(2)} mg`, W - 72, 70, {
-    size: 21, weight: 700, fill: opt ? T.emerald : T.amber, align: 'right', mono: true, alpha: 0.88,
+  svgCard(svg, W - 376, 32, 300, 68, 1, {
+    accent: opt ? T.emerald : T.amber, corners: true, shadow: false, theme: T,
+  });
+  text(svg, `α = ${alphaDeg.toFixed(0).padStart(2, ' ')}°  ·  F = ${pullRatio(alphaDeg).toFixed(2)} mg`, W - 226, 74, {
+    size: 21, weight: 700, fill: opt ? T.emerald : T.amber, align: 'center', mono: true,
   });
   svgEl('line', { x1: 0, y1: H - 3, x2: (W * clamp(t / TL.duration)).toFixed(1), y2: H - 3, stroke: dotCol, 'stroke-width': 3 }, svg);
 }
 
 const CAM_KEYS = [
-  [0, { cx: 960, cy: 540, w: 1920 }],
-  [W_T.optAngle, { cx: 945, cy: 536, w: 1890 }],
-  [C.c08.t0, { cx: 960, cy: 540, w: 1920 }],
-  [W_T.closedTri + 0.8, { cx: 982, cy: 542, w: 1890 }],
-  [TL.duration, { cx: 960, cy: 540, w: 1920 }],
+  [0, { cx: 960, cy: 525, w: 1920 }],
+  [W_T.optAngle, { cx: 945, cy: 522, w: 1890 }],
+  [C.c08.t0, { cx: 960, cy: 525, w: 1920 }],
+  [W_T.closedTri + 0.8, { cx: 982, cy: 528, w: 1890 }],
+  [TL.duration, { cx: 960, cy: 525, w: 1920 }],
 ];
 
 function seek(t) {
@@ -421,14 +432,16 @@ function seek(t) {
   drawPhysicalWorld(world, t, alpha);
   drawAct1FloatingMath(world, t, alpha);
   drawAct2FloatingMath(world, t);
-  drawMinimalHud(t, alpha);
+  drawEditorialHud(t, alpha);
 }
 
-const chimes = [
-  { t: W_T.optAngle, freq: 783.99, gain: 0.032 },
-  { t: C.c08.t0 - 0.12, freq: 659.25, gain: 0.026 },
-  { t: W_T.perpShort, freq: 880.00, gain: 0.034 },
+const sfx = [
+  { t: W_T.fiveFourths, kind: 'pop', gain: 0.038 },
+  { t: W_T.optAngle, kind: 'chime', note: 'G5', gain: 0.036 },
+  { t: C.c08.t0 - 0.12, kind: 'whoosh', gain: 0.035 },
+  { t: W_T.threeForce, kind: 'pluck', note: 'E5', gain: 0.042 },
+  { t: W_T.perpShort, kind: 'chime', note: 'A5', gain: 0.04 },
 ];
 
-register({ duration: TL.duration, fps: FPS, width: W, height: H, seek, meta: { cues: TL.cues, chimes } });
+register({ duration: TL.duration, fps: FPS, width: W, height: H, seek, meta: { cues: TL.cues, sfx } });
 seek(0);
