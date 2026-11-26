@@ -40,10 +40,10 @@
 - 当主画面是宏观全局图表（如 16 个 RTT 的 `cwnd` 阶梯全景），而中间需要讲透一个微观动态机制（如“发送方 → 信道 → 接收方：为什么 3 个重复 ACK 有连续回声，而超时是一片死寂”）时，**不要在主图角落塞一个 200px 宽的迷你示意图**！
 - 正确做法：借用 `FocusCamera` 大幅推近，或在 Canvas/混合层用 `kit/graphic.js` 的 `iris` / `wipe` 遮罩（0.6–0.8s）**切入全屏深色/撞色机制专场**，用大尺寸节点、滑动窗口槽位、飞行数据包与回声波形把机理演透，再遮罩切回全局主图继续推演。
 
-### 铁律 3：拒绝裸线草图！用学术版面与具象物理层次做画面
-- **选一套成体系的视觉底板**：
-  - **深青光学课堂风（`THEMES.slate`）**：搭配 `drawChapterTitle` 顶部章节大标题与细分割线、`svgCard(..., { corners: true })` 带角标的参数/对比牌、光学辉光 `#vc-glow`；
-  - **暖纸纹学术期刊风（`THEMES.paper` 或 `graphic.js` `paper` + `grid`）**：米白纸纹 `#ECE7DC` + 建筑细网格 + 墨黑大字 + 青绿 `#0C7468` / 朱砂红 `#D2402B` 强调色，信息密度高时极清爽耐看。
+### 铁律 3：拒绝裸线草图！默认首选亮色学术版面 + 具象物理层次
+- **选一套成体系的视觉底板（讲题默认首选亮色）**：
+  - **亮色暖纸纹学术风（`THEMES.paper` / `THEMES.ivory`，默认首选）**：米白纸纹 `#ECE7DC` 或象牙白 `#F6F4EE` + 建筑细网格 + 墨黑大字 + 青绿 `#0C7468` / 朱砂红 `#D2402B` / 琥珀金强调色，像高质量学术讲义与印刷图解，信息密度高时清爽耐看、长时间听题不压抑，适合绝大多数数学推导、力学分析、408 计网/OS/算法与概率统计讲题。
+  - **深青光学课堂风（`THEMES.slate`，按题材或撞色选用）**：保留给需要强调发光轨迹/辉光的光学、电磁与天文题材，或用作**亮底主图切入“全屏机制专场”时的暗场撞色**（亮底主图 → 暗底专场演透微观机理 → 切回亮底主图），形成鲜明的节奏呼吸；搭配 `drawChapterTitle` 顶部章节大标题与 `svgCard(..., { corners: true })` 角标牌。
 - **物理介质与离散结构必须画得具象饱满**：
   - **连续物理/几何题**（光学、力学、电磁、微积分）：严禁只画一个 `opacity: 0.06` 方块充当水或斜面！使用 `svgMediaTank` 画出**深浅渐变水体、动态正弦水波纹、发光分界面、网格衬底与 `svgRuler` 坐标标尺**；几何推导时画出**半透明着色辅助直角三角形**（标清边长 $x, 4, 10-x, 3$）；讲“最快路径”时，**同时发出两颗光子（灰色虚线直连光子 vs 金青折线折射光子）同台竞速**，让观众亲眼看到折线光子先到终点！
   - **离散算法/系统题**（计网、OS、数据结构、概率统计）：严禁只画一根孤零零的细折线！使用 `svgStepColumns(..., { unitBlocks: true })` 把每个轮次的窗口/计数画成**一格格向上垒起的实体积木块**，配阶梯虚线阈值、红色下坠箭头与差值角标，右上角配 `svgCard` 大字号实时状态牌。
@@ -90,7 +90,7 @@ register({ duration: TL.duration, fps: 30, width: 1920, height: 1080, seek, meta
 
 | 类别 | 函数 | 用法与要点 |
 |---|---|---|
-| **主题与章节顶栏** | `THEMES.slate` / `THEMES.paper` / `THEMES.ivory`、`drawChapterTitle(svg, { kicker, title, step })` | 深青光学主题与暖米白学术纸面主题；`drawChapterTitle` 绘出大尺度章节标题、右对齐步骤号与建筑细横线 |
+| **主题与章节顶栏** | `THEMES.paper` / `THEMES.ivory`（默认亮色）/ `THEMES.slate`、`drawChapterTitle(svg, { kicker, title, step })` | 暖米白/象牙白学术纸面主题（讲题首选）与深青光学主题；`drawChapterTitle` 绘出大尺度章节标题、右对齐步骤号与建筑细横线 |
 | **分幕清场序列器** | `actAt(t, [{ id, t0 }, ...], { fade })` | 返回 `{ id, index, localT, alpha }`，自动保证“前幕先退净、后幕再进入”，零重影切换右半屏推导步骤 |
 | **角标参数/对比卡** | `svgCard(parent, x, y, w, h, k, { title, badge, accent, corners, shadow, theme })` | 带偏移阴影、左侧强调色条与四角裁剪角标（`corners: true`）的设计感信息牌，装实时读数或路径对比表 |
 | **双介质波纹实验槽** | `svgMediaTank(parent, box, { splitRatio, topLabel, bottomLabel, waves, t, rulerDomain })` | 渐变双介质（如空气/水）、动态水波纹、发光分界面、内置细网格与底部 `svgRuler` 坐标尺，返回 `{ surfY, xOf }` |
