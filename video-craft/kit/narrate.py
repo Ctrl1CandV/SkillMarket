@@ -76,8 +76,9 @@ def read_cues(path):
     data = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(data, dict):
         raise ValueError('Expected a JSON object mapping cue ids to text, or a spot.json with a voice list.')
+    is_spot = isinstance(data.get("voice"), list)
     rows = ([(item["id"], item["words"]) for item in data["voice"]]
-            if isinstance(data.get("voice"), list) else list(data.items()))
+            if is_spot else list(data.items()))
     cues = {}
     filenames = set()
     for key, text in rows:
@@ -90,7 +91,111 @@ def read_cues(path):
         cues[key] = text.strip()
     if not cues:
         raise ValueError("No speech cues in the input file")
-    return cues
+    return cues, is_spot
+
+
+_CONNECTORS = {
+    "因此", "所以", "不过", "但是", "然而", "其实", "注意", "记住", "首先", "其次",
+    "接着", "然后", "最后", "同时", "反之", "结果", "可见", "比如", "例如", "总之",
+}
+
+_AI_CLICHE_PATTERNS = [
+    (re.compile(r"凭什么[？?]?|差在哪(?:里|儿)?[？?]?|到底怎么回事[？?]?|为什么这么说[？?]?"),
+     "AI 反问噱头腔（如“凭什么？”“差在哪？”），请改成自然完整的设问句（如“这两种反应为什么会差这么多呢？”）"),
+    (re.compile(r"(?:一|两|二|三|四)个(?:坑|关键|重点|核心|要点|细节|误区)"),
+     "提纲报幕起手（如“两个坑”“三个关键”），请融进自然口语过渡（如“考场上最容易算错的地方主要有两个，第一是……”）"),
+    (re.compile(r"一句话总结|总结一下[：:]|口诀[：:]|记住[：:]|划重点|核心在于|归根结底|换句话说|不难发现|值得注意的是"),
+     "AI 总结套话或冒号喊口号（如“口诀：”“记住：”“核心在于”），请直接用平实自然的老师口吻把道理说清"),
+    (re.compile(r"\b(?:cwnd|ssthresh|dupACK|ack|rtt)\b"),
+     "夹杂未转译的代码/协议缩写（TTS 会生硬拼读字母），画面写符号即可，口播请说中文全称（如“拥塞窗口”“慢启动阈值”“重复确认”“往返时间”）"),
+]
+
+_NUM_ROLLCALL_RE = re.compile(r"[零一二三四五六七八九十百千万两\d]+(?:、[零一二三四五六七八九十百千万两\d]+){2,}")
+
+
+def _han_count(s: str) -> int:
+    return len(re.findall(r"[一-鿿]", s))
+
+
+def lint_cues(cues: dict, is_spot: bool, args) -> list[str]:
+    """Check Chinese lecture narration for choppy, telegraphic, or AI-flavored prose before TTS synthesis."""
+    style = getattr(args, "style", "auto")
+    if getattr(args, "allow_terse", False) or style == "free":
+        return []
+    lang = args.language or guess_language(cues.values())
+    if lang != "zh":
+        return []
+    voice_str = str(args.voice or "teacher")
+    is_teacher = (args.voice is None or voice_str == "teacher" or "Yunxi" in voice_str) and not args.design
+    if style == "auto" and (is_spot or not is_teacher):
+        return []
+
+    issues = []
+    cue_lengths = []
+    all_clauses = []
+    short4_non_conn = 0
+    total_colons = 0
+
+    for key, line in cues.items():
+        hlen = _han_count(line)
+        cue_lengths.append((key, hlen, line))
+        total_colons += line.count("：") + line.count(":")
+
+        if "；" in line or ";" in line:
+            issues.append(
+                f"  - [{key}] 含分号“；”（书面并列排比腔，配音会生硬断气）：{line!r}\n"
+                f"    → 改法：拆成两句有自然因果/转折连词（“因为……”“可一旦……”“而另一边……”）的完整口语整句。"
+            )
+        if _NUM_ROLLCALL_RE.search(line):
+            issues.append(
+                f"  - [{key}] 含顿号报数串（如“一、二、四、八”，TTS 会像点名一样机械蹦字）：{line!r}\n"
+                f"    → 改法：把数字融进动作描述里（如“从一翻倍到二和四，三个往返就推到了阈值八”或“从八一路稳步加一涨到十二”）。"
+            )
+        if re.search(r"\d", line):
+            issues.append(
+                f"  - [{key}] 含阿拉伯数字（易导致小数/比值误读）：{line!r}\n"
+                f"    → 改法：口播台词一律写成准确中文读法（如“四点五”“十二”“四比三”）。"
+            )
+        for pat, hint in _AI_CLICHE_PATTERNS:
+            m = pat.search(line)
+            if m:
+                issues.append(f"  - [{key}] 检测到 {hint}（命中：{m.group(0)!r}）")
+
+        clauses = [c.strip() for c in re.split(r"[，,。？！?!：:；;]+", line) if _han_count(c) > 0]
+        all_clauses.extend(clauses)
+        cue_short4 = [c for c in clauses if _han_count(c) <= 4 and c not in _CONNECTORS]
+        short4_non_conn += len(cue_short4)
+        if len(clauses) >= 4 and len(cue_short4) >= 3:
+            issues.append(
+                f"  - [{key}] 四字以内碎短句过多（{cue_short4}），听感破碎像念电报：{line!r}\n"
+                f"    → 改法：补全主语、谓语和自然连接词，合并成舒展连贯的讲台长句。"
+            )
+
+    if len(cues) >= 4:
+        sorted_lens = sorted(x[1] for x in cue_lengths)
+        median_len = sorted_lens[len(sorted_lens) // 2]
+        too_short = [(k, n) for k, n, _ in cue_lengths if n < 26]
+        under_32 = [(k, n) for k, n, _ in cue_lengths if n < 32]
+        if median_len < 36 or too_short or len(under_32) > 1:
+            short_desc = ", ".join(f"{k}({n}字)" for k, n in under_32) or "无"
+            issues.append(
+                f"  - [整稿过短过碎] 当前每条 cue 中位字数仅 {median_len} 字（偏短条目：{short_desc}）。\n"
+                f"    → 改法：讲题配音切忌拆成十几二十字的口号短促句！请合并/扩写为每条 42–75 个汉字（2–3 句完整、舒展、像真老师在讲台上娓娓道来的整话，全片约 6–8 条）。"
+            )
+        if total_colons > 2:
+            issues.append(
+                f"  - [冒号报幕腔] 全稿使用了 {total_colons} 处冒号“：”（上限 2 处）。口播不是念 PPT 提纲，请把“XX：……”改成自然衔接的句子。"
+            )
+        if all_clauses:
+            mean_clause = sum(_han_count(c) for c in all_clauses) / len(all_clauses)
+            short4_ratio = short4_non_conn / len(all_clauses)
+            if mean_clause < 7.0 or short4_ratio > 0.20:
+                issues.append(
+                    f"  - [节奏蹦词感] 平均分句长度仅 {mean_clause:.1f} 字，≤4 字碎词占比 {short4_ratio:.0%}（要求平均分句 ≥7.0 字且碎词占比 ≤20%）。\n"
+                    f"    → 改法：少打碎逗号，删掉“阈值八，到八碰线，只是轻堵，减半够用”这类四字缩略语，用完整自然的现代汉语口语把因果讲透。"
+                )
+
+    return issues
 
 
 def pcm16(samples):
@@ -420,9 +525,24 @@ def main():
     ap.add_argument("--rate", default="+0%", help="edge only, e.g. --rate=-5%%")
     ap.add_argument("--format", choices=["wav", "mp3"], default="wav")
     ap.add_argument("--no-words", action="store_true", help="skip word-level timestamp extraction")
+    ap.add_argument("--style", choices=["auto", "lesson", "free"], default="auto",
+                    help="prose style gate: lesson enforces smooth, natural lecturer sentences (default for teacher voice); free skips prose check")
+    ap.add_argument("--allow-terse", action="store_true", help="alias for --style free (allow short commercial/poetic fragments)")
     args = ap.parse_args()
     if args.device == "cpu":
         os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
+    cues, is_spot = read_cues(args.script)
+    prose_issues = lint_cues(cues, is_spot, args)
+    if prose_issues:
+        sys.stderr.write(
+            "Spoken script quality gate failed — the narration reads like choppy, staccato AI/outline copy:\n"
+            + "\n".join(prose_issues)
+            + "\n\nRewrite cues.json into warm, unhurried, conversational human lecturer sentences "
+            "(42–75 Chinese chars per cue, 2–3 complete sentences, natural causal connectors, zero semicolons or roll-call lists), "
+            "then re-run narrate.py. (For intentional short-copy ads/trailers only, pass --style free.)\n"
+        )
+        raise SystemExit(2)
 
     engine = args.engine
     if not engine:
@@ -432,7 +552,6 @@ def main():
         except ImportError:
             engine = "edge"
             print("VoxCPM not installed: using Microsoft Edge voices (flatter). See references/voice.md.", flush=True)
-    cues = read_cues(args.script)
     args.output.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=args.output) as scratch:
         temp = Path(scratch)

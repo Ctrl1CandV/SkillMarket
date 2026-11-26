@@ -140,7 +140,7 @@ seek(0);
 | `vo.mjs` | `dir out.js` | 量配音片段长度，写成可 import 的模块 |
 | `songmap.py` | `song.m4a out/song [--lyrics] [--language en] [--bpm n] [--device auto\|cuda\|cpu]` | 歌曲地图：拍点、小节、段落、重击、能量曲线、带时间的歌词；显卡繁忙时自动切 CPU `int8` 转写 |
 | `shotlist.py` | `film.mp4 [--mode default\|lesson] [--song songmap.json [--offset T0]] [--json out.json]` | 成片镜头表：`--mode lesson` 采用局部 `8×4` 网格动态感知与 4.5 秒阅读静止阈值，适配单画布连续推演 |
-| `narrate.py` | `cues.json voice-dir [--voice teacher] [--takes 2] [--engine voxcpm\|edge] [--device auto\|cuda\|cpu] [--force-gpu]` | 逐句旁白 WAV + `vo.js` + 逐词时间戳 `words.json`/`words.js`；自动执行显卡负载安全护栏（占用 ≥75% 或空闲显存 <4GB 时退出码 `3` 提示避让），见[人声](voice.md) |
+| `narrate.py` | `cues.json voice-dir [--voice teacher] [--style auto\|lesson\|free] [--takes 2] [--engine voxcpm\|edge] [--device auto\|cuda\|cpu] [--force-gpu]` | 逐句旁白 WAV + `vo.js` + 逐词时间戳 `words.json`/`words.js`；内置讲稿口语流畅度门禁（拦截三四字蹦词腔、分号排比、顿号报数与 AI 报幕套话，退出码 `2`）与显卡负载护栏（占用 ≥75% 或空闲显存 <4GB 时退出码 `3`，可改传 `--device cpu` 或 `--engine edge`），见[人声](voice.md) |
 | `boardcheck.mjs` | `page [--every 3] [--times a,b] [--margin 48] [--min-px 18] [--max-formulas 3]` | 自动逐帧检测同屏公式过多堆积（`formula_crowding`）、实线穿字（`line_crosses_label`）、文字与公式重叠、安全边距越界及过小字号 |
 | `gpu.py` | `[--json]` | 多次采样 `nvidia-smi` 探测显卡状态、利用率、空闲显存与 VoxCPM 安全阈值 |
 | `listen_pair.py` | `old.mp4 a0 a1 new.mp4 b0 b1 pair.wav` | 从两个版本分别取完整句子，匹配响度，输出先旧后新的 PCM 听样 |
