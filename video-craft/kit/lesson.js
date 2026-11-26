@@ -42,6 +42,21 @@ export const THEMES = {
     emerald: '#059669',
     violet: '#7C3AED',
   },
+  paper: {
+    bg: '#ECE7DC',
+    bgGlow: '#F6F2E8',
+    panel: '#F6F2E8',
+    panelStroke: 'rgba(23, 26, 31, 0.24)',
+    grid: 'rgba(23, 26, 31, 0.075)',
+    ink: '#171A1F',
+    muted: '#5C6672',
+    faint: '#949EA8',
+    amber: '#C07A1E',
+    cyan: '#0C7468',
+    coral: '#D2402B',
+    emerald: '#15803D',
+    violet: '#5B4B8A',
+  },
 };
 
 export function svgEl(tag, attrs = {}, parent = null) {
@@ -1142,4 +1157,405 @@ export function makeCamera3D({ cx = 960, cy = 560, scale = 180, yaw = -0.65, pit
     const persp = dist / Math.max(0.4, dist + vz * 0.35);
     return [cx + vx * scale * persp, cy - vy * scale * persp, vz];
   };
+}
+
+// ---- 7. v1.1 Editorial Layout, Multi-Act Sequencer & Rich Physical Scene Parts -----------------------------
+
+/**
+ * Clean non-overlapping chapter/act sequencer (`主图常驻，右区按幕清场`).
+ * `acts`: `[{ id: 'a1', t0: 0 }, { id: 'a2', t0: 12.5 }, ...]`.
+ * Returns `{ id, index, t0, t1, localT, alpha }` where outgoing act fades out BEFORE incoming act fades in (zero ghosting!).
+ */
+export function actAt(t, acts, { fade = 0.24, duration = Infinity } = {}) {
+  if (!acts || !acts.length) return { id: 'default', index: 0, t0: 0, t1: duration, localT: t, alpha: 1 };
+  let idx = 0;
+  for (let i = 0; i < acts.length; i++) {
+    if (t >= acts[i].t0) idx = i;
+  }
+  const cur = acts[idx];
+  const t0 = cur.t0;
+  const t1 = idx + 1 < acts.length ? acts[idx + 1].t0 : duration;
+  const localT = t - t0;
+  const fadeIn = idx === 0 ? clamp((t + 0.05) / 0.25) : ease.out(clamp(localT / Math.max(0.05, fade)));
+  const fadeOut = idx + 1 < acts.length ? 1 - ease.in(clamp((t - (t1 - fade)) / Math.max(0.05, fade))) : 1;
+  return { id: cur.id, index: idx, t0, t1, localT, alpha: clamp(fadeIn * fadeOut) };
+}
+
+/**
+ * Designed editorial chapter header (kicker + bold chapter headline + optional step counter + architectural hairline rule).
+ */
+export function drawChapterTitle(parent, {
+  kicker = '',
+  title = '',
+  sub = '',
+  step = '',
+  x = 84,
+  y = 44,
+  width = 1752,
+  rule = true,
+  alpha = 1,
+  theme = THEMES.slate,
+} = {}) {
+  if (alpha <= 0.01) return null;
+  const g = svgEl('g', { opacity: clamp(alpha).toFixed(3) }, parent);
+  if (kicker) {
+    const kt = svgEl('text', {
+      x, y: y + 18, fill: theme.amber,
+      'font-family': FONT_STACK.sans, 'font-size': 19, 'font-weight': 700, 'letter-spacing': '1.2',
+    }, g);
+    kt.textContent = kicker;
+  }
+  if (step) {
+    const st = svgEl('text', {
+      x: x + width, y: y + 18, fill: theme.muted,
+      'font-family': FONT_STACK.mono, 'font-size': 19, 'font-weight': 700, 'text-anchor': 'end',
+    }, g);
+    st.textContent = step;
+  }
+  if (title) {
+    const tt = svgEl('text', {
+      x, y: y + (kicker ? 76 : 46), fill: theme.ink,
+      'font-family': FONT_STACK.sans, 'font-size': 42, 'font-weight': 800,
+    }, g);
+    tt.textContent = title;
+  }
+  if (sub) {
+    const sb = svgEl('text', {
+      x: x + width, y: y + (kicker ? 74 : 44), fill: theme.muted,
+      'font-family': FONT_STACK.sans, 'font-size': 23, 'font-weight': 500, 'text-anchor': 'end',
+    }, g);
+    sb.textContent = sub;
+  }
+  const ruleY = y + (kicker ? 98 : 66);
+  if (rule) {
+    svgEl('line', { x1: x, y1: ruleY, x2: x + width, y2: ruleY, stroke: theme.panelStroke, 'stroke-width': 1.5 }, g);
+  }
+  return { g, bottomY: ruleY };
+}
+
+/**
+ * Editorial readout / callout card with optional offset shadow, accent bar, and precision corner crop-marks (`corners: true`).
+ */
+export function svgCard(parent, x, y, w, h, k = 1, {
+  title = '',
+  badge = '',
+  accent = null,
+  corners = true,
+  shadow = true,
+  fill = null,
+  alpha = 1,
+  rx = 6,
+  theme = THEMES.slate,
+} = {}) {
+  const p = ease.out(clamp(k));
+  if (p <= 0.005 || alpha <= 0.005) return null;
+  const g = svgEl('g', { opacity: (clamp(alpha) * p).toFixed(3) }, parent);
+  if (shadow) {
+    svgEl('rect', { x: x + 8, y: y + 8, width: w, height: h, rx, fill: '#000000', 'fill-opacity': '0.16' }, g);
+  }
+  svgEl('rect', {
+    x, y, width: w, height: h, rx,
+    fill: fill || theme.panel, 'fill-opacity': '0.94',
+    stroke: theme.panelStroke, 'stroke-width': 1.5,
+  }, g);
+  if (accent) {
+    svgEl('rect', { x, y: y + 2, width: 5, height: Math.max(0, h - 4), rx: 2, fill: accent }, g);
+  }
+  if (corners) {
+    const L = 12 * p, cCol = accent || theme.muted;
+    const pts = [[x - 4, y - 4, 1, 1], [x + w + 4, y - 4, -1, 1], [x - 4, y + h + 4, 1, -1], [x + w + 4, y + h + 4, -1, -1]];
+    for (const [cx, cy, sx, sy] of pts) {
+      svgEl('polyline', {
+        points: `${cx + sx * L},${cy} ${cx},${cy} ${cx},${cy + sy * L}`,
+        fill: 'none', stroke: cCol, 'stroke-width': 2, 'stroke-opacity': '0.65',
+      }, g);
+    }
+  }
+  if (title) {
+    const t = svgEl('text', {
+      x: x + (accent ? 22 : 18), y: y + 34, fill: accent || theme.muted,
+      'font-family': FONT_STACK.sans, 'font-size': 21, 'font-weight': 700,
+    }, g);
+    t.textContent = title;
+  }
+  if (badge) {
+    const b = svgEl('text', {
+      x: x + w - 18, y: y + 33, fill: theme.muted,
+      'font-family': FONT_STACK.mono, 'font-size': 18, 'font-weight': 700, 'text-anchor': 'end',
+    }, g);
+    b.textContent = badge;
+  }
+  return { g, x, y, w, h, innerY: title ? y + 52 : y + 20 };
+}
+
+/**
+ * Precision coordinate / dimension ruler along `p0 -> p1` with major & minor ticks and numeric labels.
+ */
+export function svgRuler(parent, p0, p1, k = 1, {
+  domain = [0, 10],
+  step = 1,
+  majorStep = 2,
+  tickLen = 6,
+  majorLen = 12,
+  side = 1, // 1 = below/right, -1 = above/left
+  unit = '',
+  color = '#94A3B8',
+  fontSize = 20,
+} = {}) {
+  const p = ease.out(clamp(k));
+  if (p <= 0.01) return null;
+  const dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len, uy = dy / len, nx = -uy * side, ny = ux * side;
+  const g = svgEl('g', { opacity: p.toFixed(3) }, parent);
+  svgEl('line', { x1: p0[0], y1: p0[1], x2: p0[0] + dx * p, y2: p0[1] + dy * p, stroke: color, 'stroke-width': 1.6 }, g);
+
+  const [d0, d1] = domain;
+  const span = d1 - d0 || 1;
+  for (let v = d0; v <= d1 + 1e-6; v += step) {
+    const u = (v - d0) / span;
+    if (u > p + 1e-4) break;
+    const isMajor = Math.abs(((v - d0) / majorStep) - Math.round((v - d0) / majorStep)) < 1e-3;
+    const tl = isMajor ? majorLen : tickLen;
+    const sx = p0[0] + dx * u, sy = p0[1] + dy * u;
+    svgEl('line', { x1: sx, y1: sy, x2: sx + nx * tl, y2: sy + ny * tl, stroke: color, 'stroke-width': isMajor ? 1.8 : 1.2 }, g);
+    if (isMajor) {
+      const tx = sx + nx * (tl + 18), ty = sy + ny * (tl + 18) + 6;
+      const lb = svgEl('text', {
+        x: tx.toFixed(1), y: ty.toFixed(1), fill: color,
+        'font-family': FONT_STACK.mono, 'font-size': fontSize, 'text-anchor': 'middle',
+      }, g);
+      lb.textContent = Number.isInteger(v) ? String(v) : v.toFixed(1);
+    }
+  }
+  if (unit && p > 0.8) {
+    const ut = svgEl('text', {
+      x: (p1[0] + ux * 28).toFixed(1), y: (p1[1] + uy * 28 + 6).toFixed(1), fill: color,
+      'font-family': FONT_STACK.mono, 'font-size': fontSize, 'text-anchor': 'start',
+    }, g);
+    ut.textContent = unit;
+  }
+  return g;
+}
+
+let tankSeq = 0;
+/**
+ * Rich two-medium physical viewport (optics air/water refraction, acoustics, fluid layers, field boundaries).
+ * Provides deep gradient media, animated internal wave lines, glowing meniscus interface, subtle coordinate grid, and optional bottom ruler!
+ */
+export function svgMediaTank(parent, box, {
+  splitRatio = 0.54,
+  topLabel = '',
+  bottomLabel = '',
+  interfaceLabel = '',
+  topColors = ['#0E1E32', '#132B44'],
+  bottomColors = ['#0F4858', '#082636'],
+  topLabelColor = '#F59E0B',
+  bottomLabelColor = '#38BDF8',
+  interfaceColor = '#5CE0DA',
+  waves = 7,
+  t = 0,
+  rulerDomain = null,
+  rulerUnit = '',
+  padX = 64,
+  theme = THEMES.slate,
+} = {}) {
+  const uid = `vc-tank-${++tankSeq}`;
+  const surfY = box.y + box.h * splitRatio;
+  const g = svgEl('g', {}, parent);
+  const defs = svgEl('defs', {}, g);
+
+  const gTop = svgEl('linearGradient', { id: `${uid}-top`, x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, defs);
+  svgEl('stop', { offset: '0%', 'stop-color': topColors[0] }, gTop);
+  svgEl('stop', { offset: '100%', 'stop-color': topColors[1] }, gTop);
+
+  const gBot = svgEl('linearGradient', { id: `${uid}-bot`, x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, defs);
+  svgEl('stop', { offset: '0%', 'stop-color': bottomColors[0] }, gBot);
+  svgEl('stop', { offset: '100%', 'stop-color': bottomColors[1] }, gBot);
+
+  const clip = svgEl('clipPath', { id: `${uid}-clip` }, defs);
+  svgEl('rect', { x: box.x, y: box.y, width: box.w, height: box.h, rx: 10 }, clip);
+
+  const inner = svgEl('g', { 'clip-path': `url(#${uid}-clip)` }, g);
+  svgEl('rect', { x: box.x, y: box.y, width: box.w, height: surfY - box.y, fill: `url(#${uid}-top)` }, inner);
+  svgEl('rect', { x: box.x, y: surfY, width: box.w, height: box.y + box.h - surfY, fill: `url(#${uid}-bot)` }, inner);
+
+  // Subtle architectural grid inside tank
+  for (let x = box.x + 64; x < box.x + box.w; x += 64) {
+    svgEl('line', { x1: x, y1: box.y, x2: x, y2: box.y + box.h, stroke: '#FFFFFF', 'stroke-opacity': '0.045', 'stroke-width': 1 }, inner);
+  }
+  for (let y = box.y + 64; y < box.y + box.h; y += 64) {
+    svgEl('line', { x1: box.x, y1: y, x2: box.x + box.w, y2: y, stroke: '#FFFFFF', 'stroke-opacity': '0.045', 'stroke-width': 1 }, inner);
+  }
+
+  // Animated sinusoidal internal wave caustics in the denser lower medium
+  const botH = box.y + box.h - surfY;
+  for (let j = 1; j <= waves; j++) {
+    const wy = surfY + (botH * j) / (waves + 1);
+    const pts = [];
+    for (let k = 0; k <= 48; k++) {
+      const xx = box.x + (box.w * k) / 48;
+      const yy = wy + 3.2 * Math.sin(xx * 0.016 + t * 0.9 + j * 1.1);
+      pts.push(`${k ? 'L' : 'M'} ${xx.toFixed(1)} ${yy.toFixed(1)}`);
+    }
+    svgEl('path', { d: pts.join(' '), fill: 'none', stroke: interfaceColor, 'stroke-opacity': '0.10', 'stroke-width': 1.6 }, inner);
+  }
+
+  // Glowing interface meniscus line
+  svgEl('line', {
+    x1: box.x, y1: surfY, x2: box.x + box.w, y2: surfY,
+    stroke: interfaceColor, 'stroke-width': 2.6, 'stroke-opacity': '0.88',
+  }, inner);
+
+  // Outer frame border
+  svgEl('rect', {
+    x: box.x, y: box.y, width: box.w, height: box.h, rx: 10,
+    fill: 'none', stroke: theme.panelStroke, 'stroke-width': 1.6,
+  }, g);
+
+  if (topLabel) {
+    const tl = svgEl('text', { x: box.x + 24, y: box.y + 38, fill: topLabelColor, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
+    tl.textContent = topLabel;
+  }
+  if (bottomLabel) {
+    const bl = svgEl('text', { x: box.x + 24, y: box.y + box.h - 24, fill: bottomLabelColor, 'font-family': FONT_STACK.sans, 'font-size': 22, 'font-weight': 700 }, g);
+    bl.textContent = bottomLabel;
+  }
+  if (interfaceLabel) {
+    const il = svgEl('text', { x: box.x + box.w - 22, y: surfY - 12, fill: theme.muted, 'font-family': FONT_STACK.mono, 'font-size': 20, 'text-anchor': 'end' }, g);
+    il.textContent = interfaceLabel;
+  }
+
+  const x0 = box.x + padX, x1 = box.x + box.w - padX;
+  if (rulerDomain) {
+    svgRuler(g, [x0, box.y + box.h + 10], [x1, box.y + box.h + 10], 1, {
+      domain: rulerDomain,
+      step: (rulerDomain[1] - rulerDomain[0]) / 10,
+      majorStep: (rulerDomain[1] - rulerDomain[0]) / 5,
+      unit: rulerUnit,
+      color: theme.muted,
+    });
+  }
+  return {
+    g,
+    surfY,
+    xOf: (v) => rulerDomain ? lerp(x0, x1, (v - rulerDomain[0]) / (rulerDomain[1] - rulerDomain[0])) : x0 + v,
+  };
+}
+
+/**
+ * Tactile discrete brick/column staircase chart (ideal for TCP `cwnd` MSS stacks, queue depths, DP tables, histograms).
+ * `columns`: `[{ label: '0', value: 1, t0: 1.5, color: '#0C7468', dropFrom: null, dropBadge: '' }, ...]`.
+ * `thresholds`: `[[colStart, colEnd, value, t0?], ...]` draws stepped dashed threshold lines (e.g. `ssthresh`).
+ */
+export function svgStepColumns(parent, box, columns, t, {
+  maxVal = 14,
+  yStep = 2,
+  thresholds = [],
+  thresholdColor = '#64798A',
+  xLabel = '',
+  yLabel = '',
+  unitBlocks = true,
+  theme = THEMES.slate,
+} = {}) {
+  const N = Math.max(1, columns.length);
+  const dx = box.w / N;
+  const colW = Math.min(62, dx * 0.64);
+  const unitH = box.h / maxVal;
+  const xCenter = (i) => box.x + (i + 0.5) * dx;
+  const yOf = (v) => box.y + box.h - v * unitH;
+
+  const g = svgEl('g', {}, parent);
+
+  // Subtle horizontal & vertical grid
+  for (let v = 0; v <= maxVal; v += yStep) {
+    const yy = yOf(v);
+    svgEl('line', { x1: box.x, y1: yy, x2: box.x + box.w, y2: yy, stroke: theme.grid, 'stroke-width': 1 }, g);
+    const yt = svgEl('text', { x: box.x - 14, y: yy + 6, fill: theme.muted, 'font-family': FONT_STACK.mono, 'font-size': 18, 'text-anchor': 'end' }, g);
+    yt.textContent = String(v);
+  }
+  for (let i = 0; i <= N; i++) {
+    const xx = box.x + i * dx;
+    svgEl('line', { x1: xx, y1: box.y, x2: xx, y2: box.y + box.h, stroke: theme.grid, 'stroke-width': 1 }, g);
+  }
+  svgEl('line', { x1: box.x, y1: box.y + box.h, x2: box.x + box.w, y2: box.y + box.h, stroke: theme.muted, 'stroke-width': 2 }, g);
+
+  if (yLabel) {
+    const yl = svgEl('text', { x: box.x, y: box.y - 16, fill: theme.muted, 'font-family': FONT_STACK.mono, 'font-size': 19, 'font-weight': 700 }, g);
+    yl.textContent = yLabel;
+  }
+  if (xLabel) {
+    const xl = svgEl('text', { x: box.x + box.w, y: box.y - 16, fill: theme.muted, 'font-family': FONT_STACK.mono, 'font-size': 19, 'font-weight': 700, 'text-anchor': 'end' }, g);
+    xl.textContent = xLabel;
+  }
+
+  // Stepped dashed threshold line (e.g. ssthresh 8 -> 6 -> 4)
+  for (let k = 0; k < thresholds.length; k++) {
+    const [c0, c1, val, thT0 = 0] = thresholds[k];
+    if (t < thT0) continue;
+    const p = ease.out(clamp((t - thT0) / 0.45));
+    const sx0 = box.x + c0 * dx, sx1 = lerp(sx0, box.x + c1 * dx, p), sy = yOf(val);
+    svgEl('line', { x1: sx0, y1: sy, x2: sx1, y2: sy, stroke: thresholdColor, 'stroke-width': 2.5, 'stroke-dasharray': '9 7' }, g);
+    if (k > 0) {
+      const prevVal = thresholds[k - 1][2];
+      svgEl('line', { x1: sx0, y1: yOf(prevVal), x2: sx0, y2: sy, stroke: thresholdColor, 'stroke-width': 2.2, 'stroke-dasharray': '6 5' }, g);
+    }
+  }
+
+  // Stacked discrete brick columns
+  columns.forEach((col, i) => {
+    const cx = xCenter(i);
+    const xl = svgEl('text', { x: cx, y: box.y + box.h + 28, fill: theme.muted, 'font-family': FONT_STACK.mono, 'font-size': 18, 'text-anchor': 'middle' }, g);
+    xl.textContent = col.label ?? String(i);
+
+    if (t < col.t0) return;
+    const age = t - col.t0;
+    const cCol = col.color || theme.cyan;
+
+    if (unitBlocks) {
+      for (let b = 0; b < col.value; b++) {
+        const bp = ease.out(clamp((age - b * 0.022) / 0.22));
+        if (bp <= 0.01) continue;
+        const bh = Math.max(2, (unitH - 3.5) * bp);
+        const by = box.y + box.h - (b + 1) * unitH + 2 + ((unitH - 3.5) - bh);
+        svgEl('rect', {
+          x: (cx - colW / 2).toFixed(1), y: by.toFixed(1), width: colW.toFixed(1), height: bh.toFixed(1), rx: 4,
+          fill: cCol, 'fill-opacity': '0.22', stroke: cCol, 'stroke-width': 1.9, 'stroke-opacity': (0.92 * bp).toFixed(2),
+        }, g);
+      }
+    } else {
+      const bp = ease.out(clamp(age / 0.3));
+      const bh = col.value * unitH * bp;
+      svgEl('rect', {
+        x: cx - colW / 2, y: box.y + box.h - bh, width: colW, height: bh, rx: 5,
+        fill: cCol, 'fill-opacity': '0.24', stroke: cCol, 'stroke-width': 2,
+      }, g);
+    }
+
+    const vp = clamp((age - 0.08) / 0.22);
+    if (vp > 0.01) {
+      const vt = svgEl('text', {
+        x: cx, y: yOf(col.value) - 10, fill: cCol, opacity: vp.toFixed(2),
+        'font-family': FONT_STACK.mono, 'font-size': 21, 'font-weight': 800, 'text-anchor': 'middle',
+      }, g);
+      vt.textContent = String(col.value);
+    }
+
+    if (col.dropFrom != null && col.dropFrom > col.value) {
+      const dp = ease.out(clamp(age / 0.35));
+      const dropX = box.x + i * dx;
+      svgArrow(g, [dropX, yOf(col.dropFrom)], [dropX, yOf(col.value)], dp, {
+        color: theme.coral, width: 3.2, headLen: 13, headWidth: 10,
+      });
+      if (col.dropBadge && dp > 0.4) {
+        svgEl('rect', { x: dropX + 8, y: (yOf(col.dropFrom) + yOf(col.value)) / 2 - 16, width: 56, height: 30, rx: 5, fill: theme.coral }, g);
+        const bt = svgEl('text', {
+          x: dropX + 36, y: (yOf(col.dropFrom) + yOf(col.value)) / 2 + 6, fill: '#FFFFFF',
+          'font-family': FONT_STACK.mono, 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle',
+        }, g);
+        bt.textContent = col.dropBadge;
+      }
+    }
+  });
+
+  return { g, xCenter, yOf, dx };
 }

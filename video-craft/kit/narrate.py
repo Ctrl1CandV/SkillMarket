@@ -333,7 +333,9 @@ def _parse_vtt_words(vtt_path: Path):
 
 def edge_takes(cues, temp, args):
     rate = 24000
-    fallback = "en-US-AriaNeural" if (args.language or guess_language(cues.values())) == "en" else "zh-CN-XiaoxiaoNeural"
+    is_en = (args.language or guess_language(cues.values())) == "en"
+    voice_map = {"teacher": "zh-CN-YunxiNeural", "story": "zh-CN-XiaoxiaoNeural", "promo": "zh-CN-YunjianNeural"}
+    fallback = "en-US-AriaNeural" if is_en else voice_map.get(args.voice or "", "zh-CN-YunxiNeural")
     voice = args.voice if args.voice and "Neural" in args.voice else fallback
     try:
         import edge_tts
@@ -419,6 +421,8 @@ def main():
     ap.add_argument("--format", choices=["wav", "mp3"], default="wav")
     ap.add_argument("--no-words", action="store_true", help="skip word-level timestamp extraction")
     args = ap.parse_args()
+    if args.device == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
     engine = args.engine
     if not engine:

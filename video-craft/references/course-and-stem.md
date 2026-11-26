@@ -1,119 +1,107 @@
 # 轨道 A：课程、讲题与硬核科普制作指南
 
-面向数学推导、工程物理与力学分析、计算机算法与系统机制、概率统计及硬核定量科普。本轨道使用 [`kit/lesson.js`](../kit/lesson.js)（内置离线 MathJax v3 SVG 矢量公式、子表达式平滑变形、世界坐标焦点相机、力学/坐标系/框图原语及逐词时间锚点），**不要去读 MV 或写景短片的参考文档**。
+面向数学推导、工程物理与力学分析、计算机算法与系统机制、概率统计及硬核定量科普。本轨道主引擎为 [`kit/lesson.js`](../kit/lesson.js)（离线 MathJax v3 SVG 矢量公式、子项平滑变形、具象物理介质与积木阶梯图、角标参数牌、词级时间线），并可按需结合 [`kit/graphic.js`](../kit/graphic.js) 的纸面肌理与 `iris`/`wipe` 遮罩转场。
 
 ---
 
-## 一、内容与认知设计：三段式结构 + 严禁三遍复读
+## 一、内容与讲稿设计：老师口语推理 + 严禁电报口号腔
 
-好讲题片和“有声 PPT”的分水岭不在特效，而在**认知结构**与**声画分工**。动笔写代码前，先在 `brief.md` 写清三件事：
+好讲题片的灵魂是**把观众没想通的那一层窗户纸捅破**，而不是背定义或刷海报口号。写代码前先在 `brief.md` 定下三件事：
 
-1. **三段式篇幅配额（拒绝平均用力切成八九张同版式卡片）**
-   - **破题与直觉反差（约 15%–20%）**：不背教科书定义，直接抛出学生最容易答错的第一反应或卡壳点（例如：“觉得水平拉最省力？抬高一点试试，正压力和摩擦力其实变小了”），用动态画面亮出核心矛盾。
-   - **单画布连续推演（强制占全片 50%–65% 主场）**：所有受力分解、状态迁移和公式恒等变形，在**同一张原图 / 同一个主方程**上连续生长。下一步从上一步的图形和项变形而来（`morphFormula`），用完的辅助式压暗退居上方，不靠翻页硬切推进。若一题有代数与几何两重本质（如辅助角配凑 ↔ 摩擦角矢量三角形），让两者在同屏左右印证。
-   - **边界陷阱与通法收束（约 15%–20%）**：改动一个关键条件看边界（如斜向上拉改为斜向下推出现 $53^\circ$ 自锁渐近线；或换一组极端先验概率），点破考场易错坑与可迁移通法。
-
-2. **严格声画分工（消除多媒体冗余效应）**
-   - **口播（耳朵）**：讲“为什么这么想、下一步往哪转、哪一项消掉了”，写成自然的口语短句（数字写汉字读法：“四分之三”“三十七度”）。
-   - **画布（眼睛）**：只放**题干关键条件、正在演化的公式/几何图/状态框、以及 ≤10 字的极短信号批注**（如 `分母最大 ⟹ F 最小`）。
-   - **字幕（独立软轨）**：口播字幕默认由 `audio.mjs --srt output/captions.srt` 生成并由 `render.mjs --srt` 封装成 MP4 可开关软字幕轨。**严禁在画布上既放口播原话大标题、又烧录底部双行硬字幕**，把宝贵的纵向空间全部留给推导与图形。
-
-3. **色彩语义绑定与聚光引导（Signaling）**
-   - 同一物理量或算法指针在全片锁死同一种强调色：受力图上支持力箭头 $\vec{F}_N$ 用青色，右侧方程里的 `\id{fn}{F_N}` 就用同一个青色；非当前讨论的辅助项压低透明度（`alpha: 0.4–0.5`）。
-   - 单一数据源：片中所有长度、角度、曲线与数值读数必须由同一个 `data.js` 函数算出，绝不手填两套常数。
+1. **三段式认知结构**
+   - **破题与直觉反差（约 15%–20%）**：直接亮出学生最容易错的第一反应（如“两点之间直线最短，为什么光偏偏走折线？”“同样怀疑丢包，为什么 3 个重复 ACK 只减半，超时却一棒子打回 1？”），用双路径竞速或对比画面建立悬念。
+   - **分幕因果推演（占 55%–65%）**：一步一幕把代数/系统规则和几何/物理机制对应起来（如求导令 $T'(x)=0$ 的分式如何直接对应法线夹角正弦 $\sin\theta$；`cwnd` 每轮如何按翻倍与加一垒高）。
+   - **考场易错坑与通法收束（约 15%–20%）**：专门点破考场高频失分点（如 `9 / 2 = 4.5` 向下取整取 `4` 而不是 `5`；斜向上拉变斜向下推时的 $53^\circ$ 自锁边界；二阶导数恒正保证唯一全局极小）。
+2. **自然连贯的老师讲稿（严防“海报电报腔”与概念失真）**
+   - **反面教材（机械电报腔 + 概念错）**：“阈值八，窗口从一出发。超时：阈值减半，四；窗口归一。”甚至把 `cwnd = 1` 写成“一次归零”。
+   - **正面写法（有因果、有连词的自然口语）**：“过了阈值八就转入拥塞避免，每个往返只加一，涨到十二。这时收到三个重复确认——说明后面的包还在陆续到达，链路没断，只是轻度拥塞，所以把阈值和窗口一起砍半到六就够了。”
+   - 配音文本里的数字和符号一律写成准确的中文读法（“四分之三”“七点三七零米”）。
+3. **严格声画分工（消除三遍复读）**
+   - 口播字幕统一由 `audio.mjs ... --srt output/captions.srt` 导出并由 `render.mjs --srt` 封装成可开关 MP4 软字幕轨，**严禁在画面底部再烧录一条黑底硬字幕**，把宝贵的画面空间全部留给图形与公式。
+   - 单一数据源：所有坐标、曲线、角度、窗口值与比较表数值必须由同一个 `data.js` 函数算出，绝不手填两套数字。
 
 ---
 
-## 二、空间舞台美学：去看板化、物理动态反馈与空间几何涌现
+## 二、版面质感、分幕清场与具象物理画法（三大铁律）
 
-讲题视频最忌做成“顶栏导航条 + 左右两个圆角大卡片框 + 底部仪表条”的网页后台看板——框套框会把画面锁死成呆板课件。想做出既讲透本质又让人眼前一亮的画面，遵循四条空间原则：
+实测表明，讲题画面最容易掉进两个极端坑：要么做成“五六个弹窗框套小字”的网页后台，要么做成“纯黑底上画两根裸线 + 把七八行公式全堆在一屏”的简陋草图。必须同时守住以下三条铁律：
 
-1. **无框深空舞台（Zero-Box Stage）**
-   - 用整张 `1920×1080` 画布作统一物理与数学空间（`drawStageBackground(svg, T, { gridStep: 0, glow: true, spotlight: [x, y], vignette: 0.48 })` + 稀疏十字准星），公式与函数曲线直接悬浮在深空聚光区（可用柔和径向渐变背光衬底，不要套实心圆角框），顶部只放极轻的无框章节圆点与单行参数读数，底部贴边放 `3px` 进度细线。
-2. **让物理与系统对象“活”起来（Living Feedback）**
-   - 题干说“匀速滑行”，地面剖面线就用 `svgSurface(..., { scroll: -t * 95 })` 向后连续滚动，配上微弱尾迹线；说“上托减小正压力与摩擦”，物块底面就加一层随 $\mu F_N$ 实时收缩变淡的接触热光晕（`filter="url(#vc-glow)"`）；讲电路谐振或算法指针，能量包络或窗口高亮就随当前参数实时呼吸。
-3. **在原空间里涌现轨迹，而非只画外部折线图（`svgLocusFan`）**
-   - 参数扫描时（如拉力仰角 $\alpha$ 从 $0^\circ$ 扫到 $70^\circ$、抛体仰角包络、相量旋转），直接从物理作用点用 `svgLocusFan` 扫出半透明残影扇与发光极坐标轨迹线，配合同心最小半径相切圆弧，让观众肉眼看见极值在物理空间里是怎么“切”出来的，再与旁边的函数谷底曲线互相印证。
-4. **图形元素的空间剥离与重组（`svgMorphArrow`）**
-   - 当需要从受力图过渡到闭合矢量三角形、从链表节点过渡到树结构、或从时域脉冲过渡到频域相量时，**不要硬切重画一张新图**：用 `svgMorphArrow(world, a0, a1, b0, b1, m, { arc, glow })` 让原本长在物块上的矢量箭头直接脱离物块（物块保留淡影交代来处），在空中划出弧线飞向中心舞台首尾相接闭合成发光几何图形。闭合多边形的矢量公式标签统一标在**边中点外法线处**，避开顶点箭头汇聚区。
+### 铁律 1：主图常驻联动 + 推导区按幕清场（同屏主公式严控 ≤ 2 个！）
+- **严禁公式堆积**：绝对不要把第 1 步到第 7 步的公式全部留在右半屏！使用 `actAt(t, ACTS)` 把右半屏划分为清晰的推导幕（如：`01 建模写出 T(x)` → `02 求导极值条件` → `03 几何正弦识别导出折射定律` → `04 本题数值解与直线对比表`）。
+- **每幕只放大展示 1–2 个核心公式（字号 38–52px）**：同一幕内的恒等变形用 `morphFormula` 原地平滑变形；进入下一幕时，上一幕已完成的过渡式**干脆淡出清场**，留出充足留白与大字号可读性。`boardcheck.mjs` 会自动检测同屏公式数量，超过上限直接报 `formula_crowding` 错误！
+
+### 铁律 2：复杂子机制敢于切入“全屏专场”，不要缩在角落画火柴盒
+- 当主画面是宏观全局图表（如 16 个 RTT 的 `cwnd` 阶梯全景），而中间需要讲透一个微观动态机制（如“发送方 → 信道 → 接收方：为什么 3 个重复 ACK 有连续回声，而超时是一片死寂”）时，**不要在主图角落塞一个 200px 宽的迷你示意图**！
+- 正确做法：借用 `FocusCamera` 大幅推近，或在 Canvas/混合层用 `kit/graphic.js` 的 `iris` / `wipe` 遮罩（0.6–0.8s）**切入全屏深色/撞色机制专场**，用大尺寸节点、滑动窗口槽位、飞行数据包与回声波形把机理演透，再遮罩切回全局主图继续推演。
+
+### 铁律 3：拒绝裸线草图！用学术版面与具象物理层次做画面
+- **选一套成体系的视觉底板**：
+  - **深青光学课堂风（`THEMES.slate`）**：搭配 `drawChapterTitle` 顶部章节大标题与细分割线、`svgCard(..., { corners: true })` 带角标的参数/对比牌、光学辉光 `#vc-glow`；
+  - **暖纸纹学术期刊风（`THEMES.paper` 或 `graphic.js` `paper` + `grid`）**：米白纸纹 `#ECE7DC` + 建筑细网格 + 墨黑大字 + 青绿 `#0C7468` / 朱砂红 `#D2402B` 强调色，信息密度高时极清爽耐看。
+- **物理介质与离散结构必须画得具象饱满**：
+  - **连续物理/几何题**（光学、力学、电磁、微积分）：严禁只画一个 `opacity: 0.06` 方块充当水或斜面！使用 `svgMediaTank` 画出**深浅渐变水体、动态正弦水波纹、发光分界面、网格衬底与 `svgRuler` 坐标标尺**；几何推导时画出**半透明着色辅助直角三角形**（标清边长 $x, 4, 10-x, 3$）；讲“最快路径”时，**同时发出两颗光子（灰色虚线直连光子 vs 金青折线折射光子）同台竞速**，让观众亲眼看到折线光子先到终点！
+  - **离散算法/系统题**（计网、OS、数据结构、概率统计）：严禁只画一根孤零零的细折线！使用 `svgStepColumns(..., { unitBlocks: true })` 把每个轮次的窗口/计数画成**一格格向上垒起的实体积木块**，配阶梯虚线阈值、红色下坠箭头与差值角标，右上角配 `svgCard` 大字号实时状态牌。
 
 ---
 
-## 三、声音与词级同步工作流
+## 三、固定音色人声 + 事件微音效工作流
 
-讲题轨默认采用**纯净人声主导**：不铺持续合成器垫音（避免干扰思考与电子塑料感），只保留自然说话气口，必要时仅在章节切换处加极轻单音提示（`gain: 0.03`）。
+讲题轨采用**固定音色老师干声 + 贴合画面动作的轻量事件微音效**（不铺持续嗡嗡响的背景合成器垫音，但保留物理与交互动作的声音质感）：
 
 ```bash
-# 1. 生成配音并自动导出词级时间戳 vo/words.js 与句长 vo/vo.js
-#    GPU 空闲且显存充裕（doctor 报 voxcpm15_safe: true）时用本地 VoxCPM1.5：
+# 1. 先跑 doctor 检查显卡是否空闲：
+node <kit>/doctor.mjs
+#    - 若 gpu.voxcpm15_safe === true：用本地离线 VoxCPM1.5 克隆固定 teacher 音色卡
 python <kit>/narrate.py cues.json vo/ --voice teacher --takes 2
-#    无显卡、或 GPU 正忙且用户选择轻量通道时，用零显存 Edge 语音（同样原生导出词边界）：
-python <kit>/narrate.py cues.json vo/ --engine edge
+#    - 若 gpu.busy === true（如利用率 ≥75%，无人值守批处理时）：自动避让显卡，走零显存 Edge 讲师男声（同样导出逐词时间戳）
+python <kit>/narrate.py cues.json vo/ --voice teacher --engine edge
 
-# 2. 无需手写 score.html，直接传入 '-' 组装 -16 LUFS 纯净人声轨并导出 .srt 软字幕：
+# 2. 无需手写 score.html，传 '-' 即可将 vo/ 干声与场景 meta.sfx 微音效合成为 -16 LUFS 音轨，并导出 .srt 软字幕：
 node <kit>/audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt
 ```
 
-在 `scene.js` 中用 `buildTimeline` 读取词级时间戳，让箭头、高亮框和公式变形**精准卡在老师念出该术语的那一拍**：
+在 `scene.js` 中用 `TL.word` 做词级声画同步，并在 `meta.sfx` 声明关键动作微音效：
 
 ```js
-import WORDS from './vo/words.js';
-import { buildTimeline } from '<kit>/lesson.js';
-
-const TL = buildTimeline([
-  { id: 'c01', gap: 0.45, text: '竖直方向有向下的重力，向上的支持力，还有拉力向上的分力。' },
-  // ...
-], WORDS);
-
-const T_GRAV = TL.word('c01', '重力', 0.45);       // 精确命中“重力”起音秒数（未配音前按第 3 参数比例兜底）
-const T_NORM = TL.word('c01', '支持力', 0.68);     // 精确命中“支持力”起音秒数
+const sfx = [
+  ...ROUNDS.map((r, i) => ({ t: r.t0, kind: 'tick', freq: 2200 - i * 45, gain: 0.02 })), // 每轮积木垒起轻叩
+  { t: T_REFRACT, kind: 'pluck', note: 'E5', gain: 0.045 },                              // 光子入水偏折 / 快重传
+  { t: T_IRIS_IN, kind: 'whoosh', gain: 0.04 },                                          // 切入全屏机制专场
+  { t: T_TIMEOUT, kind: 'thud', freq: 88, gain: 0.14 },                                  // 超时断崖重击
+  { t: T_OPTIMUM, kind: 'chime', note: 'G5', gain: 0.04 },                               // 极值/定理锁定清音
+];
+register({ duration: TL.duration, fps: 30, width: 1920, height: 1080, seek, meta: { cues: TL.cues, sfx } });
 ```
 
 ---
 
 ## 四、`kit/lesson.js` 核心原语速查
 
-起步可直接复制 [`examples/stem-lesson/`](../examples/stem-lesson/)。页面只需一个 `<svg id="svg" viewBox="0 0 1920 1080"></svg>`：
-
-```js
-import { register, seg } from '<kit>/kit.js';
-import {
-  THEMES, svgEl, clearEl, loadMath, compileFormula, drawFormula, morphFormula, highlightPart,
-  buildTimeline, cameraAt, applyCamera, makeCamera3D, drawStageBackground,
-  svgSurface, svgBlock, svgSpring, svgArrow, svgMorphArrow, svgLocusFan, svgAngleArc, svgAxes, svgPlot,
-  svgNodeBox, svgArray, svgConnect,
-} from '<kit>/lesson.js';
-
-const T = THEMES.slate; // 或 THEMES.ivory（浅色学术纸面）
-const svg = document.getElementById('svg');
-const measureHost = svgEl('g', { visibility: 'hidden' }, svg);
-await loadMath(); // 同步加载内置离线 MathJax v3 SVG，无需联网或外部字体
-```
+起步可参考 [`examples/stem-lesson/`](../examples/stem-lesson/)（SVG 空间涌现）与 [`examples/transit-map/`](../examples/transit-map/)（Canvas 暖纸纹版面与遮罩转场；SVG 与 Canvas 可在同一 `#stage` 叠放混用）：
 
 | 类别 | 函数 | 用法与要点 |
 |---|---|---|
-| **专业公式编译** | `compileFormula(measureHost, tex, { size, color })` | 在 `seek(t)` 外预编译一次。用 `\id{key}{子式}` 标记要变色、框选或跨步变形的子项（支持嵌套在 `\frac`、`\sqrt`、矩阵内） |
-| **公式绘制** | `drawFormula(parent, fm, x, y, { anchor, alpha, scale, partColors })` | `partColors: { fn: T.cyan }` 按键给子项上色；返回整体及各 `\id` 子项的世界坐标包围盒 `{ x, y, w, h, parts }` |
-| **跨步平滑变形** | `morphFormula(parent, fmA, posA, fmB, posB, k, { partColorsA, partColorsB })` | 类似 Manim `TransformMatchingTex`：同名 `\id{key}{...}` 在两式间自动带弧线（`path_arc`）平滑移位与等比缩放，消去项淡出、新增项淡入 |
-| **子项信号框** | `highlightPart(parent, laid.parts.den, k, { color, mode, label })` | 围绕任意分母/根式/矩阵项画动态描边方框或下划线（`mode: 'underline'`），并贴近给出简短结论批注 |
-| **深空光效舞台** | `drawStageBackground(svg, theme, { glow, spotlight, vignette })` | 自动注入 `#vc-glow` / `#vc-glow-soft` 光学辉光滤镜、可移动径向聚光与暗角 |
-| **世界与三维相机** | `cameraAt` + `applyCamera`、`makeCamera3D({ yaw, pitch, dist })` | 2D 世界坐标平滑推拉特写；轻量 3D 透视投影 `(x,y,z) -> [px,py,depth]` 用于空间场线与三维矢量 |
-| **力学与动态表面** | `svgSurface(..., { scroll })`、`svgBlock`、`svgSpring`、`svgArrow(..., { glow })`、`svgAngleArc` | 支持连续滚动剖面线的地面/斜面、带高光倒角的刚体物块、弹簧、光学发光矢量箭头、角度弧 |
-| **空间涌现与剥离** | `svgLocusFan(parent, origin, tipFn, k)`、`svgMorphArrow(parent, a0, a1, b0, b1, m, { arc })` | 参数扫描极坐标残影扇与发光轨迹线；矢量从物理对象平滑剥离飞向空中拼合闭合多边形 |
-| **坐标系与曲线** | `svgAxes(parent, box, { xDomain, yDomain, xTicks, yTicks, k })` + `svgPlot(..., { glow })` | 返回 `{ x(v), y(v), pt(vx, vy) }` 映射器；`svgPlot` 渐进绘出发光函数曲线与阴影，支持极值切线标注 |
-| **算法与系统图** | `svgNodeBox`、`svgArray`、`svgConnect` | 圆角状态框、自动带下标与上下命名指针（`i`, `j`, `top`）的一维数组/内存条（返回各格中心坐标）、带弧度 `bend` 的有向连接线 |
+| **主题与章节顶栏** | `THEMES.slate` / `THEMES.paper` / `THEMES.ivory`、`drawChapterTitle(svg, { kicker, title, step })` | 深青光学主题与暖米白学术纸面主题；`drawChapterTitle` 绘出大尺度章节标题、右对齐步骤号与建筑细横线 |
+| **分幕清场序列器** | `actAt(t, [{ id, t0 }, ...], { fade })` | 返回 `{ id, index, localT, alpha }`，自动保证“前幕先退净、后幕再进入”，零重影切换右半屏推导步骤 |
+| **角标参数/对比卡** | `svgCard(parent, x, y, w, h, k, { title, badge, accent, corners, shadow, theme })` | 带偏移阴影、左侧强调色条与四角裁剪角标（`corners: true`）的设计感信息牌，装实时读数或路径对比表 |
+| **双介质波纹实验槽** | `svgMediaTank(parent, box, { splitRatio, topLabel, bottomLabel, waves, t, rulerDomain })` | 渐变双介质（如空气/水）、动态水波纹、发光分界面、内置细网格与底部 `svgRuler` 坐标尺，返回 `{ surfY, xOf }` |
+| **实体积木阶梯图** | `svgStepColumns(parent, box, columns, t, { maxVal, thresholds, unitBlocks })` | 按时间逐列垒起离散单元积木块（如每轮 `cwnd` MSS 格）、阶梯虚线阈值（`ssthresh`）与下坠箭头角标 |
+| **刻度尺与坐标系** | `svgRuler(parent, p0, p1, k, { domain, step, majorStep, unit })`、`svgAxes` + `svgPlot` | 工程长度/坐标刻度尺；二维函数坐标系与发光曲线、动态追踪光标 |
+| **出版级公式与变形** | `loadMath`、`compileFormula`（`\id{key}{子式}`）、`drawFormula`、`morphFormula`、`highlightPart` | 离线 MathJax v3 SVG 编译、子项语义上色、跨步弧线平滑变形、下划线/方框聚光标注 |
+| **力学、空间与框图** | `svgSurface`、`svgBlock`、`svgArrow`、`svgMorphArrow`、`svgLocusFan`、`svgAngleArc`、`svgNodeBox`、`svgArray`、`svgConnect` | 滚动剖面地面、倒角刚体、发光力矢量与升空闭合、极坐标扫描轨迹扇、角度弧、算法数组指针与状态节点 |
 
 ---
 
-## 五、快渲调优与高清母带审查
+## 五、快渲调优与交付前硬体检
 
-1. **改稿阶段用 `--draft` 快渲，交付阶段必跑 `1080p@30fps`**
-   - 调试动效与词级同步时：`node <kit>/render.mjs index.html video out/draft.mp4 --draft --audio out/audio.webm --mux out/preview.mp4`（自动以 `960×540 @ 15fps` 渲染，不改任何场景坐标，速度提升 6–8 倍）。
-   - **禁止把 `--draft` 低清文件作为成片交付！** 无论配音走本地 `VoxCPM` 还是轻量 `Edge`，最终交付一律跑全分辨率母带：
-     ```bash
-     node <kit>/render.mjs index.html video out/picture.mp4 --audio out/audio.webm --srt output/captions.srt --mux output/final.mp4
-     ```
-2. **三项必做自检**
-   - **几何与碰撞体检**：`node <kit>/boardcheck.mjs index.html --every 4` —— 自动检查全片公式与文字是否重叠、是否越出安全边距、字号是否过小（静止镜头要求 0 碰撞、0 越界；相机推拉过渡帧中移出镜头的背景元素除外）。
-   - **关键帧原尺寸精查**：`node <kit>/render.mjs index.html stills out/stills <每段关键秒数>`，打开 `1920×1080` 原图肉眼检查箭头标签有没有压住方框边线、曲线有没有穿过批注文字。
-   - **讲题模式镜头表与解码抽帧**：`python <kit>/shotlist.py output/final.mp4 --mode lesson`（检查黑场与超过 4.5 秒完全死水的静止段），并用 `ffmpeg -ss <t> -i output/final.mp4 -frames:v 1 out/dec.png` 核验编码后公式边缘清晰度。
+1. **改稿用 `--draft`，交付必跑 `1080p@30fps`**：
+   ```bash
+   # 快渲预览（960×540@15fps，严禁用于最终交付）：
+   node <kit>/render.mjs index.html video out/draft.mp4 --draft --audio out/audio.webm --mux out/preview.mp4
+   # 正式母带交付（1920×1080@30fps + 内封可开关软字幕）：
+   node <kit>/render.mjs index.html video out/picture.mp4 --audio out/audio.webm --srt output/captions.srt --mux output/final.mp4
+   ```
+2. **三项必过体检**：
+   - `node <kit>/boardcheck.mjs index.html --every 3`：**0 公式堆积（`formula_crowding`）**、**0 文字重叠（`overlap`）**、**0 实线穿字（`line_crosses_label`）**、**0 越界与过小字**；
+   - `node <kit>/render.mjs index.html stills out/stills <每幕代表秒数>`：用读文件工具打开 `1920×1080` 原尺寸静帧，用人眼审视**物理图解是否饱满有层次（非裸线草图）、每幕排版是否清爽大字号**；
+   - `python <kit>/shotlist.py output/final.mp4 --mode lesson` + `ffmpeg` 解码抽帧核验清晰度。
