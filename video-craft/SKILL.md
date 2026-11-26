@@ -2,7 +2,7 @@
 name: video-craft
 description: 用代码做出能直接发布的视频：硬核课程与考研讲题（专业公式变形、工程物理与力学分析、计算机算法与系统机制）、科普与数据故事、软件演示与产品宣传、歌曲 MV、电影感短片与片头。入口先做环境与显卡承载力预判，再按「课程与讲题轨」和「宣传与视听轨」分流。自带工具：离线 MathJax SVG 子项公式变形与具象理工图解引擎、纸面与建筑网格版面动效、场景分层绘制、本地神经旁白与逐词时间戳同步、事件微音效、歌曲拍点歌词地图、快渲预览、版面碰撞与公式堆积检查，以及十三个可改的完整示例。用户说“做个视频/讲题视频/动画/MV/宣传片/讲解视频/短视频”，或“AI 做的视频像 PPT、不好看”时使用。不用于给 Sora、可灵等视频生成模型写提示词，也不用于实拍素材的精剪调色或纯音频制作。
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # Video craft
@@ -15,7 +15,7 @@ metadata:
 
 1. **硬件与显卡避让闸门**（看 `doctor.mjs` 输出的 `gpu`、`ffmpeg`、`browser` 字段）：
    - `gpu.state === "present_but_inaccessible"`：驱动在，但当前沙箱挡住了显卡设备。请用户在普通终端跑一次 `nvidia-smi` 确认，**不要谎报“这台机器没有显卡”**。
-   - `gpu.busy === true`（核心利用率 ≥75%）或 `!gpu.voxcpm15_safe`（空闲显存 `< 4096 MiB`）：本机显卡正被其他重任务占用。**在线对话必须先停下汇报当前显存/占用率**，请用户选择：① 改走 `--engine edge` 零显存配音（同样导出词级时间戳）；② 等显卡空闲再用本地 `VoxCPM1.5`；③ 用户明确允许共用时再加 `--force-gpu`。仅在无人值守批处理时，才自动切换 `--engine edge` 并在交付首行说明。
+   - `gpu.busy === true`（核心利用率 ≥75%）或 `!gpu.voxcpm15_safe`（空闲显存 `< 4096 MiB`）：本机显卡正被其他重任务占用。**在线对话必须先停下汇报当前显存/占用率**，请用户选择：① 用 `--device cpu --takes 1` 在 CPU 上跑本地 `VoxCPM1.5` 克隆声音卡（零显存占用、音色自然，6–8 句约需 2 分钟）；② 改走 `--engine edge` 零显存快速配音；③ 等显卡空闲，或用户明确允许共用时加 `--force-gpu`。无人值守批处理时，若本机已缓存 `VoxCPM1.5` 优先用 `--device cpu --takes 1` 保住自然老师音色（或用 `--engine edge`），并在交付首行说明。
    - 渲染帧速与分档：改稿与对同步阶段统一用 `render.mjs ... --draft`（`960×540 @ 15fps` 快渲预览）；**最终交付无论有无显卡，一律渲染 `1920×1080 @ 30fps` 高清母带**（无 `libx264` 时交付 WebM 并说明），绝不把 `--draft` 预览当作成片交付。
 2. **表达边界闸门**（评估任务里有没有代码画不好的东西）：
    - 代码擅长：出版级数学/物理公式变形、几何与力学矢量、函数曲线、算法与系统状态流转、光影山谷/星空粒子、版面式大字与网格动效。
@@ -44,7 +44,7 @@ metadata:
 ### 走「轨道 A · 课程与讲题轨」时（详见 [course-and-stem.md](references/course-and-stem.md)）
 
 1. **任务单与单一数据源（`brief.md` + `data.js`）**：写明目标受众容易踩的直觉误区、三段式结构（破题直觉反差 → 分幕因果推演 → 考场易错坑与通法），并把题中所有物理/数学/系统关系写进同一个 `data.js`（严核边界定义，如 TCP 超时是 `cwnd = 1` 而非归零）。用户未声明“直接做完”时，先把解题切口与分幕列在回复里请用户确认一次；无人值守或要求直接交付时写进 `brief.md` 继续执行。
-2. **自然老师讲稿 + 固定音色干声 + 克制动作微音效**：台词写成老师对学生说话的连贯口语短句（**严禁写成四字电报口号腔**；数字写汉字读法）。运行 `narrate.py` 生成全片同音色干声并导出 `vo/words.js`；在 `meta.sfx` 为关键动作（步进 `tick`、入水/重传 `pluck`、丢包/超时 `thud`、极值锁定 `chime`、遮罩转场 `whoosh`）配克制微音效，**不铺吵人的持续电子垫音**，并用 `audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt` 导出音轨与独立软字幕（**禁止画布再烧录底字幕**）。
+2. **舒展自然的老师讲稿 + 固定音色干声 + 克制动作微音效**：台词必须写成**真老师站在讲台上娓娓道来的连贯整句**——每条 `cue` 控制在 **42–75 个汉字（2–3 句完整的话，全片 6–8 条）**，主谓宾齐全、因果过渡自然；**严禁写成三四字一逗的蹦词电报腔、冒号报幕腔（“两个坑：”）、分号对称排比腔或顿号点名报数腔（“一、二、四、八”）**，协议与公式符号在口播中一律说中文名（说“拥塞窗口”“慢启动阈值”而非生读 `cwnd`），数字写汉字读法（`narrate.py --style lesson` 会自动拦截破碎生硬的 AI 讲稿）。生成全片同音色干声并导出 `vo/words.js`；在 `meta.sfx` 为关键动作（步进 `tick`、入水/重传 `pluck`、丢包/超时 `thud`、极值锁定 `chime`、遮罩转场 `whoosh`）配克制微音效，**不铺吵人的持续电子垫音**，并用 `audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt` 导出音轨与独立软字幕（**禁止画布再烧录底字幕**）。
 3. **基于 `kit/lesson.js`（可配 `graphic.js`）实现有质感、不堆砌的画面**：
    - **主图常驻演化，推导区按幕清场（严禁堆满一屏公式）**：物理/几何/主图表常驻联动，但右半屏推导区必须用 `actAt(t, ACTS)` 按幕切换——**每幕同屏最多展示 1–2 个大号核心公式（38–52px）**，上一步中间式要么原地 `morphFormula` 变成下一式，要么随上一幕退出清场，绝不把推完的旧式子半透明堆在屏上！遇到复杂微观机制（如发送方↔接收方包回声 vs 超时沉默）时，**不要缩在角落画小框**，用 `iris`/`wipe` 遮罩或相机推近切入**全屏机制专场**演透再切回主图。
    - **拒绝裸线草图，做出具象物理层次与设计版面**：禁止只画几根单薄细线加半透明色块。画物理介质用 `svgMediaTank`（渐变水体、动态水波纹、界面线、坐标标尺 `svgRuler`、阴影辅助直角三角形、直线 vs 折线双粒子同时出发竞速）；画离散轮次/窗口用 `svgStepColumns` 垒出实体积木块，配角标参数牌 `svgCard(..., { corners: true })` 或 `THEMES.paper` 暖纸纹学术版面。
@@ -67,7 +67,7 @@ metadata:
 | 目的 | 命令 |
 |---|---|
 | 环境与显卡负载探测 | `node <kit>/doctor.mjs` |
-| 生成旁白 + 逐词时间戳 | `python <kit>/narrate.py cues.json vo/ --voice teacher --takes 2`（零显卡轻量：`--engine edge`） |
+| 生成旁白 + 逐词时间戳 | `python <kit>/narrate.py cues.json vo/ --voice teacher --style lesson --takes 2`（显卡忙时 `--device cpu --takes 1` 或 `--engine edge`） |
 | 讲题纯净音轨 + 软字幕 | `node <kit>/audio.mjs index.html - out/audio.webm --vo vo/ --srt output/captions.srt` |
 | 配乐合成与响度检查 | `node <kit>/audio.mjs index.html score.html out/audio.webm --vo vo/`、`node <kit>/mixcheck.mjs index.html score.html out/mix.png` |
 | 草稿快渲预览（540p@15fps） | `node <kit>/render.mjs index.html video out/pic.mp4 --draft --audio out/audio.webm --mux out/preview.mp4` |

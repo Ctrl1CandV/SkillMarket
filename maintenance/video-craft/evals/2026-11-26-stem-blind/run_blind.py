@@ -126,7 +126,7 @@ def pi_env():
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("problem", choices=sorted(PROBLEMS))
-    ap.add_argument("arm", choices=["noskill", "v090", "v100", "v110"])
+    ap.add_argument("arm", choices=["noskill", "v090", "v100", "v110", "v111"])
     ap.add_argument("model", help="e.g. openai/gpt-6.1-sol or deepseek/deepseek-flash")
     ap.add_argument("out", type=Path)
     args = ap.parse_args()
@@ -145,7 +145,7 @@ def main():
         skill_flags = ["--skill", str(snapshot)]
         save(logs / "snapshot.json", {p.relative_to(snapshot).as_posix(): digest(p) for p in sorted(snapshot.rglob("*")) if p.is_file()})
         (task / "ENV.md").write_text(ENV_SKILL, encoding="utf-8")
-    elif args.arm in ("v100", "v110"):
+    elif args.arm in ("v100", "v110", "v111"):
         snapshot = out / "video-craft"
         shutil.copytree(SKILL_V100, snapshot, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "node_modules", ".git"))
         skill_flags = ["--skill", str(snapshot)]
