@@ -5,31 +5,36 @@
 import { launch, fileUrl } from './env.mjs';
 const [pg, ...rest] = process.argv.slice(2);
 const opt = (k, d) => { const i = rest.indexOf('--' + k); return i >= 0 ? rest[i + 1] : d; };
-const margin = +opt('margin', '80'), sel = opt('sel', '#caps .cap');
+const margin = +opt('margin', '80'), sel = opt('sel', '#caps .cap, #lyric, #captions');
 const b = await launch();
 const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
 await p.goto(fileUrl(pg)); await p.waitForFunction(() => window.__video);
 const v = await p.evaluate(() => window.__video); await p.setViewportSize({ width: v.width, height: v.height });
+const minFontPx = Math.min(v.width, v.height) / 30;
 const issues = [];
 let inspected = 0;
 for (let t = 0; t < v.duration; t += 0.25) {
   await p.evaluate((t) => window.__seek(t), t);
   const r = await p.evaluate(({ W, H, m, sel }) => [...document.querySelectorAll(sel)].filter((e) =>
-    e.getClientRects().length && e.checkVisibility?.({ opacityProperty: true, visibilityProperty: true }) !== false &&
+    e.getClientRects().length &&
+    e.textContent.trim().length > 0 &&
+    parseFloat(getComputedStyle(e).opacity ?? '1') > 0.2 &&
+    e.checkVisibility?.({ opacityProperty: true, visibilityProperty: true }) !== false &&
     [...e.querySelectorAll('.ln span')].every((s) => /translateY\(0(\.0)?%\)/.test(s.style.transform || 'translateY(0%)'))
   ).map((e) => {
-    const spans = [...e.querySelectorAll('.ln span')];
-    if (!spans.length) spans.push(e); // Also accept an ordinary subtitle element supplied with --sel.
-    const rs = spans.map((s) => s.getBoundingClientRect());
+    const leafChildren = [...e.querySelectorAll('.ln span, #lyric-en, #lyric-zh')].filter((s) => s.textContent.trim().length > 0);
+    const spans = leafChildren.length ? leafChildren : [e];
+    const rs = spans.map((s) => s.getBoundingClientRect()).filter((x) => x.width > 0 && x.height > 0);
+    if (!rs.length) return null;
     const box = { l: Math.min(...rs.map((x) => x.left)), r: Math.max(...rs.map((x) => x.right)), t: Math.min(...rs.map((x) => x.top)), b: Math.max(...rs.map((x) => x.bottom)) };
     const fs = Math.min(...spans.map((s) => parseFloat(getComputedStyle(s).fontSize)));
     const out = box.l < m || box.r > W - m || box.t < m * 0.6 || box.b > H - m * 0.6;
-    return { text: e.textContent.slice(0, 16), box, fs, out };
-  }), { W: v.width, H: v.height, m: margin, sel });
+    return { text: e.textContent.trim().replace(/\s+/g, ' ').slice(0, 20), box, fs, out };
+  }).filter(Boolean), { W: v.width, H: v.height, m: margin, sel });
   inspected += r.length;
-  for (const x of r) if (x.out || x.fs < v.height / 30) issues.push({ t: +t.toFixed(2), ...x });
+  for (const x of r) if (x.out || x.fs < minFontPx) issues.push({ t: +t.toFixed(2), ...x });
 }
 const uniq = new Map(); for (const i of issues) if (!uniq.has(i.text)) uniq.set(i.text, i);
 if (!inspected) console.log(`No visible DOM captions sampled for "${sel}". For other markup use --sel; inspect burned-in text in decoded frames.`);
-else console.log(uniq.size ? [...uniq.values()].map((i) => `${i.t}s "${i.text}" box=${JSON.stringify(Object.fromEntries(Object.entries(i.box).map(([k, v]) => [k, Math.round(v)])))} font=${i.fs}`).join('\n') : 'no caption outside margins; all fonts ≥ H/30');
+else console.log(uniq.size ? [...uniq.values()].map((i) => `${i.t}s "${i.text}" box=${JSON.stringify(Object.fromEntries(Object.entries(i.box).map(([k, v]) => [k, Math.round(v)])))} font=${i.fs}`).join('\n') : `no caption outside margins; all fonts ≥ ${Math.round(minFontPx)}px (min(W,H)/30)`);
 await b.close();

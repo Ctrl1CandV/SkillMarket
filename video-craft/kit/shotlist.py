@@ -87,8 +87,8 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("film", type=Path)
-    ap.add_argument("--mode", choices=["general", "lesson"], default="general",
-                    help="'lesson' checks localized board/diagram motion and allows natural formula reading holds")
+    ap.add_argument("--mode", choices=["general", "default", "lesson", "mv", "promo"], default="general",
+                    help="'lesson' checks localized board/diagram motion and allows 4.5 s reading holds")
     ap.add_argument("--song", type=Path, help="songmap.json of the recording used in the film")
     ap.add_argument("--offset", type=float, default=0.0,
                     help="song seconds at film 0, when the film uses an excerpt (the T0 of the scene)")
@@ -187,27 +187,79 @@ def main():
         song = json.loads(args.song.read_text(encoding="utf-8"))
         beats = np.array(song["beats"])
         bars = np.array(song["downbeats"])
+        # Phrase/post-pause vocal onsets from songmap lyrics (when --lyrics was run)
+        lyric_lines = (song.get("lyrics") or {}).get("lines") or []
+        vocal_onsets = []
+        for ln in lyric_lines:
+            if isinstance(ln.get("t0"), (int, float)):
+                vocal_onsets.append(float(ln["t0"]))
+            words = ln.get("words") or []
+            for wi, w in enumerate(words):
+                if wi > 0 and isinstance(w.get("t0"), (int, float)) and isinstance(words[wi - 1].get("t1"), (int, float)):
+                    if float(w["t0"]) - float(words[wi - 1]["t1"]) >= 0.25:
+                        vocal_onsets.append(float(w["t0"]))
+        vocal_arr = np.array(sorted(set(vocal_onsets))) if vocal_onsets else np.array([])
+
         offs = []
+        vocal_cuts = 0
         for s in shots[1:]:
             t = s["t0"] + args.offset
-            db = t - beats[np.argmin(np.abs(beats - t))]
-            bb = t - bars[np.argmin(np.abs(bars - t))]
+            db = float(t - beats[np.argmin(np.abs(beats - t))])
+            bb = float(t - bars[np.argmin(np.abs(bars - t))])
             s["from_beat"], s["from_bar"] = round(db, 3), round(bb, 3)
+            if vocal_arr.size:
+                dv = float(t - vocal_arr[np.argmin(np.abs(vocal_arr - t))])
+                if abs(db) > 0.12 and abs(dv) <= 0.15:
+                    s["vocal_onset"] = round(dv, 3)
+                    vocal_cuts += 1
             offs.append(db)
         offs = np.abs(np.array(offs)) if offs else np.zeros(1)
         on = int((offs <= 1.5 / fps).sum())
-        print(f"cuts within 1.5 frames of a beat: {on} of {len(offs)}; median distance {np.median(offs) * 1000:.0f} ms")
-        late = [s for s in shots[1:] if abs(s["from_beat"]) > 0.12]
+        vocal_note = f", {vocal_cuts} on vocal phrase onsets" if vocal_cuts else ""
+        print(f"cuts within 1.5 frames of a beat: {on} of {len(offs)}{vocal_note}; median distance {np.median(offs) * 1000:.0f} ms")
+        late = [s for s in shots[1:] if abs(s["from_beat"]) > 0.12 and "vocal_onset" not in s]
         if late:
-            flags.append(f"{len(late)} cuts sit more than 120 ms off the beat, e.g. "
+            flags.append(f"{len(late)} cuts sit more than 120 ms off both the beat and vocal phrase onsets, e.g. "
                          + ", ".join(f"{mm(s['t0'])} ({s['from_beat'] * 1000:+.0f} ms)" for s in late[:6])
-                         + ". Fine for a cut on a vocal or an action; check the rest by ear.")
+                         + ". Fine for a cut on an instrumental pickup or physical action; check the rest by ear.")
+
+        # Returning sections (`label` in songmap.json): warn if a returning chorus/verse looks visually unchanged
+        by_label = {}
+        for idx, sec in enumerate(song.get("sections") or []):
+            ft0 = float(sec["t0"]) - args.offset
+            ft1 = float(sec["t1"]) - args.offset
+            ov0, ov1 = max(0.0, ft0), min(dur, ft1)
+            if ov1 - ov0 < 2.0:
+                continue
+            samples = []
+            for frac in (0.25, 0.5, 0.75):
+                fi = int(np.clip(round((ov0 + (ov1 - ov0) * frac) * fps), 0, len(v) - 1))
+                samples.append(v[fi])
+            lab = sec.get("label") or f"S{idx}"
+            if lab in by_label:
+                prev_idx, prev_ov0, prev_samples = by_label[lab]
+                sims, mads = [], []
+                for f_prev, f_cur in zip(prev_samples, samples):
+                    mads.append(float(np.abs(f_prev - f_cur).mean()))
+                    if f_prev.std() > 0.02 and f_cur.std() > 0.02:
+                        a = f_prev - f_prev.mean()
+                        b = f_cur - f_cur.mean()
+                        sims.append(float((a * b).sum() / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-6)))
+                mean_mad = float(np.mean(mads))
+                mean_sim = float(np.mean(sims)) if sims else 0.0
+                if mean_mad < 0.035 and (not sims or mean_sim > 0.92):
+                    flags.append(f"section #{idx + 1} ({mm(ov0)}–{mm(ov1)}, same music as #{prev_idx + 1} at {mm(prev_ov0)}) "
+                                 f"looks visually almost identical (MAD {mean_mad:.3f}). Unless this is an intentional bookend, "
+                                 f"let a returning chorus/verse show a changed time, light, scale or relationship.")
+            else:
+                by_label[lab] = (idx, ov0, samples)
 
     print(f"black in total: {black_total:.1f} s")
     print("\nshots:")
     for k, s in enumerate(shots):
         extra = f"  enlarged ×{s['enlarges_previous']}" if "enlarges_previous" in s else ""
-        beat = f"  beat {s['from_beat'] * 1000:+.0f} ms" if "from_beat" in s else ""
+        vocal = f" (vocal {s['vocal_onset'] * 1000:+.0f} ms)" if "vocal_onset" in s else ""
+        beat = f"  beat {s['from_beat'] * 1000:+.0f} ms{vocal}" if "from_beat" in s else ""
         print(f"  {k + 1:3d}  {mm(s['t0'])}  {s['len']:6.2f} s  luma {s['luma']:.2f}{beat}{extra}")
     print("\nlook again at:" if flags else "\nnothing flagged")
     for f in flags:

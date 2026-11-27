@@ -1,6 +1,8 @@
 // draw.js — Canvas 2D building blocks for pictures that look lit and layered. Pure functions of their inputs.
 // See references/drawing.md for when to use each one.
-import { clamp, lerp, rng } from './kit.js';
+import { clamp, lerp, rng, hex } from './kit.js';
+
+const toRgb = (c) => (typeof c === 'string' && c.startsWith('#') ? hex(c) : c);
 
 // offscreen canvas for a layer you composite later (glow, figures, cached backgrounds)
 export function layer(w, h) {
@@ -35,15 +37,102 @@ export function bloom(ctx, src, { base = 1, amount = 0.6, radii = [4, 18] } = {}
   ctx.restore();
 }
 
-// soft radial light; color = [r,g,b]
+// soft radial light; color = [r,g,b] or '#rrggbb'
 export function glow(ctx, x, y, r, color, alpha = 1) {
   const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-  const [R, G, B] = color;
+  const [R, G, B] = toRgb(color);
   g.addColorStop(0, `rgba(${R},${G},${B},${alpha})`);
   g.addColorStop(0.25, `rgba(${R},${G},${B},${alpha * 0.35})`);
   g.addColorStop(1, `rgba(${R},${G},${B},0)`);
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = g;
   ctx.fillRect(x - r, y - r, 2 * r, 2 * r); ctx.restore();
+}
+
+// soft volumetric shaft (window sunbeam, streetlamp cone, stage shaft) without expensive per-frame ctx.filter blur.
+// Nested cones feather the lateral edges; pass `blend: 'source-over'` on bright/daylight scenes where 'lighter' washes out.
+export function lightBeam(ctx, x0, y0, x1, y1, w0, w1, color, alpha = 0.24, { layers = 4, blend = 'lighter' } = {}) {
+  const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy);
+  if (len < 1e-3 || alpha <= 0) return;
+  const nx = -dy / len, ny = dx / len;
+  const [R, G, B] = toRgb(color);
+  const n = Math.max(1, layers | 0);
+  ctx.save();
+  ctx.globalCompositeOperation = blend;
+  for (let i = 0; i < n; i++) {
+    const frac = 1 - (i / n) * 0.68;
+    const hw0 = w0 * 0.5 * frac, hw1 = w1 * 0.5 * frac;
+    const layerAlpha = (alpha / n) * (1 + i * 0.35);
+    const g = ctx.createLinearGradient(x0, y0, x1, y1);
+    g.addColorStop(0, `rgba(${R},${G},${B},${layerAlpha})`);
+    g.addColorStop(0.55, `rgba(${R},${G},${B},${layerAlpha * 0.42})`);
+    g.addColorStop(1, `rgba(${R},${G},${B},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(x0 + nx * hw0, y0 + ny * hw0);
+    ctx.lineTo(x1 + nx * hw1, y1 + ny * hw1);
+    ctx.lineTo(x1 - nx * hw1, y1 - ny * hw1);
+    ctx.lineTo(x0 - nx * hw0, y0 - ny * hw0);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+// power-law out-of-focus depth orbs with parallax and seamless wrap (uses cached gradient sprite: fast on Software GL).
+const bokehSprites = new Map();
+const bokehSets = new Map();
+export function bokeh(ctx, seed, count, cam = { x: 0, y: 0, z: 1 }, t = 0, {
+  w = ctx.canvas.width, h = ctx.canvas.height, color = [255, 224, 176], depth = 0.35,
+  rMin = 10, rMax = 62, alpha = 0.14, drift = 12, blend = 'lighter',
+} = {}) {
+  if (count <= 0 || alpha <= 0) return;
+  const [R, G, B] = toRgb(color);
+  const sKey = `${R},${G},${B}`;
+  if (!bokehSprites.has(sKey)) {
+    const sp = layer(128, 128), sx = sp.getContext('2d'), gr = sx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, `rgba(${R},${G},${B},0.75)`);
+    gr.addColorStop(0.62, `rgba(${R},${G},${B},0.55)`);
+    gr.addColorStop(0.86, `rgba(${R},${G},${B},0.22)`);
+    gr.addColorStop(1, `rgba(${R},${G},${B},0)`);
+    sx.fillStyle = gr; sx.fillRect(0, 0, 128, 128);
+    bokehSprites.set(sKey, sp);
+  }
+  const pKey = `${seed}:${count}`;
+  if (!bokehSets.has(pKey)) {
+    const r = rng(seed);
+    bokehSets.set(pKey, Array.from({ length: count }, () => ({
+      u: r(), v: r(), sizePow: Math.pow(r(), 2.8), lum: 0.25 + 0.75 * Math.pow(r(), 1.8),
+      ph: r() * Math.PI * 2, sp: 0.4 + r() * 0.8,
+    })));
+  }
+  const sprite = bokehSprites.get(sKey), pts = bokehSets.get(pKey);
+  const spanW = w + rMax * 2, spanH = h + rMax * 2;
+  const mod = (a, m) => ((a % m) + m) % m;
+  ctx.save();
+  ctx.globalCompositeOperation = blend;
+  for (const p of pts) {
+    const rad = rMin + p.sizePow * (rMax - rMin);
+    const px = mod(p.u * spanW - (cam.x || 0) * depth + Math.sin(t * p.sp * 0.5 + p.ph) * drift, spanW) - rMax;
+    const py = mod(p.v * spanH - (cam.y || 0) * depth - t * drift * p.sp * 0.35, spanH) - rMax;
+    const tw = 0.75 + 0.25 * Math.sin(t * p.sp + p.ph);
+    ctx.globalAlpha = clamp(alpha * p.lum * tw);
+    ctx.drawImage(sprite, px - rad, py - rad, rad * 2, rad * 2);
+  }
+  ctx.restore();
+}
+
+// pure-function organic camera breath `{ dx, dy, rot }` and `withHandheld(cam, t, opts)` helper so held shots stay alive.
+export function handheld(t, { amp = 6, rot = 0.0028, speed = 1, seed = 1 } = {}) {
+  const s = t * speed, p = seed * 1.732;
+  const dx = amp * (0.58 * Math.sin(s * 0.83 + p) + 0.29 * Math.sin(s * 1.97 + p * 2.1) + 0.13 * Math.cos(s * 3.41 + p * 0.7));
+  const dy = amp * (0.54 * Math.cos(s * 0.71 + p * 1.3) + 0.31 * Math.sin(s * 1.63 + p * 2.9) + 0.15 * Math.sin(s * 3.11 + p));
+  const drot = rot * (0.65 * Math.sin(s * 0.61 + p * 0.9) + 0.35 * Math.cos(s * 1.49 + p * 2.4));
+  return { dx, dy, rot: drot };
+}
+
+export function withHandheld(cam = {}, t = 0, opts = {}) {
+  const h = handheld(t, opts);
+  return { ...cam, z: cam.z ?? 1, x: (cam.x ?? 0) + h.dx, y: (cam.y ?? 0) + h.dy, rot: (cam.rot ?? 0) + h.rot };
 }
 
 // ---- depth: a ridgeline (mountains, dunes, rooftops with `steps`) as y values across the width

@@ -67,7 +67,23 @@ try {
   failure(/Choose a different output/, output, output);
   assert.deepEqual(readFileSync(output), previous);
 
-  console.log('PASS: UTF-8 SRT, bilingual lines, overlapping cues, clip boundaries, JS import, input errors and output preservation');
+  // Phase 2 hygiene gates: draft filename, Whisper unedited marker, and --no-overlap mode
+  const draftSource = join(dir, 'lyrics.draft.srt');
+  writeFileSync(draftSource, '1\n00:00:01,000 --> 00:00:02,500\nHello world\n', 'utf8');
+  failure(/Refusing unverified machine transcript/, draftSource, output);
+  assert.equal(run(draftSource, browserOutput, '--allow-draft').status, 0);
+  rmSync(draftSource, { force: true });
+
+  writeFileSync(source, '1\n00:00:01,000 --> 00:00:02,500\noh … (repeated, check by ear)\n', 'utf8');
+  failure(/repeated, check by ear/, source, output);
+
+  writeFileSync(source, fixture, 'utf8');
+  failure(/overlaps cue/, source, output, '--no-overlap');
+
+  writeFileSync(source, '1\n00:00:01,000 --> 00:00:02,400\nFirst line\n\n2\n00:00:02,450 --> 00:00:04,000\nSecond line\n', 'utf8');
+  assert.match(success(browserOutput, '--no-overlap', '--from', '0.5', '--to', '3.5'), /2 of 2 cues/);
+
+  console.log('PASS: UTF-8 SRT, bilingual lines, overlapping cues, --no-overlap, draft gates, clip boundaries, JS import, input errors and output preservation');
 } finally {
   for (const file of [source, output, browserOutput]) rmSync(file, { force: true });
   rmdirSync(dir);

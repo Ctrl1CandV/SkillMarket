@@ -1,6 +1,8 @@
 // doctor.mjs — what this machine can do: browser, WebGL, encoders, voices, ffmpeg. Read-only.
 // usage: node doctor.mjs
 import { spawnSync } from 'node:child_process';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { launch, FFMPEG } from './env.mjs';
 const out = { node: process.version };
@@ -42,9 +44,35 @@ for f in sorted(glob.glob(os.path.join(sys.argv[1], "*.py"))):
     try: compile(open(f, encoding="utf-8").read(), f, "exec")
     except SyntaxError as e: r["broken_scripts"].append(os.path.basename(f) + ":" + str(e.lineno))
 print(json.dumps(r))`;
-const KIT = new URL('.', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
-const py = spawnSync(PY, ['-c', probe, decodeURIComponent(KIT)], { encoding: 'utf8' });
+const KIT = decodeURIComponent(new URL('.', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
+out.three = existsSync(join(KIT, 'vendor', 'three', 'three.module.min.js'));
+out.blender = (() => {
+  const candidates = [process.env.VC_BLENDER, 'blender'].filter(Boolean);
+  for (const root of ['C:\\Program Files\\Blender Foundation', 'D:\\Program Files\\Blender Foundation', '/Applications/Blender.app/Contents/MacOS']) {
+    if (!existsSync(root)) continue;
+    if (root.endsWith('MacOS')) candidates.push(join(root, 'Blender'));
+    else {
+      for (const d of readdirSync(root).sort().reverse()) candidates.push(join(root, d, 'blender.exe'));
+    }
+  }
+  for (const bin of candidates) {
+    try {
+      const b = spawnSync(bin, ['--version'], { encoding: 'utf8', timeout: 4000, windowsHide: true });
+      if (b.status === 0 && /Blender\s+\d+/i.test(b.stdout)) {
+        return { available: true, path: bin, version: b.stdout.trim().split(/\r?\n/)[0] };
+      }
+    } catch { /* try next */ }
+  }
+  return false;
+})();
+const py = spawnSync(PY, ['-c', probe, KIT], { encoding: 'utf8' });
 out.python = py.status === 0 ? JSON.parse(py.stdout.trim().split(/\r?\n/).pop()) : false;
+if (out.python) {
+  for (const f of readdirSync(KIT).filter((n) => /\.(js|mjs)$/.test(n)).sort()) {
+    const chk = spawnSync(process.execPath, ['--check', join(KIT, f)], { encoding: 'utf8' });
+    if (chk.status !== 0) out.python.broken_scripts.push(f);
+  }
+}
 if (out.python?.gpu) { out.gpu = out.python.gpu; delete out.python.gpu; }
 console.log(JSON.stringify(out, null, 2));
 const tips = [];

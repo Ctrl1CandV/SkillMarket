@@ -44,7 +44,7 @@ if (score === '-') {
   const soundUrl = fileUrl(join(here, 'sound.js'));
   await p2.goto(fileUrl(scene));
   await p2.setContent(`<script type="module">
-    import { install, voice, NOTE, chime, tick, pop, pluck, thud, whoosh, glide } from ${JSON.stringify(soundUrl)};
+    import { install, voice, NOTE, chime, tick, pop, pluck, thud, whoosh, glide, uiClick, swipe, glass, epiano } from ${JSON.stringify(soundUrl)};
     const freqOf = (x, fallback = 660) => typeof x === 'string' ? NOTE(x) : (Number.isFinite(x) ? x : fallback);
     install((m, events, dur) => {
       const cues = ${JSON.stringify(meta?.cues || [])};
@@ -56,6 +56,10 @@ if (score === '-') {
         if (!e || !Number.isFinite(e.t) || e.t < 0 || e.t >= dur) continue;
         const k = e.kind || e.type;
         if (k === 'tick') tick(m, m.sfx, e.t, { freq: e.freq ?? 2100, gain: e.gain ?? 0.024, dur: e.dur ?? 0.032, pan: e.pan ?? 0 });
+        else if (k === 'uiClick' || k === 'click') uiClick(m, m.sfx, e.t, { freq: e.freq ?? 1850, gain: e.gain ?? 0.055, crisp: e.crisp ?? 0.6, pan: e.pan ?? 0 });
+        else if (k === 'swipe') swipe(m, m.sfx, e.t, { dur: e.dur ?? 0.2, f0: e.f0 ?? 680, f1: e.f1 ?? 1850, gain: e.gain ?? 0.04, pan0: e.pan0 ?? 0, pan1: e.pan1 ?? 0 });
+        else if (k === 'glass') glass(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 880), { gain: e.gain ?? 0.045, dur: e.dur ?? 1.4, pan: e.pan ?? 0 });
+        else if (k === 'epiano') epiano(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 523.25), { gain: e.gain ?? 0.055, dur: e.dur ?? 1.2, pan: e.pan ?? 0 });
         else if (k === 'pop') pop(m, m.sfx, e.t, { f0: e.f0 ?? 340, f1: e.f1 ?? 920, gain: e.gain ?? 0.045, dur: e.dur ?? 0.08, pan: e.pan ?? 0 });
         else if (k === 'pluck') pluck(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 659.25), { gain: e.gain ?? 0.045, dur: e.dur ?? 0.55, pan: e.pan ?? 0 });
         else if (k === 'chime') chime(m, m.sfx, e.t, freqOf(e.note ?? e.freq, 783.99), { gain: e.gain ?? 0.038, dur: e.dur ?? 1.1, pan: e.pan ?? 0 });

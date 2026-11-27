@@ -27,12 +27,39 @@ float noise(vec2 p) {
 }
 float fbm(vec2 p) { float s = 0.0, a = 0.5; for (int k = 0; k < 6; k++) { s += a * noise(p); p = p * 2.03 + 17.1; a *= 0.5; } return s; }
 `;
+const SDF_LIB = `
+mat2 rot2(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
+float smin(float a, float b, float k) {
+  float h = max(k - abs(a - b), 0.0) / max(k, 1e-5);
+  return min(a, b) - h * h * k * 0.25;
+}
+float sdSphere(vec3 p, float r) { return length(p) - r; }
+float sdRoundBox(vec3 p, vec3 b, float r) {
+  vec3 q = abs(p) - b;
+  return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r;
+}
+float sdTorus(vec3 p, vec2 t) { vec2 q = vec2(length(p.xz) - t.x, p.y); return length(q) - t.y; }
+float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
+  vec3 pa = p - a, ba = b - a;
+  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-5), 0.0, 1.0);
+  return length(pa - ba * h) - r;
+}
+vec3 opRep(vec3 p, vec3 s) { return mod(p + 0.5 * s, s) - 0.5 * s; }
+vec3 thinFilm(float cosTheta, float phase) {
+  return 0.5 + 0.5 * cos(6.28318 * (cosTheta + phase) + vec3(0.0, 2.094, 4.188));
+}
+vec3 aces(vec3 x) {
+  return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);
+}
+vec3 toSrgb(vec3 c) { return pow(max(c, vec3(0.0)), vec3(1.0 / 2.2)); }
+`;
+
 const VERT = `#version 300 es
 void main() { vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2); gl_Position = vec4(p * 2.0 - 1.0, 0, 1); }`;
 
 const RESERVED = new Set(['t', 'res', 'o']);
 
-export function shader(width, height, frag, { scale = 1, uniforms = [] } = {}) {
+export function shader(width, height, frag, { scale = 1, uniforms = [], sdf = false } = {}) {
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(width * scale));
   canvas.height = Math.max(1, Math.round(height * scale));
@@ -46,7 +73,7 @@ export function shader(width, height, frag, { scale = 1, uniforms = [] } = {}) {
   };
   const programs = new Map();                      // one per set of uniform names and sizes, built once
   const build = (sizes) => {
-    const head = HEADER + [...sizes].map(([k, n]) => `uniform ${n === 1 ? 'float' : 'vec' + n} ${k};\n`).join('');
+    const head = HEADER + (sdf ? SDF_LIB : '') + [...sizes].map(([k, n]) => `uniform ${n === 1 ? 'float' : 'vec' + n} ${k};\n`).join('');
     let prog = programs.get(head);
     if (prog) return prog;
     prog = gl.createProgram();

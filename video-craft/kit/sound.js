@@ -9,22 +9,75 @@ export const NOTE = (name) => {
   return 440 * Math.pow(2, (midi - 69) / 12);
 };
 
-export function makeMixer(ctx, { reverb = 0.18, seed = 7, irSec = 1.8, irPow = 3.2 } = {}) {
+function softClipCurve(drive = 1.4, n = 2048) {
+  const c = new Float32Array(n), norm = Math.tanh(drive) || 1;
+  for (let i = 0; i < n; i++) {
+    const x = (i * 2) / (n - 1) - 1;
+    c[i] = Math.tanh(drive * x) / norm;
+  }
+  return c;
+}
+
+export function makeMixer(ctx, { reverb = 0.18, seed = 7, irSec = 1.8, irPow = 3.2, irDamp = 0.72, preDelay = 0.014, warmth = 0 } = {}) {
   const r = rng(seed);
   const noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
   const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = r() * 2 - 1;
   // a longer buffer for beds (wind, room tone) so the loop is not heard
   const noiseLong = ctx.createBuffer(1, ctx.sampleRate * 9, ctx.sampleRate);
   const nl = noiseLong.getChannelData(0); for (let i = 0; i < nl.length; i++) nl[i] = r() * 2 - 1;
-  // impulse response: small room by default, a hall with irSec ≈ 3.5
-  const ir = ctx.createBuffer(2, Math.round(ctx.sampleRate * irSec), ctx.sampleRate);
-  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (r() * 2 - 1) * Math.pow(1 - i / d.length, irPow); }
+  // deterministic short buffer for tactile micro-clicks (avoids random-offset variance on 8-15 ms transients)
+  const clickNoise = ctx.createBuffer(1, Math.max(64, Math.round(ctx.sampleRate * 0.02)), ctx.sampleRate);
+  const cd = clickNoise.getChannelData(0); for (let i = 0; i < cd.length; i++) cd[i] = (r() * 2 - 1) * Math.exp(-i / (cd.length * 0.28));
+
+  // impulse response: pre-delay + early wood/wall reflections + progressively air-damped diffuse tail.
+  // L2 energy is matched to the legacy analytic decay curve so existing `reverb` levels stay gain-consistent.
+  const irLen = Math.max(64, Math.round(ctx.sampleRate * irSec));
+  const pd = Math.min(Math.floor(irLen * 0.12), Math.max(0, Math.round(ctx.sampleRate * preDelay)));
+  const tailLen = Math.max(1, irLen - pd);
+  const targetEnergy = irLen / (3 * (2 * irPow + 1));
+  const ir = ctx.createBuffer(2, irLen, ctx.sampleRate);
+  const earlyTaps = [[0.006, 0.42], [0.013, -0.31], [0.022, 0.24]];
+  for (let c = 0; c < 2; c++) {
+    const d = ir.getChannelData(c);
+    let lp = 0, sumSq = 0;
+    for (let i = pd; i < irLen; i++) {
+      const u = (i - pd) / tailLen;
+      const raw = r() * 2 - 1;
+      const alpha = Math.max(0.08, 0.88 * Math.pow(1 - irDamp * 0.86, u));
+      lp += alpha * (raw - lp);
+      const v = lp * Math.pow(1 - u, irPow);
+      d[i] = v;
+    }
+    for (const [dt, amp] of earlyTaps) {
+      const idx = pd + Math.round(ctx.sampleRate * (dt + c * 0.0017));
+      if (idx < irLen) d[idx] += amp;
+    }
+    for (let i = 0; i < irLen; i++) sumSq += d[i] * d[i];
+    const scale = sumSq > 1e-12 ? Math.sqrt(targetEnergy / sumSq) : 1;
+    for (let i = 0; i < irLen; i++) d[i] *= scale;
+  }
   const master = ctx.createGain(); master.gain.value = 1; master.connect(ctx.destination);
   const conv = ctx.createConvolver(); conv.buffer = ir; const wet = ctx.createGain(); wet.gain.value = reverb; conv.connect(wet); wet.connect(master);
-  // each bus: gain (scores may automate it) → mute (used only for stem renders) → master + reverb send
-  const bus = (gain = 1, send = 0.5) => { const g = ctx.createGain(); g.gain.value = gain; const mute = ctx.createGain(); g.connect(mute); mute.connect(master); const s = ctx.createGain(); s.gain.value = send; mute.connect(s); s.connect(conv); g.mute = mute; return g; };
-  const music = bus(1, 0.6), sfx = bus(1, 0.35), voice = bus(1, 0.08);
-  return { ctx, master, music, sfx, voice, vo: {}, noise, noiseLong, rand: r };
+  // each bus: gain (caller/duck) → sc (sidechain) → optional soft warmth → mute (stem renders) → master + reverb send
+  const bus = (gain = 1, send = 0.5, drive = 0) => {
+    const g = ctx.createGain(); g.gain.value = gain;
+    const sc = ctx.createGain(); sc.gain.value = 1; g.connect(sc);
+    let tail = sc;
+    if (drive > 0) {
+      const ws = ctx.createWaveShaper();
+      ws.curve = softClipCurve(1 + drive * 3.5);
+      ws.oversample = '2x';
+      sc.connect(ws);
+      tail = ws;
+    }
+    const mute = ctx.createGain();
+    tail.connect(mute); mute.connect(master);
+    const s = ctx.createGain(); s.gain.value = send; mute.connect(s); s.connect(conv);
+    g.sc = sc; g.mute = mute;
+    return g;
+  };
+  const music = bus(1, 0.6, Math.max(0, warmth)), sfx = bus(1, 0.35, 0), voice = bus(1, 0.08, 0);
+  return { ctx, master, music, sfx, voice, vo: {}, noise, noiseLong, clickNoise, rand: r };
 }
 
 function env(g, t, { a = 0.005, d = 0.3, peak = 0.2, hold = 0 }) {
@@ -109,6 +162,77 @@ export function glide(m, out, t, f0, f1, { dur = 1.0, gain = 0.06, type = 'trian
   lp.type = 'lowpass'; lp.frequency.value = 1800; o.connect(lp); lp.connect(g); g.connect(out);
   g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.08); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   o.start(t); o.stop(t + dur + 0.05);
+}
+// Rhodes-like FM electric piano: warm fundamental + bell tine transient, optional stereo/amplitude tremolo on a separate node
+export function epiano(m, out, t, f, { dur = 1.6, gain = 0.075, tine = 0.28, tremolo = 0, pan = 0 } = {}) {
+  const c = m.ctx, car = c.createOscillator(), modBody = c.createOscillator(), modTine = c.createOscillator();
+  const gBody = c.createGain(), gTine = c.createGain(), g = c.createGain();
+  car.type = 'sine'; car.frequency.value = f;
+  modBody.type = 'sine'; modBody.frequency.value = f;
+  gBody.gain.setValueAtTime(f * 0.85, t); gBody.gain.exponentialRampToValueAtTime(Math.max(1, f * 0.14), t + dur * 0.85);
+  modTine.type = 'sine'; modTine.frequency.value = Math.min(12000, f * 7);
+  gTine.gain.setValueAtTime(Math.max(0.5, f * tine * 2.2), t); gTine.gain.exponentialRampToValueAtTime(0.01, t + Math.min(0.26, dur * 0.35));
+  modBody.connect(gBody); gBody.connect(car.frequency);
+  modTine.connect(gTine); gTine.connect(car.frequency);
+  car.connect(g);
+  let tail = g;
+  if (tremolo > 0) {
+    const tr = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    tr.gain.value = 0.84; lfo.type = 'sine'; lfo.frequency.value = tremolo; lg.gain.value = 0.16;
+    lfo.connect(lg); lg.connect(tr.gain); g.connect(tr); tail = tr;
+    lfo.start(t); lfo.stop(t + dur + 0.1);
+  }
+  panTo(m, tail, pan).connect(out);
+  env(g, t, { a: 0.005, d: dur, peak: gain });
+  for (const o of [car, modBody, modTine]) { o.start(t); o.stop(t + dur + 0.1); }
+}
+// Mono sub-bass with gentle upper-harmonic warmth so low notes translate on laptop/phone speakers without mud
+export function subBass(m, out, t, f, { dur = 0.55, gain = 0.2, drive = 0.25 } = {}) {
+  const c = m.ctx, o1 = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain(), lp = c.createBiquadFilter(), g = c.createGain();
+  o1.type = 'sine'; o1.frequency.value = f;
+  o2.type = 'sawtooth'; o2.frequency.value = f; g2.gain.value = clampDrive(drive) * 0.28;
+  lp.type = 'lowpass'; lp.frequency.value = Math.min(240, Math.max(95, f * 3.6));
+  o1.connect(g); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(out);
+  env(g, t, { a: 0.01, d: dur, peak: gain, hold: dur * 0.35 });
+  o1.start(t); o2.start(t); o1.stop(t + dur * 1.4 + 0.08); o2.stop(t + dur * 1.4 + 0.08);
+}
+const clampDrive = (x) => Math.max(0, Math.min(1, x));
+// Crystalline modal glass/bell shimmer (non-cartoon reveal accent)
+export function glass(m, out, t, f, { dur = 1.6, gain = 0.06, pan = 0 } = {}) {
+  const c = m.ctx, g = c.createGain(); panTo(m, g, pan).connect(out);
+  for (const [mul, amp] of [[1, 1], [2.32, 0.42], [4.18, 0.18], [6.63, 0.07]]) {
+    const fn = f * mul; if (fn > 15000) continue;
+    const o = c.createOscillator(), og = c.createGain(); o.type = 'sine'; o.frequency.value = fn;
+    env(og, t, { a: 0.003, d: dur / Math.pow(mul, 0.55), peak: gain * amp });
+    o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.1);
+  }
+}
+// Deterministic tactile UI pointer/key click (no random noise-offset variance, no cartoon pitch-sweep pop)
+export function uiClick(m, out, t, { freq = 1850, gain = 0.07, crisp = 0.6, pan = 0 } = {}) {
+  const c = m.ctx, outNode = c.createGain(); outNode.gain.value = 1; panTo(m, outNode, pan).connect(out);
+  const o = c.createOscillator(), og = c.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(freq * 1.45, t); o.frequency.exponentialRampToValueAtTime(Math.max(180, freq * 0.48), t + 0.011);
+  env(og, t, { a: 0.0008, d: 0.014, peak: gain * 0.85 });
+  o.connect(og); og.connect(outNode); o.start(t); o.stop(t + 0.025);
+  if (m.clickNoise && crisp > 0) {
+    const s = c.createBufferSource(), bp = c.createBiquadFilter(), ng = c.createGain();
+    s.buffer = m.clickNoise;
+    bp.type = 'bandpass'; bp.frequency.value = Math.min(7500, freq * 1.9); bp.Q.value = 2.4;
+    ng.gain.value = gain * 0.55 * clampDrive(crisp);
+    s.connect(bp); bp.connect(ng); ng.connect(outNode);
+    s.start(t); s.stop(t + 0.022);
+  }
+}
+// Subtle air-friction UI card/drawer slide (cleaner and shorter than cinematic `whoosh`)
+export function swipe(m, out, t, { dur = 0.2, f0 = 680, f1 = 1850, gain = 0.045, pan0 = 0, pan1 = 0 } = {}) {
+  const c = m.ctx, s = noiseSrc(m, t, dur), bp = c.createBiquadFilter(), g = c.createGain(), p = c.createStereoPanner();
+  bp.type = 'bandpass'; bp.Q.value = 1.9;
+  bp.frequency.setValueAtTime(Math.max(80, f0), t); bp.frequency.exponentialRampToValueAtTime(Math.max(80, f1), t + dur);
+  p.pan.setValueAtTime(pan0, t); p.pan.linearRampToValueAtTime(pan1, t + dur);
+  s.connect(bp); bp.connect(g); g.connect(p); p.connect(out);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, gain), t + dur * 0.42);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 }
 
 
@@ -227,6 +351,26 @@ export function voice(m, t, name, { gain = 1, pan = 0 } = {}) {
 export function duck(bus, regions, { depth = -9, attack = 0.12, release = 0.35, base = null } = {}) {
   const g0 = base ?? bus.gain.value, low = g0 * Math.pow(10, depth / 20);
   for (const [a, b] of regions) { bus.gain.setValueAtTime(g0, Math.max(0, a - attack)); bus.gain.linearRampToValueAtTime(low, a); bus.gain.setValueAtTime(low, b); bus.gain.linearRampToValueAtTime(g0, b + release); }
+}
+// rhythmic kick/pulse ducking on a dedicated sub-gain (`bus.sc`) so it composes cleanly with `duck(bus, ...)`
+// and clamps overlapping beat recoveries without clicky upward jumps.
+export function sidechain(bus, beatTimes, { depth = -8, attack = 0.008, release = 0.22 } = {}) {
+  const param = (bus?.sc || bus)?.gain;
+  if (!param || !Array.isArray(beatTimes) || !beatTimes.length) return;
+  const times = [...beatTimes].filter((t) => Number.isFinite(t) && t >= 0).sort((a, b) => a - b);
+  const low = Math.pow(10, depth / 20);
+  let prevEnd = -Infinity;
+  for (let i = 0; i < times.length; i++) {
+    const t = times[i];
+    if (i > 0 && t - times[i - 1] < 1e-4) continue;
+    const pre = Math.max(0, t - attack);
+    if (pre > prevEnd) param.setValueAtTime(1, pre);
+    param.linearRampToValueAtTime(low, t);
+    const nextPre = i + 1 < times.length ? Math.max(t + 0.004, times[i + 1] - attack) : Infinity;
+    const end = Math.min(t + release, nextPre);
+    param.linearRampToValueAtTime(1, end);
+    prevEnd = end;
+  }
 }
 async function decodeVo(map) {
   const out = {}, ctx = new OfflineAudioContext(2, 48000, 48000);

@@ -1,5 +1,24 @@
 # video-craft 维护记录
 
+> **跨机迁移与长期研发入口（2026-11-27）**：因原台式机显卡长期占用，后续第 4 层高阶视觉打磨与成片实测迁至 **RTX 4060 Laptop（8G 显存 + 24G 内存）** 进行。新机部署与续接请直接阅读 **[MIGRATION_4060_LAPTOP.md](MIGRATION_4060_LAPTOP.md)**、长期试炼场 **[studio/README.md](studio/README.md)** 及 60fps 标杆拆解 **[studio/benchmarks/2026-11-27-openai-showreel/DECONSTRUCTION.md](studio/benchmarks/2026-11-27-openai-showreel/DECONSTRUCTION.md)**。
+
+## 1.2.0 · 产品宣传与 MV 双档视效升级 + 第 4 层 Studio 试炼场建立（已随 `dev` 打包上传，迁 4060 新机实测演进）
+
+第一轮讲题轨（`1.1.3`）提交推送后，用户推进“产品宣传 / MV”场景开发，并进一步明确核心诉求：**不满足于普通平淡的二维画面，希望宣传片与 MV 分为两档——若有特殊需求追求视觉震撼、画面绚丽（对标 Blender 大片效果），直接启用第二档重装视效（不必强绑 Blender，效果达标即可）**；成片渲染验证待本机显卡释放后进行。经两轮 Gemini Flash 独立子代理第二视角审查，完成双档引擎与四层去模板化文档升级：
+
+1. **第二档重装绚丽视效双路线引擎（零安装内建主力 + 可选原生 Blender 桥接）**：
+   - `kit/stage3d.js` + `kit/vendor/three/`（离线 MIT Three.js r160，新增）：提供线性浮点帧缓冲、5 级 **Karis 加权防高光闪烁** HDR 金字塔泛光 + `ACESFilmic` 电影色调映射 + 边缘微色散后期管线 `createStage3D`（`--draft` 下自动半分辨率快渲，`VC_SOFTWARE_GL=1` 下自动关闭多重采样避开软件退化）；提供一次性烘焙程序化摄影棚柔光箱 IBL 的 `studioEnv`（`PMREMGenerator.fromScene`，规避 r160 无 `environmentRotation` 与浮点纹理滤波兼容性坑）、动态掠光灯组 `addStudioRig`、物理材质 `pbrMaterial`（阳极氧化金属、拉丝钛合金、折射水晶玻璃 `transmission`、薄膜干涉虹彩 `iridescence`、清漆陶瓷、HDR 灯丝）、多段平滑圆角倒角实体 `roundedSlab`、千枚实例声画共振场 `instancedField` 与窄焦球面推拉相机 `orbitCamera`。
+   - `kit/shader.js`（升级 `{ sdf: true }`）：按需注入 3D SDF 光线步进与薄膜干涉/ACES 函数库（`rot2`、`smin`、`sdRoundBox`、`sdTorus`、`opRep`、`thinFilm`、`aces`、`toSrgb`），支撑液态金属融合与折射分形奇观。
+   - `kit/blender_bridge.py`（新增）+ `doctor.mjs` 探测：当本机装有 Blender 时自动检出版本，桥接脚本兼容 Blender 3.6 / 4.2+ / 5.0 的 EEVEE/Cycles 枚举、Principled BSDF 4.0 端口改名、AgX 色彩管理、4.2+ 合成器 Glare 泛光及 `songmap.json` 逐帧拍点采样。
+   - 新增 [references/spectacle-3d.md](../../video-craft/references/spectacle-3d.md)：明确五个光学支点（多段圆角倒角 + 三档粗糙度反差、克制 HDR 泛光阈值、五种开放绚丽美学世界含高调日光水晶影棚以打破暗黑紫雾锁死、真实长焦微距切全景分镜禁 30 秒屏保转圈、3D 底片叠 2D 刀锋排版）。
+2. **第一档与共享底座去塑料感及质检升级（无绑定配色与版式）**：
+   - `kit/sound.js` + `kit/audio.mjs`：修复原未滤波白噪卷积混响的高频金属嘶声，改为「前置延迟 `preDelay` + 早期反射 + 一阶高频空气吸收阻尼 `irDamp`」且严格保持 L2 能量一致；新增可选柔饱和 `warmth`、独立于 `duck()` 的节拍侧链 `sidechain(bus, beatTimes)`，以及 `epiano`、`subBass`、`glass`、确定性物理点击 `uiClick` 与滑擦 `swipe`。
+   - `kit/stage.js`（新增）+ `kit/draw.js`（升级）：提供零过冲弧线指针 `cursorAt` + 定点波纹、扣除圆角安全内接框的无漏边穿屏 `throughScreen`、侧边羽化体积光束 `lightBeam`、预缓存幂律散景 `bokeh` 与手持呼吸 `withHandheld`。
+   - `kit/captions.mjs`、`textcheck.mjs`、`shotlist.py`、`doctor.mjs`：拦截未校对 `*.draft.srt` 与 `(repeated, check by ear)` 并支持 `--no-overlap`；`textcheck.mjs` 自动覆盖 `#lyric` 与 `9:16` 竖屏自适应字号；`shotlist.py --song` 识别唱词起音切镜并预警重复乐段画面雷同；`doctor.mjs` 编译核查全部 `.py/.js/.mjs` 脚本并探测 Three.js 与 Blender。
+3. **全套轨道 B 双档路由与零 GPU 六项验证**：
+   - 更新 `SKILL.md`（`1.2.0`）及 `explain-and-demo.md`、`music-video.md`、`cinematography.md`、`sound.md`、`look.md`、`motion.md`、`drawing.md`、`review.md`、`kit.md`。
+   - `doctor.mjs`、`check-captions.mjs` 与 [`evals/check-phase2-kit.mjs`](evals/check-phase2-kit.mjs)（含 `stage3d.js` PBR/HDR 泛光 + `shader.js { sdf: true }` 软件渲染像素确定性与非黑校验、`blender_bridge.py` 拍点采样、18 份文档链接清零、离线音频合成与镜头表校验）6/6 全过；待显卡空闲执行的第二档震撼大片盲评预案见 [`evals/2026-11-26-promo-mv-plan/README.md`](evals/2026-11-26-promo-mv-plan/README.md)。
+
 ## 1.1.3 · 去模板化松绑与工具层解耦：守住质量底线，放开 AI 视觉与叙事创造力
 
 用户复听 `tcp-v111` 后确认讲解口吻大幅改善、第一阶段效果达标，同时敏锐指出一个架构隐患：**不能把个人某次亮色偏好或前两道评测题的好做法写成限制 AI 遵从某几套固定风格的死规矩，否则会杀死创造力**。随后参考仓库内 `product-design` + `frontend-craft`（0.6→0.9 的反抄皮经验）及外部 `anthropics/skills`、`remotion-dev/skills`、`Motion Canvas` 技能架构，并引入独立第二视角审查子代理做全链路挑刺，将潜藏在文档与脚本默认值中的风格锁死与单题过拟合一并解耦：
